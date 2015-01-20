@@ -66,6 +66,7 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ru.bokus.w1.Constants;
 import ru.bokus.w1.Extra.DashSupport;
 import ru.bokus.w1.Extra.DialogExit;
 import ru.bokus.w1.Extra.InvoiceSupport;
@@ -359,8 +360,7 @@ public class MenuActivity extends FragmentActivity {
     
     //запрос баланса
     public void getBalance() {
-    	requestData2[0] = getString(R.string.url_main) +
-        		getString(R.string.url_balance);
+    	requestData2[0] = Constants.URL_BALANCE;
         requestData2[1] = token;
         requestData2[2] = "";
 		getBalance = new GETBalance(mContext);
@@ -412,8 +412,7 @@ public class MenuActivity extends FragmentActivity {
     
     public void getProfile() {
     	//Получение профиля пользователя (название, логотип, url)
-    	requestData[0] = getString(R.string.url_main) +
-    			getString(R.string.url_profile) + userId;//userId
+    	requestData[0] = Constants.URL_PROFILE + userId;
     	requestData[1] = token;
     	requestData[2] = "";
     	getProfile = new GETProfile(mContext);
@@ -600,8 +599,7 @@ public class MenuActivity extends FragmentActivity {
             changeFragment(fragmentInvoice);
         } else if (position == 4) {
         	//запрос шаблонов
-            requestData[0] = getString(R.string.url_main) +
-            		getString(R.string.url_templates);
+            requestData[0] = Constants.URL_TEMPLATES;
             requestData[1] = token;
             requestData[2] = "";
             getTemplateList = new GETTemplateList(mContext);

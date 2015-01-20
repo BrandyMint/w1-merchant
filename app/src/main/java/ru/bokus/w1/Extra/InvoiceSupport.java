@@ -1,10 +1,11 @@
 package ru.bokus.w1.Extra;
 
-import ru.bokus.w1.Request.GETInvoice;
-import ru.bokus.w1.Activity.MenuActivity;
-import ru.bokus.w1.Activity.R;
 import android.content.Context;
 import android.text.TextUtils;
+
+import ru.bokus.w1.Activity.MenuActivity;
+import ru.bokus.w1.Constants;
+import ru.bokus.w1.Request.GETInvoice;
 
 public class InvoiceSupport {
 	Context mCtx;
@@ -19,8 +20,7 @@ public class InvoiceSupport {
 	    GETInvoice getInvoice;
 	    
 		//запрос списка счетов
-	    requestData[0] = mCtx.getString(R.string.url_main) +
-        		mCtx.getString(R.string.url_invoice, pageNumber + "");
+	    requestData[0] = String.format(Constants.URL_INVOICES, pageNumber);
         if (state.equals("Accepted")) {
         	requestData[0] += "&invoiceStateId=Accepted"; 
 		} else if (state.equals("Created")) {

@@ -1,12 +1,5 @@
 package ru.bokus.w1.Activity;
 
-import java.util.ArrayList;
-
-import ru.bokus.w1.Request.GETPaymentsState;
-import ru.bokus.w1.Request.JSONParsing;
-import ru.bokus.w1.Request.POSTPayments;
-import ru.bokus.w1.Request.PUT1;
-import ru.bokus.w1.Request.PUT2;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +11,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+
+import ru.bokus.w1.Constants;
+import ru.bokus.w1.Request.GETPaymentsState;
+import ru.bokus.w1.Request.JSONParsing;
+import ru.bokus.w1.Request.POSTPayments;
+import ru.bokus.w1.Request.PUT1;
+import ru.bokus.w1.Request.PUT2;
 
 public class ConfirmOutActivity extends Activity {
 
@@ -62,8 +64,7 @@ public class ConfirmOutActivity extends Activity {
 			switch (v.getId()) {
 				case (R.id.tvGo):
 					//Инициализация платежа с помощью шаблона
-					requestData[0] = getString(R.string.url_main) +
-			        		getString(R.string.url_payments);
+					requestData[0] = Constants.URL_PAYMENTS;
 					requestData[1] = token; 
 					requestData[2] = templateId;
 					postPayments = new POSTPayments(activity);
@@ -96,8 +97,7 @@ public class ConfirmOutActivity extends Activity {
 			//String[] elementPayment = { "ToTaxNumber", "212112345678" };
 			//dataPayments.add(elementPayment);
 			paymentId = dataPayments.get(0)[1];
-			requestData[0] = getString(R.string.url_main) +
-	        		getString(R.string.url_payments) + "/" + paymentId;
+			requestData[0] = Constants.URL_PAYMENTS + "/" + paymentId;
 			requestData[1] = token; 
 			putPayments = new PUT1(activity);
 			startPBAnim();
@@ -111,8 +111,7 @@ public class ConfirmOutActivity extends Activity {
 	public void putResult(String[] result) {
 		stopPBAnim();
 		if (result[0].equals("200")) {
-			requestData[0] = getString(R.string.url_main) +
-	        		getString(R.string.url_payment_state, paymentId);
+			requestData[0] = String.format(Constants.URL_PAYMENT_STATE, paymentId);
 	        requestData[1] = token;
 	        requestData[2] = "";
 	        GETPaymentsState getPaymentsState;
@@ -137,8 +136,7 @@ public class ConfirmOutActivity extends Activity {
 					state.equals("Checking") | state.equals("Paying")) {
 				//Повторное заполнение формы платежа
 				paymentId = dataPayments.get(0)[1];
-				requestData[0] = getString(R.string.url_main) +
-		        		getString(R.string.url_payments) + "/" + paymentId;
+				requestData[0] = Constants.URL_PAYMENTS + paymentId;
 				requestData[1] = token; 
 				
 				String[] elementPayments = { "FormId", "$Final" };

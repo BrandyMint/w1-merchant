@@ -1,6 +1,5 @@
 package ru.bokus.w1.Activity;
 
-import ru.bokus.w1.Extra.ImageTextAdapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +11,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import ru.bokus.w1.Constants;
+import ru.bokus.w1.Extra.ImageTextAdapter;
 
 public class TemplateFragment extends Fragment {
 
@@ -39,7 +41,7 @@ public class TemplateFragment extends Fragment {
 			rlGrid = (RelativeLayout) v;
 			tv = (TextView) rlGrid.getChildAt(4);
 			if (tv.getText().toString().isEmpty()) {
-				Uri address = Uri.parse(getString(R.string.walletone));
+				Uri address = Uri.parse(Constants.URL_WALLETONE);
 				intent = new Intent(Intent.ACTION_VIEW, address);
 				startActivity(intent);
 			} else {

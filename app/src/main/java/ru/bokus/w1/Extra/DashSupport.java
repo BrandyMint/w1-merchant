@@ -2,7 +2,7 @@ package ru.bokus.w1.Extra;
 
 import android.content.Context;
 
-import ru.bokus.w1.Activity.R;
+import ru.bokus.w1.Constants;
 import ru.bokus.w1.Request.GETUserEntryDash;
 import ru.bokus.w1.Request.GETUserEntryPeriod;
 import ru.bokus.w1.Request.GETUserEntryTotal;
@@ -19,8 +19,7 @@ public class DashSupport {
 	    GETUserEntryDash getUserEntryDash;
 	    
 		//запрос списка операций
-        requestData[0] = mCtx.getString(R.string.url_main) +
-        		mCtx.getString(R.string.url_userentry, pageNumber + "", currency);
+        requestData[0] = String.format(Constants.URL_USERENTRY, pageNumber, currency);
         requestData[1] = token;
         getUserEntryDash = new GETUserEntryDash(mCtx);
         getUserEntryDash.execute(requestData);
@@ -32,9 +31,7 @@ public class DashSupport {
 		String[] requestData2 = { "", "", "", "" };
 	    GETUserEntryPeriod getUserEntryPeriod;
 	    
-		requestData2[0] = mCtx.getString(R.string.url_main) +
-        		mCtx.getString(R.string.url_userentry_period, createDate,
-        				currency, page);
+		requestData2[0] = String.format(Constants.URL_USERENTRY_PERIOD, createDate, currency, page);
         requestData2[1] = token;
         getUserEntryPeriod = new GETUserEntryPeriod(mCtx);
         getUserEntryPeriod.execute(requestData2);
@@ -46,9 +43,7 @@ public class DashSupport {
 		String[] requestData3 = { "", "", "", "" };
 	    GETUserEntryTotal getUserEntryTotal;
 	    
-		requestData3[0] = mCtx.getString(R.string.url_main) +
-        		mCtx.getString(R.string.url_userentry_total,
-        				from, to, direction, currency, page);
+		requestData3[0] = String.format(Constants.URL_USERENTRY_TOTAL, from, to, direction, currency, page);
         requestData3[1] = token;
         requestData3[2] = direction;
         getUserEntryTotal = new GETUserEntryTotal(mCtx);

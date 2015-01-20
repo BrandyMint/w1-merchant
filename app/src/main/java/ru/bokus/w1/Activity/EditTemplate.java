@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import ru.bokus.w1.Constants;
 import ru.bokus.w1.Request.GETProvider;
 import ru.bokus.w1.Request.GETTemplate;
 import ru.bokus.w1.Request.JSONParsing;
@@ -89,9 +90,7 @@ public class EditTemplate extends Activity {
 		
 		//запрос шаблона
 		startPBAnim();
-        requestData[0] = getString(R.string.url_main) +
-        		getString(R.string.url_templates) + 
-        		intent.getStringExtra("templateId");
+        requestData[0] = Constants.URL_TEMPLATES + intent.getStringExtra("templateId");
         requestData[1] = token;
         getTemplate = new GETTemplate(this);
         getTemplate.execute(requestData);
@@ -123,9 +122,7 @@ public class EditTemplate extends Activity {
 	public void httpResult(String result) {
 		//запрос провайдера
 		startPBAnim();
-		requestData[0] = getString(R.string.url_main) +
-        		getString(R.string.url_providers) + 
-        		JSONParsing.templateField(result, "ProviderId");
+		requestData[0] = Constants.URL_PROVIDERS + JSONParsing.templateField(result, "ProviderId");
         requestData[1] = token;
         getProvider = new GETProvider(this);
         getProvider.execute(requestData);

@@ -3,7 +3,7 @@ package ru.bokus.w1.Extra;
 import android.content.Context;
 import android.text.TextUtils;
 
-import ru.bokus.w1.Activity.R;
+import ru.bokus.w1.Constants;
 import ru.bokus.w1.Request.GETUserEntry;
 
 public class UserEntrySupport {
@@ -19,8 +19,7 @@ public class UserEntrySupport {
 	    GETUserEntry getUserEntry;
 	    
 		//запрос списка операций
-        requestData[0] = mCtx.getString(R.string.url_main) +
-        		mCtx.getString(R.string.url_userentry, pageNumber + "", currency);
+        requestData[0] = String.format(Constants.URL_USERENTRY, pageNumber, currency);
         if (!TextUtils.isEmpty(search)) {
         	requestData[0] += "&searchString=" + search;
         }

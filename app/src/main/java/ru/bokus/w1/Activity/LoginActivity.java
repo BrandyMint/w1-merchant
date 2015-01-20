@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import ru.bokus.w1.Constants;
 import ru.bokus.w1.Extra.DialogNoInet;
 import ru.bokus.w1.Extra.DialogTimeout;
 import ru.bokus.w1.Extra.SoftKeyboard;
@@ -191,8 +192,7 @@ public class LoginActivity extends Activity {
 //    			postCaptcha.execute(requestData);
 				
 				//одноразовый пароль
-				requestData[0] = getString(R.string.url_main) +
-						getString(R.string.url_otp);
+				requestData[0] = Constants.URL_OTP;
 				requestData[1] = actvLogin.getText().toString(); 
       			postOtp = new POSTOtp(activity);
     			postOtp.execute(requestData);
