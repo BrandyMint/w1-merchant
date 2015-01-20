@@ -1,0 +1,170 @@
+<!--
+  Copyright 2013 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+    <string-array name="menu_array">
+        <item>Дэшборд</item>
+        <item>Выписка</item>
+        <item>Счета</item>
+        <item>Вывод</item>
+        <item>Выход</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="add">Добавить</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="output">Вывод</string>
+    <string name="user_entry">Выписка</string>
+    <string name="invoice">Счета</string>
+    <string name="output_cash">Вывод средств</string>
+    <string name="exit">Выход</string>
+    <string name="app_name">Касса W1</string>
+    <string name="login">Телефон или емаил</string>
+	<string name="password">Пароль</string>
+	<string name="logo_text">Для бизнеса</string>
+	<string name="authorization">Авторизоваться</string>
+	<string name="paid">Оплачен</string>
+	<string name="not_paid">Не оплачен</string>
+	<string name="partially">Частично</string>
+	<string name="bill">Выставить счет</string>
+	<string name="currency">Валюта</string>
+	<string name="rus_rubl">Российский рубль</string>
+	<string name="descr">Описание</string>
+	<string name="exampl_pizza">Например, доставка пиццы</string>
+	<string name="tel_recipient">Телефон или емайл получателя</string>
+	<string name="mail_or_tel">my@mail.ru или 89031234567</string>
+	<string name="sum">Сумма</string>
+	<string name="enter_amount">Введите сумму</string>
+	<string name="error_field">Поле ввода не должно быть пустым!</string>
+	<string name="error_empity">Поля ввода не должны быть пустыми:</string>
+	<string name="entrance">Поступление</string>
+	<string name="back">Вернуться</string>
+	<string name="account_sum">Счет на сумму</string>
+	<string name="bill_success"> успешно выставлен</string>
+	<string name="card_number">Номер карты</string>
+	<string name="sum_commis">Сумма с комиссией</string>
+	<string name="sum_output">Сумма к выводу</string>
+	<string name="remove">Вывести</string>
+	<string name="last_oper">Последние операции</string>
+	<string name="hour_24">24 часа</string>
+	<string name="week">неделя</string>
+	<string name="month">месяц</string>
+	<string name="account_number">Счет номер</string>
+	<string name="status">Статус</string>
+	<string name="data_post">Отправляем данные</string>
+	<string name="data_get">Получаем данные</string>
+	<string name="user_not_found">Не корректный емайл или телефон</string>
+	<string name="bad_password">Пароль пользователя не соответствует</string>
+	<string name="forgot">Забыл</string>
+	<string name="input_captcha">Введите текст с картинки</string>
+	<string name="send">Отправить</string>
+	<string name="web_vers">Шаблоны\nвывода\nсоздаются на\nвеб-версии</string>
+	<string name="move_on">Перейти</string>
+	<string name="data_load">Данные будут загружены</string>
+	<string name="loading">Загрузка...</string>
+	<string name="inputs">Входящие</string>
+	<string name="outputs">Исходящие</string>
+	<string name="sum_period">сумма за период</string>
+	<string name="comis_period">комиссия за период</string>
+	<string name="begin_date">Начальная дата</string>
+	<string name="next">Далее</string>
+	<string name="go_back">Назад</string>
+	<string name="end_date">Конечная дата</string>
+	<string name="cancel">Отмена</string>
+	<string name="comis_sum">Комиссия %1$s, сумма от %2$s до %3$s</string>
+	<string name="wo_comis">Без комиссии, сумма от %1$s до %2$s</string>
+	<string name="payment_one">Платеж будет исполнен однократно, %1$s в %2$s</string>
+	<string name="payment_begin">Платеж будет производиться %1$s в %2$s, начиная с %3$s</string>
+	<string name="payment_begin_end">Платеж будет производиться %1$s в %2$s, начиная с %3$s, заканчивая %4$s в %5$s</string>
+	<string name="first_day">в первый день месяца</string>
+	<string name="last_day">в последний день месяца</string>
+	<string name="n_day">в %1$s-й день месяца</string>
+	<string name="daily">ежедневно</string>
+	<string name="weekly">еженедельно</string>
+	<string name="monthly">ежемесячно</string>
+	<string name="yearly">ежегодно</string>
+	<string name="on_">по %1$s</string>
+	<string name="monday">понедельникам</string>
+	<string name="tuesday">вторникам</string>
+	<string name="wednesday">средам</string>
+	<string name="thursday">четвергам</string>
+	<string name="friday">пятницам</string>
+	<string name="saturday">субботам</string>
+	<string name="sunday">воскресеньям</string>
+	<string name="payment_not">Платеж не найден</string>
+	<string name="search">Поиск</string>
+	<string name="warning">Предупреждение</string>
+	<string name="exit_message">Вы действительно хотите выйти?</string>
+	<string name="sure_withdraw">Вы уверены, \n что хотите вывести</string>
+	<string name="confirm">Подтвердить</string>
+	<string name="yes">Да</string>
+	<string name="no">Нет</string>
+	<string name="awaiting">Ожидает зачисления</string>
+	<string name="canceled">Отменен</string>
+	<string name="processing">Обработка</string>
+	<string-array name="month_array">
+        <item>января</item>
+        <item>февраля</item>
+        <item>марта</item>
+        <item>апреля</item>
+        <item>мая</item>
+        <item>июня</item>
+        <item>июля</item>
+        <item>августа</item>
+        <item>сентября</item>
+        <item>октября</item>
+        <item>ноября</item>
+        <item>декабря</item>
+    </string-array>
+    <string-array name="month_array_cut">
+        <item>янв.</item>
+        <item>фев.</item>
+        <item>мар.</item>
+        <item>апр.</item>
+        <item>мая</item>
+        <item>июн.</item>
+        <item>июл.</item>
+        <item>авг.</item>
+        <item>сен.</item>
+        <item>окт.</item>
+        <item>нояб.</item>
+        <item>дек.</item>
+    </string-array>
+    <string-array name="day_of_week">
+        <item>Вс</item>
+        <item>Пн</item>
+        <item>Вт</item>
+        <item>Ср</item>
+        <item>Чт</item>
+        <item>Пт</item>
+        <item>Сб</item>
+    </string-array>
+    <string name="moment_ago">Минуту назад</string>
+    <string name="min_ago">минут назад</string>
+    <string name="min_ago2">минуту назад</string>
+    <string name="min_ago3">минуты назад</string>
+    <string name="hour_ago">Час назад</string>
+    <string name="hour_ago1">часа назад</string>
+    <string name="hour_ago2">часов назад</string>
+    <string name="hour_ago3">час назад</string>
+    <string name="pass_sent">Временный пароль отправлен, проверьте почту</string>
+    <string name="balance">Баланс</string>
+    <string name="no_inet">Приложение не может работать без доступа в Интернет и будет закрыто</string>
+    <string name="hour_cut">ч.</string>
+    <string name="session_timeout">Ваша сессия истекла</string>
+    <string name="payment_error">Платеж не может пройти проверку, повторите попытку позже</string>
+    <string name="transact_proces">Перевод на сумму %1$s принят к исполнению</string>
+</resources>

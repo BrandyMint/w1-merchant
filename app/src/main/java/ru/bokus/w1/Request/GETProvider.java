@@ -1,0 +1,21 @@
+package ru.bokus.w1.Request;
+
+import ru.bokus.w1.Activity.EditTemplate;
+import android.content.Context;
+
+public class GETProvider extends HttpGET {
+
+	public GETProvider(Context ctx) {
+		super(ctx);
+	}
+
+	@Override
+    protected void onPostExecute(String[] result) {
+        super.onPostExecute(result);
+        //Log.d("1", line);
+        if (!((EditTemplate) mCtx).isFinishing()) {
+	        ((EditTemplate) mCtx).stopPBAnim();
+	        ((EditTemplate) mCtx).providerResult(result[1]);
+        }
+    }
+}

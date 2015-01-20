@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="200dp"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/imagepart"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/oval"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
+    
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/rectangle"
+        android:layout_margin="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+    <TextView
+        android:id="@+id/tvGoWeb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:textColor="#757575"
+        android:visibility="invisible"
+        android:gravity="center_horizontal"
+        android:text="@string/web_vers" />
+    
+    <TextView
+        android:id="@+id/tvMoveOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="#9ACD32"
+        android:visibility="invisible"
+        android:layout_below="@+id/tvGoWeb"
+        android:text="@string/move_on" />
+    
+    <TextView
+        android:id="@+id/textpart"
+        android:layout_below="@+id/imagepart"
+        android:gravity="center_horizontal"
+        android:text="Перевод на расчетный счет"
+        android:textColor="#BDBDBD"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants" >
+        
+    <TextView 
+	    android:id="@+id/tvNumber"
+	    android:text="Номер"
+	    android:layout_marginLeft="50dp"
+	    android:layout_marginTop="11dp"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+    
+	<TextView 
+	    android:id="@+id/tvDate"
+	    android:textColor="#BDBDBD"
+	    android:text="Дата"
+	    android:layout_marginLeft="50dp"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/tvNumber" />
+	
+	<TextView 
+	    android:id="@+id/tvDescr"
+	    android:visibility="invisible"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	
+	<TextView 
+	    android:id="@+id/tvState"
+	    android:visibility="invisible"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	
+	<ru.bokus.w1.ViewExtended.TextViewRobotoThin
+	    android:id="@+id/tvAmount"
+	    android:inputType="numberDecimal"
+	    android:layout_toLeftOf="@+id/tvRubl"
+	    android:textColor="#ADFF2F"
+	    android:textSize="16pt"
+	    android:layout_marginRight="5dp"
+	    android:layout_marginTop="7dp"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	
+	<ru.bokus.w1.ViewExtended.TextViewRouble
+	    android:id="@+id/tvRubl" 
+	    android:inputType="numberDecimal"
+	    android:layout_alignParentRight="true"
+	    android:textColor="#9ACD32"
+	    android:textSize="16pt"
+	    android:layout_marginRight="15dp"
+	    android:layout_marginTop="18dp"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	
+	<ImageView 
+	    android:id="@+id/ivIcon"
+	    android:layout_marginTop="15dp"
+	    android:layout_marginLeft="15dp"
+	    android:src="@drawable/icon_ok"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	
+</RelativeLayout>

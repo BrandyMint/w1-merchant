@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    
+    <ru.bokus.w1.ViewExtended.SegmentedRadioGroup
+            android:id="@+id/segment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dip"
+            android:checkedButton="@+id/button_one"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+			<RadioButton android:id="@id/button_one"
+				android:minWidth="40dip"
+				android:minHeight="33dip"
+				android:text="@string/paid"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:button="@null"
+				android:gravity="center"
+				android:textColor="@color/radio_colors" />
+			<RadioButton android:id="@+id/button_two"
+				android:minWidth="40dip"
+				android:minHeight="33dip"
+				android:text="@string/not_paid"
+				android:button="@null"
+				android:gravity="center"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/radio_colors" />
+			<RadioButton android:id="@+id/button_three"
+				android:minWidth="40dip"
+				android:minHeight="33dip"
+				android:text="@string/partially"
+				android:button="@null"
+				android:gravity="center"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/radio_colors" />
+		</ru.bokus.w1.ViewExtended.SegmentedRadioGroup>
+    <ListView
+            android:id="@+id/lvAccounts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+</LinearLayout>

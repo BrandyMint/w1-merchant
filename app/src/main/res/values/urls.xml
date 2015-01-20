@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Строки не переносить, запросы некорректно отрабатывают -->
+<resources>
+    <string name="url_main">https://api.w1.ru/OpenApi/</string>
+    <string name="url_userentry">userentry/?pageNumber=%1$s&amp;itemsPerPage=25&amp;currencyId=%2$s</string>
+    <string name="url_invoice">invoices?pageNumber=%s&amp;itemsPerPage=25</string>
+    <string name="url_templates">payments/templates/</string>
+    <string name="url_balance">balance</string>
+    <string name="url_profile">profile?userId=</string>
+    <string name="url_userentry_period">userentry/?pageNumber=%3$s&amp;itemsPerPage=1000&amp;fromCreateDate=%1$s&amp;direction=Inc&amp;currencyId=%2$s</string>
+    <string name="url_userentry_total">userentry/?pageNumber=%5$s&amp;itemsPerPage=1000&amp;fromCreateDate=%1$s&amp;toCreateDate=%2$s&amp;direction=%3$s&amp;currencyId=%4$s</string>
+    <string name="walletone">https://www.walletone.com/wallet/client/</string>
+    <string name="login_bearer">54344285-82DA-42EA-B7D0-0C9B978FFD89</string>
+    <string name="url_providers">providers/</string>
+    <string name="url_otp">password/otp</string>
+    <string name="url_payments">payments</string>
+    <string name="url_payment_state">payments/%s/state</string>
+</resources>
