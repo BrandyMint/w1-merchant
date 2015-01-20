@@ -1,53 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    
-	<RelativeLayout 
-	    android:background="#fff"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content" >
-	              
-	    	<com.w1.merchant.android.viewextended.SegmentedRadioGroup
-	            android:id="@+id/srgStatement"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_centerInParent="true"
-	            android:layout_marginTop="40dp"
-	            android:layout_marginBottom="40dp"
-	            android:checkedButton="@+id/button_one"
-	            android:orientation="horizontal" >
-	
-				<RadioButton android:id="@+id/rbEntrance"
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-					android:minWidth="100dip"
-					android:minHeight="33dip"
-					android:text="@string/entrance"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:button="@null"
-					android:gravity="center"
-					android:textColor="@color/radio_colors" />
-				<RadioButton android:id="@+id/rbOutput"
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-					android:minWidth="100dip"
-					android:minHeight="33dip"
-					android:text="@string/output"
-					android:button="@null"
-					android:gravity="center"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:textColor="@color/radio_colors" />
-			</com.w1.merchant.android.viewextended.SegmentedRadioGroup>
-		</RelativeLayout>
-	    	
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff">
+
+        <com.w1.merchant.android.viewextended.SegmentedRadioGroup
+            android:id="@+id/srgStatement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="40dp"
+            android:checkedButton="@+id/button_one"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbEntrance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:gravity="center"
+                android:minHeight="33dip"
+                android:minWidth="100dip"
+                android:text="@string/entrance"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/radio_colors" />
+
+            <RadioButton
+                android:id="@+id/rbOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:gravity="center"
+                android:minHeight="33dip"
+                android:minWidth="100dip"
+                android:text="@string/output"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/radio_colors" />
+        </com.w1.merchant.android.viewextended.SegmentedRadioGroup>
+    </RelativeLayout>
+
     <ListView
-            android:id="@+id/lvStatement"
-            android:divider="#FFFFFF"
-            android:dividerHeight="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        android:id="@+id/lvStatement"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="#FFFFFF"
+        android:dividerHeight="8dp" />
 
 </LinearLayout>

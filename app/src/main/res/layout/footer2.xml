@@ -3,17 +3,19 @@
     android:id="@+id/llFooter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >    
-	<ImageView 
-	    android:id="@+id/ivFooterIcon"
-	    android:layout_marginLeft="25dp"
-	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-	<TextView 
-	    android:id="@+id/tvFooterText"
-	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textSize="20sp"
-		android:layout_gravity="center_vertical"
-		android:text="@string/data_load" />
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/ivFooterIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp" />
+
+    <TextView
+        android:id="@+id/tvFooterText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/data_load"
+        android:textSize="20sp" />
 </LinearLayout>

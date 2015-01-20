@@ -3,113 +3,122 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:orientation="vertical" >
-    
-	<LinearLayout 
-	    android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	android:background="#FFFFFF"
-    	android:orientation="horizontal" >
-    	<ImageView 
-	    	android:id="@+id/ivBack"
-	    	android:layout_margin="20dp"
-	    	android:layout_width="30dp"
-			android:layout_height="30dp"
-			android:src="@drawable/ic_menu_back" />
-	</LinearLayout>
-    
-		<TextView 
-		   	android:text="@string/inputs"
-		   	android:textSize="8pt"
-		   	android:layout_marginTop="20dp"
-		   	android:layout_marginLeft="30dp"
-		   	android:layout_marginBottom="5dp"
-		   	android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
-		
-		<LinearLayout 
-		    android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"
-	    	android:background="#FFFFFF"
-	    	android:orientation="horizontal" >
-			<TextView 
-			   	android:id="@+id/tvSumIn"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="15dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-			<com.w1.merchant.android.viewextended.TextViewRouble
-			   	android:id="@+id/tvSumInRubl"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="5dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-		</LinearLayout>
-			
-		<LinearLayout 
-		    android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"
-	    	android:background="#FFFFFF"
-	    	android:orientation="horizontal" >	
-			<TextView 
-			   	android:id="@+id/tvComisIn"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="15dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-			<com.w1.merchant.android.viewextended.TextViewRouble
-			   	android:id="@+id/tvComisInRubl"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="5dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-		</LinearLayout>
-			
-		<TextView 
-		   	android:text="@string/outputs"
-		   	android:textSize="8pt"
-		   	android:layout_marginTop="20dp"
-		   	android:layout_marginLeft="30dp"
-		   	android:layout_marginBottom="5dp"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
-		
-		<LinearLayout 
-		    android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"
-	    	android:background="#FFFFFF"
-	    	android:orientation="horizontal" >
-			<TextView 
-			   	android:id="@+id/tvSumOut"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="15dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-			<com.w1.merchant.android.viewextended.TextViewRouble
-			   	android:id="@+id/tvSumOutRubl"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="5dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-		</LinearLayout>	
-		
-		<LinearLayout 
-		    android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"
-	    	android:background="#FFFFFF"
-	    	android:orientation="horizontal" >
-			<TextView 
-			   	android:id="@+id/tvComisOut"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="15dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-			<com.w1.merchant.android.viewextended.TextViewRouble
-			   	android:id="@+id/tvComisOutRubl"
-			   	android:textSize="8pt"
-			   	android:layout_marginLeft="5dp"
-			   	android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-		</LinearLayout>
-		
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="20dp"
+            android:src="@drawable/ic_menu_back" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/inputs"
+        android:textSize="8pt" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvSumIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="8pt" />
+
+        <com.w1.merchant.android.viewextended.TextViewRouble
+            android:id="@+id/tvSumInRubl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="8pt" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvComisIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="8pt" />
+
+        <com.w1.merchant.android.viewextended.TextViewRouble
+            android:id="@+id/tvComisInRubl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="8pt" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/outputs"
+        android:textSize="8pt" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvSumOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="8pt" />
+
+        <com.w1.merchant.android.viewextended.TextViewRouble
+            android:id="@+id/tvSumOutRubl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="8pt" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvComisOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="8pt" />
+
+        <com.w1.merchant.android.viewextended.TextViewRouble
+            android:id="@+id/tvComisOutRubl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="8pt" />
+    </LinearLayout>
+
 </LinearLayout>

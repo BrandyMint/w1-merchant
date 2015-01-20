@@ -4,27 +4,27 @@
     android:layout_width="70dp"
     android:layout_height="wrap_content"
     android:alpha="0.7"
-    android:background="@drawable/rectangle_gray" >
-    
+    android:background="@drawable/rectangle_gray">
+
     <TextView
         android:id="@+id/tvContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="2dp"
         android:textSize="12sp" />
-    
+
     <com.w1.merchant.android.viewextended.TextViewRouble
-	    android:id="@+id/tvRubl" 
-	    android:layout_toRightOf="@+id/tvContent"
-	    android:layout_marginLeft="2dp"
-	    android:layout_marginRight="5dp"
-	    android:layout_marginTop="4dp"
-	    android:textSize="6pt"
-	    tools:text="C"
-	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-    
+        android:id="@+id/tvRubl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@+id/tvContent"
+        android:textSize="6pt"
+        tools:text="C" />
+
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"

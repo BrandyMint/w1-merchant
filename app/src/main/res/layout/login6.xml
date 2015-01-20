@@ -3,128 +3,128 @@
     android:id="@+id/rlMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff" >
-    
-	<ImageView
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:src="@drawable/back_top" />
-	
-	<ProgressBar
-	    android:id="@+id/pbLogin"
-	    android:layout_alignParentRight="true"
-	    android:visibility="invisible"
-	    android:layout_margin="5dp"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content" />
-	
-	<RelativeLayout 
-	    android:id="@+id/rlCenter"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" >
-	
-		<ImageView 
-		    android:id="@+id/ivLogo"
-			android:layout_width="100dp"
-			android:layout_height="70dp"
-			android:layout_centerHorizontal="true"
-			android:layout_marginTop="100dp"
-			android:src="@drawable/logo_black" />
-	
-		<TextView
-			android:id="@+id/tvLogoText"
-			android:layout_centerHorizontal="true"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/ivLogo"
-			android:layout_marginTop="10dp"
-			android:textSize="16pt"
-			android:text="@string/logo_text" />
-		
-		<!-- Логин -->
-		<ImageView 
-		    android:id="@+id/ivLogin"
-		    android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/tvLogoText"
-			android:layout_marginTop="17dp"
-			android:layout_marginLeft="20dp"
-			android:src="@drawable/login" />
-		    
-		<AutoCompleteTextView
-		    android:id="@+id/actvLogin"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_below="@+id/tvLogoText"
-		    android:layout_marginRight="20dp"
-		    android:layout_marginTop="10dp"
-		    android:layout_marginLeft="5dp"
-		    android:layout_toRightOf="@+id/ivLogin"
-		    android:hint="@string/login"
-		    android:inputType="text" />
-		
-		<ImageView 
-		    android:id="@+id/ivDelete"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/tvLogoText"
-			android:layout_alignParentRight="true"
-			android:layout_marginTop="10dp"
-			android:layout_marginRight="20dp"
-			android:src="@android:drawable/ic_menu_close_clear_cancel" />
-		
-		<!-- Пароль -->	
-		<ImageView 
-		    android:id="@+id/ivPassword"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/actvLogin"
-			android:layout_marginTop="22dp"
-			android:layout_marginLeft="20dp"
-			android:src="@drawable/password" />
-		
-		<EditText 
-			android:id="@+id/etPassword"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/actvLogin"
-			android:layout_toRightOf="@+id/ivPassword"
-			android:layout_marginTop="15dp"
-			android:layout_marginRight="20dp"
-			android:layout_marginLeft="5dp"
-			android:inputType="textPassword"
-			android:hint="@string/password"	/>
-		
-		<TextView
-			android:id="@+id/tvForgot"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/actvLogin"
-			android:layout_alignParentRight="true"
-			android:layout_marginRight="20dp"
-			android:layout_marginTop="22dp"
-			android:textColor="#f00"
-			android:clickable="true"
-			android:text="@string/forgot" />
-			
-		<TextView
-			android:id="@+id/tvAuth"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:layout_marginTop="30dp"
-			android:layout_below="@+id/etPassword"
-			android:textSize="12pt"
-			android:textColor="#E0E0E0"
-			android:text="@string/authorization" />
-	</RelativeLayout>
-		
-	<ImageView
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/rlCenter"
-	    android:src="@drawable/back_bottom" />
-	
+    android:background="#fff">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/back_top" />
+
+    <ProgressBar
+        android:id="@+id/pbLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:visibility="invisible" />
+
+    <RelativeLayout
+        android:id="@+id/rlCenter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="100dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/logo_black" />
+
+        <TextView
+            android:id="@+id/tvLogoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivLogo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/logo_text"
+            android:textSize="16pt" />
+
+        <!-- Логин -->
+        <ImageView
+            android:id="@+id/ivLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLogoText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="17dp"
+            android:src="@drawable/login" />
+
+        <AutoCompleteTextView
+            android:id="@+id/actvLogin"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLogoText"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/ivLogin"
+            android:hint="@string/login"
+            android:inputType="text" />
+
+        <ImageView
+            android:id="@+id/ivDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tvLogoText"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+        <!-- Пароль -->
+        <ImageView
+            android:id="@+id/ivPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/actvLogin"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="22dp"
+            android:src="@drawable/password" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/actvLogin"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/ivPassword"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/tvForgot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/actvLogin"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="22dp"
+            android:clickable="true"
+            android:text="@string/forgot"
+            android:textColor="#f00" />
+
+        <TextView
+            android:id="@+id/tvAuth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etPassword"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="@string/authorization"
+            android:textColor="#E0E0E0"
+            android:textSize="12pt" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlCenter"
+        android:src="@drawable/back_bottom" />
+
 </RelativeLayout>
 

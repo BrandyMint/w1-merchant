@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:tools="http://schemas.android.com/tools"
-	 android:id="@+id/RelativeLayout1"
-	 android:layout_width="match_parent"
-	 android:layout_height="match_parent"
-	 android:orientation="vertical">
-	 <com.w1.merchant.android.viewextended.TextViewRobotoLight
-		 android:id="@+id/tvName"
-		 tools:text="12345"
-		 android:layout_width="wrap_content"
-		 android:layout_height="wrap_content"
-		 android:textColor="@android:color/white"
-		 android:textSize="20pt"
-		 android:layout_centerInParent="true">
-	</com.w1.merchant.android.viewextended.TextViewRobotoLight>
-	
-	<com.w1.merchant.android.viewextended.TextViewRouble
-		 android:id="@+id/tvRubl"
-		 tools:text="B"
-		 android:layout_toRightOf="@+id/tvName"
-		 android:paddingTop="21dp"
-		 android:paddingLeft="5dp"
-		 android:layout_width="wrap_content"
-		 android:layout_height="wrap_content"
-		 android:textColor="@android:color/white"
-		 android:textSize="20pt" >
-	</com.w1.merchant.android.viewextended.TextViewRouble>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.w1.merchant.android.viewextended.TextViewRobotoLight
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/white"
+        android:textSize="20pt"
+        tools:text="12345"></com.w1.merchant.android.viewextended.TextViewRobotoLight>
+
+    <com.w1.merchant.android.viewextended.TextViewRouble
+        android:id="@+id/tvRubl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tvName"
+        android:paddingLeft="5dp"
+        android:paddingTop="21dp"
+        android:textColor="@android:color/white"
+        android:textSize="20pt"
+        tools:text="B"></com.w1.merchant.android.viewextended.TextViewRouble>
 </RelativeLayout>

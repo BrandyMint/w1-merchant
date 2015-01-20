@@ -22,8 +22,8 @@
 
             <RadioButton
                 android:id="@+id/rbPaid"
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:button="@null"
                 android:gravity="center"
                 android:minHeight="33dip"
@@ -34,8 +34,8 @@
 
             <RadioButton
                 android:id="@+id/rbNotPaid"
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:button="@null"
                 android:gravity="center"
                 android:minHeight="33dip"
@@ -46,8 +46,8 @@
 
             <RadioButton
                 android:id="@+id/rbPartially"
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:button="@null"
                 android:gravity="center"
                 android:minHeight="33dip"
