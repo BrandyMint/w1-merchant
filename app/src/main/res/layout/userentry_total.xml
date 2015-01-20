@@ -38,7 +38,7 @@
 			   	android:layout_marginLeft="15dp"
 			   	android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />
-			<ru.bokus.w1.ViewExtended.TextViewRouble 
+			<com.w1.merchant.android.viewextended.TextViewRouble
 			   	android:id="@+id/tvSumInRubl"
 			   	android:textSize="8pt"
 			   	android:layout_marginLeft="5dp"
@@ -57,7 +57,7 @@
 			   	android:layout_marginLeft="15dp"
 			   	android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />
-			<ru.bokus.w1.ViewExtended.TextViewRouble 
+			<com.w1.merchant.android.viewextended.TextViewRouble
 			   	android:id="@+id/tvComisInRubl"
 			   	android:textSize="8pt"
 			   	android:layout_marginLeft="5dp"
@@ -85,7 +85,7 @@
 			   	android:layout_marginLeft="15dp"
 			   	android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />
-			<ru.bokus.w1.ViewExtended.TextViewRouble 
+			<com.w1.merchant.android.viewextended.TextViewRouble
 			   	android:id="@+id/tvSumOutRubl"
 			   	android:textSize="8pt"
 			   	android:layout_marginLeft="5dp"
@@ -104,7 +104,7 @@
 			   	android:layout_marginLeft="15dp"
 			   	android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />
-			<ru.bokus.w1.ViewExtended.TextViewRouble 
+			<com.w1.merchant.android.viewextended.TextViewRouble
 			   	android:id="@+id/tvComisOutRubl"
 			   	android:textSize="8pt"
 			   	android:layout_marginLeft="5dp"

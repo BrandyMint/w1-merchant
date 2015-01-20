@@ -27,7 +27,7 @@
 			android:layout_gravity="center_horizontal"
 			android:src="@drawable/invoices_ok" />
 			
-		<ru.bokus.w1.ViewExtended.TextViewRouble 
+		<com.w1.merchant.android.viewextended.TextViewRouble
 		    	android:id="@+id/tvConfirmText"
 		    	android:gravity="center_horizontal"
 		    	android:textSize="10pt"

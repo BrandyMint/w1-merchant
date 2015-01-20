@@ -6,7 +6,7 @@
 	 android:layout_width="match_parent"
 	 android:layout_height="match_parent"
 	 android:orientation="vertical">
-	 <ru.bokus.w1.ViewExtended.TextViewRobotoLight
+	 <com.w1.merchant.android.viewextended.TextViewRobotoLight
 		 android:id="@+id/tvName"
 		 tools:text="12345"
 		 android:layout_width="wrap_content"
@@ -14,9 +14,9 @@
 		 android:textColor="@android:color/white"
 		 android:textSize="20pt"
 		 android:layout_centerInParent="true">
-	</ru.bokus.w1.ViewExtended.TextViewRobotoLight>
+	</com.w1.merchant.android.viewextended.TextViewRobotoLight>
 	
-	<ru.bokus.w1.ViewExtended.TextViewRouble
+	<com.w1.merchant.android.viewextended.TextViewRouble
 		 android:id="@+id/tvRubl"
 		 tools:text="B"
 		 android:layout_toRightOf="@+id/tvName"
@@ -26,5 +26,5 @@
 		 android:layout_height="wrap_content"
 		 android:textColor="@android:color/white"
 		 android:textSize="20pt" >
-	</ru.bokus.w1.ViewExtended.TextViewRouble>
+	</com.w1.merchant.android.viewextended.TextViewRouble>
 </RelativeLayout>

@@ -101,7 +101,7 @@
 		    	android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />
 		
-		<ru.bokus.w1.ViewExtended.EditTextRouble 
+		<com.w1.merchant.android.viewextended.EditTextRouble
 		    	android:id="@+id/etSum"
 		    	android:hint="@string/enter_amount"
 		    	android:textSize="10pt"

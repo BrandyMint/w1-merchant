@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="#fff">
 
-        <ru.bokus.w1.ViewExtended.SegmentedRadioGroup
+        <com.w1.merchant.android.viewextended.SegmentedRadioGroup
             android:id="@+id/srgInvoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:text="@string/partially"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/radio_colors" />
-        </ru.bokus.w1.ViewExtended.SegmentedRadioGroup>
+        </com.w1.merchant.android.viewextended.SegmentedRadioGroup>
     </RelativeLayout>
 
     <LinearLayout

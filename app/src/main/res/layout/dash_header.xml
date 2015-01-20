@@ -51,7 +51,7 @@
 	    android:background="#000000"
 	    android:orientation="horizontal" >
 	    	    
-			<ru.bokus.w1.ViewExtended.SegmentedRadioGroup
+			<com.w1.merchant.android.viewextended.SegmentedRadioGroup
 	            android:id="@+id/srgDash"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
 					android:gravity="center"
 					android:textAppearance="?android:attr/textAppearanceSmall"
 					android:textColor="@color/radio_colors" />
-			</ru.bokus.w1.ViewExtended.SegmentedRadioGroup>
+			</com.w1.merchant.android.viewextended.SegmentedRadioGroup>
 	</LinearLayout>
 	
 	<TextView 

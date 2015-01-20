@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "ru.bokus.w1.activity"
+        applicationId "com.w1.merchant.android"
         minSdkVersion 14
         targetSdkVersion 21
     }

@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:textSize="12sp" />
     
-    <ru.bokus.w1.ViewExtended.TextViewRouble
+    <com.w1.merchant.android.viewextended.TextViewRouble
 	    android:id="@+id/tvRubl" 
 	    android:layout_toRightOf="@+id/tvContent"
 	    android:layout_marginLeft="2dp"
