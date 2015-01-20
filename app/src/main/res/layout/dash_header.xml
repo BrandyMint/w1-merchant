@@ -60,6 +60,8 @@
 	            android:orientation="horizontal" >
 	
 				<RadioButton android:id="@+id/rbHour"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
 					android:minWidth="100dip"
 					android:minHeight="33dip"
 					android:text="@string/hour_24"
@@ -68,6 +70,8 @@
 					android:gravity="center"
 					android:textColor="@color/radio_colors" />
 				<RadioButton android:id="@+id/rbWeek"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
 					android:minWidth="100dip"
 					android:minHeight="33dip"
 					android:text="@string/week"
@@ -76,6 +80,8 @@
 					android:textAppearance="?android:attr/textAppearanceSmall"
 					android:textColor="@color/radio_colors" />
 				<RadioButton android:id="@+id/rbMonth"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
 					android:minWidth="100dip"
 					android:minHeight="33dip"
 					android:text="@string/month"

@@ -16,27 +16,7 @@
 
 package ru.bokus.w1.Activity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import ru.bokus.w1.Extra.DashSupport;
-import ru.bokus.w1.Extra.DialogExit;
-import ru.bokus.w1.Extra.InvoiceSupport;
-import ru.bokus.w1.Extra.UserEntrySupport;
-import ru.bokus.w1.Extra.ViewPagerAdapter;
-import ru.bokus.w1.Request.GETBalance;
-import ru.bokus.w1.Request.GETProfile;
-import ru.bokus.w1.Request.GETTemplateList;
-import ru.bokus.w1.Request.HttpDELETE;
-import ru.bokus.w1.Request.JSONParsing;
-import ru.bokus.w1.Request.Urls;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -75,6 +55,28 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ru.bokus.w1.Extra.DashSupport;
+import ru.bokus.w1.Extra.DialogExit;
+import ru.bokus.w1.Extra.InvoiceSupport;
+import ru.bokus.w1.Extra.UserEntrySupport;
+import ru.bokus.w1.Extra.ViewPagerAdapter;
+import ru.bokus.w1.Request.GETBalance;
+import ru.bokus.w1.Request.GETProfile;
+import ru.bokus.w1.Request.GETTemplateList;
+import ru.bokus.w1.Request.HttpDELETE;
+import ru.bokus.w1.Request.JSONParsing;
+import ru.bokus.w1.Request.Urls;
 
 public class MenuActivity extends FragmentActivity {
     private DrawerLayout mDrawerLayout;
@@ -507,7 +509,7 @@ public class MenuActivity extends FragmentActivity {
 		        month0 = today.get(Calendar.MONTH);
 		        year0 = today.get(Calendar.YEAR);
 		        
-				View popupView = layoutInflater.inflate(R.layout.popup_date, null);
+				@SuppressLint("InflateParams") View popupView = layoutInflater.inflate(R.layout.popup_date, null);
 				final PopupWindow popupWindow = new PopupWindow(popupView,
 						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 				dp1 = (DatePicker) popupView.findViewById(R.id.dp1);
@@ -676,7 +678,7 @@ public class MenuActivity extends FragmentActivity {
     //ответ список шаблонов
     public void addTemplateList(ArrayList<String[]> newData) {
     	dataTemplate = newData;
-    	((TemplateFragment) fragmentTemplate).setAdapter();
+    	fragmentTemplate.setAdapter();
 	}
     
     //ответ итоги по выписке Inc
@@ -761,18 +763,18 @@ public class MenuActivity extends FragmentActivity {
     	if (!(newData == null)) {
 	    	if (currentPage == 1) {
 	    		dataUserEntry = newData;
-	    		((UserEntryFragment) fragmentUserEntry).createListView();
+	    		fragmentUserEntry.createListView();
 	    	} else {
 				for (int j = 0; j < newData.size(); j++) {
 					dataUserEntry.add(newData.get(j));
-		    		((UserEntryFragment) fragmentUserEntry)
+		    		fragmentUserEntry
 		    			.sAdapter.notifyDataSetChanged();
 		    	}
-				((UserEntryFragment) fragmentUserEntry)
+				fragmentUserEntry
 				.setHeaderText(getString(R.string.data_load));
 	    	}
     	} else {
-    		((UserEntryFragment) fragmentUserEntry).removeFooter();
+    		fragmentUserEntry.removeFooter();
     	}
     }
     
@@ -783,20 +785,20 @@ public class MenuActivity extends FragmentActivity {
     		if (!(newData.size() == 0)) {
 		    	if (currentPage == 1) {
 		    		dataDash = newData;
-		    		((DashFragment) fragmentDash).createListView();
+		    		fragmentDash.createListView();
 		    	} else {
 					for (int j = 0; j < newData.size(); j++) {
 						dataDash.add(newData.get(j));
-			    		((DashFragment) fragmentDash).sAdapter.notifyDataSetChanged();
+			    		fragmentDash.sAdapter.notifyDataSetChanged();
 			    	}
-					((DashFragment) fragmentDash)
+					fragmentDash
 					.setHeaderText(getString(R.string.data_load));
 		    	}
     		} else {
-        		((DashFragment) fragmentDash).removeFooter();
+        		fragmentDash.removeFooter();
         	}
     	} else {
-    		((DashFragment) fragmentDash).removeFooter();
+    		fragmentDash.removeFooter();
     	}
 	}
     
@@ -805,25 +807,25 @@ public class MenuActivity extends FragmentActivity {
     	if (!(newData.size() == 0)) {
 	    	if (currentPage == 1) {
 	    		dataInvoice = newData;
-	    		((InvoiceFragment) fragmentInvoice).createListView();
+	    		fragmentInvoice.createListView();
 	    	} else {
 				for (int j = 0; j < newData.size(); j++) {
 					dataInvoice.add(newData.get(j));
-		    		((InvoiceFragment) fragmentInvoice).sAdapter
+		    		fragmentInvoice.sAdapter
 		    			.notifyDataSetChanged();
 		    	}
-				((InvoiceFragment) fragmentInvoice)
+				fragmentInvoice
 				.setHeaderText(getString(R.string.data_load));
 	    	}
     	} else {
     		if (currentPage == 1) {
     			if (!(dataInvoice == null)) {
     			dataInvoice.clear();
-	    			((InvoiceFragment) fragmentInvoice).sAdapter
+	    			fragmentInvoice.sAdapter
 	    				.notifyDataSetChanged();
     			}
     		}
-    		((InvoiceFragment) fragmentInvoice).removeFooter();
+    		fragmentInvoice.removeFooter();
     	}
 	}
     
@@ -991,9 +993,9 @@ public class MenuActivity extends FragmentActivity {
     		percentMonth = "";
     	}
     	
-    	((DashFragment) fragmentDash).setViewPager();
-    	((DashFragment) fragmentDash).createPlot(dataPlotDayX, dataPlotDay);
-    	((DashFragment) fragmentDash).setPercent(percentDay);
+    	fragmentDash.setViewPager();
+    	fragmentDash.createPlot(dataPlotDayX, dataPlotDay);
+    	fragmentDash.setPercent(percentDay);
     	currentPlot = PLOT_24;
 	}
     

@@ -1,9 +1,10 @@
 package ru.bokus.w1.Extra;
 
-import ru.bokus.w1.Request.GETUserEntry;
-import ru.bokus.w1.Activity.R;
 import android.content.Context;
 import android.text.TextUtils;
+
+import ru.bokus.w1.Activity.R;
+import ru.bokus.w1.Request.GETUserEntry;
 
 public class UserEntrySupport {
 	Context mCtx;

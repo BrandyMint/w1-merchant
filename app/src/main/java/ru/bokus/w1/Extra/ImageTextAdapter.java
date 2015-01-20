@@ -1,9 +1,5 @@
 package ru.bokus.w1.Extra;
 
-import java.util.ArrayList;
-
-import ru.bokus.w1.Activity.MenuActivity;
-import ru.bokus.w1.Activity.R;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import ru.bokus.w1.Activity.MenuActivity;
+import ru.bokus.w1.Activity.R;
 
 //список шаблонов
 public class ImageTextAdapter extends BaseAdapter {
@@ -55,7 +56,7 @@ public class ImageTextAdapter extends BaseAdapter {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 			grid = inflater.inflate(R.layout.template_cell, parent, false);
 		} else {
-			grid = (View) convertView;
+			grid = convertView;
 		}
 
 		ImageView imageView = (ImageView) grid.findViewById(R.id.imagepart);

@@ -1,13 +1,6 @@
 package ru.bokus.w1.Activity;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import ru.bokus.w1.Extra.DashSupport;
-import ru.bokus.w1.Extra.MainVPAdapter;
-import ru.bokus.w1.Extra.MyMarkerView;
-import ru.bokus.w1.Extra.UserEntryAdapter;
-import ru.bokus.w1.ViewExtended.SegmentedRadioGroup;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -42,6 +35,15 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.OnChartGestureListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import ru.bokus.w1.Extra.DashSupport;
+import ru.bokus.w1.Extra.MainVPAdapter;
+import ru.bokus.w1.Extra.MyMarkerView;
+import ru.bokus.w1.Extra.UserEntryAdapter;
+import ru.bokus.w1.ViewExtended.SegmentedRadioGroup;
+
 public class DashFragment extends Fragment {
 
     private View parentView;
@@ -65,7 +67,8 @@ public class DashFragment extends Fragment {
 	LineChart mChart;
 	ImageView ivPercent;
 	
-	@Override
+	@SuppressLint("InflateParams")
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	parentView = inflater.inflate(R.layout.dashboard, container, false);
     	llFooter = (LinearLayout) inflater.inflate(R.layout.footer2, null);

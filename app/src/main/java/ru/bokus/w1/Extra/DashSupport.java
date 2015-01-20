@@ -1,10 +1,11 @@
 package ru.bokus.w1.Extra;
 
+import android.content.Context;
+
+import ru.bokus.w1.Activity.R;
 import ru.bokus.w1.Request.GETUserEntryDash;
 import ru.bokus.w1.Request.GETUserEntryPeriod;
 import ru.bokus.w1.Request.GETUserEntryTotal;
-import ru.bokus.w1.Activity.R;
-import android.content.Context;
 
 public class DashSupport {
 	Context mCtx;

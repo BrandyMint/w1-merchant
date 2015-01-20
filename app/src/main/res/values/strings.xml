@@ -14,7 +14,7 @@
   limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="menu_array">
         <item>Dashboard</item>
         <item>Statement</item>
@@ -25,12 +25,8 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Add</string>
-    <string name="app_not_available">Sorry, there\'s no web browser available</string>
     <string name="output">Withdrawal</string>
-    <string name="user_entry">Statement</string>
-    <string name="invoice">Invoices</string>
     <string name="output_cash">Withdrawal</string>
-    <string name="exit">Log out</string>
     <string name="app_name">Merchant W1</string>
     <string name="login">Telephone or e-mail</string>
 	<string name="password">Password</string>
@@ -49,12 +45,10 @@
 	<string name="sum">Amount</string>
 	<string name="enter_amount">Input amount</string>
 	<string name="error_field">The input field must not be empty!</string>
-	<string name="error_empity">The input field must not be empty:</string>
 	<string name="entrance">Inpayment</string>
 	<string name="back">Back</string>
 	<string name="account_sum">Invoice in amount of</string>
 	<string name="bill_success"> issued successfully</string>
-	<string name="card_number">Card number</string>
 	<string name="sum_commis">Amount including commission</string>
 	<string name="sum_output">Amount to withdraw</string>
 	<string name="remove">Withdraw</string>
@@ -64,8 +58,6 @@
 	<string name="month">month</string>
 	<string name="account_number">Invoice number</string>
 	<string name="status">State</string>
-	<string name="data_post">Send data</string>
-	<string name="data_get">Obtain data</string>
 	<string name="user_not_found">Invalid e-mail or telephone</string>
 	<string name="bad_password">Invalid password</string>
 	<string name="forgot">Send</string>
@@ -74,7 +66,7 @@
 	<string name="web_vers">You may create\nwithdrawal templates\nusing web-version\nof Checkout</string>
 	<string name="move_on">Proceed</string>
 	<string name="data_load">Data will be load</string>
-	<string name="loading">Loading...</string>
+	<string name="loading">Loading…</string>
 	<string name="inputs">Incoming funds</string>
 	<string name="outputs">Outgoing funds</string>
 	<string name="sum_period">Amount for a period</string>
@@ -84,7 +76,7 @@
 	<string name="go_back">Back</string>
 	<string name="end_date">End date</string>
 	<string name="cancel">Cancel</string>
-	<string name="comis_sum">Commision is %1$s, amount starting from %2$s to %3$s</string>
+	<string name="comis_sum">Commission is %1$s, amount starting from %2$s to %3$s</string>
 	<string name="wo_comis">Commission-free amount from %1$s to %2$s</string>
 	<string name="payment_one">The payment will be made once %1$s at %2$s</string>
 	<string name="payment_begin">Payment will be made %1$s at %2$s, starting from %3$s</string>
@@ -95,7 +87,7 @@
 	<string name="daily">everyday</string>
 	<string name="weekly">every week</string>
 	<string name="monthly">every month</string>
-	<string name="yearly">every year</string>
+	<string name="yearly" tools:ignore="UnusedResources">every year</string>
 	<string name="on_">on %1$s</string>
 	<string name="monday">mondays</string>
 	<string name="tuesday">tuesdays</string>

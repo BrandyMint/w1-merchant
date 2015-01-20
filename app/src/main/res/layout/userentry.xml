@@ -21,6 +21,8 @@
 	            android:orientation="horizontal" >
 	
 				<RadioButton android:id="@+id/rbEntrance"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
 					android:minWidth="100dip"
 					android:minHeight="33dip"
 					android:text="@string/entrance"
@@ -29,6 +31,8 @@
 					android:gravity="center"
 					android:textColor="@color/radio_colors" />
 				<RadioButton android:id="@+id/rbOutput"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
 					android:minWidth="100dip"
 					android:minHeight="33dip"
 					android:text="@string/output"

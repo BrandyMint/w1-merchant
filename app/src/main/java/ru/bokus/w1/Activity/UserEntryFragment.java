@@ -1,8 +1,6 @@
 package ru.bokus.w1.Activity;
 
-import ru.bokus.w1.Extra.UserEntryAdapter;
-import ru.bokus.w1.Extra.UserEntrySupport;
-import ru.bokus.w1.ViewExtended.SegmentedRadioGroup;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +19,10 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import ru.bokus.w1.Extra.UserEntryAdapter;
+import ru.bokus.w1.Extra.UserEntrySupport;
+import ru.bokus.w1.ViewExtended.SegmentedRadioGroup;
+
 public class UserEntryFragment extends Fragment {
 
     private View parentView;
@@ -35,8 +37,9 @@ public class UserEntryFragment extends Fragment {
 	MenuActivity menuActivity;
 	Context context;
 	String token;
-	
-	@Override
+
+    @SuppressLint("InflateParams")
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         parentView = inflater.inflate(R.layout.userentry, container, false);
         lvUserEntry = (ListView) parentView.findViewById(R.id.lvStatement);

@@ -1,13 +1,13 @@
 package ru.bokus.w1.Extra;
 
-import ru.bokus.w1.Activity.LoginActivity;
-import ru.bokus.w1.Activity.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+
+import ru.bokus.w1.Activity.R;
 
 public class DialogNoInet extends DialogFragment implements OnClickListener{
 	
@@ -25,7 +25,7 @@ public class DialogNoInet extends DialogFragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (which) {
 	    case Dialog.BUTTON_POSITIVE:
-	    	((LoginActivity)getActivity()).finish();
+	    	getActivity().finish();
 	    	break;
 		}
 	}

@@ -1,11 +1,5 @@
 package ru.bokus.w1.Activity;
 
-import java.util.ArrayList;
-
-import ru.bokus.w1.Request.GETProvider;
-import ru.bokus.w1.Request.GETTemplate;
-import ru.bokus.w1.Request.JSONParsing;
-import ru.bokus.w1.ViewExtended.EditTextRouble;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import ru.bokus.w1.Request.GETProvider;
+import ru.bokus.w1.Request.GETTemplate;
+import ru.bokus.w1.Request.JSONParsing;
+import ru.bokus.w1.ViewExtended.EditTextRouble;
 
 public class EditTemplate extends Activity {
 

@@ -1,5 +1,12 @@
 package ru.bokus.w1.Request;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -11,17 +18,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import ru.bokus.w1.Activity.MenuActivity;
 import ru.bokus.w1.Activity.R;
-import android.content.Context;
-import android.text.TextUtils;
 
 public class JSONParsing {
 	
@@ -1021,7 +1023,7 @@ public class JSONParsing {
 					calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1, 
 							Integer.parseInt(day), Integer.parseInt(hour),
 							Integer.parseInt(minute), Integer.parseInt(second));
-					SimpleDateFormat formatter = new SimpleDateFormat("HH:mm"); 
+					SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.US);
 					dateOut = formatter.format(calendar.getTime());				
 					return dateOut;
 	}

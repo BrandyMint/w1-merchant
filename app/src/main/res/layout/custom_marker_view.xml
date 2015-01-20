@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="70dp"
     android:layout_height="wrap_content"
     android:alpha="0.7"
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:layout_centerHorizontal="true"
-        android:textSize="12dp" />
+        android:textSize="12sp" />
     
     <ru.bokus.w1.ViewExtended.TextViewRouble
 	    android:id="@+id/tvRubl" 
@@ -20,7 +21,7 @@
 	    android:layout_marginRight="5dp"
 	    android:layout_marginTop="4dp"
 	    android:textSize="6pt"
-	    android:text="C"
+	    tools:text="C"
 	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
     
@@ -30,6 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvContent"
         android:layout_centerHorizontal="true"
-        android:textSize="12dp" />
+        android:textSize="12sp" />
 
 </RelativeLayout>

@@ -14,7 +14,7 @@
   limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="menu_array">
         <item>Дэшборд</item>
         <item>Выписка</item>
@@ -25,12 +25,8 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Добавить</string>
-    <string name="app_not_available">Sorry, there\'s no web browser available</string>
     <string name="output">Вывод</string>
-    <string name="user_entry">Выписка</string>
-    <string name="invoice">Счета</string>
     <string name="output_cash">Вывод средств</string>
-    <string name="exit">Выход</string>
     <string name="app_name">Касса W1</string>
     <string name="login">Телефон или емаил</string>
 	<string name="password">Пароль</string>
@@ -49,12 +45,10 @@
 	<string name="sum">Сумма</string>
 	<string name="enter_amount">Введите сумму</string>
 	<string name="error_field">Поле ввода не должно быть пустым!</string>
-	<string name="error_empity">Поля ввода не должны быть пустыми:</string>
 	<string name="entrance">Поступление</string>
 	<string name="back">Вернуться</string>
 	<string name="account_sum">Счет на сумму</string>
 	<string name="bill_success"> успешно выставлен</string>
-	<string name="card_number">Номер карты</string>
 	<string name="sum_commis">Сумма с комиссией</string>
 	<string name="sum_output">Сумма к выводу</string>
 	<string name="remove">Вывести</string>
@@ -64,8 +58,6 @@
 	<string name="month">месяц</string>
 	<string name="account_number">Счет номер</string>
 	<string name="status">Статус</string>
-	<string name="data_post">Отправляем данные</string>
-	<string name="data_get">Получаем данные</string>
 	<string name="user_not_found">Не корректный емайл или телефон</string>
 	<string name="bad_password">Пароль пользователя не соответствует</string>
 	<string name="forgot">Забыл</string>
@@ -74,7 +66,7 @@
 	<string name="web_vers">Шаблоны\nвывода\nсоздаются на\nвеб-версии</string>
 	<string name="move_on">Перейти</string>
 	<string name="data_load">Данные будут загружены</string>
-	<string name="loading">Загрузка...</string>
+	<string name="loading">Загрузка…</string>
 	<string name="inputs">Входящие</string>
 	<string name="outputs">Исходящие</string>
 	<string name="sum_period">сумма за период</string>
@@ -95,7 +87,7 @@
 	<string name="daily">ежедневно</string>
 	<string name="weekly">еженедельно</string>
 	<string name="monthly">ежемесячно</string>
-	<string name="yearly">ежегодно</string>
+	<string name="yearly" tools:ignore="UnusedResources">ежегодно</string>
 	<string name="on_">по %1$s</string>
 	<string name="monday">понедельникам</string>
 	<string name="tuesday">вторникам</string>

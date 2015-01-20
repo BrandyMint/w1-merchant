@@ -1,17 +1,17 @@
 package ru.bokus.w1.Extra;
 
-import java.util.ArrayList;
-
-import ru.bokus.w1.ViewExtended.TextViewRobotoLight;
-import ru.bokus.w1.ViewExtended.TextViewRouble;
-import ru.bokus.w1.Activity.R;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
+
+import ru.bokus.w1.Activity.R;
+import ru.bokus.w1.ViewExtended.TextViewRobotoLight;
+import ru.bokus.w1.ViewExtended.TextViewRouble;
 
 //адаптер для ViewPager с поступлениями за день, неделю, месяц
 public class MainVPAdapter extends PagerAdapter {
@@ -34,7 +34,7 @@ public class MainVPAdapter extends PagerAdapter {
  
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((RelativeLayout) object);
+        return view == object;
     }
  
     @Override
@@ -58,13 +58,13 @@ public class MainVPAdapter extends PagerAdapter {
 	        tvRubl.setText("");
         }
         
-        ((ViewPager) container).addView(itemView);
+        container.addView(itemView);
  
         return itemView;
     }
  
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((RelativeLayout) object);
+        container.removeView((RelativeLayout) object);
     }
 }

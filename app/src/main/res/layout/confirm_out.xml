@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -47,12 +48,12 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_marginTop="20dp"
-		        android:text="1234"
+		        tools:text="1234"
 		        android:textSize="28pt" />
 
 			<ru.bokus.w1.ViewExtended.TextViewRouble 
 		    	android:textSize="28pt"
-		    	android:text="B"
+		    	tools:text="B"
 		    	android:layout_marginTop="20dp"
 		    	android:layout_marginLeft="10dp"
 				android:layout_width="wrap_content"
