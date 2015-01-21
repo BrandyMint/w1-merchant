@@ -21,10 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.request.JSONParsing;
 import com.w1.merchant.android.request.POSTInvoices;
-import com.w1.merchant.android.request.Urls;
 import com.w1.merchant.android.viewextended.EditTextRouble;
 
 import java.util.ArrayList;
@@ -140,7 +140,7 @@ public class AddInvoice extends Activity {
 					ed.apply();
 					
 					pbInvoice.setVisibility(View.VISIBLE);
-					requestData[0] = Urls.URL + Urls.URL_NEW_INVOICE;
+					requestData[0] = Constants.URL_NEW_INVOICE;
 					requestData[1] = token; 
 	      			requestData[2] = etSum.getText().toString().replaceAll("C", "");
 	      			requestData[3] = actvDescr.getText().toString();

@@ -38,7 +38,6 @@ import com.w1.merchant.android.request.JSONParsing;
 import com.w1.merchant.android.request.POSTOtp;
 import com.w1.merchant.android.request.POSTPasswordRestore;
 import com.w1.merchant.android.request.POSTSession;
-import com.w1.merchant.android.request.Urls;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -216,8 +215,7 @@ public class LoginActivity extends Activity {
 						ed.putStringSet("logins", newLogin);
 						ed.apply();
 						//создание сессии по логину и паролю
-						requestData[0] = Urls.URL + Urls.URL_SESSION;
-						
+						requestData[0] = Constants.URL_SESSION;
 						requestData[1] = actvLogin.getText().toString(); 
 	          			requestData[2] = etPassword.getText().toString();
 	          			postSession = new POSTSession(activity);

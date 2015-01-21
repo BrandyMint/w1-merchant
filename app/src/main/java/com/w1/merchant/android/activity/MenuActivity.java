@@ -67,7 +67,6 @@ import com.w1.merchant.android.request.GETProfile;
 import com.w1.merchant.android.request.GETTemplateList;
 import com.w1.merchant.android.request.HttpDELETE;
 import com.w1.merchant.android.request.JSONParsing;
-import com.w1.merchant.android.request.Urls;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -749,7 +748,7 @@ public class MenuActivity extends FragmentActivity {
     
     //закрытие сессии
     void closeSession() {
-    	requestData[0] = Urls.URL + Urls.URL_CLOSE_SESSION;
+    	requestData[0] = Constants.URL_CLOSE_SESSION;
     	requestData[1] = token;
     	httpDELETE = new HttpDELETE(mContext);
 		httpDELETE.execute(requestData);
