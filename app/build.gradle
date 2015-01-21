@@ -1,4 +1,20 @@
 apply plugin: 'com.android.application'
+apply plugin: 'testfairy'
+
+
+def getRevision = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--always'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+ext.private = new Properties()
+if (rootProject.file('private.properties').exists()) {
+    ext.private.load(new FileInputStream(rootProject.file('private.properties')));
+}
 
 android {
     compileSdkVersion 21
@@ -8,14 +24,67 @@ android {
         applicationId "com.w1.merchant.android"
         minSdkVersion 14
         targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_7
+            targetCompatibility JavaVersion.VERSION_1_7
+        }
+
+        buildConfigField "String", "API_SERVER_ADDRESS",
+                project.ext.private.getProperty("ApiServerAddress",
+                        "\"https://api.w1.ru/OpenApi/\"")
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('../w1merchant.keystore')
+            storePassword 'android'
+            keyAlias 'debug'
+            keyPassword 'android'
+        }
+        beta {
+            storeFile file('../w1merchant.keystore')
+            storePassword 'android'
+            keyAlias 'beta'
+            keyPassword 'android'
+        }
+        release
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "dbg-" + getRevision()
+            resValue "string", "app_name", "W1 Merchant dbg" + getRevision()
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
+        }
+        beta {
+            applicationIdSuffix ".beta";
+            versionNameSuffix "b-" + getRevision()
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-aviary.pro'
+            signingConfig signingConfigs.beta
         }
     }
+
+    lintOptions {
+        disable 'RtlHardcoded'
+    }
+
+    testfairyConfig {
+        apiKey "d4c4e1c7be190a08909ce36747839e2ca45e74a2"
+        autoUpdate true
+        notify true
+        iconWatermark true
+        video "off";
+    }
+
 }
 
 dependencies {
@@ -23,4 +92,13 @@ dependencies {
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+if (ext.private.getProperty("release.StoreFile") != null) {
+    android.signingConfigs['release'].storeFile = file(ext.private['release.StoreFile'])
+    android.signingConfigs['release'].storePassword = ext.private['release.StorePassword']
+    android.signingConfigs['release'].keyAlias = ext.private['release.KeyAlias']
+    android.signingConfigs['release'].keyPassword = ext.private['release.KeyPassword']
+} else {
+    android.buildTypes['release'].signingConfig = null
 }

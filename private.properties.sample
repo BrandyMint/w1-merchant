@@ -1,0 +1,11 @@
+#ApiServerAddress="https://api.w1.ru/OpenApi/"
+
+release.StoreFile=../w1merchant_release.keystore
+release.StorePassword=storePass
+release.KeyAlias=release
+release.KeyPassword=keyPass
+
+#beta.StoreFile=../w1mercant.keystore
+#beta.StorePassword=storePass
+#beta.KeyAlias=beta
+#beta.KeyPassword=keyPass

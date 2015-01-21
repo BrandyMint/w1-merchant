@@ -8,4 +8,5 @@ gen
 /build
 /local.properties
 /private.properties
+/w1merchant_release.keystore
 

@@ -27,7 +27,6 @@
     <string name="add">Добавить</string>
     <string name="output">Вывод</string>
     <string name="output_cash">Вывод средств</string>
-    <string name="app_name">Касса W1</string>
     <string name="login">Телефон или емаил</string>
 	<string name="password">Пароль</string>
 	<string name="logo_text">Для бизнеса</string>
