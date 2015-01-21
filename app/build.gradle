@@ -91,6 +91,7 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'org.quanqi:mpandroidchart:1.7.5' // TODO: заменить на PhiJay, когда тот выложит
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
