@@ -1,4 +1,6 @@
 #ApiServerAddress="https://api.w1.ru/OpenApi/"
+#ApiTestUser=""
+#ApiTestPass=""
 
 release.StoreFile=../w1merchant_release.keystore
 release.StorePassword=storePass

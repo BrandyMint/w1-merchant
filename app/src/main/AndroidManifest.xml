@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2013 The Android Open Source Project
 
@@ -12,62 +13,99 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.w1.merchant.android"
-    android:versionCode="1"
-    android:versionName="1.009">
+    package="com.w1.merchant.android" >
 
-	<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    
-    <application
-        android:name="com.w1.merchant.android.Application"
-        android:allowBackup="true"
-        android:label="@string/app_name"
-        android:icon="@mipmap/logo_head"
-        android:theme="@android:style/Theme.Holo.Light.DarkActionBar">
 
+    <uses-feature android:name="android.hardware.screen.portrait" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <application
+        android:name=".Application"
+        android:allowBackup="true"
+        android:icon="@mipmap/logo_head"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="com.w1.merchant.android.activity.LoginActivity"
+            android:name=".activity.LoginActivity"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/app_name">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<activity android:name="com.w1.merchant.android.activity.MenuActivity"
+        <activity
+            android:name=".activity.MenuActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.AddInvoice"
+        <activity
+            android:name=".activity.AddInvoice"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.ConfirmActivity"
+        <activity
+            android:name=".activity.ConfirmActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.ConfirmPayment"
+        <activity
+            android:name=".activity.ConfirmPayment"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.ConfirmOutActivity"
+        <activity
+            android:name=".activity.ConfirmOutActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.EditTemplate"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".activity.EditTemplate"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.Details"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".activity.Details"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.Captcha"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".activity.Captcha"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.w1.merchant.android.activity.UserEntryTotal"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".activity.UserEntryTotal"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".support.TicketListActivity"
+            android:label="@string/title_activity_ticket_list"
+            android:parentActivityName=".activity.MenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.w1.merchant.android.activity.MenuActivity" />
+        </activity>
+        <activity
+            android:name=".support.ConversationActivity"
+            android:label="@string/title_activity_conversation"
+            android:theme="@style/ConversationActivityTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:parentActivityName=".support.TicketListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.w1.merchant.android.support.TicketListActivity"/>
+        </activity>
+        <activity
+            android:name=".support.CreateTicketActivity"
+            android:label="@string/title_activity_create_ticket"
+            android:parentActivityName=".support.TicketListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.w1.merchant.android.support.TicketListActivity" />
         </activity>
     </application>
 

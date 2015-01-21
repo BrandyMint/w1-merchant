@@ -1,0 +1,82 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fadingEdge="none"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:requiresFadingEdge="none"
+        android:scrollbarStyle="outsideOverlay"
+        tools:context="ru.taaasty.ui.post.CreateTextPostFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/create_ticket_subject_hint"
+                android:inputType="textCapSentences|textEmailSubject"
+                android:lineSpacingMultiplier="1.25"
+                android:minHeight="48dp"
+                android:imeOptions="actionNext"
+                android:layout_marginBottom="16dp"
+                android:scrollHorizontally="false"
+                android:ellipsize="none"
+                android:textSize="32sp" >
+                <requestFocus/>
+            </EditText>
+
+            <EditText
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="@string/create_ticket_text_hint"
+                android:minLines="5"
+                android:inputType="textCapSentences|textMultiLine"
+                android:minHeight="48dp"
+                android:imeOptions="actionSend"
+                android:scrollHorizontally="false"
+                android:textSize="18sp"
+                android:paddingBottom="16dp" />
+
+            <ImageView
+                android:id="@+id/attached_image"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:scaleType="centerInside"
+                tools:ignore="ContentDescription"
+                android:layout_gravity="left"
+                android:adjustViewBounds="true" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        style="@android:style/Widget.Holo.ProgressBar.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        tools:visibility="visible" />
+
+</FrameLayout>

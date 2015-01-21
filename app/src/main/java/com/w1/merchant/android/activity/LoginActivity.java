@@ -21,7 +21,6 @@ import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,18 +28,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DialogNoInet;
 import com.w1.merchant.android.extra.DialogTimeout;
-import com.w1.merchant.android.extra.SoftKeyboard;
 import com.w1.merchant.android.request.JSONParsing;
 import com.w1.merchant.android.request.POSTOtp;
-import com.w1.merchant.android.request.POSTPasswordRestore;
 import com.w1.merchant.android.request.POSTSession;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,18 +45,12 @@ import java.util.Set;
 public class LoginActivity extends Activity {
 
 	TextView tvAuth, tvForgot, tvLogoText;
-	Button btnReg, btnAuth;
 	ImageView ivDelete;
 	Intent intent;
 	EditText etPassword;
 	POSTSession postSession;
 	POSTOtp postOtp;
-	POSTPasswordRestore postPasswordRestore;
 	String[] requestData = { "", "", "", "", "", "" };
-	public static HttpClient httpclient = new DefaultHttpClient();
-	String[] httpResult = { "", "" };
-	String httpResultStr; 
-	public Activity activity;
 	String token, userId;
 	public static Typeface w1Rouble;
 	public static Typeface tfRobotoLight;
@@ -77,7 +67,6 @@ public class LoginActivity extends Activity {
 	DialogFragment dlgNoInet;
 	DialogFragment dlgSessionTimeout;
 	RelativeLayout rlCenter, rlMain;
-	SoftKeyboard softKeyboard;
 	
 	private static final int ACT_MENU = 1;
 		
@@ -85,33 +74,10 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
-		//		WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.login6);
-		activity = this;
 		rlCenter = (RelativeLayout) findViewById(R.id.rlCenter);
 		rlMain = (RelativeLayout) findViewById(R.id.rlMain);
-		
-//		InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
-	     
-		/*
-		Instantiate and pass a callback
-		
-		softKeyboard = new SoftKeyboard(rlMain, im);
-		softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged()
-		{
-		  
-		    @Override
-		    public void onSoftKeyboardHide() 
-		    {
-		    }
-		  
-		    @Override
-		    public void onSoftKeyboardShow() 
-		    {
-		    }   
-		});*/
-		
+
 		if (!isNetworkConnected()) {
 			dlgNoInet = new DialogNoInet();
 			dlgNoInet.show(getFragmentManager(), "dlgNoInet");
@@ -140,8 +106,6 @@ public class LoginActivity extends Activity {
 		}
 		actvLogin.setAdapter(new ArrayAdapter(this,
 				android.R.layout.simple_dropdown_item_1line, loginsArray));
-		//etLogin = (EditText) findViewById(R.id.etLogin);
-		//etLogin.setText(sPref.getString("login", ""));
 		if ((actvLogin.getText().toString().indexOf("@") > 0) |
 				(actvLogin.getText().toString().matches(pattern))) {
 			tvAuth.setTextColor(Color.parseColor("#FF0000"));
@@ -194,7 +158,7 @@ public class LoginActivity extends Activity {
 				//одноразовый пароль
 				requestData[0] = Constants.URL_OTP;
 				requestData[1] = actvLogin.getText().toString(); 
-      			postOtp = new POSTOtp(activity);
+      			postOtp = new POSTOtp(LoginActivity.this);
     			postOtp.execute(requestData);
     		}
 		});
@@ -218,12 +182,21 @@ public class LoginActivity extends Activity {
 						requestData[0] = Constants.URL_SESSION;
 						requestData[1] = actvLogin.getText().toString(); 
 	          			requestData[2] = etPassword.getText().toString();
-	          			postSession = new POSTSession(activity);
+	          			postSession = new POSTSession(LoginActivity.this);
 	        			postSession.execute(requestData);
 	        		}
 				}
 			}
 		});
+
+        if (BuildConfig.DEBUG && "debug".equals(BuildConfig.BUILD_TYPE) && !TextUtils.isEmpty(BuildConfig.API_TEST_USER)) {
+            // Ибо заебал
+            String req[] = new String[] {
+                    Constants.URL_SESSION, BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS
+            };
+            postSession = new POSTSession(LoginActivity.this);
+            postSession.execute(req);
+        }
     }
 	
 	//Проверка логина и пароля на пустоту
@@ -277,34 +250,7 @@ public class LoginActivity extends Activity {
     		}
 		}
 	}
-	
-//	//восстановление пароля
-//	requestData[0] = Urls.URL + Urls.URL_PASSWORD_RESTORE +
-//			etLogin.getText().toString() + "%7D";
-//	requestData[1] = ""; 
-//		requestData[2] = intent.getStringExtra("captchaId");
-//		requestData[3] = intent.getStringExtra("captchaText");
-//		postPasswordRestore = new POSTPasswordRestore(activity);
-//		postPasswordRestore.execute(requestData);
-//					
-//		try {
-//			httpResult = postPasswordRestore.get();
-//			//Log.d("1", "Result pass " + httpResult[0] + " " + httpResult[1]);
-//			if (httpResult[0].equals("200")) {
-//				
-//			}
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
-	
-	/*private void cancelTask() {
-	    if (httpGET == null) return;
-	    httpGET.cancel(false);
-	    Toast.makeText(this, getString(R.string.error_wait), Toast.LENGTH_LONG).show();
-	}*/
-	
+
 	public void sessionResult(String[] httpResult) {
 		if (httpResult[0].equals("200")) {
 			String idData[] = { "", "", "" };
@@ -314,42 +260,31 @@ public class LoginActivity extends Activity {
 			etPassword.setText("");
 			actvLogin.setText("");
 			tvForgot.setVisibility(View.INVISIBLE);
+            Session.bearer = token;
 			
 			//запуск основной Activity
-			intent = new Intent(activity, MenuActivity.class);
+			intent = new Intent(this, MenuActivity.class);
 			intent.putExtra("token", token);
 			intent.putExtra("userId", userId);
 			intent.putExtra("timeout", idData[2]);
 			startActivityForResult(intent, ACT_MENU);
 		} else if (httpResult[0].equals("400")) {
-			Toast toast = Toast.makeText(activity, getString(R.string.bad_password),
+			Toast toast = Toast.makeText(this, getString(R.string.bad_password),
 					Toast.LENGTH_LONG);
 			toast.setGravity(Gravity.TOP, 0, 50);
 	    	toast.show();
 		} else if (httpResult[0].equals("404")) {
-			Toast toast = Toast.makeText(activity, getString(R.string.user_not_found),
+			Toast toast = Toast.makeText(this, getString(R.string.user_not_found),
 					Toast.LENGTH_LONG);
 			toast.setGravity(Gravity.TOP, 0, 50);
 	    	toast.show();
 		}
 	}
-	
-//	public void captchaResult(String[] httpRes) {
-//		if (httpRes[0].equals("200")) {
-//			//вывод капчи пользователю
-//			String captchaData[] = { "", "" };
-//			captchaData = JSONParsing.captcha(httpRes[1]);
-//			intent = new Intent(activity, Captcha.class);
-//			intent.putExtra("id", captchaData[0]);
-//			intent.putExtra("url", captchaData[1]);
-//			startActivityForResult(intent, ACT_CAPT);
-//		}
-//	}
-	
+
 	//Ответ на запрос одноразового пароля
 	public void otpResult(String[] httpRes) {
 		if (httpRes[0].equals("200")) {
-			Toast toast = Toast.makeText(activity, getString(R.string.pass_sent,
+			Toast toast = Toast.makeText(this, getString(R.string.pass_sent,
 					actvLogin.getText().toString()), Toast.LENGTH_LONG);
 			toast.setGravity(Gravity.TOP, 0, 50);
 	    	toast.show();
@@ -366,15 +301,5 @@ public class LoginActivity extends Activity {
 		  } else
 		   return true;
 	}
-	
-	/* Prevent memory leaks:
-	*/
-	@Override
-	public void onDestroy()
-	{
-	    super.onDestroy();
-	    //softKeyboard.unRegisterSoftKeyboardCallback();
-	}
-			
 }
 

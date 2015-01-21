@@ -1,6 +1,9 @@
 package com.w1.merchant.android.request;
 
-import java.io.IOException;
+import android.content.Context;
+
+import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.activity.AddInvoice;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -9,9 +12,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 
-import com.w1.merchant.android.activity.AddInvoice;
-import com.w1.merchant.android.activity.LoginActivity;
-import android.content.Context;
+import java.io.IOException;
 
 public class POSTInvoices extends HttpPOST {
 
@@ -21,7 +22,7 @@ public class POSTInvoices extends HttpPOST {
 
 	@Override
     protected String[] doInBackground(String... data) {
-		httpclient = LoginActivity.httpclient;
+		httpclient = NetworkUtils.getInstance().createApacheOkHttpClient();
 		httppost = new HttpPost(data[0]);
 	    try {
 	    	httppost.setHeader("Authorization", "Bearer " + data[1]);

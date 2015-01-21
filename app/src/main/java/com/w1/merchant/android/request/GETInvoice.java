@@ -1,10 +1,11 @@
 package com.w1.merchant.android.request;
 
-import java.util.ArrayList;
-import java.util.Map;
+import android.content.Context;
 
 import com.w1.merchant.android.activity.MenuActivity;
-import android.content.Context;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class GETInvoice extends HttpGET {
 	
@@ -25,7 +26,7 @@ public class GETInvoice extends HttpGET {
         super.onPostExecute(result);
         if (!((MenuActivity) mCtx).isFinishing()) {
 	        ((MenuActivity) mCtx).stopPBAnim();
-	        data = JSONParsing.invoice(result[1], direction, currencyFilter);
+	        data = JSONParsing.invoice(result[1], direction, currencyFilter, mCtx.getResources());
 	        ((MenuActivity) mCtx).addInvoice(data);
         }
     }

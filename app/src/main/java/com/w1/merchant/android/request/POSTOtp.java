@@ -1,6 +1,10 @@
 package com.w1.merchant.android.request;
 
-import java.io.IOException;
+import android.content.Context;
+import android.view.View;
+
+import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.activity.LoginActivity;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -9,9 +13,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 
-import com.w1.merchant.android.activity.LoginActivity;
-import android.content.Context;
-import android.view.View;
+import java.io.IOException;
 
 public class POSTOtp extends HttpPOST {
 
@@ -21,7 +23,7 @@ public class POSTOtp extends HttpPOST {
 
 	@Override
     protected String[] doInBackground(String... data) {
-		httpclient = LoginActivity.httpclient;
+		httpclient = NetworkUtils.getInstance().createApacheOkHttpClient();
     	httppost = new HttpPost(data[0]);
 	    try {
 	    	jsonObj.put("Login", data[1]);

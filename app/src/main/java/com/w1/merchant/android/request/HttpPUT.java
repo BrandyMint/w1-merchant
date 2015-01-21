@@ -1,7 +1,10 @@
 package com.w1.merchant.android.request;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import android.content.Context;
+import android.os.AsyncTask;
+
+import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.activity.ConfirmOutActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,10 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.w1.merchant.android.activity.ConfirmOutActivity;
-import com.w1.merchant.android.activity.LoginActivity;
-import android.content.Context;
-import android.os.AsyncTask;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class HttpPUT extends AsyncTask<String, Void, String[]> {
 	
@@ -41,7 +42,7 @@ public class HttpPUT extends AsyncTask<String, Void, String[]> {
     @Override
     protected String[] doInBackground(String... data) {
     	dataPayments = ((ConfirmOutActivity) mCtx).getDataPayment();
-    	httpclient = LoginActivity.httpclient;
+    	httpclient = NetworkUtils.getInstance().createApacheOkHttpClient();
 		httpput = new HttpPut(data[0]);
 	    try {
 	    	httpput.setHeader("Authorization", "Bearer " + data[1]);
@@ -71,20 +72,5 @@ public class HttpPUT extends AsyncTask<String, Void, String[]> {
 			e.printStackTrace();
 		}
 		return result;
-    }
-
-    @Override
-    protected void onPostExecute(String[] result) {
-    	super.onPostExecute(result);    
-    }
-
-    @Override
-    protected void onPreExecute() {
-   		super.onPreExecute();
-    }
-    
-    @Override
-    protected void onCancelled() {
-    	super.onCancelled();
     }
 }

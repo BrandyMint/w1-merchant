@@ -1,6 +1,9 @@
 package com.w1.merchant.android.request;
 
-import java.io.IOException;
+import android.content.Context;
+import android.os.AsyncTask;
+
+import com.w1.merchant.android.utils.NetworkUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,9 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.util.EntityUtils;
 
-import com.w1.merchant.android.activity.LoginActivity;
-import android.content.Context;
-import android.os.AsyncTask;
+import java.io.IOException;
 
 public class HttpDELETE extends AsyncTask<String, Void, String[]> {
 	
@@ -43,18 +44,8 @@ public class HttpDELETE extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected void onPostExecute(String[] result) {
-    	super.onPostExecute(result);    
-    }
-
-    @Override
     protected void onPreExecute() {
     	super.onPreExecute();    
-    	httpclient = LoginActivity.httpclient;
-    }
-    
-    @Override
-    protected void onCancelled() {
-    	super.onCancelled();
+    	httpclient = NetworkUtils.getInstance().createApacheOkHttpClient();
     }
 }

@@ -18,9 +18,7 @@ package com.w1.merchant.android.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -67,6 +65,8 @@ import com.w1.merchant.android.request.GETProfile;
 import com.w1.merchant.android.request.GETTemplateList;
 import com.w1.merchant.android.request.HttpDELETE;
 import com.w1.merchant.android.request.JSONParsing;
+import com.w1.merchant.android.support.TicketListActivity;
+import com.w1.merchant.android.viewextended.CircleTransformation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -82,10 +82,7 @@ public class MenuActivity extends FragmentActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    private static MenuActivity mContext;
 
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
     private String[] menuItems;
     
     private static final int ACT_ADD = 1;
@@ -115,16 +112,12 @@ public class MenuActivity extends FragmentActivity {
     
     ImageView ivAccountIcon;
     Intent intent;
-    Activity activity;
     HttpDELETE httpDELETE;
     String[] requestData = { "", "", "", "" };
     String[] requestData2 = { "", "", "", "" };
-    String[] httpResult = { "", "" };
-    String[] result = { "", "", "" };
     GETBalance getBalance;
     GETProfile getProfile;
     GETTemplateList getTemplateList;
-    String httpResultStr, name, logo, logoUrl, balance;
     int	sumInc = 0;
     int comisInc = 0;
     int	sumOut = 0;
@@ -154,12 +147,11 @@ public class MenuActivity extends FragmentActivity {
 	InvoiceFragment fragmentInvoice;
 	TemplateFragment fragmentTemplate;
     LinearLayout llHeader;
-    TextView tvBack, tvDate, tvNext, tvName, tvUrl, tvABName, tvABRub;
+    TextView tvBack, tvDate, tvNext, tvName, tvUrl;
 	int current = 0;
 	int totalReq = 0;
 	int day0, month0, year0, day1, month1, year1;
 	DatePicker dp1;
-	SearchView svList;
 	public String token, userId, timeout;
 	ProgressBar progressBar;
 	private SearchView mSearchView;
@@ -174,10 +166,7 @@ public class MenuActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.requestWindowFeature(Window.FEATURE_PROGRESS);
-        //this.setProgressBarIndeterminate(true);
         setContentView(R.layout.activity_main);
-        mContext = this;
         
         intent = getIntent();
         token = intent.getStringExtra("token");
@@ -225,35 +214,32 @@ public class MenuActivity extends FragmentActivity {
             }
         });
         
-        userEntrySupport = new UserEntrySupport(mContext);
-        dashSupport = new DashSupport(mContext);
-        invoiceSupport = new InvoiceSupport(mContext);
+        userEntrySupport = new UserEntrySupport(this);
+        dashSupport = new DashSupport(this);
+        invoiceSupport = new InvoiceSupport(this);
         
         fragmentUserEntry = new UserEntryFragment();
         fragmentDash = new DashFragment();
         fragmentInvoice = new InvoiceFragment();
         fragmentTemplate = new TemplateFragment();
         
-        dataPlotDay = new ArrayList<Integer>();
-        dataPlotWeek = new ArrayList<Integer>();
-        dataPlotMonth = new ArrayList<Integer>();
-        dataPlotDayX = new ArrayList<String>();
-        dataPlotWeekX = new ArrayList<String>();
-        dataPlotMonthX = new ArrayList<String>();
-        dataTemplate = new ArrayList<String[]>();
-        dataPeriod = new ArrayList<String[]>();
-        dataBalance = new ArrayList<String[]>();
-        dataDayWeekMonth = new ArrayList<String>();
-        dataDWMCurrency = new ArrayList<String>();
-        currSumNames = new ArrayList<String>();
-    	currRubls = new ArrayList<String>();
-    	currCodes = new ArrayList<String>();
+        dataPlotDay = new ArrayList<>();
+        dataPlotWeek = new ArrayList<>();
+        dataPlotMonth = new ArrayList<>();
+        dataPlotDayX = new ArrayList<>();
+        dataPlotWeekX = new ArrayList<>();
+        dataPlotMonthX = new ArrayList<>();
+        dataTemplate = new ArrayList<>();
+        dataPeriod = new ArrayList<>();
+        dataBalance = new ArrayList<>();
+        dataDayWeekMonth = new ArrayList<>();
+        dataDWMCurrency = new ArrayList<>();
+        currSumNames = new ArrayList<>();
+    	currRubls = new ArrayList<>();
+    	currCodes = new ArrayList<>();
         
         getProfile();
-//        clearDataArrays();
-//        getBalance();
-        
-        mTitle = mDrawerTitle = getTitle();
+
         menuItems = getResources().getStringArray(R.array.menu_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -272,10 +258,13 @@ public class MenuActivity extends FragmentActivity {
         final String ATTRIBUTE_NAME_TEXT = "text";
         final String ATTRIBUTE_NAME_IMAGE = "image";
         int[] img = { R.drawable.menu_dashboard, R.drawable.menu_account,
-        		R.drawable.menu_check, R.drawable.menu_output, R.drawable.menu_settings};
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(5);
+        		R.drawable.menu_check, R.drawable.menu_output,
+                R.drawable.menu_support,
+                R.drawable.menu_settings
+        };
+        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(6);
         Map<String, Object> m;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
 	          m = new HashMap<String, Object>();
 	          m.put(ATTRIBUTE_NAME_TEXT, getResources().getStringArray(R.array.menu_array)[i]);
 	          m.put(ATTRIBUTE_NAME_IMAGE, img[i]);
@@ -352,17 +341,13 @@ public class MenuActivity extends FragmentActivity {
             selectItem(1);
         }
     }
-    
-    public static Context getContext(){
-        return mContext;
-    }
-    
+
     //запрос баланса
     public void getBalance() {
     	requestData2[0] = Constants.URL_BALANCE;
         requestData2[1] = token;
         requestData2[2] = "";
-		getBalance = new GETBalance(mContext);
+		getBalance = new GETBalance(this);
 		getBalance.execute(requestData2);
     }
     
@@ -414,7 +399,7 @@ public class MenuActivity extends FragmentActivity {
     	requestData[0] = Constants.URL_PROFILE + userId;
     	requestData[1] = token;
     	requestData[2] = "";
-    	getProfile = new GETProfile(mContext);
+    	getProfile = new GETProfile(this);
     	getProfile.execute(requestData);	
     }
 
@@ -423,10 +408,12 @@ public class MenuActivity extends FragmentActivity {
     	if (!TextUtils.isEmpty(result[2])) {
     		Picasso.with(this)
     		.load(result[2])
+            .transform(CircleTransformation.getInstance())
     		.into(ivAccountIcon);		
     	} else {
     		Picasso.with(this)
     		.load(R.drawable.no_avatar)
+            .transform(CircleTransformation.getInstance())
     		.into(ivAccountIcon);
     	}
     	tvName.setText(result[0]);
@@ -489,7 +476,7 @@ public class MenuActivity extends FragmentActivity {
         case R.id.ic_menu_add:
         	if (currentFragment == FRAGMENT_INVOICE) {
 				//добавления счета
-				intent = new Intent(mContext, AddInvoice.class);
+				intent = new Intent(this, AddInvoice.class);
 				intent.putExtra("token", token);
 				startActivityForResult(intent, ACT_ADD);
 			} else if (currentFragment == FRAGMENT_USERENTRY) {
@@ -601,12 +588,17 @@ public class MenuActivity extends FragmentActivity {
             requestData[0] = Constants.URL_TEMPLATES;
             requestData[1] = token;
             requestData[2] = "";
-            getTemplateList = new GETTemplateList(mContext);
+            getTemplateList = new GETTemplateList(this);
             getTemplateList.execute(requestData);
             currentFragment = 0;
             changeFragment(fragmentTemplate);
         } else if (position == 5) {
-        	dlgExit.show(getFragmentManager(), "dlgExit");
+            Intent intent = new Intent(this, TicketListActivity.class);
+            startActivity(intent);
+            mDrawerLayout.closeDrawer(mDrawerList);
+            return;
+        } else if (position == 6) {
+            dlgExit.show(getFragmentManager(), "dlgExit");
         }
         
         // update selected item and title, then close the drawer
@@ -710,7 +702,7 @@ public class MenuActivity extends FragmentActivity {
 					"" + year1 + "-" + month1 + "-" + day1, "Out", token, 
 					nativeCurrency, currPageUETotal + "");
     	} else {
-    		intent = new Intent(mContext, UserEntryTotal.class);
+    		intent = new Intent(this, UserEntryTotal.class);
 	    	intent.putExtra("SumIn", sumInc);
 	    	intent.putExtra("ComisIn", comisInc);
 	    	intent.putExtra("SumOut", sumOut);
@@ -750,13 +742,13 @@ public class MenuActivity extends FragmentActivity {
     void closeSession() {
     	requestData[0] = Constants.URL_CLOSE_SESSION;
     	requestData[1] = token;
-    	httpDELETE = new HttpDELETE(mContext);
+    	httpDELETE = new HttpDELETE(this);
 		httpDELETE.execute(requestData);
 	}
     
   //ответ выписка
     public void addUserEntry(String data) {
-    	ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId);
+    	ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
     	if (!(newData == null)) {
 	    	if (currentPage == 1) {
 	    		dataUserEntry = newData;
@@ -777,7 +769,7 @@ public class MenuActivity extends FragmentActivity {
     
     //ответ дэш 
     public void addDash(String data) {
-    	ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId);
+    	ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
     	if (!(newData == null)) {
     		if (!(newData.size() == 0)) {
 		    	if (currentPage == 1) {
@@ -860,11 +852,7 @@ public class MenuActivity extends FragmentActivity {
 		Calendar currDate;
     	
     	currDate = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-//    	currDate.set(Calendar.HOUR_OF_DAY, 20);
-//    	currDate.set(Calendar.MINUTE, 59);
-//    	currDate.set(Calendar.SECOND, 59);
-//    	currDate.set(Calendar.MILLISECOND, 999);
-    	
+
     	for (int i = 23; i > -1; i--) {
     		calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
     		calendar.add(Calendar.HOUR_OF_DAY, -i);

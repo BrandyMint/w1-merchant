@@ -1,0 +1,100 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.w1.merchant.android.support.ConversationFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="false"
+        android:layout_above="@+id/reply_to_comment_container"
+        android:clipToPadding="false"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:smoothScrollbar="false" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        tools:visibility="visible" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@id/reply_to_comment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:minHeight="60dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/attach_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/attach_button"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_dialog_attach" />
+
+        <EditText
+            android:id="@+id/reply_to_comment_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:maxLines="5"
+            android:background="@null"
+            android:hint="@string/your_message_hint"
+            android:imeActionId="@+id/send_reply_to_comment"
+            android:imeActionLabel="@string/send_button_short"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences|textShortMessage|textMultiLine"
+            android:lineSpacingMultiplier="1.25"
+            android:textSize="16sp">
+
+            <requestFocus />
+        </EditText>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/reply_to_comment_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/send_message_hint"
+                android:padding="12dp"
+                android:src="@drawable/send_button_selector" />
+
+            <ProgressBar
+                android:id="@+id/reply_to_comment_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,6 +1,10 @@
 package com.w1.merchant.android.request;
 
-import java.io.IOException;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.w1.merchant.android.utils.NetworkUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,10 +13,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 
-import com.w1.merchant.android.activity.LoginActivity;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
+import java.io.IOException;
 
 public class HttpGET extends AsyncTask<String, Void, String[]> {
 	
@@ -32,7 +33,7 @@ public class HttpGET extends AsyncTask<String, Void, String[]> {
 	@Override
     protected String[] doInBackground(String... url) {
     	try {
-    		httpclient = LoginActivity.httpclient;
+    		httpclient = NetworkUtils.getInstance().createApacheOkHttpClient();
             //line = "";
             httpget = new HttpGet(url[0]);
             direction = url[2];
@@ -52,20 +53,5 @@ public class HttpGET extends AsyncTask<String, Void, String[]> {
     		Log.d("1", e + "");
     	}
         return result;
-    }
-
-    @Override
-    protected void onPostExecute(String[] result) {
-        super.onPostExecute(result);
-    }
-
-    @Override
-    protected void onPreExecute() {
-    	super.onPreExecute();
-    }
-    
-    @Override
-    protected void onCancelled() {
-    	super.onCancelled();
     }
 }

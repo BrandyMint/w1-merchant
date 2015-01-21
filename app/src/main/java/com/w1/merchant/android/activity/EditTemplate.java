@@ -245,7 +245,7 @@ public class EditTemplate extends Activity {
 		lParams4.rightMargin = 30;
 		lParams4.bottomMargin = 20;
 		TextView tvSchedule = new TextView(this);
-	    tvSchedule.setText(JSONParsing.templateSchedule(result));
+	    tvSchedule.setText(JSONParsing.templateSchedule(result, getResources()));
 	    tvSchedule.setTextColor(Color.parseColor("#BDBDBD"));
 	    llMain.addView(tvSchedule, lParams4);
 	    tvSchedule.setGravity(Gravity.CENTER_HORIZONTAL);

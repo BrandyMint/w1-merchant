@@ -1,9 +1,10 @@
 package com.w1.merchant.android.request;
 
-import java.util.ArrayList;
+import android.content.Context;
 
 import com.w1.merchant.android.activity.MenuActivity;
-import android.content.Context;
+
+import java.util.ArrayList;
 
 public class GETTemplateList extends HttpGET {
 	
@@ -24,7 +25,7 @@ public class GETTemplateList extends HttpGET {
         super.onPostExecute(result);
         if (!((MenuActivity) mCtx).isFinishing()) {
 	        ((MenuActivity) mCtx).stopPBAnim();
-	        data = JSONParsing.template(result[1]);
+	        data = JSONParsing.template(result[1], mCtx.getResources());
 	        ((MenuActivity) mCtx).addTemplateList(data);
         }
     }

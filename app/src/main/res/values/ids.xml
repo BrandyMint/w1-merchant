@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="conversation_view_my_message" />
+    <item type="id" name="conversation_view_their_message" />
+    <item type="id" name="tag_text_view_img_loader"/>
+</resources>

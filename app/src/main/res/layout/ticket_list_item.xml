@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:selectableItemBackground"
+    android:gravity="center_vertical"
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:ignore="UseCompoundDrawables">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/avatar_small_diameter"
+        android:layout_height="@dimen/avatar_small_diameter"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/avatar_dummy"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:baselineAligned="false"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+
+        <com.w1.merchant.android.viewextended.EllipsizingTextView
+            android:id="@+id/last_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingBottom="4dp"
+            android:textColor="#1b1b1b"
+            android:textSize="15sp"
+            tools:text="Запрос на отключение доставки\nФИО: Лосинский Владимир Сергеевич\nКонтакнтый телефон: 79036648093...Контактный e-mail: business@citycycle.ru"
+            android:paddingRight="8dp" />
+
+        <com.w1.merchant.android.viewextended.SmartTextSwitcher
+            android:id="@+id/notification_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="#c9c9c9"
+                android:textSize="15sp"
+                tools:text="1 час назад" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="#c9c9c9"
+                android:textSize="15sp"
+                tools:text="1 час назад" />
+
+        </com.w1.merchant.android.viewextended.SmartTextSwitcher>
+
+    </LinearLayout>
+
+    <com.w1.merchant.android.viewextended.SquareTextView
+        android:id="@+id/replies_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
+        android:background="@drawable/ticket_list_unread_messages_background"
+        android:gravity="center"
+        android:maxWidth="5sp"
+        android:minHeight="32dp"
+        android:minWidth="32dp"
+        android:padding="4dp"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        tools:text="100" />
+
+</LinearLayout>

@@ -1,6 +1,6 @@
 package com.w1.merchant.android.request;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.w1.merchant.android.R;
@@ -25,7 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-;
 
 public class JSONParsing {
 	
@@ -101,7 +100,7 @@ public class JSONParsing {
 		return dataPayments;
     }
 	
-	public static ArrayList<Map<String, Object>> userEntry(String jsonText, String userId) {
+	public static ArrayList<Map<String, Object>> userEntry(String jsonText, String userId, Resources resources) {
 		//appendLog(jsonText);
     	JSONArray jArray = null;
     	ArrayList<String> numberArray, dateArray, amountArray, 
@@ -131,7 +130,7 @@ public class JSONParsing {
 			for (int i = 0; i < jArray.length(); i++) {
 		        JSONObject json_data = jArray.getJSONObject(i);
 		        
-		        dateArray.add(dateFormat(json_data.getString("CreateDate")));
+		        dateArray.add(dateFormat(json_data.getString("CreateDate"), resources));
 		        
 		        descr = "";
 		        try {
@@ -144,9 +143,9 @@ public class JSONParsing {
 		        
 		        descrOnlyDigits = descr.replaceAll(pattern, "");
 		        if (json_data.getString("OperationTypeId").equals("ProviderPayment")) {
-		        	numberArray.add(MenuActivity.getContext().getString(R.string.output_cash));
+		        	numberArray.add(resources.getString(R.string.output_cash));
 				} else if (descrOnlyDigits.isEmpty()) {
-		        	numberArray.add(MenuActivity.getContext().getString(R.string.output_cash));
+		        	numberArray.add(resources.getString(R.string.output_cash));
 		        } else {
 		        	if (descrOnlyDigits.length() > 12) {
 		        		numberArray.add(descrOnlyDigits.substring(descrOnlyDigits.length() - 12));
@@ -195,13 +194,13 @@ public class JSONParsing {
 		        
 		        if (entryStateId.equals("Accepted")) {
 		        	imgArray.add(R.drawable.icon_ok);
-		        	stateArray.add(MenuActivity.getContext().getString(R.string.paid));
+		        	stateArray.add(resources.getString(R.string.paid));
 		        } else if ((entryStateId.equals("Canceled")) | (entryStateId.equals("Rejected"))) {
 		        	imgArray.add(R.drawable.icon_cancel);
-		        	stateArray.add(MenuActivity.getContext().getString(R.string.canceled));
+		        	stateArray.add(resources.getString(R.string.canceled));
 		        } else {
 		        	imgArray.add(R.drawable.icon_progress);
-		        	stateArray.add(MenuActivity.getContext().getString(R.string.processing));
+		        	stateArray.add(resources.getString(R.string.processing));
 		        }
 		    }
 			
@@ -276,7 +275,7 @@ public class JSONParsing {
     }
 	
 	public static ArrayList<Map<String, Object>> invoice(String jsonText,
-			String hasSuspense, String currencyFilter) {
+			String hasSuspense, String currencyFilter, Resources resources) {
     	JSONArray jArray = null;
     	ArrayList<String> numberArray, dateArray, descrArray, amountArray,
     			stateArray, currencyArray;
@@ -328,24 +327,24 @@ public class JSONParsing {
 							amountArray.add("+" + amount);
 							currencyArray.add("+" + currency);
 							numberArray.add(json_data.getString("InvoiceId"));
-							dateArray.add(dateFormat(json_data.getString("CreateDate")));
-							stateArray.add(MenuActivity.getContext().getString(R.string.not_paid));
+							dateArray.add(dateFormat(json_data.getString("CreateDate"),resources));
+							stateArray.add(resources.getString(R.string.not_paid));
 							descrArray.add(descr);
 			        	}
 			        } else {
 				        numberArray.add(json_data.getString("InvoiceId"));
-						dateArray.add(dateFormat(json_data.getString("CreateDate")));
+						dateArray.add(dateFormat(json_data.getString("CreateDate"), resources));
 						descrArray.add(descr);
 						if (json_data.getString("InvoiceStateId").equals("Accepted")) {
 							imgArray.add(R.drawable.icon_ok);
 							amountArray.add(amount);
 							currencyArray.add(currency);
-							stateArray.add(MenuActivity.getContext().getString(R.string.paid));
+							stateArray.add(resources.getString(R.string.paid));
 						} else {
 							imgArray.add(R.drawable.icon_progress);
 							amountArray.add("+" + amount);
 							currencyArray.add("+" + currency);
-							stateArray.add(MenuActivity.getContext().getString(R.string.not_paid));
+							stateArray.add(resources.getString(R.string.not_paid));
 						}
 			        }
 		        }
@@ -369,7 +368,7 @@ public class JSONParsing {
 	    return data;
     }
 	
-	public static ArrayList<String[]> template(String jsonText) {
+	public static ArrayList<String[]> template(String jsonText,Resources resources) {
     	JSONArray jArray = null;
     	ArrayList<String[]> dataArray = new ArrayList<String[]>();
     	int start, end, startNE;
@@ -395,7 +394,7 @@ public class JSONParsing {
 			        		startNE = schedule.indexOf("NextExecution") + 21;
 				        	char[] bufferNE = new char[5];
 				        	schedule.getChars(startNE, startNE + 5, bufferNE, 0);
-				        	element[3] = dateFormatTempl(new String(bufferNE));
+				        	element[3] = dateFormatTempl(new String(bufferNE), resources);
 		        		}
 					}
 		        } catch (JSONException e) {
@@ -437,7 +436,7 @@ public class JSONParsing {
     }
 	
 	//на выходе готовая фраза расписания
-	public static String templateSchedule(String text) {
+	public static String templateSchedule(String text, Resources resources) {
     	String result = "";
     	String schedule = "";
     	String period = "";
@@ -447,7 +446,6 @@ public class JSONParsing {
     	String days = "";
     	JSONArray jArray = null;
     	JSONObject json_data;
-    	Context c = MenuActivity.getContext();
     	
     	try {
 			jArray = new JSONArray("[ \n" + text + "\n ]");
@@ -462,7 +460,7 @@ public class JSONParsing {
 				jArray = new JSONArray("[ \n" + period + "\n ]");
 				json_data = jArray.getJSONObject(0);
 				startDate = json_data.getString("StartDate");
-				result = c.getString(R.string.payment_one, dateDMY(startDate),
+				result = resources.getString(R.string.payment_one, dateDMY(startDate),
 						dateHM(startDate));
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -479,12 +477,12 @@ public class JSONParsing {
 					e.printStackTrace();
 				}
 				if (endDate.isEmpty()) {
-					result = c.getString(R.string.payment_begin,
-							" " + c.getString(R.string.daily) + ", ", dateHM(startDate),
+					result = resources.getString(R.string.payment_begin,
+							" " + resources.getString(R.string.daily) + ", ", dateHM(startDate),
 							dateDMY(startDate));
 				} else {
-					result = c.getString(R.string.payment_begin_end,
-							" " + c.getString(R.string.daily) + ", ", dateHM(startDate),
+					result = resources.getString(R.string.payment_begin_end,
+							" " + resources.getString(R.string.daily) + ", ", dateHM(startDate),
 							dateDMY(startDate), dateDMY(endDate), dateHM(endDate));
 				}
 			} catch (JSONException e) {
@@ -505,59 +503,59 @@ public class JSONParsing {
 				jArray = new JSONArray("[ \n" + periodEntry + "\n ]");
 				json_data = jArray.getJSONObject(0);
 				if (json_data.getString("Monday").equals("true")) {
-					days = c.getString(R.string.monday);
+					days = resources.getString(R.string.monday);
 				}
 				if (json_data.getString("Tuesday").equals("true")) {
 					if (days.length() > 0) {
-						days += ", " + c.getString(R.string.tuesday);
+						days += ", " + resources.getString(R.string.tuesday);
 					} else {
-						days = c.getString(R.string.tuesday);
+						days = resources.getString(R.string.tuesday);
 					}
 				}
 				if (json_data.getString("Wednesday").equals("true")) {
 					if (days.length() > 0) {
-						days += ", " + c.getString(R.string.wednesday);
+						days += ", " + resources.getString(R.string.wednesday);
 					} else {
-						days = c.getString(R.string.wednesday);
+						days = resources.getString(R.string.wednesday);
 					}
 				}
 				if (json_data.getString("Thursday").equals("true")) {
 					if (days.length() > 0) {
-						days += ", " + c.getString(R.string.thursday);
+						days += ", " + resources.getString(R.string.thursday);
 					} else {
-						days = c.getString(R.string.thursday);
+						days = resources.getString(R.string.thursday);
 					}
 				}
 				if (json_data.getString("Friday").equals("true")) {
 					if (days.length() > 0) {
-						days += ", " + c.getString(R.string.friday);
+						days += ", " + resources.getString(R.string.friday);
 					} else {
-						days = c.getString(R.string.friday);
+						days = resources.getString(R.string.friday);
 					}
 				}
 				if (json_data.getString("Saturday").equals("true")) {
 					if (days.length() > 0) {
-						days += ", " + c.getString(R.string.saturday);
+						days += ", " + resources.getString(R.string.saturday);
 					} else {
-						days = c.getString(R.string.saturday);
+						days = resources.getString(R.string.saturday);
 					}
 				}
 				if (json_data.getString("Sunday").equals("true")) {
 					if (days.length() > 0) {
-						days += ", " + c.getString(R.string.sunday);
+						days += ", " + resources.getString(R.string.sunday);
 					} else {
-						days = c.getString(R.string.sunday);
+						days = resources.getString(R.string.sunday);
 					}
 				}
 				if (endDate.isEmpty()) {
-					result = c.getString(R.string.payment_begin,
-							" " + c.getString(R.string.weekly) + ", " +
-							c.getString(R.string.on_, days), dateHM(startDate),
+					result = resources.getString(R.string.payment_begin,
+							" " + resources.getString(R.string.weekly) + ", " +
+							resources.getString(R.string.on_, days), dateHM(startDate),
 							dateDMY(startDate));
 				} else {
-					result = c.getString(R.string.payment_begin_end,
-							" " + c.getString(R.string.weekly) + ", " +
-							c.getString(R.string.on_, days), dateHM(startDate),
+					result = resources.getString(R.string.payment_begin_end,
+							" " + resources.getString(R.string.weekly) + ", " +
+							resources.getString(R.string.on_, days), dateHM(startDate),
 							dateDMY(startDate), dateDMY(endDate), dateHM(endDate));
 				}
 			} catch (JSONException e) {
@@ -577,38 +575,38 @@ public class JSONParsing {
 				}
 				if (periodEntry.equals("1")) { //первый день
 					if (endDate.isEmpty()) {
-						result = c.getString(R.string.payment_begin,
-								" " + c.getString(R.string.monthly) + " " + 
-								c.getString(R.string.first_day), dateHM(startDate),
+						result = resources.getString(R.string.payment_begin,
+								" " + resources.getString(R.string.monthly) + " " +
+								resources.getString(R.string.first_day), dateHM(startDate),
 								dateDMY(startDate));
 					} else {
-						result = c.getString(R.string.payment_begin_end,
-								" " + c.getString(R.string.monthly) + " " + 
-								c.getString(R.string.first_day), dateHM(startDate),
+						result = resources.getString(R.string.payment_begin_end,
+								" " + resources.getString(R.string.monthly) + " " +
+								resources.getString(R.string.first_day), dateHM(startDate),
 								dateDMY(startDate), dateDMY(endDate), dateHM(endDate));
 					}
 				} else if (periodEntry.equals("32")) { //последний день
 					if (endDate.isEmpty()) {
-						result = c.getString(R.string.payment_begin,
-								" " + c.getString(R.string.monthly) + " " + 
-								c.getString(R.string.last_day), dateHM(startDate),
+						result = resources.getString(R.string.payment_begin,
+								" " + resources.getString(R.string.monthly) + " " +
+								resources.getString(R.string.last_day), dateHM(startDate),
 								dateDMY(startDate));
 					} else {
-						result = c.getString(R.string.payment_begin_end,
-								" " + c.getString(R.string.monthly) + " " + 
-								c.getString(R.string.last_day), dateHM(startDate),
+						result = resources.getString(R.string.payment_begin_end,
+								" " + resources.getString(R.string.monthly) + " " +
+								resources.getString(R.string.last_day), dateHM(startDate),
 								dateDMY(startDate), dateDMY(endDate), dateHM(endDate));
 					}
 				} else { //остальные
 					if (endDate.isEmpty()) {
-						result = c.getString(R.string.payment_begin,
-								" " + c.getString(R.string.monthly) + " " + 
-								c.getString(R.string.n_day, periodEntry), dateHM(startDate),
+						result = resources.getString(R.string.payment_begin,
+								" " + resources.getString(R.string.monthly) + " " +
+								resources.getString(R.string.n_day, periodEntry), dateHM(startDate),
 								dateDMY(startDate));
 					} else {
-						result = c.getString(R.string.payment_begin_end,
-								" " + c.getString(R.string.monthly) + " " + 
-								c.getString(R.string.n_day, periodEntry), dateHM(startDate),
+						result = resources.getString(R.string.payment_begin_end,
+								" " + resources.getString(R.string.monthly) + " " +
+								resources.getString(R.string.n_day, periodEntry), dateHM(startDate),
 								dateDMY(startDate), dateDMY(endDate), dateHM(endDate));
 					}
 				}
@@ -914,7 +912,7 @@ public class JSONParsing {
 		}
 	
 	//форматирование дат для списков
-	static String dateFormat(String in) {
+	static String dateFormat(String in, Resources resources) {
 		//DatatypeFactory datatypeFactory;
 		//XMLGregorianCalendar cal = datatypeFactory.newXMLGregorianCalendar("1994-08-10T00:00:00Z");
 		String dateOut = "";
@@ -943,36 +941,36 @@ public class JSONParsing {
 		diffHour = (int) diff / 3600;
         
 		if (diff < 120) {
-			dateOut = MenuActivity.getContext().getString(R.string.moment_ago);
+			dateOut = resources.getString(R.string.moment_ago);
 		} else if (diff < 3600) {
 			if ((diffMin == 11) | (diffMin == 12) | (diffMin == 13) | (diffMin == 14)) {
 				dateOut = diffMin + " " +
-	  					MenuActivity.getContext().getString(R.string.min_ago);
+                        resources.getString(R.string.min_ago);
 			} else if ((diffMin + "").endsWith("1")) {
 				dateOut = diffMin + " " +
-	  				MenuActivity.getContext().getString(R.string.min_ago2);
+                        resources.getString(R.string.min_ago2);
 			} else if ((diffMin + "").endsWith("2") | (diffMin + "").endsWith("3") | 
 					(diffMin + "").endsWith("4")) {
 				dateOut = diffMin + " " +
-		  			MenuActivity.getContext().getString(R.string.min_ago3);
+                        resources.getString(R.string.min_ago3);
 			} else {
 				dateOut = diffMin + " " +
-  					MenuActivity.getContext().getString(R.string.min_ago);
+                        resources.getString(R.string.min_ago);
 			}
   		} else if (diff < 7200) {
-  			dateOut = MenuActivity.getContext().getString(R.string.hour_ago);
+  			dateOut = resources.getString(R.string.hour_ago);
   		} else if (diff < 18000) {
   			dateOut = diffHour + " " +
-  					MenuActivity.getContext().getString(R.string.hour_ago1);
+                    resources.getString(R.string.hour_ago1);
   		} else if (diff < 75600) {
   			dateOut = diffHour + " " +
-  					MenuActivity.getContext().getString(R.string.hour_ago2);
+                    resources.getString(R.string.hour_ago2);
   		} else if ((diff > 75599) & (diff < 79200)) {
-  			dateOut = diffHour + " " + 
-  					MenuActivity.getContext().getString(R.string.hour_ago3);
+  			dateOut = diffHour + " " +
+                    resources.getString(R.string.hour_ago3);
   		} else if (diff < 86400) {
   			dateOut = diffHour + " " +
-  					MenuActivity.getContext().getString(R.string.hour_ago1);
+                    resources.getString(R.string.hour_ago1);
   		} else {
 			calendar.add(Calendar.HOUR_OF_DAY, offSet);
 			minute = calendar.get(Calendar.MINUTE) + "";
@@ -980,7 +978,7 @@ public class JSONParsing {
 				minute = "0" + minute;
 			}
 			dateOut = calendar.get(Calendar.DAY_OF_MONTH) + " " +
-					MenuActivity.getContext().getResources().
+                    resources.
 					getStringArray(R.array.month_array)[calendar.get(Calendar.MONTH)] +
 					", " + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
 					minute;
@@ -1031,14 +1029,14 @@ public class JSONParsing {
 	}
 	
 	    //форматирование дат для списка шаблонов
-		static String dateFormatTempl(String in) {
+		static String dateFormatTempl(String in, Resources resources) {
 			String dateOut = "";
 			String month, day;
 			
 			month = in.substring(0, 2);
 			day = in.substring(3, 5);
 			
-			dateOut = day + " " + MenuActivity.getContext().getResources().
+			dateOut = day + " " + resources.
 					getStringArray(R.array.month_array_cut)[Integer.parseInt(month) - 1];
 	        return dateOut;
 		}

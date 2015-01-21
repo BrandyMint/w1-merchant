@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2013 The Android Open Source Project
 
@@ -12,101 +13,104 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  -->
-
+-->
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <string-array name="menu_array">
         <item>Dashboard</item>
         <item>Statement</item>
         <item>Invoices</item>
         <item>Withdrawal</item>
+        <item>Support</item>
         <item>Log out</item>
     </string-array>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Add</string>
     <string name="output">Withdrawal</string>
     <string name="output_cash">Withdrawal</string>
     <string name="login">Telephone or e-mail</string>
-	<string name="password">Password</string>
-	<string name="logo_text">For business</string>
-	<string name="authorization">Authorization</string>
-	<string name="paid">Paid</string>
-	<string name="not_paid">Not paid</string>
-	<string name="partially">Partially paid</string>
-	<string name="bill">Invoice</string>
-	<string name="currency">Currency</string>
-	<string name="rus_rubl">Russian rouble</string>
-	<string name="descr">Description</string>
-	<string name="exampl_pizza">Pizza deivery, for example</string>
-	<string name="tel_recipient">Recipient telephone number or email</string>
-	<string name="mail_or_tel">my@mail.ru or 89031234567</string>
-	<string name="sum">Amount</string>
-	<string name="enter_amount">Input amount</string>
-	<string name="error_field">The input field must not be empty!</string>
-	<string name="entrance">Inpayment</string>
-	<string name="back">Back</string>
-	<string name="account_sum">Invoice in amount of</string>
-	<string name="bill_success"> issued successfully</string>
-	<string name="sum_commis">Amount including commission</string>
-	<string name="sum_output">Amount to withdraw</string>
-	<string name="remove">Withdraw</string>
-	<string name="last_oper">Latest transfer</string>
-	<string name="hour_24">24 hours</string>
-	<string name="week">week</string>
-	<string name="month">month</string>
-	<string name="account_number">Invoice number</string>
-	<string name="status">State</string>
-	<string name="user_not_found">Invalid e-mail or telephone</string>
-	<string name="bad_password">Invalid password</string>
-	<string name="forgot">Send</string>
-	<string name="input_captcha"></string>
-	<string name="send">Send</string>
-	<string name="web_vers">You may create\nwithdrawal templates\nusing web-version\nof Checkout</string>
-	<string name="move_on">Proceed</string>
-	<string name="data_load">Data will be load</string>
-	<string name="loading">Loading…</string>
-	<string name="inputs">Incoming funds</string>
-	<string name="outputs">Outgoing funds</string>
-	<string name="sum_period">Amount for a period</string>
-	<string name="comis_period">commission for a period</string>
-	<string name="begin_date">Start date</string>
-	<string name="next">Next</string>
-	<string name="go_back">Back</string>
-	<string name="end_date">End date</string>
-	<string name="cancel">Cancel</string>
-	<string name="comis_sum">Commission is %1$s, amount starting from %2$s to %3$s</string>
-	<string name="wo_comis">Commission-free amount from %1$s to %2$s</string>
-	<string name="payment_one">The payment will be made once %1$s at %2$s</string>
-	<string name="payment_begin">Payment will be made %1$s at %2$s, starting from %3$s</string>
-	<string name="payment_begin_end">The payment will be made on %1$s at %2$s, starting from %3$s, till %4$s at %5$s</string>
-	<string name="first_day">on the first day of the month</string>
-	<string name="last_day">on the last day of the month</string>
-	<string name="n_day">on the %1$s day of the month</string>
-	<string name="daily">everyday</string>
-	<string name="weekly">every week</string>
-	<string name="monthly">every month</string>
-	<string name="yearly" tools:ignore="UnusedResources">every year</string>
-	<string name="on_">on %1$s</string>
-	<string name="monday">mondays</string>
-	<string name="tuesday">tuesdays</string>
-	<string name="wednesday">wednesdays</string>
-	<string name="thursday">thursdays</string>
-	<string name="friday">fridays</string>
-	<string name="saturday">saturdays</string>
-	<string name="sunday">sundays</string>
-	<string name="payment_not">Payment not found</string>
-	<string name="search">Search</string>
-	<string name="warning">Warning</string>
-	<string name="exit_message">Are you sure you want to log out?</string>
-	<string name="sure_withdraw">Are you sure \n you want to withdraw</string>
-	<string name="confirm">Confirm</string>
-	<string name="yes">Yes</string>
-	<string name="no">No</string>
-	<string name="awaiting">Awaiting for crediting</string>
-	<string name="canceled">Canceled</string>
-	<string name="processing">Processing</string>
-	<string-array name="month_array">
+    <string name="password">Password</string>
+    <string name="logo_text">For business</string>
+    <string name="authorization">Authorization</string>
+    <string name="paid">Paid</string>
+    <string name="not_paid">Not paid</string>
+    <string name="partially">Partially paid</string>
+    <string name="bill">Invoice</string>
+    <string name="currency">Currency</string>
+    <string name="rus_rubl">Russian rouble</string>
+    <string name="descr">Description</string>
+    <string name="exampl_pizza">Pizza deivery, for example</string>
+    <string name="tel_recipient">Recipient telephone number or email</string>
+    <string name="mail_or_tel">my@mail.ru or 89031234567</string>
+    <string name="sum">Amount</string>
+    <string name="enter_amount">Input amount</string>
+    <string name="error_field">The input field must not be empty!</string>
+    <string name="entrance">Inpayment</string>
+    <string name="back">Back</string>
+    <string name="account_sum">Invoice in amount of</string>
+    <string name="bill_success"> issued successfully</string>
+    <string name="sum_commis">Amount including commission</string>
+    <string name="sum_output">Amount to withdraw</string>
+    <string name="remove">Withdraw</string>
+    <string name="last_oper">Latest transfer</string>
+    <string name="hour_24">24 hours</string>
+    <string name="week">week</string>
+    <string name="month">month</string>
+    <string name="account_number">Invoice number</string>
+    <string name="status">State</string>
+    <string name="user_not_found">Invalid e-mail or telephone</string>
+    <string name="bad_password">Invalid password</string>
+    <string name="forgot">Send</string>
+    <string name="input_captcha"></string>
+    <string name="send">Send</string>
+    <string name="web_vers">You may create\nwithdrawal templates\nusing web-version\nof Checkout</string>
+    <string name="move_on">Proceed</string>
+    <string name="data_load">Data will be load</string>
+    <string name="loading">Loading…</string>
+    <string name="inputs">Incoming funds</string>
+    <string name="outputs">Outgoing funds</string>
+    <string name="sum_period">Amount for a period</string>
+    <string name="comis_period">commission for a period</string>
+    <string name="begin_date">Start date</string>
+    <string name="next">Next</string>
+    <string name="go_back">Back</string>
+    <string name="end_date">End date</string>
+    <string name="cancel">Cancel</string>
+    <string name="comis_sum">Commission is %1$s, amount starting from %2$s to %3$s</string>
+    <string name="wo_comis">Commission-free amount from %1$s to %2$s</string>
+    <string name="payment_one">The payment will be made once %1$s at %2$s</string>
+    <string name="payment_begin">Payment will be made %1$s at %2$s, starting from %3$s</string>
+    <string name="payment_begin_end">The payment will be made on %1$s at %2$s, starting from %3$s, till %4$s at %5$s</string>
+    <string name="first_day">on the first day of the month</string>
+    <string name="last_day">on the last day of the month</string>
+    <string name="n_day">on the %1$s day of the month</string>
+    <string name="daily">everyday</string>
+    <string name="weekly">every week</string>
+    <string name="monthly">every month</string>
+    <string name="yearly" tools:ignore="UnusedResources">every year</string>
+    <string name="on_">on %1$s</string>
+    <string name="monday">mondays</string>
+    <string name="tuesday">tuesdays</string>
+    <string name="wednesday">wednesdays</string>
+    <string name="thursday">thursdays</string>
+    <string name="friday">fridays</string>
+    <string name="saturday">saturdays</string>
+    <string name="sunday">sundays</string>
+    <string name="payment_not">Payment not found</string>
+    <string name="search">Search</string>
+    <string name="warning">Warning</string>
+    <string name="exit_message">Are you sure you want to log out?</string>
+    <string name="sure_withdraw">Are you sure \n you want to withdraw</string>
+    <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="awaiting">Awaiting for crediting</string>
+    <string name="canceled">Canceled</string>
+    <string name="processing">Processing</string>
+
+    <string-array name="month_array">
         <item>January</item>
         <item>February</item>
         <item>March</item>
@@ -143,6 +147,7 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
+
     <string name="moment_ago">Moment ago</string>
     <string name="min_ago">minutes ago</string>
     <string name="min_ago2">minutes ago</string>
@@ -158,4 +163,36 @@
     <string name="session_timeout">Session is expired</string>
     <string name="payment_error">This transaction cannot be processed at this time. Please try again later</string>
     <string name="transact_proces">Transaction in amount of %1$s is processed</string>
+    <string name="title_activity_ticket_list">Customer care</string>
+    <string name="you_havent_started_any_conversations">You haven\'t started any conversations yet</string>
+    <string name="start_conversation">Start conversation</string>
+    <string name="load_ticket_list_error">Failed to load conversations. Please try again later</string>
+    <string name="title_activity_conversation">Conversation</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="send_button_short">Send</string>
+    <string name="your_message_hint">Your message</string>
+    <string name="send_message_hint">Send message</string>
+    <string name="messages_will_be_displayed_here">Your messages will be displayed here</string>
+    <string name="load_ticket_error">Failed to load conversation. Please try again later</string>
+    <string name="send_message_error">Failed to send message. Please try again later</string>
+    <string name="title_activity_create_ticket">New support inquiry</string>
+
+    <string name="create_ticket_subject_hint">Subject</string>
+    <string name="create_ticket_text_hint">Text</string>
+    <string name="send_button">Send</string>
+
+    <string name="attach_button">Attach</string>
+    <string name="text_should_not_be_empty">Text should not be empty. Please write your message</string>
+
+    <string name="pick_from_gallery">Pick image from gallery</string>
+    <string name="take_photo">Take photo</string>
+
+    <string name="error_camera_not_available">Camera not available</string>
+    <string name="error_no_place_to_save">Low disk space</string>
+
+    <string name="images_directory">Pictures</string>
+    <string name="remove_attachment">Remove this attachment</string>
+
 </resources>
+

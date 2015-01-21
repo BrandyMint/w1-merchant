@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="green_background_normal">#24b166</color>
+    <color name="conversation_background_color">#f1f1f1</color>
+</resources>

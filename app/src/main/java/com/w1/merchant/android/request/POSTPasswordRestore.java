@@ -1,13 +1,14 @@
 package com.w1.merchant.android.request;
 
-import java.io.IOException;
+import android.content.Context;
+
+import com.w1.merchant.android.utils.NetworkUtils;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
 
-import com.w1.merchant.android.activity.LoginActivity;
-import android.content.Context;
+import java.io.IOException;
 
 public class POSTPasswordRestore extends HttpPOST {
 
@@ -18,7 +19,7 @@ public class POSTPasswordRestore extends HttpPOST {
 
 	@Override
     protected String[] doInBackground(String... data) {
-		httpclient = LoginActivity.httpclient;
+		httpclient = NetworkUtils.getInstance().createApacheOkHttpClient();
     	httppost = new HttpPost(data[0]);
 	    try {
 	    	httppost.setHeader("Authorization", "Bearer {54344285-82DA-42EA-B7D0-0C9B978FFD89}");

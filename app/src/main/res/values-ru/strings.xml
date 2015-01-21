@@ -20,6 +20,7 @@
         <item>Выписка</item>
         <item>Счета</item>
         <item>Вывод</item>
+        <item>Поддержка</item>
         <item>Выход</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
@@ -158,4 +159,33 @@
     <string name="session_timeout">Ваша сессия истекла</string>
     <string name="payment_error">Платеж не может пройти проверку, повторите попытку позже</string>
     <string name="transact_proces">Перевод на сумму %1$s принят к исполнению</string>
+    <string name="you_havent_started_any_conversations">Нет сообщений</string>
+    <string name="start_conversation">Новый запрос в клиентскую поддержку</string>
+    <string name="title_activity_ticket_list">Поддержка</string>
+    <string name="load_ticket_list_error">Ошибка загрузки, повторите попытку позже</string>
+    <string name="load_ticket_error">Ошибка загрузки, повторите попытку позже</string>
+    <string name="send_message_error">Ошибка отправки сообщения, повторите попытку позже</string>
+    <string name="title_activity_conversation">Диалог</string>
+    <string name="send_button_short">Отпр.</string>
+    <string name="your_message_hint">Ваше сообщение</string>
+    <string name="send_message_hint">Отправить сообщение</string>
+    <string name="messages_will_be_displayed_here">Здесь будут отображаться сообщения</string>
+
+    <string name="title_activity_create_ticket">Новый вопрос</string>
+    <string name="create_ticket_subject_hint">Тема</string>
+    <string name="create_ticket_text_hint">Текст обращения</string>
+    <string name="send_button">Отправить</string>
+
+    <string name="attach_button">Прикрепить</string>
+    <string name="text_should_not_be_empty">Текст не должен быть пустым. Пожалуйста, напишите ваше обращение</string>
+
+    <string name="pick_from_gallery">Выбрать из галереи</string>
+    <string name="take_photo">Сфотографировать</string>
+
+    <string name="error_camera_not_available">Камера недоступна</string>
+    <string name="error_no_place_to_save">Некуда сохранять</string>
+
+    <string name="images_directory">Pictures</string>
+    <string name="remove_attachment">Удалить вложение</string>
+
 </resources>

@@ -19,5 +19,23 @@
 -optimizations !code/simplification/cast,!field/*,!class/merging/*,!code/allocation/variable
 -dontobfuscate
 
-#picasso
+-keep class com.w1.merchant.android.model.** { *; }
+
+# GSON
+-keepattributes Signature
+-keep class sun.misc.Unsafe { *; }
+
+# Retrofit
+-keepattributes *Annotation*
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}
+-dontwarn rx.**
 -dontwarn com.squareup.okhttp.**
+-dontwarn com.google.appengine.api.urlfetch.**
+
+#okhttp
+-dontwarn java.nio.file.*
+-dontwarn com.squareup.okhttp.internal.http.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement

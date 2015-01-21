@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="fragment_text">
-        <item name="android:textColor">#ffacacac</item>
-        <item name="android:textSize">25sp</item>
-    </style>
-    
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme">
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -22,4 +17,45 @@
         
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+
+    <style name="ConversationActivityTheme" parent="AppBaseTheme">
+        <item name="android:windowBackground">@color/conversation_background_color</item>
+        <item name="android:colorBackground">@color/conversation_background_color</item>
+        <item name="android:colorBackgroundCacheHint">@color/conversation_background_color</item>
+    </style>
+
+    <style name="ConversationMessageDate">
+        <item name="android:visibility">gone</item>
+        <item name="android:textColor">#909090</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:textIsSelectable">true</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="fragment_text">
+        <item name="android:textColor">#ffacacac</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
+    <style name="EmptyTextStyle">
+        <item name="android:textColor">#80939393</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:visibility">invisible</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="TicketListSubjectTextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

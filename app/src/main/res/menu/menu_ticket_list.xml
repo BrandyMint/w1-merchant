@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.w1.merchant.android.support.TicketListActivity">
+
+    <item android:id="@+id/action_start_conversation" android:title="@string/start_conversation"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_new_email"
+        android:showAsAction="ifRoom" />
+</menu>
