@@ -24,6 +24,13 @@
         <item name="android:colorBackgroundCacheHint">@color/conversation_background_color</item>
     </style>
 
+    <style name="LoginActivityTheme" parent="android:Theme.Holo.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:colorBackgroundCacheHint">@android:color/white</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="ConversationMessageDate">
         <item name="android:visibility">gone</item>
         <item name="android:textColor">#909090</item>
