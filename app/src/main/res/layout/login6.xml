@@ -62,6 +62,7 @@
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/ivLogin"
             android:hint="@string/login"
+            android:imeOptions="actionNext"
             android:inputType="text" />
 
         <ImageView
@@ -93,6 +94,7 @@
             android:layout_toRightOf="@+id/ivPassword"
             android:hint="@string/password"
             android:inputType="textPassword"
+            android:imeOptions="actionDone"
             android:layout_alignLeft="@+id/actvLogin"
             android:layout_alignRight="@+id/actvLogin" />
 

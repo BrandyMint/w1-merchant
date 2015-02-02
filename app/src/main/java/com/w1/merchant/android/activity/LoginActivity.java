@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
@@ -16,9 +15,11 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -140,6 +141,16 @@ public class LoginActivity extends Activity {
 				}
 			}
 		});
+        etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    attemptLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
 		
 		//"Забыл"
 		tvForgot = (TextView) findViewById(R.id.tvForgot);
@@ -166,26 +177,7 @@ public class LoginActivity extends Activity {
 		tvAuth.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if ((actvLogin.getText().toString().indexOf("@") > 0) |
-						(actvLogin.getText().toString().matches(pattern))) {
-					v.vibrate(milliseconds);
-					if (checkFields()) {
-						loginsArray.add(actvLogin.getText().toString());
-						Set<String> newLogin = new HashSet<String>();
-						for (String n : loginsArray) {
-							newLogin.add(n);
-						}
-						Editor ed = sPref.edit();
-						ed.putStringSet("logins", newLogin);
-						ed.apply();
-						//создание сессии по логину и паролю
-						requestData[0] = Constants.URL_SESSION;
-						requestData[1] = actvLogin.getText().toString(); 
-	          			requestData[2] = etPassword.getText().toString();
-	          			postSession = new POSTSession(LoginActivity.this);
-	        			postSession.execute(requestData);
-	        		}
-				}
+
 			}
 		});
 
@@ -198,7 +190,34 @@ public class LoginActivity extends Activity {
             postSession.execute(req);
         }
     }
-	
+
+    private void attemptLogin() {
+        if (!actvLogin.getText().toString().contains("@") &&
+                !actvLogin.getText().toString().matches(pattern)) {
+            return;
+        }
+
+        if (!checkFields()) return;
+        v.vibrate(milliseconds);
+
+        if (checkFields()) {
+            loginsArray.add(actvLogin.getText().toString());
+            Set<String> newLogin = new HashSet<String>();
+            for (String n : loginsArray) {
+                newLogin.add(n);
+            }
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putStringSet("logins", newLogin);
+            ed.apply();
+            //создание сессии по логину и паролю
+            requestData[0] = Constants.URL_SESSION;
+            requestData[1] = actvLogin.getText().toString();
+            requestData[2] = etPassword.getText().toString();
+            postSession = new POSTSession(LoginActivity.this);
+            postSession.execute(requestData);
+        }
+    }
+
 	//Проверка логина и пароля на пустоту
 	public boolean checkFields() {
 		boolean result = false;
