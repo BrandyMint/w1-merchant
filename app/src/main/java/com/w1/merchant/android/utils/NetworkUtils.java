@@ -2,6 +2,8 @@ package com.w1.merchant.android.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.FieldNamingPolicy;
@@ -19,6 +21,7 @@ import org.apache.http.client.HttpClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.RequestInterceptor;
@@ -121,8 +124,17 @@ public class NetworkUtils {
             if (bearer != null) request.addHeader("Authorization", "Bearer " + bearer);
             request.addHeader("Accept", "application/vnd.wallet.openapi.v1+json");
 
-
             // TODO: язык
+            String langTag;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                langTag = Locale.getDefault().toLanguageTag();
+            } else {
+                langTag = Locale.getDefault().toString().replace("_","-");
+            }
+            if (!TextUtils.isEmpty(langTag)) {
+                request.addHeader("Accept-Language", langTag);
+            }
+
         }
     };
 
