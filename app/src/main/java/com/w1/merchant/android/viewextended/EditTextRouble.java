@@ -28,6 +28,6 @@ public class EditTextRouble extends EditText{
     private void onInit() {
         if (initialized) return;
         initialized = true;
-        this.setTypeface(FontManager.getInstance().getRoubleFont());
+        if (!isInEditMode()) this.setTypeface(FontManager.getInstance().getRoubleFont());
     }
 }

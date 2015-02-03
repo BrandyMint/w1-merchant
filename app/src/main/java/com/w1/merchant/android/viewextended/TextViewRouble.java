@@ -29,6 +29,6 @@ public class TextViewRouble extends TextView {
     private void onInit() {
         if (initialized) return;
         initialized = true;
-        this.setTypeface(FontManager.getInstance().getRoubleFont());
+        if (!isInEditMode()) this.setTypeface(FontManager.getInstance().getRoubleFont());
     }
 }

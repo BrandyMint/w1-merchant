@@ -14,11 +14,10 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
-        
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <style name="ConversationActivityTheme" parent="AppBaseTheme">
+    <style name="ConversationActivityTheme" parent="AppTheme">
         <item name="android:windowBackground">@color/conversation_background_color</item>
         <item name="android:colorBackground">@color/conversation_background_color</item>
         <item name="android:colorBackgroundCacheHint">@color/conversation_background_color</item>
@@ -29,6 +28,7 @@
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:selectableItemBackground">@drawable/list_selector_holo_light</item>
     </style>
 
     <style name="ConversationMessageDate">

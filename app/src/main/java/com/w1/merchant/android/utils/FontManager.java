@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 
 public class FontManager {
 
-    private static FontManager sFontManager;
+    private static volatile FontManager sFontManager;
 
     private final Typeface mW1RoubleFont;
     private final Typeface mRobotoLight;

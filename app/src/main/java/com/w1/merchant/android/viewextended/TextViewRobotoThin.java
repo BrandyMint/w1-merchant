@@ -29,6 +29,6 @@ public class TextViewRobotoThin extends TextView {
     private void onInit() {
         if (initialized) return;
         initialized = true;
-        this.setTypeface(FontManager.getInstance().getThinFont());
+        if (!isInEditMode()) this.setTypeface(FontManager.getInstance().getThinFont());
     }
 }

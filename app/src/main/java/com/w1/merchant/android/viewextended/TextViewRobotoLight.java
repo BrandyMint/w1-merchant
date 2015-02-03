@@ -29,6 +29,6 @@ public class TextViewRobotoLight extends TextView {
     private void onInit() {
         if (initialized) return;
         initialized = true;
-        this.setTypeface(FontManager.getInstance().getLightFont());
+        if (!isInEditMode()) this.setTypeface(FontManager.getInstance().getLightFont());
     }
 }
