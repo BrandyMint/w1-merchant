@@ -90,7 +90,7 @@
                 android:layout_toRightOf="@+id/ivLogin"
                 android:hint="@string/login"
                 android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
+                android:inputType="textEmailAddress|textNoSuggestions"
                 android:paddingRight="32dp"
                 tools:ignore="RtlSymmetry" />
 

@@ -10,9 +10,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,9 +36,12 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DialogNoInet;
 import com.w1.merchant.android.extra.DialogTimeout;
-import com.w1.merchant.android.request.JSONParsing;
-import com.w1.merchant.android.request.POSTOtp;
-import com.w1.merchant.android.request.POSTSession;
+import com.w1.merchant.android.model.AuthCreateModel;
+import com.w1.merchant.android.model.AuthModel;
+import com.w1.merchant.android.model.OneTimePassword;
+import com.w1.merchant.android.service.ApiRequestTask;
+import com.w1.merchant.android.service.ApiSessions;
+import com.w1.merchant.android.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +50,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import retrofit.Callback;
+import retrofit.client.Response;
+
 public class LoginActivity extends Activity {
     private static final String TAG = Constants.LOG_TAG;
     private static final boolean DBG = BuildConfig.DEBUG;
@@ -52,25 +60,21 @@ public class LoginActivity extends Activity {
     private static final String APP_PREF = "W1_Pref";
     private static final long VIBRATE_TIME_MS = 100;
     private static final int ACT_MENU = 1;
-    public static final String PREFS_KEY_LOGINS = "logins";
+    private static final String PREFS_KEY_LOGINS = "logins";
 
-    private AutoCompleteTextView actvLogin;
+    private AutoCompleteTextView mLoginTextView;
     private View mAuthButton;
-    private View tvForgot;
-    private ImageView ivDelete;
-    private EditText etPassword;
+    private View mForgotButton;
+    private View mClearLoginButton;
+    private EditText mPasswordView;
     private Vibrator mVibrator;
-
-    public ProgressBar pbLogin;
-
-    POSTSession postSession;
-    POSTOtp postOtp;
-    String[] requestData = {"", "", "", "", "", ""};
-    String token, userId;
+    private ProgressBar mProgress;
 
     private final Matcher mLooksLikePhoneMatcher = Pattern.compile("[0-9]{11}").matcher("");
 
-    ArrayList<String> loginsArray = new ArrayList<>();
+    private ArrayList<String> mLogins = new ArrayList<>();
+
+    private ApiSessions mApiSessions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,37 +87,43 @@ public class LoginActivity extends Activity {
         }
 
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        mApiSessions = NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class);
 
-        actvLogin = (AutoCompleteTextView) findViewById(R.id.actvLogin);
-        pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
+        mLoginTextView = (AutoCompleteTextView) findViewById(R.id.actvLogin);
+        mProgress = (ProgressBar) findViewById(R.id.pbLogin);
         mAuthButton = findViewById(R.id.tvAuth);
-        ivDelete = (ImageView) findViewById(R.id.ivDelete);
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        tvForgot = findViewById(R.id.tvForgot);
+        mClearLoginButton = (ImageView) findViewById(R.id.ivDelete);
+        mPasswordView = (EditText) findViewById(R.id.etPassword);
+        mForgotButton = findViewById(R.id.tvForgot);
 
+        mAuthButton.setOnClickListener(mOnClickListener);
+        mClearLoginButton.setOnClickListener(mOnClickListener);
+        mForgotButton.setOnClickListener(mOnClickListener);
+        setProgress(false);
+        adjustBackgroundImageSizes();
+        initScroller();
         loadLogins();
 
-        actvLogin.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, loginsArray));
-        actvLogin.addTextChangedListener(new TextWatcher() {
+        mLoginTextView.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, mLogins));
+        mLoginTextView.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void afterTextChanged(Editable s) {
-                ivDelete.setVisibility(s != null && s.length() > 0 ? View.VISIBLE : View.INVISIBLE);
+                mClearLoginButton.setVisibility(s != null && s.length() > 0 ? View.VISIBLE : View.INVISIBLE);
                 mAuthButton.setEnabled(isFormReadyToSend());
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
         });
 
-        mAuthButton.setOnClickListener(mOnClickListener);
-        ivDelete.setOnClickListener(mOnClickListener); //значок удалить после логина
-
-        etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -123,27 +133,17 @@ public class LoginActivity extends Activity {
                 return false;
             }
         });
-        etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPasswordView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                tvForgot.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
+                mForgotButton.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
             }
         });
 
-        //"Забыл"
-        tvForgot.setOnClickListener(mOnClickListener);
-        tvForgot.setVisibility(etPassword.hasFocus() ? View.VISIBLE : View.INVISIBLE);
-
-        adjustBackgroundImageSizes();
-        initScroller();
 
         if (BuildConfig.DEBUG && "debug".equals(BuildConfig.BUILD_TYPE) && !TextUtils.isEmpty(BuildConfig.API_TEST_USER)) {
             // Ибо заебал
-            String req[] = new String[]{
-                    Constants.URL_SESSION, BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS
-            };
-            postSession = new POSTSession(LoginActivity.this);
-            postSession.execute(req);
+            //attemptLogin(BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS);
         }
     }
 
@@ -155,23 +155,13 @@ public class LoginActivity extends Activity {
                     attemptLogin();
                     break;
                 case R.id.ivDelete:
-                    actvLogin.setText("");
+                    mLoginTextView.setText("");
                     break;
                 case R.id.tvForgot:
-                    mVibrator.vibrate(VIBRATE_TIME_MS);
-                    //запрос капчи
-                    //requestData[0] = Urls.URL + Urls.URL_CAPTCHA;
-//				requestData[1] = "300";
-//      			requestData[2] = "150";
-//      			postCaptcha = new POSTCaptcha(activity);
-//    			postCaptcha.execute(requestData);
-
-                    //одноразовый пароль
-                    requestData[0] = Constants.URL_OTP;
-                    requestData[1] = actvLogin.getText().toString();
-                    postOtp = new POSTOtp(LoginActivity.this);
-                    postOtp.execute(requestData);
+                    sendOneTimePassword();
                     break;
+                default:
+                    throw new IllegalStateException();
             }
         }
     };
@@ -228,31 +218,155 @@ public class LoginActivity extends Activity {
         });
     }
 
+    private void setProgress(boolean inProgress) {
+        mProgress.setVisibility(inProgress ? View.VISIBLE : View.INVISIBLE);
+        mLoginTextView.setEnabled(!inProgress);
+        mPasswordView.setEnabled(!inProgress);
+        mForgotButton.setEnabled(!inProgress);
+        mClearLoginButton.setEnabled(!inProgress);
+        mAuthButton.setEnabled(!inProgress && isFormReadyToSend());
+    }
+
     private void attemptLogin() {
         if (!validateForm()) return;
 
         mVibrator.vibrate(VIBRATE_TIME_MS);
-        loginsArray.add(actvLogin.getText().toString());
+        mLogins.add(mLoginTextView.getText().toString());
         persistLogins();
+        attemptLogin(mLoginTextView.getText().toString(), mPasswordView.getText().toString());
+    }
 
-        //создание сессии по логину и паролю
-        requestData[0] = Constants.URL_SESSION;
-        requestData[1] = actvLogin.getText().toString();
-        requestData[2] = etPassword.getText().toString();
-        postSession = new POSTSession(LoginActivity.this);
-        postSession.execute(requestData);
+    private void attemptLogin(final String login, final String password) {
+
+        new ApiRequestTask<AuthModel>() {
+
+            @Override
+            protected void doRequest(Callback<AuthModel> callback) {
+                mApiSessions.auth(new AuthCreateModel(login, password), callback);
+            }
+
+            @Nullable
+            @Override
+            protected Activity getActivity() {
+                return LoginActivity.this;
+            }
+
+            @Override
+            protected void onFailure(NetworkUtils.ResponseErrorException error) {
+                if (DBG) Log.v(TAG, "auth error", error);
+                Toast toast;
+                CharSequence errMsg;
+
+                errMsg = error.getErrorDescription();
+                if (TextUtils.isEmpty(errMsg)) {
+                    switch (error.getHttpStatus()) {
+                        case 400:
+                            errMsg = getText(R.string.bad_password);
+                            break;
+                        case 404:
+                            errMsg = getText(R.string.user_not_found);
+                            break;
+                        default:
+                            errMsg = getText(R.string.network_error);
+                            break;
+                    }
+                }
+
+                toast = Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 0, 50);
+                toast.show();
+                setProgress(false);
+            }
+
+            @Override
+            protected void onCancelled() {
+                if (DBG) Toast.makeText(LoginActivity.this, R.string.canceled, Toast.LENGTH_SHORT).show();
+                setProgress(false);
+            }
+
+            @Override
+            protected void onSuccess(AuthModel response, Response responseRaw) {
+                if (DBG) Log.v(TAG, "auth success ");
+                Session.getInstance().bearer = response.token;
+                mPasswordView.setText("");
+                mLoginTextView.setText("");
+                mForgotButton.setVisibility(View.INVISIBLE);
+                setProgress(false);
+
+                //запуск основной Activity
+                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                intent.putExtra("token", response.token);
+                intent.putExtra("userId", response.userId);
+                intent.putExtra("timeout", String.valueOf(response.timeout));
+                startActivityForResult(intent, ACT_MENU);
+                overridePendingTransition(0, 0);
+            }
+        }.execute();
+        setProgress(true);
+    }
+
+    private void sendOneTimePassword() {
+        if (TextUtils.isEmpty(mLoginTextView.getText())) return;
+        final String login = mLoginTextView.getText().toString();
+        mVibrator.vibrate(VIBRATE_TIME_MS);
+
+        setProgress(true);
+        new ApiRequestTask<Void>() {
+
+            @Override
+            protected void doRequest(Callback<Void> callback) {
+                mApiSessions.sendOneTimePassword(new OneTimePassword.Request(login), callback);
+            }
+
+            @Nullable
+            @Override
+            protected Activity getActivity() {
+                return LoginActivity.this;
+            }
+
+            @Override
+            protected void onFailure(NetworkUtils.ResponseErrorException error) {
+                if (DBG) Log.v(TAG, "sendOneTimePassword error", error);
+                setProgress(false);
+                if (error.getHttpStatus() >= 200 && error.getHttpStatus() < 300) {
+                    // Ignore malformed JSON ("")
+                    onSuccess(null, error.getRetrofitError().getResponse());
+                } else {
+                    CharSequence errText = error.getErrorDescription(getText(R.string.failed_to_send_one_time_password));
+                    Toast toast = Toast.makeText(LoginActivity.this, errText, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP, 0, 50);
+                    toast.show();
+                    setProgress(false);
+                }
+            }
+
+            @Override
+            protected void onCancelled() {
+                if (DBG) Toast.makeText(LoginActivity.this, R.string.canceled, Toast.LENGTH_SHORT).show();
+                setProgress(false);
+            }
+
+            @Override
+            protected void onSuccess(Void aVoid, Response response) {
+                Toast toast = Toast.makeText(LoginActivity.this, getString(R.string.pass_sent,
+                        mLoginTextView.getText().toString()), Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 0, 50);
+                toast.show();
+                setProgress(false);
+            }
+        }.execute();
     }
 
     //Проверка логина и пароля на пустоту
     public boolean validateForm() {
         boolean result;
 
-        if (TextUtils.isEmpty(actvLogin.getText())) {
-            actvLogin.setError(getText(R.string.error_field));
+        if (TextUtils.isEmpty(mLoginTextView.getText())) {
+            mLoginTextView.setError(getText(R.string.error_field));
             result = false;
         } else result = true;
-        if (TextUtils.isEmpty(etPassword.getText())) {
-            if (result) etPassword.setError(getText(R.string.error_field));
+        if (TextUtils.isEmpty(mPasswordView.getText())) {
+            if (result) mPasswordView.setError(getText(R.string.error_field));
             result = false;
         } else result = true;
 
@@ -260,13 +374,13 @@ public class LoginActivity extends Activity {
     }
 
     private boolean isFormReadyToSend() {
-        String s = actvLogin.getText().toString();
+        String s = mLoginTextView.getText().toString();
         return s.contains("@") || mLooksLikePhoneMatcher.reset(s).matches();
     }
 
     private void persistLogins() {
         Set<String> newLogin = new HashSet<>();
-        for (String n : loginsArray) newLogin.add(n);
+        for (String n : mLogins) newLogin.add(n);
         getSharedPreferences(APP_PREF, MODE_PRIVATE)
                 .edit()
                 .putStringSet(PREFS_KEY_LOGINS, newLogin)
@@ -276,7 +390,7 @@ public class LoginActivity extends Activity {
     private void loadLogins() {
         SharedPreferences preferences = getSharedPreferences(APP_PREF, MODE_PRIVATE);
         Set<String> logins = preferences.getStringSet(PREFS_KEY_LOGINS, Collections.<String>emptySet());
-        loginsArray.addAll(logins);
+        mLogins.addAll(logins);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -289,46 +403,6 @@ public class LoginActivity extends Activity {
         }
     }
 
-    public void sessionResult(String[] httpResult) {
-        if (httpResult[0].equals("200")) {
-            String idData[] = {"", "", ""};
-            idData = JSONParsing.session(httpResult[1]);
-            token = idData[1];//вместо Bearer после авторизации
-            userId = idData[0];
-            etPassword.setText("");
-            actvLogin.setText("");
-            tvForgot.setVisibility(View.INVISIBLE);
-            Session.bearer = token;
-
-            //запуск основной Activity
-            Intent intent = new Intent(this, MenuActivity.class);
-            intent.putExtra("token", token);
-            intent.putExtra("userId", userId);
-            intent.putExtra("timeout", idData[2]);
-            startActivityForResult(intent, ACT_MENU);
-        } else if (httpResult[0].equals("400")) {
-            Toast toast = Toast.makeText(this, getString(R.string.bad_password),
-                    Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 0, 50);
-            toast.show();
-        } else if (httpResult[0].equals("404")) {
-            Toast toast = Toast.makeText(this, getString(R.string.user_not_found),
-                    Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 0, 50);
-            toast.show();
-        }
-    }
-
-    //Ответ на запрос одноразового пароля
-    public void otpResult(String[] httpRes) {
-        if (httpRes[0].equals("200")) {
-            Toast toast = Toast.makeText(this, getString(R.string.pass_sent,
-                    actvLogin.getText().toString()), Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 0, 50);
-            toast.show();
-        }
-    }
-
     //Проверка доступа в Инет
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -336,4 +410,3 @@ public class LoginActivity extends Activity {
         return ni != null;
     }
 }
-

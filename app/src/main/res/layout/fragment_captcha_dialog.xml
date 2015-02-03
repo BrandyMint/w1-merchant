@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
+            android:text="@string/enter_captcha_hint"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/captcha_image"
+            android:layout_width="@dimen/captcha_width"
+            android:layout_height="@dimen/captcha_height"
+            android:layout_below="@id/hint"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/image_loading_drawable"
+            tools:ignore="ContentDescription" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/captcha_image"
+            android:layout_alignLeft="@id/captcha_image"
+            android:layout_alignRight="@id/captcha_image"
+            android:layout_alignTop="@id/captcha_image"
+            android:layout_gravity="center" />
+
+        <EditText
+            android:id="@+id/captcha_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/captcha_image"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@null"
+            android:gravity="center_vertical|center_horizontal"
+            android:imeOptions="actionDone"
+            android:inputType="text|textNoSuggestions|textFilter"
+            android:minHeight="48dp"
+            android:minWidth="100dp"
+            android:singleLine="true"
+            android:textScaleX="1.1"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="5A2gSv">
+
+            <requestFocus />
+        </EditText>
+
+
+    </RelativeLayout>
+</ScrollView>

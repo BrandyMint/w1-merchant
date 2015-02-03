@@ -28,7 +28,7 @@
     <string name="add">Добавить</string>
     <string name="output">Вывод</string>
     <string name="output_cash">Вывод средств</string>
-    <string name="login">Телефон или емаил</string>
+    <string name="login">Телефон или емайл</string>
 	<string name="password">Пароль</string>
 	<string name="logo_text">Для бизнеса</string>
 	<string name="authorization">Авторизоваться</string>
@@ -60,6 +60,7 @@
 	<string name="status">Статус</string>
 	<string name="user_not_found">Не корректный емайл или телефон</string>
 	<string name="bad_password">Пароль пользователя не соответствует</string>
+    <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
 	<string name="input_captcha">Введите текст с картинки</string>
 	<string name="send">Отправить</string>
@@ -187,5 +188,13 @@
 
     <string name="images_directory">Pictures</string>
     <string name="remove_attachment">Удалить вложение</string>
+
+    <string name="enter_captcha_dialog_title">Введите код с картинки</string>
+    <string name="enter_captcha_hint">Введите код с картинки для продолжения</string>
+
+    <string name="network_error">Ошибка сети. Попробуйте позже.</string>
+    <string name="enter_captcha_error">Введите код с картинки</string>
+    <string name="refresh">Обновить</string>
+    <string name="captcha_wrong_code">Неверный код, попробуйте ещё раз</string>
 
 </resources>

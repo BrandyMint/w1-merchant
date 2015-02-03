@@ -35,6 +35,9 @@ android {
         buildConfigField "String", "API_SERVER_ADDRESS",
                 project.ext.private.getProperty("ApiServerAddress",
                         "\"https://api.w1.ru/OpenApi/\"")
+        buildConfigField "String", "API_APP_BEARER",
+                project.ext.private.getProperty("ApiAppBearer",
+                        "\"{54344285-82DA-42EA-B7D0-0C9B978FFD89}\"")
         buildConfigField "String", "API_TEST_USER",
                 project.ext.private.getProperty("ApiTestUser",
                         "\"\"")

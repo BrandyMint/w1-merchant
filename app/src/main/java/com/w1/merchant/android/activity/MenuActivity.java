@@ -55,6 +55,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DashSupport;
 import com.w1.merchant.android.extra.DialogExit;
 import com.w1.merchant.android.extra.InvoiceSupport;
@@ -744,6 +745,7 @@ public class MenuActivity extends FragmentActivity {
     	requestData[1] = token;
     	httpDELETE = new HttpDELETE(this);
 		httpDELETE.execute(requestData);
+        Session.getInstance().clear();
 	}
     
   //ответ выписка

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,13 +21,13 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.model.SupportTicket;
 import com.w1.merchant.android.model.SupportTickets;
 import com.w1.merchant.android.service.ApiSupport;
+import com.w1.merchant.android.service.ApiRequestTask;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.viewextended.DividerItemDecoration;
 
 import java.util.List;
 
 import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
@@ -234,23 +235,42 @@ public class TicketListFragment extends Fragment {
         }
 
         setStatusLoading();
-        mApiSupport.getTickets(new Callback<SupportTickets>() {
+
+        ApiRequestTask<SupportTickets> rq = new ApiRequestTask<SupportTickets>() {
             @Override
-            public void success(SupportTickets supportTickets, Response response) {
-                mLoading = false;
-                if (mListView == null) return;
-                if (mAdapter != null) mAdapter.setTickets(supportTickets.items);
-                setStatusReady();
+            protected void doRequest(Callback<SupportTickets> callback) {
+                mApiSupport.getTickets(callback);
+            }
+
+            @Nullable
+            @Override
+            protected Activity getActivity() {
+                return TicketListFragment.this.getActivity();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            protected void onFailure(NetworkUtils.ResponseErrorException error) {
                 mLoading = false;
                 if (mListView == null) return;
                 setStatusFailure(getResources().getString(R.string.load_ticket_list_error));
                 if (mListener != null) mListener.notifyError(getResources().getString(R.string.load_ticket_list_error), error);
             }
-        });
+
+            @Override
+            protected void onCancelled() {
+            }
+
+            @Override
+            protected void onSuccess(SupportTickets supportTickets, Response response) {
+                mLoading = false;
+                if (mListView == null) return;
+                if (mAdapter != null) mAdapter.setTickets(supportTickets.items);
+                setStatusReady();
+            }
+        };
+
+        rq.execute();
+
     }
 
 
