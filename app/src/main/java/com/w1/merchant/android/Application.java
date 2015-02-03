@@ -2,9 +2,8 @@ package com.w1.merchant.android;
 
 import android.os.StrictMode;
 
+import com.w1.merchant.android.utils.FontManager;
 import com.w1.merchant.android.utils.NetworkUtils;
-
-import java.util.Locale;
 
 public class Application extends android.app.Application {
     @Override
@@ -24,6 +23,6 @@ public class Application extends android.app.Application {
 
         super.onCreate();
         NetworkUtils.getInstance().onAppInit(this);
-        Locale.setDefault(Locale.US);
+        FontManager.onAppInit(this);
     }
 }	

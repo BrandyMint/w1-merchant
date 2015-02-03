@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -41,6 +40,7 @@ import com.w1.merchant.android.extra.DialogTimeout;
 import com.w1.merchant.android.request.JSONParsing;
 import com.w1.merchant.android.request.POSTOtp;
 import com.w1.merchant.android.request.POSTSession;
+import com.w1.merchant.android.utils.FontManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,9 +59,6 @@ public class LoginActivity extends Activity {
 	POSTOtp postOtp;
 	String[] requestData = { "", "", "", "", "", "" };
 	String token, userId;
-	public static Typeface w1Rouble;
-	public static Typeface tfRobotoLight;
-	public static Typeface tfRobotoThin;
 	public final String APP_PREF = "W1_Pref";
 	SharedPreferences sPref;
 	public ProgressBar pbLogin;
@@ -88,20 +85,13 @@ public class LoginActivity extends Activity {
 			dlgNoInet.show(getFragmentManager(), "dlgNoInet");
 		}
 		v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-		w1Rouble = Typeface.createFromAsset(getAssets(),
-				"fonts/W1Rouble-Regular.otf");
-		tfRobotoLight = Typeface.createFromAsset(getAssets(),
-				"fonts/Roboto-Light.ttf");
-		tfRobotoThin = Typeface.createFromAsset(getAssets(),
-				"fonts/Roboto-Thin.ttf");
 		
 		sPref = getSharedPreferences(APP_PREF, MODE_PRIVATE);
 		
 		pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
 		tvAuth = (TextView) findViewById(R.id.tvAuth);
 		tvLogoText = (TextView) findViewById(R.id.tvLogoText);
-		tvLogoText.setTypeface(tfRobotoLight);
+		tvLogoText.setTypeface(FontManager.getInstance().getLightFont());
 
 		actvLogin = (AutoCompleteTextView) findViewById(R.id.actvLogin);
 		logins = sPref.getStringSet("logins", new HashSet<String>());
@@ -129,7 +119,7 @@ public class LoginActivity extends Activity {
 			}
 		});
 		actvLogin.addTextChangedListener(twLogin);
-		
+
 		//"Забыл" появляется при наведении фокуса
 		etPassword = (EditText) findViewById(R.id.etPassword);
 		etPassword.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -180,41 +170,12 @@ public class LoginActivity extends Activity {
 		tvAuth.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-
+                attemptLogin();
 			}
 		});
 
         adjustBackgroundImageSizes();
-
-        final View activityRootView = findViewById(R.id.root);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            private boolean imeKeyboardShown;
-
-            @Override
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-                //r will be populated with the coordinates of your view that area still visible.
-                activityRootView.getWindowVisibleDisplayFrame(r);
-                int heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    if (!imeKeyboardShown) {
-                        imeKeyboardShown = true;
-                        final ScrollView scrollView = (ScrollView)findViewById(R.id.scroll_view);
-                        scrollView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight());
-                            }
-                        }, 64);
-                    }
-                } else {
-                    if (imeKeyboardShown) {
-                        imeKeyboardShown = false;
-                    }
-                }
-            }
-        });
-
+        initScroller();
 
         if (BuildConfig.DEBUG && "debug".equals(BuildConfig.BUILD_TYPE) && !TextUtils.isEmpty(BuildConfig.API_TEST_USER)) {
             // Ибо заебал
@@ -243,6 +204,37 @@ public class LoginActivity extends Activity {
                     bottomView.setLayoutParams(lp);
                 }
                 return false;
+            }
+        });
+    }
+
+    private void initScroller() {
+        final View activityRootView = findViewById(R.id.root);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            private boolean imeKeyboardShown;
+
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                //r will be populated with the coordinates of your view that area still visible.
+                activityRootView.getWindowVisibleDisplayFrame(r);
+                int heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    if (!imeKeyboardShown) {
+                        imeKeyboardShown = true;
+                        final ScrollView scrollView = (ScrollView)findViewById(R.id.scroll_view);
+                        scrollView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight());
+                            }
+                        }, 64);
+                    }
+                } else {
+                    if (imeKeyboardShown) {
+                        imeKeyboardShown = false;
+                    }
+                }
             }
         });
     }
