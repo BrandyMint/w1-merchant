@@ -38,7 +38,9 @@ import com.w1.merchant.android.extra.DialogNoInet;
 import com.w1.merchant.android.extra.DialogTimeout;
 import com.w1.merchant.android.model.AuthCreateModel;
 import com.w1.merchant.android.model.AuthModel;
+import com.w1.merchant.android.model.AuthPrincipalRequest;
 import com.w1.merchant.android.model.OneTimePassword;
+import com.w1.merchant.android.model.PrincipalUser;
 import com.w1.merchant.android.service.ApiRequestTask;
 import com.w1.merchant.android.service.ApiSessions;
 import com.w1.merchant.android.utils.NetworkUtils;
@@ -46,6 +48,7 @@ import com.w1.merchant.android.utils.NetworkUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -236,73 +239,116 @@ public class LoginActivity extends Activity {
         attemptLogin(mLoginTextView.getText().toString(), mPasswordView.getText().toString());
     }
 
+    private abstract class ApiSubrequestTask<T> extends ApiRequestTask<T> {
+
+        @Nullable
+        @Override
+        protected Activity getActivity() {
+            return LoginActivity.this;
+        }
+
+        @Override
+        protected void onFailure(NetworkUtils.ResponseErrorException error) {
+            if (DBG) Log.v(TAG, "auth error", error);
+            Toast toast;
+            CharSequence errMsg;
+
+            errMsg = error.getErrorDescription();
+            if (TextUtils.isEmpty(errMsg)) {
+                switch (error.getHttpStatus()) {
+                    case 400:
+                        errMsg = getText(R.string.bad_password);
+                        break;
+                    case 404:
+                        errMsg = getText(R.string.user_not_found);
+                        break;
+                    default:
+                        errMsg = getText(R.string.network_error);
+                        break;
+                }
+            }
+
+            toast = Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP, 0, 50);
+            toast.show();
+            setProgress(false);
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (DBG) Toast.makeText(LoginActivity.this, R.string.canceled, Toast.LENGTH_SHORT).show();
+            setProgress(false);
+        }
+    }
+
     private void attemptLogin(final String login, final String password) {
 
-        new ApiRequestTask<AuthModel>() {
+        new ApiSubrequestTask<AuthModel>() {
 
             @Override
             protected void doRequest(Callback<AuthModel> callback) {
                 mApiSessions.auth(new AuthCreateModel(login, password), callback);
             }
 
-            @Nullable
-            @Override
-            protected Activity getActivity() {
-                return LoginActivity.this;
-            }
-
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                if (DBG) Log.v(TAG, "auth error", error);
-                Toast toast;
-                CharSequence errMsg;
-
-                errMsg = error.getErrorDescription();
-                if (TextUtils.isEmpty(errMsg)) {
-                    switch (error.getHttpStatus()) {
-                        case 400:
-                            errMsg = getText(R.string.bad_password);
-                            break;
-                        case 404:
-                            errMsg = getText(R.string.user_not_found);
-                            break;
-                        default:
-                            errMsg = getText(R.string.network_error);
-                            break;
-                    }
-                }
-
-                toast = Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, 50);
-                toast.show();
-                setProgress(false);
-            }
-
-            @Override
-            protected void onCancelled() {
-                if (DBG) Toast.makeText(LoginActivity.this, R.string.canceled, Toast.LENGTH_SHORT).show();
-                setProgress(false);
-            }
 
             @Override
             protected void onSuccess(AuthModel response, Response responseRaw) {
                 if (DBG) Log.v(TAG, "auth success ");
                 Session.getInstance().bearer = response.token;
-                mPasswordView.setText("");
-                mLoginTextView.setText("");
-                mForgotButton.setVisibility(View.INVISIBLE);
-                setProgress(false);
-
-                //запуск основной Activity
-                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                intent.putExtra("token", response.token);
-                intent.putExtra("userId", response.userId);
-                intent.putExtra("timeout", String.valueOf(response.timeout));
-                startActivityForResult(intent, ACT_MENU);
-                overridePendingTransition(0, 0);
+                requestPrincipalUsers(response);
             }
         }.execute();
         setProgress(true);
+    }
+
+    void requestPrincipalUsers(final AuthModel authModel) {
+        new ApiSubrequestTask<List<PrincipalUser>>() {
+
+            @Override
+            protected void doRequest(Callback<List<PrincipalUser>> callback) {
+                mApiSessions.getPrincipalUsers(callback);
+            }
+
+            @Override
+            protected void onSuccess(List<PrincipalUser> principalUsers, Response response) {
+                if (principalUsers == null || principalUsers.isEmpty()) {
+                    onAuthDone(authModel);
+                } else {
+                    selectPrincipal(principalUsers.get(0));
+                }
+            }
+        }.execute();
+    }
+
+    void selectPrincipal(final PrincipalUser user) {
+        new ApiSubrequestTask<AuthModel>() {
+
+            @Override
+            protected void doRequest(Callback<AuthModel> callback) {
+                mApiSessions.authPrincipal(new AuthPrincipalRequest(user.principalUserId), callback);
+            }
+
+            @Override
+            protected void onSuccess(AuthModel authModel, Response response) {
+                onAuthDone(authModel);
+            }
+        }.execute();
+    }
+
+    private void onAuthDone(AuthModel authModel) {
+        Session.getInstance().bearer = authModel.token;
+        mPasswordView.setText("");
+        mLoginTextView.setText("");
+        mForgotButton.setVisibility(View.INVISIBLE);
+        setProgress(false);
+
+        //запуск основной Activity
+        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+        intent.putExtra("token", authModel.token);
+        intent.putExtra("userId", authModel.userId);
+        intent.putExtra("timeout", String.valueOf(authModel.timeout));
+        startActivityForResult(intent, ACT_MENU);
+        overridePendingTransition(0, 0);
     }
 
     private void sendOneTimePassword() {
