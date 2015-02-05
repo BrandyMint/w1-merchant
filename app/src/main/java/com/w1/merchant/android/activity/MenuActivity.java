@@ -85,17 +85,17 @@ public class MenuActivity extends FragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private String[] menuItems;
-    
+
     private static final int ACT_ADD = 1;
-    
+
     private static final int FRAGMENT_USERENTRY = 1;
     private static final int FRAGMENT_INVOICE = 2;
     public static final int FRAGMENT_DASH = 3;
-    
+
     public final int PLOT_24 = 1;
     public final int PLOT_WEEK = 2;
     public final int PLOT_30 = 3;
-    
+
     public static final String ATTRIBUTE_NAME_NUMBER = "number";
     public static final String ATTRIBUTE_NAME_DATE = "date";
     public static final String ATTRIBUTE_NAME_IMAGE = "image";
@@ -103,37 +103,36 @@ public class MenuActivity extends FragmentActivity {
     public static final String ATTRIBUTE_NAME_DESCR = "descr";
     public static final String ATTRIBUTE_NAME_STATE = "state";
     public static final String ATTRIBUTE_NAME_RUBL = "rubl";
-	
-	String[] from = { ATTRIBUTE_NAME_NUMBER, ATTRIBUTE_NAME_DATE,
-			ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_AMOUNT,
-			ATTRIBUTE_NAME_DESCR, ATTRIBUTE_NAME_STATE,
-			ATTRIBUTE_NAME_RUBL};
-	int[] to = { R.id.tvNumber, R.id.tvDate, R.id.ivIcon,
-			R.id.tvAmount, R.id.tvDescr, R.id.tvState, R.id.tvRubl };
-    
+
+    String[] from = {ATTRIBUTE_NAME_NUMBER, ATTRIBUTE_NAME_DATE,
+            ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_AMOUNT,
+            ATTRIBUTE_NAME_DESCR, ATTRIBUTE_NAME_STATE,
+            ATTRIBUTE_NAME_RUBL};
+    int[] to = {R.id.tvNumber, R.id.tvDate, R.id.ivIcon,
+            R.id.tvAmount, R.id.tvDescr, R.id.tvState, R.id.tvRubl};
+
     ImageView ivAccountIcon;
-    Intent intent;
     HttpDELETE httpDELETE;
-    String[] requestData = { "", "", "", "" };
-    String[] requestData2 = { "", "", "", "" };
+    String[] requestData = {"", "", "", ""};
+    String[] requestData2 = {"", "", "", ""};
     GETBalance getBalance;
     GETProfile getProfile;
     GETTemplateList getTemplateList;
-    int	sumInc = 0;
+    int sumInc = 0;
     int comisInc = 0;
-    int	sumOut = 0;
+    int sumOut = 0;
     int comisOut = 0;
     public String waitSum = "";
     public String percentDay = "";
-    public String percentWeek = ""; 
+    public String percentWeek = "";
     public String percentMonth = "";
     public String filter = "";
     public String nativeCurrency = "";
-    public ArrayList<Map<String, Object>> dataUserEntry, 
-    	dataDash, dataInvoice;
+    public ArrayList<Map<String, Object>> dataUserEntry,
+            dataDash, dataInvoice;
     public ArrayList<Integer> dataPlotDay, dataPlotWeek, dataPlotMonth;
-    public ArrayList<String> dataPlotDayX, dataPlotWeekX, 
-    		dataPlotMonthX, dataDayWeekMonth, dataDWMCurrency;
+    public ArrayList<String> dataPlotDayX, dataPlotWeekX,
+            dataPlotMonthX, dataDayWeekMonth, dataDWMCurrency;
     public ArrayList<String[]> dataTemplate, dataPeriod, dataBalance;
     UserEntrySupport userEntrySupport;
     DashSupport dashSupport;
@@ -144,50 +143,49 @@ public class MenuActivity extends FragmentActivity {
     int currPageUETotal = 0;
     public int currentPlot = 0;
     UserEntryFragment fragmentUserEntry;
-	DashFragment fragmentDash;
-	InvoiceFragment fragmentInvoice;
-	TemplateFragment fragmentTemplate;
+    DashFragment fragmentDash;
+    InvoiceFragment fragmentInvoice;
+    TemplateFragment fragmentTemplate;
     LinearLayout llHeader;
     TextView tvBack, tvDate, tvNext, tvName, tvUrl;
-	int current = 0;
-	int totalReq = 0;
-	int day0, month0, year0, day1, month1, year1;
-	DatePicker dp1;
-	public String token, userId, timeout;
-	ProgressBar progressBar;
-	private SearchView mSearchView;
-	DialogFragment dlgExit;
-	public boolean accountTypeId = false;
-	ViewPager vpCurrency;
-	PagerAdapter currencyPagerAdapter;
-	ArrayList<String> currSumNames;
-	ArrayList<String> currRubls;
-	ArrayList<String> currCodes;
-	
+    int current = 0;
+    int totalReq = 0;
+    int day0, month0, year0, day1, month1, year1;
+    DatePicker dp1;
+    public String token, userId, timeout;
+    ProgressBar progressBar;
+    DialogFragment dlgExit;
+    public boolean accountTypeId = false;
+    ViewPager vpCurrency;
+    PagerAdapter currencyPagerAdapter;
+    ArrayList<String> currSumNames;
+    ArrayList<String> currRubls;
+    ArrayList<String> currCodes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        intent = getIntent();
+
+        Intent intent = getIntent();
         token = intent.getStringExtra("token");
         userId = intent.getStringExtra("userId");
         timeout = intent.getStringExtra("timeout");
-        
+
         Timer myTimer;
-    	myTimer = new Timer();
-    	myTimer.schedule(new TimerTask() {
-			
-			@Override
-			public void run() {
-				Intent intent = new Intent();
-			    setResult(RESULT_OK, intent);
-				exit();
-			}
-		}, Integer.parseInt(timeout) * 1000);
-        
+        myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
+                exit();
+            }
+        }, Integer.parseInt(timeout) * 1000);
+
         dlgExit = new DialogExit();
-        
+
         // create new ProgressBar and style it
         progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
@@ -214,16 +212,16 @@ public class MenuActivity extends FragmentActivity {
                 observer.removeGlobalOnLayoutListener(this);
             }
         });
-        
+
         userEntrySupport = new UserEntrySupport(this);
         dashSupport = new DashSupport(this);
         invoiceSupport = new InvoiceSupport(this);
-        
+
         fragmentUserEntry = new UserEntryFragment();
         fragmentDash = new DashFragment();
         fragmentInvoice = new InvoiceFragment();
         fragmentTemplate = new TemplateFragment();
-        
+
         dataPlotDay = new ArrayList<>();
         dataPlotWeek = new ArrayList<>();
         dataPlotMonth = new ArrayList<>();
@@ -236,9 +234,9 @@ public class MenuActivity extends FragmentActivity {
         dataDayWeekMonth = new ArrayList<>();
         dataDWMCurrency = new ArrayList<>();
         currSumNames = new ArrayList<>();
-    	currRubls = new ArrayList<>();
-    	currCodes = new ArrayList<>();
-        
+        currRubls = new ArrayList<>();
+        currCodes = new ArrayList<>();
+
         getProfile();
 
         menuItems = getResources().getStringArray(R.array.menu_array);
@@ -248,7 +246,7 @@ public class MenuActivity extends FragmentActivity {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        
+
         //шапка меню
         LayoutInflater inflater = getLayoutInflater();
         llHeader = (LinearLayout) inflater.inflate(R.layout.header_menu, null);
@@ -258,24 +256,24 @@ public class MenuActivity extends FragmentActivity {
         tvUrl = (TextView) findViewById(R.id.tvUrl);
         final String ATTRIBUTE_NAME_TEXT = "text";
         final String ATTRIBUTE_NAME_IMAGE = "image";
-        int[] img = { R.drawable.menu_dashboard, R.drawable.menu_account,
-        		R.drawable.menu_check, R.drawable.menu_output,
+        int[] img = {R.drawable.menu_dashboard, R.drawable.menu_account,
+                R.drawable.menu_check, R.drawable.menu_output,
                 R.drawable.menu_support,
                 R.drawable.menu_settings
         };
         ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(6);
         Map<String, Object> m;
         for (int i = 0; i < 6; i++) {
-	          m = new HashMap<String, Object>();
-	          m.put(ATTRIBUTE_NAME_TEXT, getResources().getStringArray(R.array.menu_array)[i]);
-	          m.put(ATTRIBUTE_NAME_IMAGE, img[i]);
-	          data.add(m);
+            m = new HashMap<String, Object>();
+            m.put(ATTRIBUTE_NAME_TEXT, getResources().getStringArray(R.array.menu_array)[i]);
+            m.put(ATTRIBUTE_NAME_IMAGE, img[i]);
+            data.add(m);
         }
-        String[] from = { ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE };
-        int[] to = { R.id.tvText, R.id.ivImg };
+        String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE};
+        int[] to = {R.id.tvText, R.id.ivImg};
         SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.menu_item,
-            from, to);
-        
+                from, to);
+
         mDrawerList.setAdapter(sAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -284,33 +282,33 @@ public class MenuActivity extends FragmentActivity {
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setCustomView(R.layout.action_bar_rubl2);
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM |
-        		ActionBar.DISPLAY_SHOW_HOME |
-        		ActionBar.DISPLAY_HOME_AS_UP);
+                ActionBar.DISPLAY_SHOW_HOME |
+                ActionBar.DISPLAY_HOME_AS_UP);
         vpCurrency = (ViewPager) getActionBar().getCustomView().
-        		findViewById(R.id.vpCurrency);
+                findViewById(R.id.vpCurrency);
         vpCurrency.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			@Override
-			public void onPageSelected(int arg0) {
-				//меняем валюту
-				nativeCurrency = currCodes.get(arg0);
-				currentPage = 1;
-				clearDataArrays();
-				//запрос списка и данных для графика
-		       	dashSupport.getData(currentPage, token, nativeCurrency);
-		       	currPageUEGraph = 1;
-			    dashSupport.getDataPeriod(getDate60DaysAgo(), token,
-			    		nativeCurrency, currPageUEGraph + "");
-			}
-			
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-			}
-			
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-			}
-		});
-        
+            @Override
+            public void onPageSelected(int arg0) {
+                //меняем валюту
+                nativeCurrency = currCodes.get(arg0);
+                currentPage = 1;
+                clearDataArrays();
+                //запрос списка и данных для графика
+                dashSupport.getData(currentPage, token, nativeCurrency);
+                currPageUEGraph = 1;
+                dashSupport.getDataPeriod(getDate60DaysAgo(), token,
+                        nativeCurrency, currPageUEGraph + "");
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
+
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -319,7 +317,7 @@ public class MenuActivity extends FragmentActivity {
                 R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
-                ) {
+        ) {
             public void onDrawerClosed(View view) {
                 //getActionBar().setTitle(mTitle);
 //                tvABName.setText(mTitle);
@@ -345,81 +343,81 @@ public class MenuActivity extends FragmentActivity {
 
     //запрос баланса
     public void getBalance() {
-    	requestData2[0] = Constants.URL_BALANCE;
+        requestData2[0] = Constants.URL_BALANCE;
         requestData2[1] = token;
         requestData2[2] = "";
-		getBalance = new GETBalance(this);
-		getBalance.execute(requestData2);
+        getBalance = new GETBalance(this);
+        getBalance.execute(requestData2);
     }
-    
+
     //ответ на запрос баланса
     public void setBalance(ArrayList<String[]> result) {
-    	currSumNames.clear();
-    	currRubls.clear();
-    	currCodes.clear();
-    	dataBalance = result;
-    	waitSum = "";
-    	for (int i = 0; i < result.size(); i++) {
-    		String[] line = { "", "", "", "", "" };
-    		line = result.get(i);
-    			if (line[1].equals("RUB")) {
-	    			currSumNames.add(getString(R.string.balance) + " " + line[2]);
-	    			currRubls.add("B");
-    			} else {
-    				if (!line[2].equals("0")) {
-	    				currSumNames.add(getString(R.string.balance) + " " +
-	    						line[2] + " " + line[1]);
-		    			currRubls.add("");
-    				}
-    			}
-    			currCodes.add(line[0]);
-			if (!line[3].equals("0")) {
-    			waitSum += line[3] + " " + line[1] + ", ";
-    		}
-    		if (line[4].equals("true")) {
-    			if (nativeCurrency.isEmpty()) {
-    				nativeCurrency = line[0];
-    			}
-    		}
-		}
-    	if (waitSum.endsWith(", ")) {
-    		waitSum = waitSum.substring(0, waitSum.length() - 2);
-    	}
-    	currencyPagerAdapter = new ViewPagerAdapter(this, 
-    			currSumNames, currRubls);
-    	vpCurrency.setAdapter(currencyPagerAdapter);
-    	//запрос списка и данных для графика
-       	dashSupport.getData(currentPage, token, nativeCurrency);
-       	currPageUEGraph = 1;
-	    dashSupport.getDataPeriod(getDate60DaysAgo(), token,
-	    		nativeCurrency, currPageUEGraph + "");
+        currSumNames.clear();
+        currRubls.clear();
+        currCodes.clear();
+        dataBalance = result;
+        waitSum = "";
+        for (int i = 0; i < result.size(); i++) {
+            String[] line = {"", "", "", "", ""};
+            line = result.get(i);
+            if (line[1].equals("RUB")) {
+                currSumNames.add(getString(R.string.balance) + " " + line[2]);
+                currRubls.add("B");
+            } else {
+                if (!line[2].equals("0")) {
+                    currSumNames.add(getString(R.string.balance) + " " +
+                            line[2] + " " + line[1]);
+                    currRubls.add("");
+                }
+            }
+            currCodes.add(line[0]);
+            if (!line[3].equals("0")) {
+                waitSum += line[3] + " " + line[1] + ", ";
+            }
+            if (line[4].equals("true")) {
+                if (nativeCurrency.isEmpty()) {
+                    nativeCurrency = line[0];
+                }
+            }
+        }
+        if (waitSum.endsWith(", ")) {
+            waitSum = waitSum.substring(0, waitSum.length() - 2);
+        }
+        currencyPagerAdapter = new ViewPagerAdapter(this,
+                currSumNames, currRubls);
+        vpCurrency.setAdapter(currencyPagerAdapter);
+        //запрос списка и данных для графика
+        dashSupport.getData(currentPage, token, nativeCurrency);
+        currPageUEGraph = 1;
+        dashSupport.getDataPeriod(getDate60DaysAgo(), token,
+                nativeCurrency, currPageUEGraph + "");
     }
-    
+
     public void getProfile() {
-    	//Получение профиля пользователя (название, логотип, url)
-    	requestData[0] = Constants.URL_PROFILE + userId;
-    	requestData[1] = token;
-    	requestData[2] = "";
-    	getProfile = new GETProfile(this);
-    	getProfile.execute(requestData);	
+        //Получение профиля пользователя (название, логотип, url)
+        requestData[0] = Constants.URL_PROFILE + userId;
+        requestData[1] = token;
+        requestData[2] = "";
+        getProfile = new GETProfile(this);
+        getProfile.execute(requestData);
     }
 
     //ответ на запрос профиля 
     public void setProfile(String[] result) {
-    	if (!TextUtils.isEmpty(result[2])) {
-    		Picasso.with(this)
-    		.load(result[2])
-            .transform(CircleTransformation.getInstance())
-    		.into(ivAccountIcon);		
-    	} else {
-    		Picasso.with(this)
-    		.load(R.drawable.no_avatar)
-            .transform(CircleTransformation.getInstance())
-    		.into(ivAccountIcon);
-    	}
-    	tvName.setText(result[0]);
-    	tvUrl.setText(result[1]);
-    	accountTypeId = result[3].equals("Business");
+        if (!TextUtils.isEmpty(result[2])) {
+            Picasso.with(this)
+                    .load(result[2])
+                    .transform(CircleTransformation.getInstance())
+                    .into(ivAccountIcon);
+        } else {
+            Picasso.with(this)
+                    .load(R.drawable.no_avatar)
+                    .transform(CircleTransformation.getInstance())
+                    .into(ivAccountIcon);
+        }
+        tvName.setText(result[0]);
+        tvUrl.setText(result[1]);
+        accountTypeId = result[3].equals("Business");
     }
 
     @Override
@@ -436,124 +434,124 @@ public class MenuActivity extends FragmentActivity {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.ic_menu_add).setVisible(!drawerOpen);
         if ((currentFragment == 0) | (currentFragment == FRAGMENT_DASH)) {
-        	menu.findItem(R.id.ic_menu_add).setVisible(false);
-        	menu.findItem(R.id.ic_menu_search).setVisible(false);
-		}
-        mSearchView = (SearchView) menu.findItem(
-				R.id.ic_menu_search).getActionView();
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-			@Override
-			public boolean onQueryTextSubmit(String query) {
-				return false;
-			}
-			
-			@Override
-			public boolean onQueryTextChange(String newText) {
-				//поиск в списках
-				if (!TextUtils.isEmpty(newText)) {
-					currentPage = 1;
-					if (currentFragment == FRAGMENT_INVOICE) {
-						invoiceSupport.getData(filter, currentPage, newText, token);
-					}  else if (currentFragment == FRAGMENT_USERENTRY) {
-						userEntrySupport.getData(filter, currentPage,
-								newText, token, nativeCurrency);
-					}
-				}
-				return true;
-			}
-		});
+            menu.findItem(R.id.ic_menu_add).setVisible(false);
+            menu.findItem(R.id.ic_menu_search).setVisible(false);
+        }
+        SearchView searchView = (SearchView) menu.findItem(
+                R.id.ic_menu_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //поиск в списках
+                if (!TextUtils.isEmpty(newText)) {
+                    currentPage = 1;
+                    if (currentFragment == FRAGMENT_INVOICE) {
+                        invoiceSupport.getData(filter, currentPage, newText, token);
+                    } else if (currentFragment == FRAGMENT_USERENTRY) {
+                        userEntrySupport.getData(filter, currentPage,
+                                newText, token, nativeCurrency);
+                    }
+                }
+                return true;
+            }
+        });
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         // The action bar home/up action should open or close the drawer.
-         // ActionBarDrawerToggle will take care of this.
+        // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle action buttons
-        switch(item.getItemId()) {
-        case R.id.ic_menu_add:
-        	if (currentFragment == FRAGMENT_INVOICE) {
-				//добавления счета
-				intent = new Intent(this, AddInvoice.class);
-				intent.putExtra("token", token);
-				startActivityForResult(intent, ACT_ADD);
-			} else if (currentFragment == FRAGMENT_USERENTRY) {
-				//итоги по выписке
-				LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
-						.getSystemService(LAYOUT_INFLATER_SERVICE);
-				
-				Calendar today = Calendar.getInstance();
-		        day1 = today.get(Calendar.DAY_OF_MONTH);
-		        month1 = today.get(Calendar.MONTH);
-		        year1 = today.get(Calendar.YEAR);
-		        
-		        today.add(Calendar.MONTH, -1);
-		        day0 = today.get(Calendar.DAY_OF_MONTH);
-		        month0 = today.get(Calendar.MONTH);
-		        year0 = today.get(Calendar.YEAR);
-		        
-				@SuppressLint("InflateParams") View popupView = layoutInflater.inflate(R.layout.popup_date, null);
-				final PopupWindow popupWindow = new PopupWindow(popupView,
-						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				dp1 = (DatePicker) popupView.findViewById(R.id.dp1);
-				dp1.init(year0, month0, day0, null);
-				
-				tvBack = (TextView) popupView.findViewById(R.id.tvBack);
-				tvDate = (TextView) popupView.findViewById(R.id.tvDate);
-				tvNext = (TextView) popupView.findViewById(R.id.tvNext);
-				
-		        tvNext.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						if (current == 0) {
-							tvBack.setText(getString(R.string.go_back));
-							tvDate.setText(getString(R.string.end_date));
-							current += 1;
-							day0 = dp1.getDayOfMonth();
-					        month0 = dp1.getMonth() + 1;
-					        year0 = dp1.getYear();
-					        dp1.init(year1, month1, day1, null);
-						} else {
-							//запускаем итоги по выписке
-							current = 0;
-							popupWindow.dismiss();
-							day1 = dp1.getDayOfMonth();
-					        month1 = dp1.getMonth() + 1;
-					        year1 = dp1.getYear();
-					        sumInc = 0;
-					        comisInc = 0;
-					        sumOut = 0;
-					        comisOut = 0;
-					        currPageUETotal = 1;
-							dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
-									"" + year1 + "-" + month1 + "-" + day1, "Inc", token, 
-									nativeCurrency, currPageUETotal + "");
-						}
-					}
-				});
-				
-		        tvBack.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						if (current == 0) {
-							//выходим
-							current = 0;
-							popupWindow.dismiss();
-						} else {
-							tvBack.setText(getString(R.string.cancel));
-							tvDate.setText(getString(R.string.begin_date));
-							dp1.init(year0, month0, day0, null);
-							current -= 1;
-						}
-					}
-				});
-				popupWindow.showAsDropDown(progressBar, 0, 0);
-			}
-        default:
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.ic_menu_add:
+                if (currentFragment == FRAGMENT_INVOICE) {
+                    //добавления счета
+                    Intent intent = new Intent(this, AddInvoice.class);
+                    intent.putExtra("token", token);
+                    startActivityForResult(intent, ACT_ADD);
+                } else if (currentFragment == FRAGMENT_USERENTRY) {
+                    //итоги по выписке
+                    LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+                            .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+                    Calendar today = Calendar.getInstance();
+                    day1 = today.get(Calendar.DAY_OF_MONTH);
+                    month1 = today.get(Calendar.MONTH);
+                    year1 = today.get(Calendar.YEAR);
+
+                    today.add(Calendar.MONTH, -1);
+                    day0 = today.get(Calendar.DAY_OF_MONTH);
+                    month0 = today.get(Calendar.MONTH);
+                    year0 = today.get(Calendar.YEAR);
+
+                    @SuppressLint("InflateParams") View popupView = layoutInflater.inflate(R.layout.popup_date, null);
+                    final PopupWindow popupWindow = new PopupWindow(popupView,
+                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                    dp1 = (DatePicker) popupView.findViewById(R.id.dp1);
+                    dp1.init(year0, month0, day0, null);
+
+                    tvBack = (TextView) popupView.findViewById(R.id.tvBack);
+                    tvDate = (TextView) popupView.findViewById(R.id.tvDate);
+                    tvNext = (TextView) popupView.findViewById(R.id.tvNext);
+
+                    tvNext.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (current == 0) {
+                                tvBack.setText(getString(R.string.go_back));
+                                tvDate.setText(getString(R.string.end_date));
+                                current += 1;
+                                day0 = dp1.getDayOfMonth();
+                                month0 = dp1.getMonth() + 1;
+                                year0 = dp1.getYear();
+                                dp1.init(year1, month1, day1, null);
+                            } else {
+                                //запускаем итоги по выписке
+                                current = 0;
+                                popupWindow.dismiss();
+                                day1 = dp1.getDayOfMonth();
+                                month1 = dp1.getMonth() + 1;
+                                year1 = dp1.getYear();
+                                sumInc = 0;
+                                comisInc = 0;
+                                sumOut = 0;
+                                comisOut = 0;
+                                currPageUETotal = 1;
+                                dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
+                                        "" + year1 + "-" + month1 + "-" + day1, "Inc", token,
+                                        nativeCurrency, currPageUETotal + "");
+                            }
+                        }
+                    });
+
+                    tvBack.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (current == 0) {
+                                //выходим
+                                current = 0;
+                                popupWindow.dismiss();
+                            } else {
+                                tvBack.setText(getString(R.string.cancel));
+                                tvDate.setText(getString(R.string.begin_date));
+                                dp1.init(year0, month0, day0, null);
+                                current -= 1;
+                            }
+                        }
+                    });
+                    popupWindow.showAsDropDown(progressBar, 0, 0);
+                }
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -561,31 +559,31 @@ public class MenuActivity extends FragmentActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        	if (position > 0) {
-        		selectItem(position);
-        	}
+            if (position > 0) {
+                selectItem(position);
+            }
         }
     }
 
     public void selectItem(int position) {
-    	currentPage = 1;
-    	//currencyPagerAdapter.notifyDataSetChanged();
+        currentPage = 1;
+        //currencyPagerAdapter.notifyDataSetChanged();
         if (position == 1) {
-        	clearDataArrays();
-	       	getBalance();
-	       	currentFragment = FRAGMENT_DASH;
-	       	changeFragment(fragmentDash);
+            clearDataArrays();
+            getBalance();
+            currentFragment = FRAGMENT_DASH;
+            changeFragment(fragmentDash);
         } else if (position == 2) {
-        	currentFragment = FRAGMENT_USERENTRY;
-        	userEntrySupport.getData("", currentPage, "", 
-        			token, nativeCurrency);
-        	changeFragment(fragmentUserEntry);
+            currentFragment = FRAGMENT_USERENTRY;
+            userEntrySupport.getData("", currentPage, "",
+                    token, nativeCurrency);
+            changeFragment(fragmentUserEntry);
         } else if (position == 3) {
-        	currentFragment = FRAGMENT_INVOICE;
-        	invoiceSupport.getData("", currentPage, "",	token);
+            currentFragment = FRAGMENT_INVOICE;
+            invoiceSupport.getData("", currentPage, "", token);
             changeFragment(fragmentInvoice);
         } else if (position == 4) {
-        	//запрос шаблонов
+            //запрос шаблонов
             requestData[0] = Constants.URL_TEMPLATES;
             requestData[1] = token;
             requestData[2] = "";
@@ -601,45 +599,45 @@ public class MenuActivity extends FragmentActivity {
         } else if (position == 6) {
             dlgExit.show(getFragmentManager(), "dlgExit");
         }
-        
+
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
         if (position == 1) {
-        	if (!currSumNames.isEmpty()) {
-	        	currencyPagerAdapter = new ViewPagerAdapter(this, 
-	        			currSumNames, currRubls);
-	        	vpCurrency.setAdapter(currencyPagerAdapter);
-        	}
+            if (!currSumNames.isEmpty()) {
+                currencyPagerAdapter = new ViewPagerAdapter(this,
+                        currSumNames, currRubls);
+                vpCurrency.setAdapter(currencyPagerAdapter);
+            }
         } else {
-        	ArrayList<String> abName = new ArrayList<String>();
-        	ArrayList<String> abRubl = new ArrayList<String>();
-        	abName.add(menuItems[position - 1]);
-        	abRubl.add("");
-        	currencyPagerAdapter = new ViewPagerAdapter(this, 
-        			abName, abRubl);
-        	vpCurrency.setAdapter(currencyPagerAdapter);
+            ArrayList<String> abName = new ArrayList<String>();
+            ArrayList<String> abRubl = new ArrayList<String>();
+            abName.add(menuItems[position - 1]);
+            abRubl.add("");
+            currencyPagerAdapter = new ViewPagerAdapter(this,
+                    abName, abRubl);
+            vpCurrency.setAdapter(currencyPagerAdapter);
         }
         mDrawerLayout.closeDrawer(mDrawerList);
     }
-    
+
     private void clearDataArrays() {
-    	dataPlotDay.clear();
-       	dataPlotWeek.clear();
-       	dataPlotMonth.clear();
-       	dataPlotDayX.clear();
-       	dataPlotWeekX.clear();
-       	dataPlotMonthX.clear();
-       	dataPeriod.clear();
+        dataPlotDay.clear();
+        dataPlotWeek.clear();
+        dataPlotMonth.clear();
+        dataPlotDayX.clear();
+        dataPlotWeekX.clear();
+        dataPlotMonthX.clear();
+        dataPeriod.clear();
     }
-    
-    private void changeFragment(Fragment targetFragment){
+
+    private void changeFragment(Fragment targetFragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_frame, targetFragment, "fragment")
                 .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }
-    
+
     public void setActionBarText(CharSequence title, String rubl) {
 //    	mTitle = title;
 //        tvABName.setText(mTitle);
@@ -667,367 +665,368 @@ public class MenuActivity extends FragmentActivity {
 
     //ответ список шаблонов
     public void addTemplateList(ArrayList<String[]> newData) {
-    	dataTemplate = newData;
-    	fragmentTemplate.setAdapter();
-	}
-    
+        dataTemplate = newData;
+        fragmentTemplate.setAdapter();
+    }
+
     //ответ итоги по выписке Inc
     public void userEntryInc(String[] result) {
-    	int[] data = { 0, 0 };
-    	data = JSONParsing.userEntryTotal(result[1]);
-    	if ((data[0] > 0) | (data[1] > 0)) {
-	    	sumInc += data[0];
-	    	comisInc += data[1];
-	    	currPageUETotal += 1;
-			dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
-					"" + year1 + "-" + month1 + "-" + day1, "Inc", token, 
-					nativeCurrency, currPageUETotal + "");
-    	} else {
-	    	//итоги по выписке Out
-    		currPageUETotal = 1;
-	    	dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
-					"" + year1 + "-" + month1 + "-" + day1, "Out", token, 
-					nativeCurrency, currPageUETotal + "");
-    	}
+        int[] data = {0, 0};
+        data = JSONParsing.userEntryTotal(result[1]);
+        if ((data[0] > 0) | (data[1] > 0)) {
+            sumInc += data[0];
+            comisInc += data[1];
+            currPageUETotal += 1;
+            dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
+                    "" + year1 + "-" + month1 + "-" + day1, "Inc", token,
+                    nativeCurrency, currPageUETotal + "");
+        } else {
+            //итоги по выписке Out
+            currPageUETotal = 1;
+            dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
+                    "" + year1 + "-" + month1 + "-" + day1, "Out", token,
+                    nativeCurrency, currPageUETotal + "");
+        }
     }
-    
+
     //ответ итоги по выписке Out
     public void userEntryOut(String[] result) {
-    	int[] data = { 0, 0 };
-    	data = JSONParsing.userEntryTotal(result[1]);
-    	if ((data[0] > 0) | (data[1] > 0)) {
-	    	sumOut += data[0];
-	    	comisOut += data[1];
-	    	currPageUETotal += 1;
-			dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
-					"" + year1 + "-" + month1 + "-" + day1, "Out", token, 
-					nativeCurrency, currPageUETotal + "");
-    	} else {
-    		intent = new Intent(this, UserEntryTotal.class);
-	    	intent.putExtra("SumIn", sumInc);
-	    	intent.putExtra("ComisIn", comisInc);
-	    	intent.putExtra("SumOut", sumOut);
-	    	intent.putExtra("ComisOut", comisOut);
-	    	intent.putExtra("nativeCurrency", nativeCurrency);
-			startActivity(intent);
-    	}
+        int[] data = {0, 0};
+        data = JSONParsing.userEntryTotal(result[1]);
+        if ((data[0] > 0) | (data[1] > 0)) {
+            sumOut += data[0];
+            comisOut += data[1];
+            currPageUETotal += 1;
+            dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
+                    "" + year1 + "-" + month1 + "-" + day1, "Out", token,
+                    nativeCurrency, currPageUETotal + "");
+        } else {
+            Intent intent = new Intent(this, UserEntryTotal.class);
+            intent.putExtra("SumIn", sumInc);
+            intent.putExtra("ComisIn", comisInc);
+            intent.putExtra("SumOut", sumOut);
+            intent.putExtra("ComisOut", comisOut);
+            intent.putExtra("nativeCurrency", nativeCurrency);
+            startActivity(intent);
+        }
     }
 
     //подтверждение добавления счета
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (requestCode == ACT_ADD) {
-			if (resultCode == RESULT_OK) {
-				Intent confirmIntent = new Intent(getApplicationContext(), 
-						ConfirmActivity.class);
-				startActivity(confirmIntent);
-			}
-		}
-	}
-    
     @Override
-	public void onBackPressed() {
-    	//dlgExit.show(getFragmentManager(), "dlgExit");
-    	mDrawerLayout.closeDrawer(mDrawerList);
-    	if (!(currentFragment == FRAGMENT_DASH)) {
-    		selectItem(1);
-    		invalidateOptionsMenu();
-    	}
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == ACT_ADD) {
+            if (resultCode == RESULT_OK) {
+                Intent confirmIntent = new Intent(getApplicationContext(),
+                        ConfirmActivity.class);
+                startActivity(confirmIntent);
+            }
+        }
     }
-    
+
+    @Override
+    public void onBackPressed() {
+        //dlgExit.show(getFragmentManager(), "dlgExit");
+        mDrawerLayout.closeDrawer(mDrawerList);
+        if (!(currentFragment == FRAGMENT_DASH)) {
+            selectItem(1);
+            invalidateOptionsMenu();
+        }
+    }
+
     public void exit() {
-    	closeSession();
-		finish();
+        closeSession();
+        finish();
     }
-    
+
     //закрытие сессии
     void closeSession() {
-    	requestData[0] = Constants.URL_CLOSE_SESSION;
-    	requestData[1] = token;
-    	httpDELETE = new HttpDELETE(this);
-		httpDELETE.execute(requestData);
+        requestData[0] = Constants.URL_CLOSE_SESSION;
+        requestData[1] = token;
+        httpDELETE = new HttpDELETE(this);
+        httpDELETE.execute(requestData);
         Session.getInstance().clear();
-	}
-    
-  //ответ выписка
-    public void addUserEntry(String data) {
-    	ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
-    	if (!(newData == null)) {
-	    	if (currentPage == 1) {
-	    		dataUserEntry = newData;
-	    		fragmentUserEntry.createListView();
-	    	} else {
-				for (int j = 0; j < newData.size(); j++) {
-					dataUserEntry.add(newData.get(j));
-		    		fragmentUserEntry
-		    			.sAdapter.notifyDataSetChanged();
-		    	}
-				fragmentUserEntry
-				.setHeaderText(getString(R.string.data_load));
-	    	}
-    	} else {
-    		fragmentUserEntry.removeFooter();
-    	}
     }
-    
+
+    //ответ выписка
+    public void addUserEntry(String data) {
+        ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
+        if (!(newData == null)) {
+            if (currentPage == 1) {
+                dataUserEntry = newData;
+                fragmentUserEntry.createListView();
+            } else {
+                for (int j = 0; j < newData.size(); j++) {
+                    dataUserEntry.add(newData.get(j));
+                    fragmentUserEntry
+                            .sAdapter.notifyDataSetChanged();
+                }
+                fragmentUserEntry
+                        .setHeaderText(getString(R.string.data_load));
+            }
+        } else {
+            fragmentUserEntry.removeFooter();
+        }
+    }
+
     //ответ дэш 
     public void addDash(String data) {
-    	ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
-    	if (!(newData == null)) {
-    		if (!(newData.size() == 0)) {
-		    	if (currentPage == 1) {
-		    		dataDash = newData;
-		    		fragmentDash.createListView();
-		    	} else {
-					for (int j = 0; j < newData.size(); j++) {
-						dataDash.add(newData.get(j));
-			    		fragmentDash.sAdapter.notifyDataSetChanged();
-			    	}
-					fragmentDash
-					.setHeaderText(getString(R.string.data_load));
-		    	}
-    		} else {
-        		fragmentDash.removeFooter();
-        	}
-    	} else {
-    		fragmentDash.removeFooter();
-    	}
-	}
-    
+        ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
+        if (!(newData == null)) {
+            if (!(newData.size() == 0)) {
+                if (currentPage == 1) {
+                    dataDash = newData;
+                    fragmentDash.createListView();
+                } else {
+                    for (int j = 0; j < newData.size(); j++) {
+                        dataDash.add(newData.get(j));
+                        fragmentDash.sAdapter.notifyDataSetChanged();
+                    }
+                    fragmentDash
+                            .setHeaderText(getString(R.string.data_load));
+                }
+            } else {
+                fragmentDash.removeFooter();
+            }
+        } else {
+            fragmentDash.removeFooter();
+        }
+    }
+
     //ответ счета
     public void addInvoice(ArrayList<Map<String, Object>> newData) {
-    	if (!(newData.size() == 0)) {
-	    	if (currentPage == 1) {
-	    		dataInvoice = newData;
-	    		fragmentInvoice.createListView();
-	    	} else {
-				for (int j = 0; j < newData.size(); j++) {
-					dataInvoice.add(newData.get(j));
-		    		fragmentInvoice.sAdapter
-		    			.notifyDataSetChanged();
-		    	}
-				fragmentInvoice
-				.setHeaderText(getString(R.string.data_load));
-	    	}
-    	} else {
-    		if (currentPage == 1) {
-    			if (!(dataInvoice == null)) {
-    			dataInvoice.clear();
-	    			fragmentInvoice.sAdapter
-	    				.notifyDataSetChanged();
-    			}
-    		}
-    		fragmentInvoice.removeFooter();
-    	}
-	}
-    
+        if (!(newData.size() == 0)) {
+            if (currentPage == 1) {
+                dataInvoice = newData;
+                fragmentInvoice.createListView();
+            } else {
+                for (int j = 0; j < newData.size(); j++) {
+                    dataInvoice.add(newData.get(j));
+                    fragmentInvoice.sAdapter
+                            .notifyDataSetChanged();
+                }
+                fragmentInvoice
+                        .setHeaderText(getString(R.string.data_load));
+            }
+        } else {
+            if (currentPage == 1) {
+                if (!(dataInvoice == null)) {
+                    dataInvoice.clear();
+                    fragmentInvoice.sAdapter
+                            .notifyDataSetChanged();
+                }
+            }
+            fragmentInvoice.removeFooter();
+        }
+    }
+
     //получение данных для графика, для ViewPager, для процентов
     public void setDataGraphVPPercents(String[] result) {
-    	ArrayList<String[]> newDataPeriod = JSONParsing.userEntryPeriod(result[1]);
-    	if (!newDataPeriod.isEmpty()) {
-	    	for (int i = 0; i < newDataPeriod.size(); i++) {
-				dataPeriod.add(newDataPeriod.get(i));
-			}
-	    	currPageUEGraph += 1;
-		    dashSupport.getDataPeriod(getDate60DaysAgo(), token,
-		    		nativeCurrency, currPageUEGraph + "");
-    	} else {
-    		dataGraphVPPercents();
-    	}
+        ArrayList<String[]> newDataPeriod = JSONParsing.userEntryPeriod(result[1]);
+        if (!newDataPeriod.isEmpty()) {
+            for (int i = 0; i < newDataPeriod.size(); i++) {
+                dataPeriod.add(newDataPeriod.get(i));
+            }
+            currPageUEGraph += 1;
+            dashSupport.getDataPeriod(getDate60DaysAgo(), token,
+                    nativeCurrency, currPageUEGraph + "");
+        } else {
+            dataGraphVPPercents();
+        }
     }
-    
+
     //подготовка данных для графика, для ViewPager, для процентов
     public void dataGraphVPPercents() {
-    	String[] dataPeriodElem = { "", "", "" };
-    	Date currentDate = new Date();
-    	float fSumDay = 0;
-    	float fSumWeek = 0;
-    	float fSumMonth = 0;
-    	float fSumDay2 = 0;
-    	float fSumWeek2 = 0;
-    	float fSumMonth2 = 0;
-    	int sum = 0;
-    	String year, month, day, hour, minute, second, in;
-    	long diffSecond = 0; 
-		int diffHour = 0;
-		int diffDay = 0;
-		Calendar calendar;
-		Calendar currDate;
-    	
-    	currDate = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        String[] dataPeriodElem = {"", "", ""};
+        Date currentDate = new Date();
+        float fSumDay = 0;
+        float fSumWeek = 0;
+        float fSumMonth = 0;
+        float fSumDay2 = 0;
+        float fSumWeek2 = 0;
+        float fSumMonth2 = 0;
+        int sum = 0;
+        String year, month, day, hour, minute, second, in;
+        long diffSecond = 0;
+        int diffHour = 0;
+        int diffDay = 0;
+        Calendar calendar;
+        Calendar currDate;
 
-    	for (int i = 23; i > -1; i--) {
-    		calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
-    		calendar.add(Calendar.HOUR_OF_DAY, -i);
-    		dataPlotDay.add(0);
-    		dataPlotDayX.add(calendar.get(Calendar.HOUR_OF_DAY) + " " +
-    				getString(R.string.hour_cut));
-    	}
-    	for (int i = 6; i > -1; i--) {
-    		calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
-    		calendar.add(Calendar.DAY_OF_YEAR, -i);
-        	dataPlotWeek.add(0);
-        	dataPlotWeekX.add(getResources().getStringArray(R.array.day_of_week)
-        			[calendar.get(Calendar.DAY_OF_WEEK) - 1]);
-    	}
-    	for (int i = 29; i > -1; i--) {
-    		calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
-    		calendar.add(Calendar.DAY_OF_YEAR, -i);
-    		dataPlotMonth.add(0);
-    		dataPlotMonthX.add(calendar.get(Calendar.DAY_OF_MONTH) 
-    				+ " " + getResources().getStringArray(R.array.month_array_cut)
-    				[calendar.get(Calendar.MONTH)] +
-    				", " + getResources().getStringArray(R.array.day_of_week)
-        			[calendar.get(Calendar.DAY_OF_WEEK) - 1]);
-    	}
-    	
-    	//за 24 часа и пред день
-    	for (int i = 0; i < dataPeriod.size(); i++) {
-    		dataPeriodElem = dataPeriod.get(i);
-    		//JSONParsing.appendLog(dataPeriodElem[1] + " " + dataPeriodElem[0]);
-    		in = dataPeriodElem[1];
-    		
-    		year = in.substring(0, 4);
-    		month = in.substring(5, 7);
-    		day = in.substring(8, 10);
-    		hour = in.substring(11, 13);
-    		minute = in.substring(14, 16);
-    		second = in.substring(17, 19);
-    		
-    		calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-    		calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1, 
-    				Integer.parseInt(day), Integer.parseInt(hour),
-    				Integer.parseInt(minute), Integer.parseInt(second));
-    		diffSecond = (currentDate.getTime() - calendar.getTime().getTime()) / 1000;
-    		diffHour = (int) diffSecond / 3600; 
-    		
-    		sum = Math.round((Float.parseFloat(dataPeriodElem[0]) - 
-    				Float.parseFloat(dataPeriodElem[2])));
-    		
-    		if (diffHour < 24) {
-    			fSumDay += sum;
-    			dataPlotDay.set(23 - diffHour, dataPlotDay.get(23 - diffHour) + sum);
-    		//предыдущий день для процента
-    		} else if (diffHour < 48) {
-    			fSumDay2 += sum;
-    		}
-		}
-    	
-    	// за неделю, месяц и пред
-    	for (int i = 0; i < dataPeriod.size(); i++) {
-    		dataPeriodElem = dataPeriod.get(i);
-    		in = dataPeriodElem[1];
-    		
-    		year = in.substring(0, 4);
-    		month = in.substring(5, 7);
-    		day = in.substring(8, 10);
-    		hour = in.substring(11, 13);
-    		minute = in.substring(14, 16);
-    		second = in.substring(17, 19);
-    		
-    		calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-    		calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1, 
-    				Integer.parseInt(day), Integer.parseInt(hour),
-    				Integer.parseInt(minute), Integer.parseInt(second));
-    		
-    		sum = Math.round((Float.parseFloat(dataPeriodElem[0]) - 
-    				Float.parseFloat(dataPeriodElem[2])));
-    		
-    		diffDay = (int) ((currDate.getTime().getTime() - 
-    				calendar.getTime().getTime()) / 86400000);
-    		
-    		if (diffDay < 7) {
-    			dataPlotWeek.set(6 - diffDay, dataPlotWeek.get(6 - diffDay) + sum);
-    			dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
-    			fSumWeek += sum;
-			} else if (diffDay < 14) {
-				fSumWeek2 += sum;
-				dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
-			} else if (diffDay < 30){
-				dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
-				fSumMonth += sum;
-			} else {
-				fSumMonth2 += sum;
-			}
-		}
-    	
-    	fSumMonth += fSumWeek2;
-    	fSumMonth += fSumWeek;
-    	//Log.d("1", fSumDay + " " + fSumWeek + " " + fSumMonth);
-    	
-    	clearVPData();
-    	dataDayWeekMonth.add(JSONParsing.formatNumberNoFract(fSumDay + ""));
-    	dataDWMCurrency.add(JSONParsing.getCurrencySymbol(nativeCurrency));
-    	dataDayWeekMonth.add(JSONParsing.formatNumberNoFract(fSumWeek + ""));
-    	dataDWMCurrency.add(JSONParsing.getCurrencySymbol(nativeCurrency));
-    	dataDayWeekMonth.add(JSONParsing.formatNumberNoFract(fSumMonth + ""));
-    	dataDWMCurrency.add(JSONParsing.getCurrencySymbol(nativeCurrency));
-    	
-    	if (fSumDay2 > 0) {
-    		percentDay = (int) (fSumDay / (fSumDay2 / 100) - 100) + " %";
-    	} else {
-    		percentDay = "";
-    	}
-    	
-    	if (fSumWeek2 > 0) {
-    		percentWeek = (int) (fSumWeek / (fSumWeek2 / 100) - 100) + " %";
-    	} else {
-    		percentWeek = "";
-    	}
-    	
-    	if (fSumMonth2 > 0) {
-    		percentMonth = (int) (fSumMonth / (fSumMonth2 / 100) - 100) + " %";
-    	} else {
-    		percentMonth = "";
-    	}
-    	
-    	fragmentDash.setViewPager();
-    	fragmentDash.createPlot(dataPlotDayX, dataPlotDay);
-    	fragmentDash.setPercent(percentDay);
-    	currentPlot = PLOT_24;
-	}
-    
+        currDate = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+
+        for (int i = 23; i > -1; i--) {
+            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
+            calendar.add(Calendar.HOUR_OF_DAY, -i);
+            dataPlotDay.add(0);
+            dataPlotDayX.add(calendar.get(Calendar.HOUR_OF_DAY) + " " +
+                    getString(R.string.hour_cut));
+        }
+        for (int i = 6; i > -1; i--) {
+            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
+            calendar.add(Calendar.DAY_OF_YEAR, -i);
+            dataPlotWeek.add(0);
+            dataPlotWeekX.add(getResources().getStringArray(R.array.day_of_week)
+                    [calendar.get(Calendar.DAY_OF_WEEK) - 1]);
+        }
+        for (int i = 29; i > -1; i--) {
+            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
+            calendar.add(Calendar.DAY_OF_YEAR, -i);
+            dataPlotMonth.add(0);
+            dataPlotMonthX.add(calendar.get(Calendar.DAY_OF_MONTH)
+                    + " " + getResources().getStringArray(R.array.month_array_cut)
+                    [calendar.get(Calendar.MONTH)] +
+                    ", " + getResources().getStringArray(R.array.day_of_week)
+                    [calendar.get(Calendar.DAY_OF_WEEK) - 1]);
+        }
+
+        //за 24 часа и пред день
+        for (int i = 0; i < dataPeriod.size(); i++) {
+            dataPeriodElem = dataPeriod.get(i);
+            //JSONParsing.appendLog(dataPeriodElem[1] + " " + dataPeriodElem[0]);
+            in = dataPeriodElem[1];
+
+            year = in.substring(0, 4);
+            month = in.substring(5, 7);
+            day = in.substring(8, 10);
+            hour = in.substring(11, 13);
+            minute = in.substring(14, 16);
+            second = in.substring(17, 19);
+
+            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+            calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1,
+                    Integer.parseInt(day), Integer.parseInt(hour),
+                    Integer.parseInt(minute), Integer.parseInt(second));
+            diffSecond = (currentDate.getTime() - calendar.getTime().getTime()) / 1000;
+            diffHour = (int) diffSecond / 3600;
+
+            sum = Math.round((Float.parseFloat(dataPeriodElem[0]) -
+                    Float.parseFloat(dataPeriodElem[2])));
+
+            if (diffHour < 24) {
+                fSumDay += sum;
+                dataPlotDay.set(23 - diffHour, dataPlotDay.get(23 - diffHour) + sum);
+                //предыдущий день для процента
+            } else if (diffHour < 48) {
+                fSumDay2 += sum;
+            }
+        }
+
+        // за неделю, месяц и пред
+        for (int i = 0; i < dataPeriod.size(); i++) {
+            dataPeriodElem = dataPeriod.get(i);
+            in = dataPeriodElem[1];
+
+            year = in.substring(0, 4);
+            month = in.substring(5, 7);
+            day = in.substring(8, 10);
+            hour = in.substring(11, 13);
+            minute = in.substring(14, 16);
+            second = in.substring(17, 19);
+
+            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+            calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1,
+                    Integer.parseInt(day), Integer.parseInt(hour),
+                    Integer.parseInt(minute), Integer.parseInt(second));
+
+            sum = Math.round((Float.parseFloat(dataPeriodElem[0]) -
+                    Float.parseFloat(dataPeriodElem[2])));
+
+            diffDay = (int) ((currDate.getTime().getTime() -
+                    calendar.getTime().getTime()) / 86400000);
+
+            if (diffDay < 7) {
+                dataPlotWeek.set(6 - diffDay, dataPlotWeek.get(6 - diffDay) + sum);
+                dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
+                fSumWeek += sum;
+            } else if (diffDay < 14) {
+                fSumWeek2 += sum;
+                dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
+            } else if (diffDay < 30) {
+                dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
+                fSumMonth += sum;
+            } else {
+                fSumMonth2 += sum;
+            }
+        }
+
+        fSumMonth += fSumWeek2;
+        fSumMonth += fSumWeek;
+        //Log.d("1", fSumDay + " " + fSumWeek + " " + fSumMonth);
+
+        clearVPData();
+        dataDayWeekMonth.add(JSONParsing.formatNumberNoFract(fSumDay + ""));
+        dataDWMCurrency.add(JSONParsing.getCurrencySymbol(nativeCurrency));
+        dataDayWeekMonth.add(JSONParsing.formatNumberNoFract(fSumWeek + ""));
+        dataDWMCurrency.add(JSONParsing.getCurrencySymbol(nativeCurrency));
+        dataDayWeekMonth.add(JSONParsing.formatNumberNoFract(fSumMonth + ""));
+        dataDWMCurrency.add(JSONParsing.getCurrencySymbol(nativeCurrency));
+
+        if (fSumDay2 > 0) {
+            percentDay = (int) (fSumDay / (fSumDay2 / 100) - 100) + " %";
+        } else {
+            percentDay = "";
+        }
+
+        if (fSumWeek2 > 0) {
+            percentWeek = (int) (fSumWeek / (fSumWeek2 / 100) - 100) + " %";
+        } else {
+            percentWeek = "";
+        }
+
+        if (fSumMonth2 > 0) {
+            percentMonth = (int) (fSumMonth / (fSumMonth2 / 100) - 100) + " %";
+        } else {
+            percentMonth = "";
+        }
+
+        fragmentDash.setViewPager();
+        fragmentDash.createPlot(dataPlotDayX, dataPlotDay);
+        fragmentDash.setPercent(percentDay);
+        currentPlot = PLOT_24;
+    }
+
     void clearVPData() {
-    	dataDayWeekMonth.clear();
-    	dataDWMCurrency.clear();
+        dataDayWeekMonth.clear();
+        dataDWMCurrency.clear();
     }
-    
+
     public String getDate60DaysAgo() {
-    	String result = "";
-    	String month = "";
-    	String day = "";
-    	Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-    	calendar.add(Calendar.DAY_OF_MONTH, -60);
-    	month = calendar.get(Calendar.MONTH) + 1 + "";
-    	if (month.length() == 1) {
-    		month = "0" + month;
-		}
-    	day = calendar.get(Calendar.DAY_OF_MONTH) + "";
-    	if (day.length() == 1) {
-    		day = "0" + day;
-		}
-    	result = calendar.get(Calendar.YEAR) + "-" + month + "-" + day;
-		return result;
+        String result = "";
+        String month = "";
+        String day = "";
+        Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        calendar.add(Calendar.DAY_OF_MONTH, -60);
+        month = calendar.get(Calendar.MONTH) + 1 + "";
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+        day = calendar.get(Calendar.DAY_OF_MONTH) + "";
+        if (day.length() == 1) {
+            day = "0" + day;
+        }
+        result = calendar.get(Calendar.YEAR) + "-" + month + "-" + day;
+        return result;
     }
-    
+
     public void startPBAnim() {
-    	totalReq += 1;
-    	if (totalReq == 1) {
-    		progressBar.setIndeterminate(true);
-    	}
+        totalReq += 1;
+        if (totalReq == 1) {
+            progressBar.setIndeterminate(true);
+        }
     }
-    
+
     public void stopPBAnim() {
-    	totalReq -= 1;
-    	if (totalReq == 0) {
-    		progressBar.setIndeterminate(false);
-    	}
+        totalReq -= 1;
+        if (totalReq == 0) {
+            progressBar.setIndeterminate(false);
+        }
     }
-    
+
     public String getWaitSum() {
-    	return waitSum;
+        return waitSum;
     }
-    
+
     public int getCurrentFragment() {
-    	return currentFragment;
+        return currentFragment;
     }
 }
