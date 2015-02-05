@@ -80,6 +80,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MenuActivity extends FragmentActivity {
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -92,36 +93,17 @@ public class MenuActivity extends FragmentActivity {
     private static final int FRAGMENT_INVOICE = 2;
     public static final int FRAGMENT_DASH = 3;
 
-    public final int PLOT_24 = 1;
-    public final int PLOT_WEEK = 2;
-    public final int PLOT_30 = 3;
+    public static final int PLOT_24 = 1;
+    public static final int PLOT_WEEK = 2;
+    public static final int PLOT_30 = 3;
 
-    public static final String ATTRIBUTE_NAME_NUMBER = "number";
-    public static final String ATTRIBUTE_NAME_DATE = "date";
-    public static final String ATTRIBUTE_NAME_IMAGE = "image";
-    public static final String ATTRIBUTE_NAME_AMOUNT = "amount";
-    public static final String ATTRIBUTE_NAME_DESCR = "descr";
-    public static final String ATTRIBUTE_NAME_STATE = "state";
-    public static final String ATTRIBUTE_NAME_RUBL = "rubl";
-
-    String[] from = {ATTRIBUTE_NAME_NUMBER, ATTRIBUTE_NAME_DATE,
-            ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_AMOUNT,
-            ATTRIBUTE_NAME_DESCR, ATTRIBUTE_NAME_STATE,
-            ATTRIBUTE_NAME_RUBL};
-    int[] to = {R.id.tvNumber, R.id.tvDate, R.id.ivIcon,
-            R.id.tvAmount, R.id.tvDescr, R.id.tvState, R.id.tvRubl};
-
-    ImageView ivAccountIcon;
-    HttpDELETE httpDELETE;
-    String[] requestData = {"", "", "", ""};
-    String[] requestData2 = {"", "", "", ""};
-    GETBalance getBalance;
-    GETProfile getProfile;
-    GETTemplateList getTemplateList;
-    int sumInc = 0;
-    int comisInc = 0;
-    int sumOut = 0;
-    int comisOut = 0;
+    private ImageView ivAccountIcon;
+    private final String[] requestData = {"", "", "", ""};
+    private final String[] requestData2 = {"", "", "", ""};
+    private int sumInc = 0;
+    private int comisInc = 0;
+    private int sumOut = 0;
+    private int comisOut = 0;
     public String waitSum = "";
     public String percentDay = "";
     public String percentWeek = "";
@@ -133,34 +115,43 @@ public class MenuActivity extends FragmentActivity {
     public ArrayList<Integer> dataPlotDay, dataPlotWeek, dataPlotMonth;
     public ArrayList<String> dataPlotDayX, dataPlotWeekX,
             dataPlotMonthX, dataDayWeekMonth, dataDWMCurrency;
-    public ArrayList<String[]> dataTemplate, dataPeriod, dataBalance;
-    UserEntrySupport userEntrySupport;
-    DashSupport dashSupport;
-    InvoiceSupport invoiceSupport;
+    public ArrayList<String[]> dataTemplate;
+    private ArrayList<String[]> dataPeriod;
+    private UserEntrySupport userEntrySupport;
+    private DashSupport dashSupport;
+    private InvoiceSupport invoiceSupport;
     int currentPage = 0;
-    int currentFragment = 0;
-    int currPageUEGraph = 0;
-    int currPageUETotal = 0;
+    private int currentFragment = 0;
+    private int currPageUEGraph = 0;
+    private int currPageUETotal = 0;
     public int currentPlot = 0;
-    UserEntryFragment fragmentUserEntry;
-    DashFragment fragmentDash;
-    InvoiceFragment fragmentInvoice;
-    TemplateFragment fragmentTemplate;
-    LinearLayout llHeader;
-    TextView tvBack, tvDate, tvNext, tvName, tvUrl;
-    int current = 0;
-    int totalReq = 0;
-    int day0, month0, year0, day1, month1, year1;
-    DatePicker dp1;
-    public String token, userId, timeout;
-    ProgressBar progressBar;
-    DialogFragment dlgExit;
+    private UserEntryFragment fragmentUserEntry;
+    private DashFragment fragmentDash;
+    private InvoiceFragment fragmentInvoice;
+    private TemplateFragment fragmentTemplate;
+    private TextView tvBack;
+    private TextView tvDate;
+    private TextView tvName;
+    private TextView tvUrl;
+    private int current = 0;
+    private int totalReq = 0;
+    private int day0;
+    private int month0;
+    private int year0;
+    private int day1;
+    private int month1;
+    private int year1;
+    private DatePicker dp1;
+    public String token;
+    private String userId;
+    private ProgressBar progressBar;
+    private DialogFragment dlgExit;
     public boolean accountTypeId = false;
-    ViewPager vpCurrency;
-    PagerAdapter currencyPagerAdapter;
-    ArrayList<String> currSumNames;
-    ArrayList<String> currRubls;
-    ArrayList<String> currCodes;
+    private ViewPager vpCurrency;
+    private PagerAdapter currencyPagerAdapter;
+    private ArrayList<String> currSumNames;
+    private ArrayList<String> currRubls;
+    private ArrayList<String> currCodes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,7 +161,7 @@ public class MenuActivity extends FragmentActivity {
         Intent intent = getIntent();
         token = intent.getStringExtra("token");
         userId = intent.getStringExtra("userId");
-        timeout = intent.getStringExtra("timeout");
+        String timeout = intent.getStringExtra("timeout");
 
         Timer myTimer;
         myTimer = new Timer();
@@ -195,9 +186,9 @@ public class MenuActivity extends FragmentActivity {
         final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
         decorView.addView(progressBar);
 
-        // Here we try to position the ProgressBar to the correct position by looking
+        // Here we try TO position the ProgressBar TO the correct position by looking
         // at the position where content area starts. But during creating time, sizes 
-        // of the components are not set yet, so we have to wait until the components
+        // of the components are not set yet, so we have TO wait until the components
         // has been laid out
         // Also note that doing progressBar.setY(136) will not work, because of different
         // screen densities and different sizes of actionBar
@@ -230,7 +221,6 @@ public class MenuActivity extends FragmentActivity {
         dataPlotMonthX = new ArrayList<>();
         dataTemplate = new ArrayList<>();
         dataPeriod = new ArrayList<>();
-        dataBalance = new ArrayList<>();
         dataDayWeekMonth = new ArrayList<>();
         dataDWMCurrency = new ArrayList<>();
         currSumNames = new ArrayList<>();
@@ -249,7 +239,7 @@ public class MenuActivity extends FragmentActivity {
 
         //шапка меню
         LayoutInflater inflater = getLayoutInflater();
-        llHeader = (LinearLayout) inflater.inflate(R.layout.header_menu, null);
+        LinearLayout llHeader = (LinearLayout) inflater.inflate(R.layout.header_menu, null);
         mDrawerList.addHeaderView(llHeader);
         ivAccountIcon = (ImageView) findViewById(R.id.ivAccountIcon);
         tvName = (TextView) findViewById(R.id.tvName);
@@ -261,10 +251,10 @@ public class MenuActivity extends FragmentActivity {
                 R.drawable.menu_support,
                 R.drawable.menu_settings
         };
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(6);
+        ArrayList<Map<String, Object>> data = new ArrayList<>(6);
         Map<String, Object> m;
         for (int i = 0; i < 6; i++) {
-            m = new HashMap<String, Object>();
+            m = new HashMap<>();
             m.put(ATTRIBUTE_NAME_TEXT, getResources().getStringArray(R.array.menu_array)[i]);
             m.put(ATTRIBUTE_NAME_IMAGE, img[i]);
             data.add(m);
@@ -277,7 +267,7 @@ public class MenuActivity extends FragmentActivity {
         mDrawerList.setAdapter(sAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        // enable ActionBar app icon to behave as action to toggle nav drawer
+        // enable ActionBar app icon TO behave as action TO toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setCustomView(R.layout.action_bar_rubl2);
@@ -314,7 +304,7 @@ public class MenuActivity extends FragmentActivity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+                R.drawable.ic_drawer,  /* nav drawer image TO replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -324,14 +314,14 @@ public class MenuActivity extends FragmentActivity {
 //                if (currentFragment == FRAGMENT_DASH) {
 //                	tvABRub.setText("B");
 //                }
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
                 //getActionBar().setTitle(mDrawerTitle);
 //                tvABName.setText(mDrawerTitle);
 //                tvABRub.setText("");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -342,11 +332,11 @@ public class MenuActivity extends FragmentActivity {
     }
 
     //запрос баланса
-    public void getBalance() {
+    void getBalance() {
         requestData2[0] = Constants.URL_BALANCE;
         requestData2[1] = token;
         requestData2[2] = "";
-        getBalance = new GETBalance(this);
+        GETBalance getBalance = new GETBalance(this);
         getBalance.execute(requestData2);
     }
 
@@ -355,10 +345,9 @@ public class MenuActivity extends FragmentActivity {
         currSumNames.clear();
         currRubls.clear();
         currCodes.clear();
-        dataBalance = result;
         waitSum = "";
         for (int i = 0; i < result.size(); i++) {
-            String[] line = {"", "", "", "", ""};
+            String[] line;
             line = result.get(i);
             if (line[1].equals("RUB")) {
                 currSumNames.add(getString(R.string.balance) + " " + line[2]);
@@ -393,12 +382,12 @@ public class MenuActivity extends FragmentActivity {
                 nativeCurrency, currPageUEGraph + "");
     }
 
-    public void getProfile() {
+    void getProfile() {
         //Получение профиля пользователя (название, логотип, url)
         requestData[0] = Constants.URL_PROFILE + userId;
         requestData[1] = token;
         requestData[2] = "";
-        getProfile = new GETProfile(this);
+        GETProfile getProfile = new GETProfile(this);
         getProfile.execute(requestData);
     }
 
@@ -430,7 +419,7 @@ public class MenuActivity extends FragmentActivity {
     /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
+        // If the nav drawer is open, hide action items related TO the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.ic_menu_add).setVisible(!drawerOpen);
         if ((currentFragment == 0) | (currentFragment == FRAGMENT_DASH)) {
@@ -501,7 +490,7 @@ public class MenuActivity extends FragmentActivity {
 
                     tvBack = (TextView) popupView.findViewById(R.id.tvBack);
                     tvDate = (TextView) popupView.findViewById(R.id.tvDate);
-                    tvNext = (TextView) popupView.findViewById(R.id.tvNext);
+                    TextView tvNext = (TextView) popupView.findViewById(R.id.tvNext);
 
                     tvNext.setOnClickListener(new OnClickListener() {
                         @Override
@@ -587,7 +576,7 @@ public class MenuActivity extends FragmentActivity {
             requestData[0] = Constants.URL_TEMPLATES;
             requestData[1] = token;
             requestData[2] = "";
-            getTemplateList = new GETTemplateList(this);
+            GETTemplateList getTemplateList = new GETTemplateList(this);
             getTemplateList.execute(requestData);
             currentFragment = 0;
             changeFragment(fragmentTemplate);
@@ -609,8 +598,8 @@ public class MenuActivity extends FragmentActivity {
                 vpCurrency.setAdapter(currencyPagerAdapter);
             }
         } else {
-            ArrayList<String> abName = new ArrayList<String>();
-            ArrayList<String> abRubl = new ArrayList<String>();
+            ArrayList<String> abName = new ArrayList<>();
+            ArrayList<String> abRubl = new ArrayList<>();
             abName.add(menuItems[position - 1]);
             abRubl.add("");
             currencyPagerAdapter = new ViewPagerAdapter(this,
@@ -638,11 +627,11 @@ public class MenuActivity extends FragmentActivity {
                 .commit();
     }
 
-    public void setActionBarText(CharSequence title, String rubl) {
+//    public void setActionBarText(CharSequence title, String rubl) {
 //    	mTitle = title;
 //        tvABName.setText(mTitle);
 //        tvABRub.setText(rubl);
-    }
+//    }
 
     /**
      * When using the ActionBarDrawerToggle, you must call it during
@@ -659,7 +648,7 @@ public class MenuActivity extends FragmentActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
+        // Pass any configuration change TO the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
@@ -671,7 +660,7 @@ public class MenuActivity extends FragmentActivity {
 
     //ответ итоги по выписке Inc
     public void userEntryInc(String[] result) {
-        int[] data = {0, 0};
+        int[] data;
         data = JSONParsing.userEntryTotal(result[1]);
         if ((data[0] > 0) | (data[1] > 0)) {
             sumInc += data[0];
@@ -691,7 +680,7 @@ public class MenuActivity extends FragmentActivity {
 
     //ответ итоги по выписке Out
     public void userEntryOut(String[] result) {
-        int[] data = {0, 0};
+        int[] data;
         data = JSONParsing.userEntryTotal(result[1]);
         if ((data[0] > 0) | (data[1] > 0)) {
             sumOut += data[0];
@@ -742,7 +731,7 @@ public class MenuActivity extends FragmentActivity {
     void closeSession() {
         requestData[0] = Constants.URL_CLOSE_SESSION;
         requestData[1] = token;
-        httpDELETE = new HttpDELETE(this);
+        HttpDELETE httpDELETE = new HttpDELETE(this);
         httpDELETE.execute(requestData);
         Session.getInstance().clear();
     }
@@ -835,8 +824,8 @@ public class MenuActivity extends FragmentActivity {
     }
 
     //подготовка данных для графика, для ViewPager, для процентов
-    public void dataGraphVPPercents() {
-        String[] dataPeriodElem = {"", "", ""};
+    void dataGraphVPPercents() {
+        String[] dataPeriodElem;
         Date currentDate = new Date();
         float fSumDay = 0;
         float fSumWeek = 0;
@@ -844,11 +833,11 @@ public class MenuActivity extends FragmentActivity {
         float fSumDay2 = 0;
         float fSumWeek2 = 0;
         float fSumMonth2 = 0;
-        int sum = 0;
+        int sum;
         String year, month, day, hour, minute, second, in;
-        long diffSecond = 0;
-        int diffHour = 0;
-        int diffDay = 0;
+        long diffSecond;
+        int diffHour;
+        int diffDay;
         Calendar calendar;
         Calendar currDate;
 
@@ -990,10 +979,10 @@ public class MenuActivity extends FragmentActivity {
         dataDWMCurrency.clear();
     }
 
-    public String getDate60DaysAgo() {
-        String result = "";
-        String month = "";
-        String day = "";
+    String getDate60DaysAgo() {
+        String result;
+        String month;
+        String day;
         Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         calendar.add(Calendar.DAY_OF_MONTH, -60);
         month = calendar.get(Calendar.MONTH) + 1 + "";

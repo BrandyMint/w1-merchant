@@ -84,8 +84,7 @@ public class UserEntryFragment extends Fragment {
     		removeFooter();
     	}
 				
-		sAdapter = new UserEntryAdapter(context, menuActivity.dataUserEntry, 
-				R.layout.invoice_item, menuActivity.from, menuActivity.to);
+		sAdapter = new UserEntryAdapter(context, menuActivity.dataUserEntry);
 		lvUserEntry.setAdapter(sAdapter);
         
         lvUserEntry.setOnItemClickListener(new OnItemClickListener() {

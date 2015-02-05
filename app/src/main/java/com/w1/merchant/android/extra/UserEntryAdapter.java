@@ -12,10 +12,23 @@ import java.util.Map;
 
 public class UserEntryAdapter extends SimpleAdapter {
 
-    public UserEntryAdapter(Context context,
-        List<? extends Map<String, ?>> data, int resource,
-        String[] from, int[] to) {
-      super(context, data, resource, from, to);
+    public static final String ATTRIBUTE_NAME_RUBL = "rubl";
+    public static final String ATTRIBUTE_NAME_STATE = "state";
+    public static final String ATTRIBUTE_NAME_DESCR = "descr";
+    public static final String ATTRIBUTE_NAME_AMOUNT = "amount";
+    public static final String ATTRIBUTE_NAME_IMAGE = "image";
+    public static final String ATTRIBUTE_NAME_DATE = "date";
+    public static final String ATTRIBUTE_NAME_NUMBER = "number";
+    private static final String[] FROM = {ATTRIBUTE_NAME_NUMBER, ATTRIBUTE_NAME_DATE,
+            ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_AMOUNT,
+            ATTRIBUTE_NAME_DESCR, ATTRIBUTE_NAME_STATE,
+            ATTRIBUTE_NAME_RUBL};
+
+    private static final int[] TO = {R.id.tvNumber, R.id.tvDate, R.id.ivIcon,
+                    R.id.tvAmount, R.id.tvDescr, R.id.tvState, R.id.tvRubl};
+
+    public UserEntryAdapter(Context context, List<? extends Map<String, ?>> data) {
+      super(context, data, R.layout.invoice_item, FROM, TO);
     }
 
     @Override

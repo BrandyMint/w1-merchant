@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.activity.MenuActivity;
+import com.w1.merchant.android.extra.UserEntryAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -207,13 +207,13 @@ public class JSONParsing {
 	    	data = new ArrayList<Map<String, Object>>(numberArray.size());
 		    for (int j = 0; j < numberArray.size(); j++) {
 			      m = new HashMap<String, Object>();
-			      m.put(MenuActivity.ATTRIBUTE_NAME_NUMBER, numberArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_DATE, dateArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_IMAGE, imgArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_AMOUNT, amountArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_DESCR, descrArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_STATE, stateArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_RUBL, currencyArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_NUMBER, numberArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_DATE, dateArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_IMAGE, imgArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_AMOUNT, amountArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_DESCR, descrArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_STATE, stateArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_RUBL, currencyArray.get(j));
 			      data.add(m);
 		    }
 		} catch (JSONException e) {
@@ -353,13 +353,13 @@ public class JSONParsing {
 	    	data = new ArrayList<Map<String, Object>>(numberArray.size());
 		    for (int j = 0; j < numberArray.size(); j++) {
 			      m = new HashMap<String, Object>();
-			      m.put(MenuActivity.ATTRIBUTE_NAME_NUMBER, numberArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_DATE, dateArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_IMAGE, imgArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_AMOUNT, amountArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_RUBL, currencyArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_DESCR, descrArray.get(j));
-			      m.put(MenuActivity.ATTRIBUTE_NAME_STATE, stateArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_NUMBER, numberArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_DATE, dateArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_IMAGE, imgArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_AMOUNT, amountArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_RUBL, currencyArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_DESCR, descrArray.get(j));
+			      m.put(UserEntryAdapter.ATTRIBUTE_NAME_STATE, stateArray.get(j));
 			      data.add(m);
 		    }
 		} catch (JSONException e) {

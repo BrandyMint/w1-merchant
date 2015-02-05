@@ -42,7 +42,6 @@ import com.w1.merchant.android.extra.UserEntryAdapter;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class DashFragment extends Fragment {
 
@@ -57,8 +56,6 @@ public class DashFragment extends Fragment {
 	PagerAdapter pagerAdapter;
 	SegmentedRadioGroup srgDash;
 	RadioButton rbHour, rbWeek, rbMonth;
-	static final int PAGE_COUNT = 3;
-	ArrayList<Map<String, Object>> data = null;
 	private LinearLayout llFooter, llHeader;
 	DashSupport dashSupport;
 	MenuActivity menuActivity;
@@ -116,8 +113,7 @@ public class DashFragment extends Fragment {
     	if ((menuActivity.dataDash.size() < 25) & (menuActivity.currentPage == 1)) {
     		lvDash.removeFooterView(llFooter);
     	}
-    	sAdapter = new UserEntryAdapter(context, menuActivity.dataDash,
-    			R.layout.invoice_item, menuActivity.from, menuActivity.to);
+    	sAdapter = new UserEntryAdapter(context, menuActivity.dataDash);
     	lvDash.setAdapter(sAdapter);
     	        
     	lvDash.setOnItemClickListener(new OnItemClickListener() {
@@ -310,10 +306,10 @@ public class DashFragment extends Fragment {
         mChart.setBackgroundColor(Color.BLACK);
         
         // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
+        // TO use for it
         MyMarkerView mv = new MyMarkerView(menuActivity, R.layout.custom_marker_view);
 
-        // set the marker to the chart
+        // set the marker TO the chart
         mChart.setMarkerView(mv);
 
         // add data

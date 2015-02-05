@@ -92,14 +92,8 @@ public class InvoiceFragment extends Fragment {
     	} else {
     		removeFooter();
     	}
-    	/*String[] from = { menuActivity.ATTRIBUTE_NAME_NUMBER, menuActivity.ATTRIBUTE_NAME_DATE,
-        		menuActivity.ATTRIBUTE_NAME_IMAGE, menuActivity.ATTRIBUTE_NAME_AMOUNT,
-        		menuActivity.ATTRIBUTE_NAME_RUBL, menuActivity.ATTRIBUTE_NAME_DESCR};
-		int[] to = { R.id.tvNumber, R.id.tvDate, 
-		    		R.id.ivIcon, R.id.tvAmount, R.id.tvRubl, R.id.tvDescr };*/
 		
-		sAdapter = new UserEntryAdapter(context, menuActivity.dataInvoice, 
-				R.layout.invoice_item, menuActivity.from, menuActivity.to);
+		sAdapter = new UserEntryAdapter(context, menuActivity.dataInvoice);
 		lvInvoice.setAdapter(sAdapter);
 		lvInvoice.setOnScrollListener(new AbsListView.OnScrollListener() {
 			@Override
