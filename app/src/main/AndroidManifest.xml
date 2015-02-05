@@ -48,6 +48,7 @@
         </activity>
         <activity
             android:name=".activity.MenuActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -84,11 +85,8 @@
         </activity>
         <activity
             android:name=".support.TicketListActivity"
-            android:label="@string/title_activity_ticket_list"
-            android:parentActivityName=".activity.MenuActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.w1.merchant.android.activity.MenuActivity" />
+            android:launchMode="singleTop"
+            android:label="@string/title_activity_ticket_list" >
         </activity>
         <activity
             android:name=".support.ConversationActivity"

@@ -19,7 +19,9 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.model.SupportTicket;
 
-import static android.app.ActionBar.*;
+import static android.app.ActionBar.DISPLAY_HOME_AS_UP;
+import static android.app.ActionBar.DISPLAY_SHOW_HOME;
+import static android.app.ActionBar.DISPLAY_USE_LOGO;
 
 public class ConversationActivity extends Activity implements ConversationFragment.OnFragmentInteractionListener {
     private static final boolean DBG = BuildConfig.DEBUG;
