@@ -12,15 +12,12 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.apache.OkApacheClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.model.ResponseError;
-
-import org.apache.http.client.HttpClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -73,10 +70,6 @@ public class NetworkUtils {
 
     public Gson getGson() {
         return mGson;
-    }
-
-    public HttpClient createApacheOkHttpClient() {
-        return new OkApacheClient(mOkHttpClient);
     }
 
     public RestAdapter createRestAdapter() {

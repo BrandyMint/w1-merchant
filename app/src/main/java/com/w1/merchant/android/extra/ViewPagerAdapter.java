@@ -59,7 +59,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 			
 			@Override
 			public void onClick(View v) {
-				if (!((MenuActivity) mContext).waitSum.isEmpty()) {
+				if (!((MenuActivity) mContext).getWaitSum().isEmpty()) {
 				if (((MenuActivity) mContext).getCurrentFragment()
 						== MenuActivity.FRAGMENT_DASH) {
 					Toast toast = Toast.makeText(mContext, 

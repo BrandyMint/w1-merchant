@@ -244,7 +244,7 @@ public class TicketListFragment extends Fragment {
 
             @Nullable
             @Override
-            protected Activity getActivity() {
+            protected Activity getContainerActivity() {
                 return TicketListFragment.this.getActivity();
             }
 

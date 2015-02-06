@@ -10,100 +10,97 @@ import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.request.JSONParsing;
-import com.w1.merchant.android.request.POSTInvoices;
+import com.w1.merchant.android.model.Invoice;
+import com.w1.merchant.android.model.InvoiceRequest;
+import com.w1.merchant.android.service.ApiInvoices;
+import com.w1.merchant.android.service.ApiRequestTaskActivity;
+import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.viewextended.EditTextRouble;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import retrofit.Callback;
+import retrofit.client.Response;
+
 public class AddInvoice extends Activity {
 
-	TextView tvBillButton;
-	EditTextRouble etSum;
-	ImageView ivBack;
-	Context context;
-	POSTInvoices postInvoices;
-	String[] requestData = {"", "", "", "", "", ""};
-	String[] httpResult = {"", ""};
-	Intent intent;
-	String token;
-	ProgressBar pbInvoice;
-	String pattern = "[0-9]{11}";
-	Vibrator vibro;
-	long milliseconds = 100;
-	public final String APP_PREF = "W1_Pref";
-	SharedPreferences sPref;
-	AutoCompleteTextView actvDescr, actvTelEmail;
-	Set<String> descrs = new HashSet<String>();
-	ArrayList<String> descrsArray = new ArrayList<String>();
-	Set<String> telEmail = new HashSet<String>();
-	ArrayList<String> telEmailArray = new ArrayList<String>();
-	
+    private static final String PHONE_PATTERN = "[0-9]{11}";
+    private static final String APP_PREF = "W1_Pref";
+
+    private EditTextRouble etSum;
+	private ProgressBar pbInvoice;
+
+	private Vibrator mVibrator;
+
+	private SharedPreferences mPref;
+	private AutoCompleteTextView mDescriptionView;
+    private AutoCompleteTextView mPhoneView;
+
+    private final ArrayList<String> descrsArray = new ArrayList<>();
+    private final ArrayList<String> telEmailArray = new ArrayList<>();
+
+    private ApiInvoices mApiInvoices;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.invoice_add);
-		context = this;
-		
-		sPref = getSharedPreferences(APP_PREF, MODE_PRIVATE);
-		actvDescr = (AutoCompleteTextView) findViewById(R.id.actvDescr);
-		descrs = sPref.getStringSet("descrs", new HashSet<String>());
+
+        mApiInvoices = NetworkUtils.getInstance().createRestAdapter().create(ApiInvoices.class);
+
+		mPref = getSharedPreferences(APP_PREF, MODE_PRIVATE);
+		mDescriptionView = (AutoCompleteTextView) findViewById(R.id.actvDescr);
+        Set<String> descrs = mPref.getStringSet("descrs", new HashSet<String>());
 		for(String r : descrs) {
 			descrsArray.add(r);
 		}
-		actvDescr.setAdapter(new ArrayAdapter(this,
-				android.R.layout.simple_dropdown_item_1line, descrsArray));
+		mDescriptionView.setAdapter(new ArrayAdapter(this,
+                android.R.layout.simple_dropdown_item_1line, descrsArray));
 		
-		actvTelEmail = (AutoCompleteTextView) findViewById(R.id.actvTelEmail);
-		telEmail = sPref.getStringSet("telEmail", new HashSet<String>());
+		mPhoneView = (AutoCompleteTextView) findViewById(R.id.actvTelEmail);
+        Set<String> telEmail = mPref.getStringSet("telEmail", new HashSet<String>());
 		for(String r : telEmail) {
 			telEmailArray.add(r);
 		}
-		actvTelEmail.setAdapter(new ArrayAdapter(this,
-				android.R.layout.simple_dropdown_item_1line, telEmailArray));
-		
-		intent = getIntent();
-		token = intent.getStringExtra("token");
+		mPhoneView.setAdapter(new ArrayAdapter(this,
+                android.R.layout.simple_dropdown_item_1line, telEmailArray));
+
 		etSum = (EditTextRouble) findViewById(R.id.etSum);
 		etSum.addTextChangedListener(new CurrencyTextWatcher());
 		//DigitsKeyListener digkl1 = DigitsKeyListener.getInstance(true, true);
 		//etSum.setKeyListener(digkl1);
-		tvBillButton = (TextView) findViewById(R.id.tvBillButton);
+        TextView tvBillButton = (TextView) findViewById(R.id.tvBillButton);
 		tvBillButton.setOnClickListener(myOnClickListener);
-		ivBack = (ImageView) findViewById(R.id.ivBack);
-		ivBack.setOnClickListener(myOnClickListener);
+		findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);
 		pbInvoice = (ProgressBar) findViewById(R.id.pbInvoice);
-		vibro = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	}	
 	
-	public boolean checkFields() {
+	boolean checkFields() {
 		int err = 0;
-		if (TextUtils.isEmpty(actvDescr.getText().toString())) {
-			actvDescr.setError(getString(R.string.error_field));
+		if (TextUtils.isEmpty(mDescriptionView.getText().toString())) {
+			mDescriptionView.setError(getString(R.string.error_field));
 			err = 1;
 		}
-		if (TextUtils.isEmpty(actvTelEmail.getText().toString())) {
-			if (err == 0) actvTelEmail.setError(getString(R.string.error_field));
+		if (TextUtils.isEmpty(mPhoneView.getText().toString())) {
+			if (err == 0) mPhoneView.setError(getString(R.string.error_field));
 			err += 1;
 		}
-		if ((actvTelEmail.getText().toString().indexOf("@") > 0) |
-				(actvTelEmail.getText().toString().matches(pattern))) {
+		if ((mPhoneView.getText().toString().indexOf("@") > 0) |
+				(mPhoneView.getText().toString().matches(PHONE_PATTERN))) {
 		} else {
 			if (err == 0) etSum.setError(getString(R.string.mail_or_tel));
 			err += 1;
@@ -115,38 +112,42 @@ public class AddInvoice extends Activity {
 		return (err == 0);
 	}
 	
-	OnClickListener myOnClickListener = new View.OnClickListener() {
+	private final OnClickListener myOnClickListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case (R.id.tvBillButton):
 				if (checkFields()) {
-					vibro.vibrate(milliseconds);
+                    long milliseconds = 100;
+                    mVibrator.vibrate(milliseconds);
 					
-					Editor ed = sPref.edit();
-					descrsArray.add(actvDescr.getText().toString());
-					Set<String> newDescr = new HashSet<String>();
+					Editor ed = mPref.edit();
+					descrsArray.add(mDescriptionView.getText().toString());
+					Set<String> newDescr = new HashSet<>();
 					for (String n : descrsArray) {
 						newDescr.add(n);
 					}
 					ed.putStringSet("descrs", newDescr);
 					
-					telEmailArray.add(actvTelEmail.getText().toString());
-					Set<String> newTelEmail = new HashSet<String>();
+					telEmailArray.add(mPhoneView.getText().toString());
+					Set<String> newTelEmail = new HashSet<>();
 					for (String n : telEmailArray) {
 						newTelEmail.add(n);
 					}
 					ed.putStringSet("telEmail", newTelEmail);
 					ed.apply();
-					
-					pbInvoice.setVisibility(View.VISIBLE);
-					requestData[0] = Constants.URL_NEW_INVOICE;
-					requestData[1] = token; 
-	      			requestData[2] = etSum.getText().toString().replaceAll("C", "");
-	      			requestData[3] = actvDescr.getText().toString();
-	      			requestData[4] = actvTelEmail.getText().toString();
-	      			postInvoices = new POSTInvoices(context);
-	    			postInvoices.execute(requestData);
+
+                    String recipient = mPhoneView.getText().toString();
+                    String description =  mDescriptionView.getText().toString();
+                    BigDecimal amount;
+
+                    try {
+                        amount = new BigDecimal(etSum.getText().toString().replaceAll("C", ""));
+                    } catch (NumberFormatException ne) {
+                        etSum.setError(getString(R.string.error_field));
+                        break;
+                    }
+                    createInvoice(recipient, amount, description);
 	    		}
 				break;
 			case (R.id.ivBack):
@@ -155,21 +156,34 @@ public class AddInvoice extends Activity {
 			}
 		}
 	};
-	
-	public void setInvoicesResult(String[] httpRes) {
-		pbInvoice.setVisibility(View.INVISIBLE);
-		if (httpRes[0].equals("201")) {
-			intent = new Intent(context, ConfirmActivity.class);
-			intent.putExtra("sum", etSum.getText().toString());
-			startActivity(intent);
-			finish();
-		} else {
-			Toast toast = Toast.makeText(context, 
-					JSONParsing.invoiceError(httpRes[1]), Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.TOP, 0, 50);
-	    	toast.show();
-		}
-	}
+
+    private void createInvoice(final String recipient, final BigDecimal amount, final String description) {
+
+        pbInvoice.setVisibility(View.INVISIBLE);
+        new ApiRequestTaskActivity<Invoice>(this, R.string.network_error) {
+
+            @Override
+            protected void doRequest(Callback<Invoice> callback) {
+                mApiInvoices.createInvoice(new InvoiceRequest(recipient, amount, description, "643"), callback);
+            }
+
+            @Override
+            protected void stopAnimation() {
+                pbInvoice.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected void onSuccess(Invoice invoice, Response response, Activity activity) {
+                Intent intent = new Intent(AddInvoice.this, ConfirmActivity.class);
+                intent.putExtra("sum", etSum.getText().toString());
+                startActivity(intent);
+                finish();
+            }
+
+
+        }.execute();
+    }
+
 	
 	public class CurrencyTextWatcher implements TextWatcher {
 	    boolean mEditing;

@@ -17,6 +17,8 @@ import com.w1.merchant.android.activity.LoginActivity;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -29,6 +31,13 @@ public final class Utils {
 
     public static int compare(long lhs, long rhs) {
         return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    }
+
+    public static int compare(BigInteger lhs, BigInteger rhs) {
+        if (lhs == rhs) return 0;
+        if (lhs == null) return -1;
+        if (rhs == null) return 1;
+        return lhs.compareTo(rhs);
     }
 
     public static String hex(byte[] array) {
@@ -49,6 +58,12 @@ public final class Utils {
         } catch (UnsupportedEncodingException e) {
         }
         return null;
+    }
+
+    public static BigDecimal clamp(BigDecimal val, BigDecimal min, BigDecimal max) {
+        if ( val.compareTo(min) <= 0 ) return min;
+        if ( val.compareTo(max) >= 0 ) return max;
+        return val;
     }
 
     public static Intent createPickPhotoActivityIntent() {

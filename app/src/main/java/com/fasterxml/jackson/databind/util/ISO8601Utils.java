@@ -197,18 +197,19 @@ public class ISO8601Utils
             // extract timezone
             String timezoneId;
             if (date.length() <= offset) {
-                throw new IllegalArgumentException("No time zone indicator");
-            }
-            char timezoneIndicator = date.charAt(offset);
-            if (timezoneIndicator == '+' || timezoneIndicator == '-') {
-                String timezoneOffset = date.substring(offset);
-                timezoneId = GMT_ID + timezoneOffset;
-                offset += timezoneOffset.length();
-            } else if (timezoneIndicator == 'Z') {
                 timezoneId = GMT_ID;
-                offset += 1;
             } else {
-                throw new IndexOutOfBoundsException("Invalid time zone indicator " + timezoneIndicator);
+                char timezoneIndicator = date.charAt(offset);
+                if (timezoneIndicator == '+' || timezoneIndicator == '-') {
+                    String timezoneOffset = date.substring(offset);
+                    timezoneId = GMT_ID + timezoneOffset;
+                    offset += timezoneOffset.length();
+                } else if (timezoneIndicator == 'Z') {
+                    timezoneId = GMT_ID;
+                    offset += 1;
+                } else {
+                    throw new IllegalArgumentException("No time zone indicator");
+                }
             }
 
             TimeZone timezone = TimeZone.getTimeZone(timezoneId);

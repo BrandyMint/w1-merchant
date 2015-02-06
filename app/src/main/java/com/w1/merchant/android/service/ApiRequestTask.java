@@ -34,12 +34,19 @@ public abstract class ApiRequestTask<T> {
     protected abstract void doRequest(Callback<T> callback);
 
     @Nullable
-    protected abstract Activity getActivity();
+    protected abstract Activity getContainerActivity();
 
 
+    /**
+     * @param error Ошибка
+     */
     protected abstract void onFailure(NetworkUtils.ResponseErrorException error);
 
+    /**
+     * Сервер запросил капчу, а юзер отменил её ввод
+     */
     protected abstract void onCancelled();
+
 
     protected abstract void onSuccess(T t, Response response);
 
@@ -53,7 +60,7 @@ public abstract class ApiRequestTask<T> {
     }
 
     protected void onInvalidToken(RetrofitError error) {
-        Activity activity = getActivity();
+        Activity activity = getContainerActivity();
         if (activity == null) return;
         Intent intent = new Intent(activity, SessionExpiredDialogActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -61,7 +68,7 @@ public abstract class ApiRequestTask<T> {
     }
 
     private void startRefreshCaptcha(NetworkUtils.ResponseErrorException error) {
-        Activity activity = getActivity();
+        Activity activity = getContainerActivity();
         if (activity == null) {
             onFailure(error);
             return;

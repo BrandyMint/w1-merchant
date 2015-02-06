@@ -1,12 +1,21 @@
 package com.w1.merchant.android.utils;
 
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
 
+import com.w1.merchant.android.R;
+
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Currency;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public final class TextUtilsW1 {
 
@@ -65,5 +74,136 @@ public final class TextUtilsW1 {
         } else {
             return source.subSequence(0, length);
         }
+    }
+
+    public static Spanned getCurrencySymbol2(String currencyId, int weight) {
+        if (currencyId.equals("643")) {
+            return getRoubleSymbol(weight);
+        } else {
+            return new SpannedString(getCurrencySymbol(currencyId));
+        }
+    }
+
+    public static String getCurrencySymbol(String currencyId) {
+        String result = "";
+        if (currencyId.equals("398")) { //казах
+            result =  "₸";//KZTU+20B8&#8376
+        } else if (currencyId.equals("643")) { //рубль
+            result = "RUB";
+        } else if (currencyId.equals("710")) {//южноафр
+            result = "R";//ZARR
+        } else if (currencyId.equals("840")) {//USD
+            result = "$";//USD
+        } else if (currencyId.equals("972")) {//таджик
+            result = "смн.";//TJSсмн.
+        } else if (currencyId.equals("974")) {//белорус
+            result = "Br";//BrBYR
+        } else if (currencyId.equals("978")) {//EUR
+            result = "€";//EURU+20AC&#8364
+        } else if (currencyId.equals("980")) {//укр
+            result = "₴";//UAHU+20B4&#8372
+        } else if (currencyId.equals("985")) {//польск
+            result = "zł";//PLN
+        } else {//?
+            try {
+                result = Currency.getInstance(currencyId).getSymbol();
+            } catch (Exception e) {
+                result = "?";
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param weight 0, 1 или 2
+     * @return
+     */
+    public static Spanned getRoubleSymbol(int weight) {
+        String s;
+        switch (weight) {
+            case 0: s = "A"; break;
+            case 1: s = "B"; break;
+            default: s = "C"; break;
+        }
+        SpannableString string = new SpannableString(s);
+        string.setSpan(new TypefaceSpan2(FontManager.getInstance().getRoubleFont()), 0, string.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return string;
+    }
+
+    /**
+     * Какое-то мега ёбнутое форматирование
+     */
+    public static String formatNumber(Number in) {
+        DecimalFormat myFormatter = new DecimalFormat("##,###,###.##");
+        String split = myFormatter.format(in);
+        return split.replace(",", ".");
+    }
+
+    //форматирование чисел
+    public static String formatNumberNoFract(String in) {
+        DecimalFormat myFormatter = new DecimalFormat("##,###,###");
+        String split = myFormatter.format(Float.parseFloat(in));
+        split = split.replace(",", ".");
+        return split;
+    }
+
+    public static String dateFormat(Calendar calendar, Resources resources) {
+        String dateOut = "";
+        long diff = 0;
+        int offSet = 0;
+        int diffMin = 0;
+        int diffHour = 0;
+
+        Date currentDate = new Date();
+        offSet = TimeZone.getDefault().getRawOffset() / 3600000;
+        diff = (currentDate.getTime() - calendar.getTimeInMillis()) / 1000;
+        diffMin = (int) diff / 60;
+        diffHour = (int) diff / 3600;
+
+        if (diff < 120) {
+            dateOut = resources.getString(R.string.moment_ago);
+        } else if (diff < 3600) {
+            if ((diffMin == 11) | (diffMin == 12) | (diffMin == 13) | (diffMin == 14)) {
+                dateOut = diffMin + " " +
+                        resources.getString(R.string.min_ago);
+            } else if ((diffMin + "").endsWith("1")) {
+                dateOut = diffMin + " " +
+                        resources.getString(R.string.min_ago2);
+            } else if ((diffMin + "").endsWith("2") | (diffMin + "").endsWith("3") |
+                    (diffMin + "").endsWith("4")) {
+                dateOut = diffMin + " " +
+                        resources.getString(R.string.min_ago3);
+            } else {
+                dateOut = diffMin + " " +
+                        resources.getString(R.string.min_ago);
+            }
+        } else if (diff < 7200) {
+            dateOut = resources.getString(R.string.hour_ago);
+        } else if (diff < 18000) {
+            dateOut = diffHour + " " +
+                    resources.getString(R.string.hour_ago1);
+        } else if (diff < 75600) {
+            dateOut = diffHour + " " +
+                    resources.getString(R.string.hour_ago2);
+        } else if ((diff > 75599) & (diff < 79200)) {
+            dateOut = diffHour + " " +
+                    resources.getString(R.string.hour_ago3);
+        } else if (diff < 86400) {
+            dateOut = diffHour + " " +
+                    resources.getString(R.string.hour_ago1);
+        } else {
+            calendar.add(Calendar.HOUR_OF_DAY, offSet);
+            String minute = calendar.get(Calendar.MINUTE) + "";
+            if (minute.length() == 1) {
+                minute = "0" + minute;
+            }
+            dateOut = calendar.get(Calendar.DAY_OF_MONTH) + " " +
+                    resources.
+                            getStringArray(R.array.month_array)[calendar.get(Calendar.MONTH)] +
+                    ", " + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
+                    minute;
+        }
+        return dateOut;
     }
 }
