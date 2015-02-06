@@ -1,5 +1,8 @@
 package com.w1.merchant.android.utils;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.Session;
+import com.w1.merchant.android.activity.LoginActivity;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -121,6 +126,21 @@ public final class Utils {
             errorResourceId = resourceId;
         }
 
+    }
+
+    public static void restartApp(@Nullable Context context) {
+        if (context != null) {
+            Intent mStartActivity = new Intent(context.getApplicationContext(), LoginActivity.class);
+            mStartActivity.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            int mPendingIntentId = 123456;
+            PendingIntent mPendingIntent = PendingIntent.getActivity(context.getApplicationContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+            AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+            if (context instanceof Activity) ((Activity) context).finish();
+        }
+
+        Session.getInstance().clear();
+        System.exit(0);
     }
 
 }

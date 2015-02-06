@@ -105,6 +105,7 @@
 	<string name="confirm">Подтвердить</string>
 	<string name="yes">Да</string>
 	<string name="no">Нет</string>
+    <string name="button_continue">Продолжить</string>
 	<string name="awaiting">Ожидает зачисления</string>
 	<string name="canceled">Отменен</string>
 	<string name="processing">Обработка</string>

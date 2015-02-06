@@ -95,7 +95,7 @@ public class LoginActivity extends Activity {
         mLoginTextView = (AutoCompleteTextView) findViewById(R.id.actvLogin);
         mProgress = (ProgressBar) findViewById(R.id.pbLogin);
         mAuthButton = findViewById(R.id.tvAuth);
-        mClearLoginButton = (ImageView) findViewById(R.id.ivDelete);
+        mClearLoginButton = findViewById(R.id.ivDelete);
         mPasswordView = (EditText) findViewById(R.id.etPassword);
         mForgotButton = findViewById(R.id.tvForgot);
 
@@ -147,6 +147,15 @@ public class LoginActivity extends Activity {
         if (BuildConfig.DEBUG && "debug".equals(BuildConfig.BUILD_TYPE) && !TextUtils.isEmpty(BuildConfig.API_TEST_USER)) {
             // Ибо заебал
             //attemptLogin(BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS);
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == ACT_MENU) {
+            if (resultCode == RESULT_OK) {
+                DialogFragment dlgSessionTimeout = new DialogTimeout();
+                dlgSessionTimeout.show(getFragmentManager(), "dlgSessionTimeout");
+            }
         }
     }
 
@@ -290,11 +299,10 @@ public class LoginActivity extends Activity {
                 mApiSessions.auth(new AuthCreateModel(login, password), callback);
             }
 
-
             @Override
             protected void onSuccess(AuthModel response, Response responseRaw) {
                 if (DBG) Log.v(TAG, "auth success ");
-                Session.getInstance().bearer = response.token;
+                Session.getInstance().setAuth(response);
                 requestPrincipalUsers(response);
             }
         }.execute();
@@ -336,7 +344,7 @@ public class LoginActivity extends Activity {
     }
 
     private void onAuthDone(AuthModel authModel) {
-        Session.getInstance().bearer = authModel.token;
+        Session.getInstance().setAuth(authModel);
         mPasswordView.setText("");
         mLoginTextView.setText("");
         mForgotButton.setVisibility(View.INVISIBLE);
@@ -344,11 +352,9 @@ public class LoginActivity extends Activity {
 
         //запуск основной Activity
         Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-        intent.putExtra("token", authModel.token);
-        intent.putExtra("userId", authModel.userId);
-        intent.putExtra("timeout", String.valueOf(authModel.timeout));
-        startActivityForResult(intent, ACT_MENU);
+        startActivity(intent);
         overridePendingTransition(0, 0);
+        finish();
     }
 
     private void sendOneTimePassword() {
@@ -437,16 +443,6 @@ public class LoginActivity extends Activity {
         SharedPreferences preferences = getSharedPreferences(APP_PREF, MODE_PRIVATE);
         Set<String> logins = preferences.getStringSet(PREFS_KEY_LOGINS, Collections.<String>emptySet());
         mLogins.addAll(logins);
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == ACT_MENU) {
-            if (resultCode == RESULT_OK) {
-                DialogFragment dlgSessionTimeout = new DialogTimeout();
-                dlgSessionTimeout.show(getFragmentManager(), "dlgSessionTimeout");
-
-            }
-        }
     }
 
     //Проверка доступа в Инет

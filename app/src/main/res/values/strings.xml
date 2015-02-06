@@ -106,6 +106,7 @@
     <string name="confirm">Confirm</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="button_continue">Continue</string>
     <string name="awaiting">Awaiting for crediting</string>
     <string name="canceled">Canceled</string>
     <string name="processing">Processing</string>

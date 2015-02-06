@@ -126,7 +126,7 @@ public class NetworkUtils {
         @Override
         public void intercept(RequestFacade request) {
             Session session = Session.getInstance();
-            String bearer = session.bearer;
+            String bearer = session.getBearer();
             request.addHeader("Authorization", "Bearer " + (bearer != null ? bearer : BuildConfig.API_APP_BEARER));
             request.addHeader("Accept", "application/vnd.wallet.openapi.v1+json");
 

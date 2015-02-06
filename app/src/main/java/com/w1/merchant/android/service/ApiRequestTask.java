@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
+import com.w1.merchant.android.activity.SessionExpiredDialogActivity;
 import com.w1.merchant.android.extra.CaptchaDialogFragment;
 import com.w1.merchant.android.utils.NetworkUtils;
 
@@ -49,6 +50,14 @@ public abstract class ApiRequestTask<T> {
 
     protected void retryRequest(Callback<T> callback) {
         doRequest(callback);
+    }
+
+    protected void onInvalidToken(RetrofitError error) {
+        Activity activity = getActivity();
+        if (activity == null) return;
+        Intent intent = new Intent(activity, SessionExpiredDialogActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
     }
 
     private void startRefreshCaptcha(NetworkUtils.ResponseErrorException error) {
@@ -101,6 +110,8 @@ public abstract class ApiRequestTask<T> {
             NetworkUtils.ResponseErrorException ex = (NetworkUtils.ResponseErrorException)error.getCause();
             if (ex.isCaptchaError()) {
                 startRefreshCaptcha(ex);
+            } else if (ex.isErrorInvalidToken()) {
+                onInvalidToken(error);
             } else {
                 onFailure(ex);
             }

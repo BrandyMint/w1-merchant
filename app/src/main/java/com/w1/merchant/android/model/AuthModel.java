@@ -50,6 +50,5 @@ public class AuthModel {
 	 */
 	@SerializedName("Token")
     public String token;
-	
-    
+
 }

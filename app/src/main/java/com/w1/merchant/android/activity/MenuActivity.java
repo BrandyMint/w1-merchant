@@ -18,7 +18,6 @@ package com.w1.merchant.android.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -67,6 +66,7 @@ import com.w1.merchant.android.request.GETTemplateList;
 import com.w1.merchant.android.request.HttpDELETE;
 import com.w1.merchant.android.request.JSONParsing;
 import com.w1.merchant.android.support.TicketListActivity;
+import com.w1.merchant.android.utils.Utils;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 
 import java.util.ArrayList;
@@ -142,40 +142,40 @@ public class MenuActivity extends FragmentActivity {
     private int month1;
     private int year1;
     private DatePicker dp1;
-    public String token;
-    private String userId;
     private ProgressBar progressBar;
-    private DialogFragment dlgExit;
     public boolean accountTypeId = false;
     private ViewPager vpCurrency;
-    private PagerAdapter currencyPagerAdapter;
+
     private ArrayList<String> currSumNames;
     private ArrayList<String> currRubls;
     private ArrayList<String> currCodes;
+
+    public String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        token = intent.getStringExtra("token");
-        userId = intent.getStringExtra("userId");
-        String timeout = intent.getStringExtra("timeout");
+        if (!Session.getInstance().hasToken()) {
+            Utils.restartApp(this);
+            return;
+        }
 
+        token = Session.getInstance().getBearer();
+
+        // TODO избавиться
+        long timeout = Session.getInstance().getAuthTimeout() * 1000;
         Timer myTimer;
         myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
-
             @Override
             public void run() {
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 exit();
             }
-        }, Integer.parseInt(timeout) * 1000);
-
-        dlgExit = new DialogExit();
+        }, timeout);
 
         // create new ProgressBar and style it
         progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
@@ -372,9 +372,9 @@ public class MenuActivity extends FragmentActivity {
         if (waitSum.endsWith(", ")) {
             waitSum = waitSum.substring(0, waitSum.length() - 2);
         }
-        currencyPagerAdapter = new ViewPagerAdapter(this,
-                currSumNames, currRubls);
-        vpCurrency.setAdapter(currencyPagerAdapter);
+
+        vpCurrency.setAdapter(new ViewPagerAdapter(this,
+                currSumNames, currRubls));
         //запрос списка и данных для графика
         dashSupport.getData(currentPage, token, nativeCurrency);
         currPageUEGraph = 1;
@@ -384,7 +384,7 @@ public class MenuActivity extends FragmentActivity {
 
     void getProfile() {
         //Получение профиля пользователя (название, логотип, url)
-        requestData[0] = Constants.URL_PROFILE + userId;
+        requestData[0] = Constants.URL_PROFILE + Session.getInstance().getUserId();
         requestData[1] = token;
         requestData[2] = "";
         GETProfile getProfile = new GETProfile(this);
@@ -586,14 +586,15 @@ public class MenuActivity extends FragmentActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
             return;
         } else if (position == 6) {
-            dlgExit.show(getFragmentManager(), "dlgExit");
+            new DialogExit().show(getFragmentManager(), "dlgExit");
         }
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
+
         if (position == 1) {
             if (!currSumNames.isEmpty()) {
-                currencyPagerAdapter = new ViewPagerAdapter(this,
+                PagerAdapter currencyPagerAdapter = new ViewPagerAdapter(this,
                         currSumNames, currRubls);
                 vpCurrency.setAdapter(currencyPagerAdapter);
             }
@@ -602,7 +603,7 @@ public class MenuActivity extends FragmentActivity {
             ArrayList<String> abRubl = new ArrayList<>();
             abName.add(menuItems[position - 1]);
             abRubl.add("");
-            currencyPagerAdapter = new ViewPagerAdapter(this,
+            PagerAdapter currencyPagerAdapter = new ViewPagerAdapter(this,
                     abName, abRubl);
             vpCurrency.setAdapter(currencyPagerAdapter);
         }
@@ -738,7 +739,7 @@ public class MenuActivity extends FragmentActivity {
 
     //ответ выписка
     public void addUserEntry(String data) {
-        ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
+        ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, Session.getInstance().getUserId(), getResources());
         if (!(newData == null)) {
             if (currentPage == 1) {
                 dataUserEntry = newData;
@@ -759,7 +760,7 @@ public class MenuActivity extends FragmentActivity {
 
     //ответ дэш 
     public void addDash(String data) {
-        ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, userId, getResources());
+        ArrayList<Map<String, Object>> newData = JSONParsing.userEntry(data, Session.getInstance().getUserId(), getResources());
         if (!(newData == null)) {
             if (!(newData.size() == 0)) {
                 if (currentPage == 1) {

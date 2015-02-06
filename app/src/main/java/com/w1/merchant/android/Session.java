@@ -2,18 +2,22 @@ package com.w1.merchant.android;
 
 import android.support.annotation.Nullable;
 
+import com.w1.merchant.android.model.AuthModel;
 import com.w1.merchant.android.model.Captcha;
 
+// XXX Thread Unsafe
 public final class Session {
 
     private static volatile Session sInstance;
 
     @Nullable
-    public volatile String bearer;
+    private AuthModel auth;
 
     public volatile Captcha captcha;
 
     public volatile String captchaCode;
+
+    public long authCreateSysUptime;
 
     public static Session getInstance() {
         if (sInstance == null) {
@@ -28,11 +32,36 @@ public final class Session {
     private Session() {}
 
     public void clear() {
-        synchronized (Session.class) {
-            bearer = null;
-            captcha = null;
-            captchaCode = null;
-        }
+        auth = null;
+        captcha = null;
+        captchaCode = null;
+    }
+
+    public void setAuth(@Nullable AuthModel auth) {
+        authCreateSysUptime = System.nanoTime();
+        this.auth = auth;
+    }
+
+    @Nullable
+    public String getBearer() {
+        return  auth == null ? null : auth.token;
+    }
+
+    public boolean hasToken() {
+        return auth != null;
+    }
+
+    public boolean isTokenExpired() {
+        if (auth == null) return false;
+        return System.nanoTime() > (authCreateSysUptime + (auth.timeout - 10) * 1e9);
+    }
+
+    public String getUserId() {
+        return auth == null ? "0" : auth.userId;
+    }
+
+    public long getAuthTimeout() {
+        return auth == null ? 1 : auth.timeout;
     }
 
 }
