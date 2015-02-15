@@ -17,7 +17,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
@@ -46,9 +45,8 @@ public class InvoiceFragment extends Fragment {
     private static final int ACT_ADD = 1;
 
     private ListView lvInvoice;
-	TextView tvFooterText, tv;
 	SegmentedRadioGroup srgInvoice;
-	private LinearLayout llFooter;
+	private TextView llFooter;
 
     private ApiInvoices mApiInvoices;
 
@@ -85,8 +83,7 @@ public class InvoiceFragment extends Fragment {
         View parentView = inflater.inflate(R.layout.invoices, container, false);
         srgInvoice = (SegmentedRadioGroup) parentView.findViewById(R.id.srgInvoice);
         lvInvoice = (ListView) parentView.findViewById(R.id.lvAccounts);
-        llFooter = (LinearLayout) inflater.inflate(R.layout.footer2, null);
-        tvFooterText = (TextView) llFooter.findViewById(R.id.tvFooterText);
+        llFooter = (TextView)inflater.inflate(R.layout.footer2, lvInvoice, false);
         
         srgInvoice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
     		@Override
@@ -304,7 +301,7 @@ public class InvoiceFragment extends Fragment {
                 createListView();
             } else {
                 mAdapter.addItems(invoices);
-                tvFooterText.setText(R.string.data_load);
+                llFooter.setText(R.string.data_load);
             }
             if (invoices.size() == 0) removeFooter();
         } else {
@@ -325,7 +322,7 @@ public class InvoiceFragment extends Fragment {
     private void manipulateWithVisibleViews(AbsListView view) {
         if (view.getLastVisiblePosition() == mAdapter.getCount()) {
             mCurrentPage += 1;
-            tvFooterText.setText(R.string.loading);
+            llFooter.setText(R.string.loading);
             refreshList();
         }
     }

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,7 +25,6 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -76,13 +76,14 @@ public class DashFragment extends Fragment {
     public static final int PLOT_30 = 3;
     public static final int TRANSACTION_HISTORY_ITEMS_PER_PAGE = 25;
     public ListView lvDash;
-    TextView tv, tvFooterText, tvPercent;
+    TextView tvPercent;
 
     ViewPager vpDash;
     PagerAdapter pagerAdapter;
     SegmentedRadioGroup srgDash;
     RadioButton rbHour, rbWeek, rbMonth;
-    private LinearLayout llFooter, llHeader;
+    private TextView mFooter;
+    private View llHeader;
     //XYSeries series1;
     SwipeRefreshLayout swipeLayout;
     LineChart mChart;
@@ -129,15 +130,16 @@ public class DashFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.dashboard, container, false);
-        llFooter = (LinearLayout) inflater.inflate(R.layout.footer2, null);
-        llHeader = (LinearLayout) inflater.inflate(R.layout.dash_header, null);
         //llPlot = (LinearLayout) llHeader.findViewById(R.id.llPlot);
+        lvDash = (ListView) parentView.findViewById(R.id.lvDash);
+
+        mFooter = (TextView)inflater.inflate(R.layout.footer2, lvDash, false);
+        llHeader = inflater.inflate(R.layout.dash_header, lvDash, false);
+
         mChart = (LineChart) llHeader.findViewById(R.id.chart1);
         tvPercent = (TextView) llHeader.findViewById(R.id.tvPercent);
         ivPercent = (ImageView) llHeader.findViewById(R.id.ivPercent);
-        tvFooterText = (TextView) llFooter.findViewById(R.id.tvFooterText);
 
-        lvDash = (ListView) parentView.findViewById(R.id.lvDash);
         srgDash = (SegmentedRadioGroup) llHeader.findViewById(R.id.srgDash);
         rbHour = (RadioButton) llHeader.findViewById(R.id.rbHour);
         rbHour.setChecked(true);
@@ -205,10 +207,10 @@ public class DashFragment extends Fragment {
             lvDash.addHeaderView(llHeader);
         }
         if ((mAdapter.getCount() > TRANSACTION_HISTORY_ITEMS_PER_PAGE - 1) & (lvDash.getFooterViewsCount() == 0)) {
-            lvDash.addFooterView(llFooter);
+            lvDash.addFooterView(mFooter);
         }
         if ((mAdapter.getCount() < TRANSACTION_HISTORY_ITEMS_PER_PAGE) & (mCurrentPage == 1)) {
-            lvDash.removeFooterView(llFooter);
+            lvDash.removeFooterView(mFooter);
         }
         lvDash.setAdapter(mAdapter);
 
@@ -239,6 +241,8 @@ public class DashFragment extends Fragment {
         });
 
         lvDash.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private Rect scrollBounds = new Rect();
+
             @Override
             public void onScroll(AbsListView arg0,
                                  int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -249,9 +253,11 @@ public class DashFragment extends Fragment {
                 switch (scrollState) {
                     case OnScrollListener.SCROLL_STATE_IDLE:
                         // when list scrolling stops
-                        if (view.getLastVisiblePosition() == mAdapter.getCount()) {
+                        view.getHitRect(scrollBounds);
+                        if (mFooter.isShown() && mFooter.getLocalVisibleRect(scrollBounds)) {
+                            Log.v("DashFragment", "loading");
                             mCurrentPage += 1;
-                            tvFooterText.setText(R.string.loading);
+                            mFooter.setText(R.string.loading);
                             refreshTransactionHistory();
                         }
                         break;
@@ -308,13 +314,13 @@ public class DashFragment extends Fragment {
     }
 
     private void addTransactionHistoryResult(TransactionHistory newData) {
-        if (!(newData == null)) {
+        if (newData != null) {
             if (mCurrentPage == 1) {
                 mAdapter.setItems(newData.items);
                 createListView();
             } else {
                 mAdapter.addItems(newData.items);
-                setHeaderText(getString(R.string.data_load));
+                mFooter.setText(R.string.data_load);
             }
             if (newData.items.size() == 0) removeFooter();
         } else {
@@ -323,7 +329,7 @@ public class DashFragment extends Fragment {
     }
 
     public void removeFooter() {
-        lvDash.removeFooterView(llFooter);
+        lvDash.removeFooterView(mFooter);
     }
 
     public void setViewPager() {
@@ -612,10 +618,6 @@ public class DashFragment extends Fragment {
 //        YLabels yl = mChart.getYLabels();
 //        yl.setTextColor(Color.WHITE);
 
-    }
-
-    public void setHeaderText(String text) {
-        tvFooterText.setText(text);
     }
 
     public void setPercent(String text) {

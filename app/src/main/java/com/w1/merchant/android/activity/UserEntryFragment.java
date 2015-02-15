@@ -20,7 +20,6 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
@@ -47,8 +46,7 @@ public class UserEntryFragment extends Fragment {
     private static final int ITEMS_PER_PAGE = 25;
 
     private ListView lvUserEntry;
-    private TextView tvFooterText;
-    private LinearLayout llFooter;
+    private TextView mFooter;
     private SegmentedRadioGroup mRadioGroup;
 
     private OnFragmentInteractionListener mListener;
@@ -74,13 +72,12 @@ public class UserEntryFragment extends Fragment {
         View parentView = inflater.inflate(R.layout.userentry, container, false);
         lvUserEntry = (ListView) parentView.findViewById(R.id.lvStatement);
         mRadioGroup = (SegmentedRadioGroup) parentView.findViewById(R.id.srgStatement);
-        llFooter = (LinearLayout) inflater.inflate(R.layout.footer2, null);
-        tvFooterText = (TextView) llFooter.findViewById(R.id.tvFooterText);
+        mFooter = (TextView)inflater.inflate(R.layout.footer2, lvUserEntry, false);
 
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                lvUserEntry.removeFooterView(llFooter);
+                lvUserEntry.removeFooterView(mFooter);
                 mCurrentPage = 1;
                 refreshList();
             }
@@ -301,7 +298,7 @@ public class UserEntryFragment extends Fragment {
         //заполнение ListView
         if ((mAdapter.getCount() >= ITEMS_PER_PAGE) &
                 (lvUserEntry.getFooterViewsCount() == 0)) {
-            lvUserEntry.addFooterView(llFooter, null, false);
+            lvUserEntry.addFooterView(mFooter, null, false);
             lvUserEntry.setAdapter(mAdapter);
         } else {
             removeFooter();
@@ -311,7 +308,7 @@ public class UserEntryFragment extends Fragment {
     private void manipulateWithVisibleViews(AbsListView view) {
         if (view.getLastVisiblePosition() == mAdapter.getCount()) {
             mCurrentPage += 1;
-            tvFooterText.setText(R.string.loading);
+            mFooter.setText(R.string.loading);
             refreshList();
         }
     }
@@ -404,11 +401,11 @@ public class UserEntryFragment extends Fragment {
     }
 
     public void removeFooter() {
-        lvUserEntry.removeFooterView(llFooter);
+        lvUserEntry.removeFooterView(mFooter);
     }
 
     public void setHeaderText(String text) {
-        tvFooterText.setText(text);
+        mFooter.setText(text);
     }
 
     public interface OnFragmentInteractionListener {
