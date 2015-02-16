@@ -330,7 +330,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     public void onBalanceLoaded(List<Balance> balances) {
         boolean nativeCurrencyInitialized = !mBalances.isEmpty();
         mBalances.clear();
-        mBalances.addAll(balances);
+        for (Balance b: balances) if (!"Undefined".equalsIgnoreCase(b.visibilityType)) mBalances.add(b);
 
         if (!mBalances.isEmpty()) {
             String nativeCurrency = balances.isEmpty() ? "643" : balances.get(0).currencyId;

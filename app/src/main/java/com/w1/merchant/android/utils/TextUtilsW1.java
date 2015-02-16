@@ -7,7 +7,10 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.w1.merchant.android.BuildConfig;
+import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 
 import java.text.DecimalFormat;
@@ -89,32 +92,72 @@ public final class TextUtilsW1 {
         }
     }
 
+    @Nullable
+    public static String getIso4217CodeByNumber(String number) {
+        switch (number) {
+            case "398": return "KZT";
+            case "643": return "RUB";
+            case "710": return "ZAR";
+            case "840": return "USD";
+            case "972": return "TJS";
+            case "974": return "BYR";
+            case "978": return "EUR";
+            case "980": return "UAH";
+            case "981": return "GEL";
+            case "985": return "PLN";
+            default: return null;
+        }
+    }
+
     public static String getCurrencySymbol(String currencyId) {
-        String result = "";
-        if (currencyId.equals("398")) { //казах
-            result =  "₸";//KZTU+20B8&#8376
-        } else if (currencyId.equals("643")) { //рубль
-            result = "RUB";
-        } else if (currencyId.equals("710")) {//южноафр
-            result = "R";//ZARR
-        } else if (currencyId.equals("840")) {//USD
-            result = "$";//USD
-        } else if (currencyId.equals("972")) {//таджик
-            result = "смн.";//TJSсмн.
-        } else if (currencyId.equals("974")) {//белорус
-            result = "Br";//BrBYR
-        } else if (currencyId.equals("978")) {//EUR
-            result = "€";//EURU+20AC&#8364
-        } else if (currencyId.equals("980")) {//укр
-            result = "₴";//UAHU+20B4&#8372
-        } else if (currencyId.equals("985")) {//польск
-            result = "zł";//PLN
-        } else {//?
-            try {
-                result = Currency.getInstance(currencyId).getSymbol();
-            } catch (Exception e) {
-                result = "?";
+        String result;
+        Exception exception = null;
+        try {
+            String iso4217Code = getIso4217CodeByNumber(currencyId);
+            if (iso4217Code != null && !"RUB".equals(iso4217Code)) {
+                result =  Currency.getInstance(iso4217Code).getSymbol(Locale.getDefault());
+                if (!TextUtils.equals(result, iso4217Code)) return result;
             }
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        switch (currencyId) {
+            case "398":  //казах
+                result = "₸";//KZTU+20B8&#8376
+                break;
+            case "643":  //рубль
+                result = "RUB";
+                break;
+            case "710": //южноафр
+                result = "R";//ZARR
+                break;
+            case "840": //USD
+                result = "$";//USD
+                break;
+            case "972": //таджик
+                result = "смн.";//TJSсмн.
+                break;
+            case "974": //белорус
+                result = "Br";//BrBYR
+                break;
+            case "978": //EUR
+                result = "€";//EURU+20AC&#8364
+                break;
+            case "980": //укр
+                result = "₴";//UAHU+20B4&#8372
+                break;
+            case "981": //Груз.
+                result = "lari";//GEL U+20BE
+                break;
+            case "985": //польск
+                result = "zł";//PLN
+                break;
+            default: //?
+                result = "?";
+                if (BuildConfig.DEBUG)
+                    Log.v(Constants.LOG_TAG, "no currency for code " + currencyId, exception);
+                break;
         }
         return result;
     }

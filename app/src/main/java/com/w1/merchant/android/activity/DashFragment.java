@@ -271,6 +271,7 @@ public class DashFragment extends Fragment {
     }
 
     void refreshTransactionHistory() {
+        mListener.startProgress();
         new ApiRequestTask<TransactionHistory>() {
 
             @Override
@@ -385,6 +386,7 @@ public class DashFragment extends Fragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                swipeLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
             }
         });
     }
@@ -477,7 +479,6 @@ public class DashFragment extends Fragment {
                         if (mCurrentPageUEGraph < 300) execute();
                     } else {
                         mListener.stopProgress();
-
                         Map<BigInteger, TransactionHistoryEntry> uniqMap = new HashMap<>(mHistory60day.size());
                         for (TransactionHistoryEntry entry: mHistory60day) uniqMap.put(entry.entryId, entry);
 
