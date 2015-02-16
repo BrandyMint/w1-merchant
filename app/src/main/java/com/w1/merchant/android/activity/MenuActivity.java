@@ -98,8 +98,6 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     private List<Balance> mBalances = new ArrayList<>();
     public String nativeCurrency = "643";
 
-    private int currentFragment = 0;
-
     private DashFragment fragmentDash;
 
     private int totalReq = 0;
@@ -356,21 +354,17 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     public void selectItem(int position) {
         switch (position) {
             case R.id.drawer_menu_dashboard:
-                currentFragment = FRAGMENT_DASH;
                 changeFragment(fragmentDash);
                 break;
             case R.id.drawer_menu_statement:
-                currentFragment = FRAGMENT_USERENTRY;
                 Fragment fragmentUserEntry = new UserEntryFragment();
                 changeFragment(fragmentUserEntry);
                 break;
             case R.id.drawer_menu_invoices:
-                currentFragment = FRAGMENT_INVOICE;
                 Fragment fragmentInvoice = new InvoiceFragment();
                 changeFragment(fragmentInvoice);
                 break;
             case R.id.drawer_menu_withdrawal:
-                currentFragment = 0;
                 Fragment fragmentTemplate = new TemplateFragment();
                 changeFragment(fragmentTemplate);
                 break;
@@ -409,7 +403,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     private void refreshCurrencyViewPager() {
-        if (mBalances.size() == 0 || currentFragment != FRAGMENT_DASH) {
+        if (mBalances.size() == 0 || getCurrentFragment() != FRAGMENT_DASH) {
             mCurrencyPagerAdapter.setShowTitle(getCurrentItemTitle());
         } else {
             mCurrencyPagerAdapter.setBalances(mBalances);
@@ -444,7 +438,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     public void onBackPressed() {
         //dlgExit.show(getFragmentManager(), "dlgExit");
         mDrawerLayout.closeDrawer(Gravity.LEFT);
-        if (currentFragment != FRAGMENT_DASH) {
+        if (getCurrentFragment() != FRAGMENT_DASH) {
             selectItem(R.id.drawer_menu_dashboard);
             invalidateOptionsMenu();
         }
@@ -496,7 +490,17 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     public int getCurrentFragment() {
-        return currentFragment;
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (f == null) {
+            return 0;
+        } else  if (f instanceof DashFragment) {
+            return FRAGMENT_DASH;
+        } else if (f instanceof InvoiceFragment) {
+            return FRAGMENT_INVOICE;
+        } else if (f instanceof UserEntryFragment) {
+            return FRAGMENT_USERENTRY;
+        }
+        return 0;
     }
 
     private final class CurrencyViewPagerAdapter extends PagerAdapter {
