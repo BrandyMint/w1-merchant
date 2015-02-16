@@ -10,7 +10,6 @@ import android.text.Spanned;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,8 +63,7 @@ public class UserEntryTotal extends Activity {
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.userentry_total);
+		setContentView(R.layout.activity_userentry_total);
 
         mCurrency = getIntent().getStringExtra(ARG_CURRENCY);
         mDateFrom = new Date(getIntent().getLongExtra(ARG_DATE_FROM, System.currentTimeMillis()));

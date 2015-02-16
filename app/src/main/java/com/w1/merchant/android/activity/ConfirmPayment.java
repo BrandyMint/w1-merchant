@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.TextView;
 
 import com.w1.merchant.android.R;
@@ -14,8 +13,7 @@ public class ConfirmPayment extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.confirmation);
+		setContentView(R.layout.activity_confirm);
 
 		TextView tvConfirmText = (TextView) findViewById(R.id.tvConfirmText);
 		tvConfirmText.setText(getString(R.string.transact_proces, 

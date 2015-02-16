@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,8 +21,7 @@ public class Details extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.details);
+		setContentView(R.layout.activity_details);
 		intent = getIntent();
 		number = intent.getStringExtra("number");
 		tvSum = (TextView) findViewById(R.id.tvSum);

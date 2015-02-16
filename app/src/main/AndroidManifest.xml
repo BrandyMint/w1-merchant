@@ -53,30 +53,37 @@
         </activity>
         <activity
             android:name=".activity.AddInvoice"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.ConfirmActivity"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.ConfirmPayment"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.ConfirmOutActivity"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.EditTemplate"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.Details"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.UserEntryTotal"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
