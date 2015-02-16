@@ -15,14 +15,14 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string-array name="menu_array">
-        <item>Дэшборд</item>
-        <item>Выписка</item>
-        <item>Счета</item>
-        <item>Вывод</item>
-        <item>Поддержка</item>
-        <item>Выход</item>
-    </string-array>
+
+    <string name="drawer_menu_dashboard">Дэшборд</string>
+    <string name="drawer_menu_statement">Выписка</string>
+    <string name="drawer_menu_invoices">Счета</string>
+    <string name="drawer_menu_withdrawal">Вывод</string>
+    <string name="drawer_menu_support">Поддержка</string>
+    <string name="drawer_menu_logout">Выход</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Добавить</string>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.w1.merchant.android.viewextended.TextViewRobotoLight xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/text"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="10dp"
+    android:gravity="center_vertical"
+    android:textColor="@android:color/white"
+    android:textSize="24sp" />

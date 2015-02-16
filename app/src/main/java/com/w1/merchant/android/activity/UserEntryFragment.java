@@ -411,8 +411,6 @@ public class UserEntryFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         public String getNativeCurrency();
 
-        public void onDrawerListChanged();
-
         public void startProgress();
 
         public void stopProgress();

@@ -16,11 +16,11 @@
 
 package com.w1.merchant.android.activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -30,22 +30,20 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +53,6 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DialogExit;
-import com.w1.merchant.android.extra.ViewPagerAdapter;
 import com.w1.merchant.android.model.Balance;
 import com.w1.merchant.android.model.Profile;
 import com.w1.merchant.android.service.ApiProfile;
@@ -69,9 +66,7 @@ import com.w1.merchant.android.viewextended.CircleTransformation;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -88,15 +83,17 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     private static final String TAG = Constants.LOG_TAG;
 
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    private ViewPager vpCurrency;
+    private ViewPager mCurrencyViewPager;
+    private CurrencyViewPagerAdapter mCurrencyPagerAdapter;
 
     private static final int FRAGMENT_USERENTRY = 1;
     private static final int FRAGMENT_INVOICE = 2;
     public static final int FRAGMENT_DASH = 3;
 
     private ImageView ivAccountIcon;
+    private TextView tvName;
+    private TextView tvUrl;
 
     private List<Balance> mBalances = new ArrayList<>();
     public String nativeCurrency = "643";
@@ -105,11 +102,11 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
 
     private DashFragment fragmentDash;
 
-    private TextView tvName;
-    private TextView tvUrl;
     private int totalReq = 0;
     private ProgressBar progressBar;
     private boolean mIsBusinessAccount = false;
+
+    private NavDrawerMenu mNavDrawerMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,60 +163,40 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         loadProfile();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, new NavDrawerMenu.OnItemClickListener() {
+            @Override
+            public boolean onItemClicked(View view, int itemId) {
+                selectItem(itemId);
+                switch (itemId) {
+                    case R.id.drawer_menu_support:
+                    case R.id.drawer_menu_logout:
+                        return false;
+                    default:
+                        return true;
+                }
+            }
+        });
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
         //шапка меню
-        LayoutInflater inflater = getLayoutInflater();
-        LinearLayout llHeader = (LinearLayout) inflater.inflate(R.layout.header_menu, null);
-        mDrawerList.addHeaderView(llHeader);
         ivAccountIcon = (ImageView) findViewById(R.id.ivAccountIcon);
         tvName = (TextView) findViewById(R.id.tvName);
         tvUrl = (TextView) findViewById(R.id.tvUrl);
-        final String ATTRIBUTE_NAME_TEXT = "text";
-        final String ATTRIBUTE_NAME_IMAGE = "image";
-        int[] img = {R.drawable.menu_dashboard, R.drawable.menu_account,
-                R.drawable.menu_check, R.drawable.menu_output,
-                R.drawable.menu_support,
-                R.drawable.menu_settings
-        };
-        ArrayList<Map<String, Object>> data = new ArrayList<>(6);
-        Map<String, Object> m;
-        for (int i = 0; i < 6; i++) {
-            m = new HashMap<>();
-            m.put(ATTRIBUTE_NAME_TEXT, getResources().getStringArray(R.array.menu_array)[i]);
-            m.put(ATTRIBUTE_NAME_IMAGE, img[i]);
-            data.add(m);
-        }
-        String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE};
-        int[] to = {R.id.tvText, R.id.ivImg};
-        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.menu_item,
-                from, to);
-
-        mDrawerList.setAdapter(sAdapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon TO behave as action TO toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayShowCustomEnabled(true);
 
-        getActionBar().setCustomView(R.layout.action_bar_rubl2);
-        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM |
-                ActionBar.DISPLAY_SHOW_HOME |
-                ActionBar.DISPLAY_HOME_AS_UP);
-
-        vpCurrency = (ViewPager) getActionBar().getCustomView().
-                findViewById(R.id.vpCurrency);
-
-        vpCurrency.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mCurrencyViewPager = (ViewPager)LayoutInflater.from(this).inflate(R.layout.action_bar_rubl2, null, false);
+        mCurrencyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int arg0) {
                 //меняем валюту
                 nativeCurrency = mBalances.get(arg0).currencyId;
-
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
                 if (fragment != null && fragment instanceof DashFragment) {
                     ((DashFragment) fragment).refreshDashboard();
@@ -234,6 +211,9 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
             public void onPageScrollStateChanged(int arg0) {
             }
         });
+        mCurrencyPagerAdapter = new CurrencyViewPagerAdapter();
+        mCurrencyViewPager.setAdapter(mCurrencyPagerAdapter);
+        getActionBar().setCustomView(mCurrencyViewPager);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -263,7 +243,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(1);
+            selectItem(R.id.drawer_menu_dashboard);
         }
     }
 
@@ -334,11 +314,6 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     @Override
-    public void onDrawerListChanged() {
-        ((SimpleAdapter)mDrawerList.getAdapter()).notifyDataSetChanged();
-    }
-
-    @Override
     public boolean ismIsBusinessAccount() {
         return mIsBusinessAccount;
     }
@@ -355,6 +330,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
 
     @Override
     public void onBalanceLoaded(List<Balance> balances) {
+        boolean nativeCurrencyInitialized = !mBalances.isEmpty();
         mBalances.clear();
         mBalances.addAll(balances);
 
@@ -366,9 +342,9 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
                     break;
                 }
             }
-            this.nativeCurrency = nativeCurrency;
+            if (!nativeCurrencyInitialized) this.nativeCurrency = nativeCurrency;
             if (DBG) Log.v(TAG, "native currency: " + nativeCurrency);
-            refreshDashCurrencyViewPager();
+            refreshCurrencyViewPager();
         }
     }
 
@@ -377,85 +353,68 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         return progressBar;
     }
 
-    /* The click listner for ListView in the navigation drawer */
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (position > 0) {
-                selectItem(position);
-            }
-        }
-    }
-
     public void selectItem(int position) {
-        if (position == 1) {
-            currentFragment = FRAGMENT_DASH;
-            changeFragment(fragmentDash);
-        } else if (position == 2) {
-            currentFragment = FRAGMENT_USERENTRY;
-            Fragment fragmentUserEntry = new UserEntryFragment();
-            changeFragment(fragmentUserEntry);
-        } else if (position == 3) {
-            currentFragment = FRAGMENT_INVOICE;
-            Fragment fragmentInvoice = new InvoiceFragment();
-            changeFragment(fragmentInvoice);
-        } else if (position == 4) {
-            currentFragment = 0;
-            Fragment fragmentTemplate = new TemplateFragment();
-            changeFragment(fragmentTemplate);
-        } else if (position == 5) {
-            Intent intent = new Intent(this, TicketListActivity.class);
-            startActivity(intent);
-            mDrawerLayout.closeDrawer(mDrawerList);
-            return;
-        } else if (position == 6) {
-            new DialogExit().show(getFragmentManager(), "dlgExit");
+        switch (position) {
+            case R.id.drawer_menu_dashboard:
+                currentFragment = FRAGMENT_DASH;
+                changeFragment(fragmentDash);
+                break;
+            case R.id.drawer_menu_statement:
+                currentFragment = FRAGMENT_USERENTRY;
+                Fragment fragmentUserEntry = new UserEntryFragment();
+                changeFragment(fragmentUserEntry);
+                break;
+            case R.id.drawer_menu_invoices:
+                currentFragment = FRAGMENT_INVOICE;
+                Fragment fragmentInvoice = new InvoiceFragment();
+                changeFragment(fragmentInvoice);
+                break;
+            case R.id.drawer_menu_withdrawal:
+                currentFragment = 0;
+                Fragment fragmentTemplate = new TemplateFragment();
+                changeFragment(fragmentTemplate);
+                break;
+            case R.id.drawer_menu_support:
+                Intent intent = new Intent(this, TicketListActivity.class);
+                startActivity(intent);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                return;
+            case R.id.drawer_menu_logout:
+                new DialogExit().show(getFragmentManager(), "dlgExit");
+                break;
         }
 
-        // update selected item and title, then close the drawer
+        mDrawerLayout.closeDrawer(Gravity.LEFT);
 
-        mDrawerList.setItemChecked(position, true);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                refreshCurrencyViewPager();
+            }
+        });
 
-        if (position == 1) {
-            refreshDashCurrencyViewPager();
-        } else {
-            ArrayList<String> abName = new ArrayList<>();
-            ArrayList<String> abRubl = new ArrayList<>();
-            abName.add(getResources().getStringArray(R.array.menu_array)[position - 1]);
-            abRubl.add("");
-            PagerAdapter currencyPagerAdapter = new ViewPagerAdapter(this,
-                    abName, abRubl);
-            vpCurrency.setAdapter(currencyPagerAdapter);
-        }
-
-        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
-    private void refreshDashCurrencyViewPager() {
-        // TODO Переписать весь этот пиздец
-        if (currentFragment != FRAGMENT_DASH) return;
-        if (!mBalances.isEmpty()) {
-            ArrayList<String> currSumNames = new ArrayList<>(mBalances.size());
-            ArrayList<String> currRubls = new ArrayList<>(mBalances.size());
+    private int findCurrentCurrencyPosition() {
+        int size = mBalances.size();
+        for (int position = 0; position < size; position += 1) {
+            if (TextUtils.equals(mBalances.get(position).currencyId, nativeCurrency)) return position;
+        }
+        return 0;
+    }
 
-            for (Balance balance : mBalances) {
-                long amount = balance.amount.setScale(0, BigDecimal.ROUND_HALF_UP).longValue();
-                if ("643".equals(balance.currencyId)) {
-                    currSumNames.add(getString(R.string.balance) + " "
-                            + TextUtilsW1.formatNumber(amount));
-                    currRubls.add("B");
-                } else {
-                    if (amount != 0) {
-                        currSumNames.add(getString(R.string.balance) + " " +
-                                TextUtilsW1.formatNumber(amount) + " " + TextUtilsW1.getCurrencySymbol(balance.currencyId));
-                        currRubls.add("");
-                    }
-                }
-            }
+    private CharSequence getCurrentItemTitle() {
+        int resId = mNavDrawerMenu.getCurrentMenuItemTitle();
+        return resId <= 0 ? "" : getText(resId);
+    }
 
-            PagerAdapter currencyPagerAdapter = new ViewPagerAdapter(this,
-                    currSumNames, currRubls);
-            vpCurrency.setAdapter(currencyPagerAdapter);
+    private void refreshCurrencyViewPager() {
+        if (mBalances.size() == 0 || currentFragment != FRAGMENT_DASH) {
+            mCurrencyPagerAdapter.setShowTitle(getCurrentItemTitle());
+        } else {
+            mCurrencyPagerAdapter.setBalances(mBalances);
+            mCurrencyPagerAdapter.setShowBalance();
+            mCurrencyViewPager.setCurrentItem(findCurrentCurrencyPosition());
         }
     }
 
@@ -484,9 +443,9 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     @Override
     public void onBackPressed() {
         //dlgExit.show(getFragmentManager(), "dlgExit");
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(Gravity.LEFT);
         if (currentFragment != FRAGMENT_DASH) {
-            selectItem(1);
+            selectItem(R.id.drawer_menu_dashboard);
             invalidateOptionsMenu();
         }
     }
@@ -539,4 +498,175 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     public int getCurrentFragment() {
         return currentFragment;
     }
+
+    private final class CurrencyViewPagerAdapter extends PagerAdapter {
+
+        private List<Balance> mBalances = new ArrayList<>();
+
+        private boolean mShowTitle = true;
+
+        private CharSequence mTitle = "";
+
+        public CurrencyViewPagerAdapter() {
+        }
+
+        public void setShowTitle(CharSequence title) {
+            if (!(mShowTitle && TextUtils.equals(mTitle, title))) {
+                if (DBG) Log.v(TAG, "setShowTitle " + title);
+                mShowTitle = true;
+                mTitle = title;
+                notifyDataSetChanged();
+            }
+        }
+
+        public void setShowBalance() {
+            if (mShowTitle) {
+                if (DBG) Log.v(TAG, "setShowBalance ");
+                mShowTitle = false;
+                notifyDataSetChanged();
+            }
+        }
+
+        public void setBalances(List<Balance> balances) {
+            mBalances.clear();
+            mBalances.addAll(balances);
+            notifyDataSetChanged();
+        }
+
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public int getCount() {
+            return mShowTitle ? 1 : mBalances.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            if (DBG) Log.v(TAG, "instantiateItem pos: " + position);
+
+            LayoutInflater inflater = LayoutInflater.from(container.getContext());
+
+            TextView tv = (TextView)inflater.inflate(R.layout.currency_viewpager_item, container, false);
+
+            if (mShowTitle) {
+                tv.setText(mTitle);
+            } else {
+                tv.setText(getCurrencyTitle(position));
+            }
+
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ((getCurrentFragment() == FRAGMENT_DASH) && !getWaitSum().isEmpty()) {
+                        Toast toast = Toast.makeText(MenuActivity.this,
+                                getString(R.string.awaiting) + " " + getWaitSum(),
+                                Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 100);
+                        toast.show();
+                    }
+                }
+            });
+
+            container.addView(tv);
+
+            return tv;
+        }
+
+        private CharSequence getCurrencyTitle(int position) {
+            Balance balance = mBalances.get(position);
+            long amount = balance.amount.setScale(0, BigDecimal.ROUND_HALF_UP).longValue();
+
+            SpannableStringBuilder sb = new SpannableStringBuilder(getText(R.string.balance));
+            sb.append(" ");
+            sb.append(TextUtilsW1.formatNumber(amount));
+            sb.append(" ");
+            sb.append(TextUtilsW1.getCurrencySymbol2(balance.currencyId, 1));
+            return sb;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View)object);
+        }
+    }
+
+    private static final class NavDrawerMenu {
+
+        private final OnItemClickListener mListener;
+
+        private static final int MENU_VIEW_IDS[] = new int[] {
+                R.id.drawer_menu_dashboard,
+                R.id.drawer_menu_statement,
+                R.id.drawer_menu_invoices,
+                R.id.drawer_menu_withdrawal,
+                R.id.drawer_menu_support,
+                R.id.drawer_menu_logout
+        };
+
+        private final View[] mMenuItems;
+
+        public static int getMenuItemTitle(int viewId) {
+            switch (viewId)  {
+                case R.id.drawer_menu_dashboard: return R.string.drawer_menu_dashboard;
+                case R.id.drawer_menu_statement: return R.string.drawer_menu_statement;
+                case R.id.drawer_menu_invoices: return  R.string.drawer_menu_invoices;
+                case R.id.drawer_menu_withdrawal: return R.string.drawer_menu_withdrawal;
+                case R.id.drawer_menu_support: return R.string.drawer_menu_support;
+                case R.id.drawer_menu_logout: return R.string.drawer_menu_logout;
+                default:
+                    return -1;
+            }
+        }
+
+        public NavDrawerMenu(View root, OnItemClickListener listener) {
+            mListener = listener;
+            mMenuItems = new View[MENU_VIEW_IDS.length];
+            for (int i = 0; i < MENU_VIEW_IDS.length; ++i) {
+                mMenuItems[i] = root.findViewById(MENU_VIEW_IDS[i]);
+                if (mMenuItems[i] == null) throw new IllegalStateException();
+            }
+            for (View v: mMenuItems) v.setOnClickListener(mOnClickListener);
+        }
+
+        public void setActivatedItem(int viewId) {
+            for (View v: mMenuItems) v.setActivated(viewId == v.getId());
+        }
+
+        @Nullable
+        public Integer getActivatedItemId() {
+            for (View v: mMenuItems) {
+                if (v.isActivated()) return v.getId();
+            }
+            return null;
+        }
+
+        public int getCurrentMenuItemTitle() {
+            Integer id = getActivatedItemId();
+            if (id == null) return -1;
+            return getMenuItemTitle(id);
+        }
+
+        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.isActivated()) return;
+                boolean activatePosition = mListener.onItemClicked(v, v.getId());
+                if (activatePosition) setActivatedItem(v.getId());
+            }
+        };
+
+        public interface OnItemClickListener {
+            public boolean onItemClicked(View view, int itemId);
+        }
+
+    }
+
 }

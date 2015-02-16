@@ -16,14 +16,12 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string-array name="menu_array">
-        <item>Dashboard</item>
-        <item>Statement</item>
-        <item>Invoices</item>
-        <item>Withdrawal</item>
-        <item>Support</item>
-        <item>Log out</item>
-    </string-array>
+    <string name="drawer_menu_dashboard">Dashboard</string>
+    <string name="drawer_menu_statement">Statement</string>
+    <string name="drawer_menu_invoices">Invoices</string>
+    <string name="drawer_menu_withdrawal">Withdrawal</string>
+    <string name="drawer_menu_support">Support</string>
+    <string name="drawer_menu_logout">Log out</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

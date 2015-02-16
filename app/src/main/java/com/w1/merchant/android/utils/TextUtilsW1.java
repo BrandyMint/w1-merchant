@@ -76,6 +76,11 @@ public final class TextUtilsW1 {
         }
     }
 
+    /**
+     * @param currencyId
+     * @param weight Толщина для символа рубля от 0 до 2
+     * @return
+     */
     public static Spanned getCurrencySymbol2(String currencyId, int weight) {
         if (currencyId.equals("643")) {
             return getRoubleSymbol(weight);
