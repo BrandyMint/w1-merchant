@@ -211,7 +211,7 @@ public class UserEntryFragment extends Fragment {
     }
 
     void showCalendarPopup() {
-        new SelectDateRangePopup(getActivity(), mListener.getNativeCurrency())
+        new SelectDateRangePopup(getActivity(), mListener.getCurrency())
                 .show(mListener.getPopupAnchorView());
     }
 
@@ -243,7 +243,7 @@ public class UserEntryFragment extends Fragment {
 
                 mApiUserEntry.getEntries(mCurrentPage, ITEMS_PER_PAGE,
                         null, null, null, null,
-                        mListener.getNativeCurrency(),
+                        mListener.getCurrency(),
                         mSearchString, direction, callback);
             }
 
@@ -409,7 +409,7 @@ public class UserEntryFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public String getNativeCurrency();
+        public String getCurrency();
 
         public void startProgress();
 

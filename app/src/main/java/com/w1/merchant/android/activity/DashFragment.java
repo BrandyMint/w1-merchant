@@ -277,7 +277,7 @@ public class DashFragment extends Fragment {
             protected void doRequest(Callback<TransactionHistory> callback) {
                 mApiUserEntry.getEntries(mCurrentPage, TRANSACTION_HISTORY_ITEMS_PER_PAGE,
                         null, null, null, null,
-                        mListener.getNativeCurrency(),
+                        mListener.getCurrency(),
                         null, null, callback);
             }
 
@@ -443,7 +443,7 @@ public class DashFragment extends Fragment {
             @Override
             protected void doRequest(Callback<TransactionHistory> callback) {
                 mApiUserEntry.getEntries(mCurrentPageUEGraph, 1000, date60DaysAgo, null,
-                        null, null, mListener.getNativeCurrency(), null, TransactionHistoryEntry.DIRECTION_INCOMING, callback);
+                        null, null, mListener.getCurrency(), null, TransactionHistoryEntry.DIRECTION_INCOMING, callback);
             }
 
             @Nullable
@@ -727,11 +727,11 @@ public class DashFragment extends Fragment {
 
         clearVPData();
         dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumDay + ""));
-        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getNativeCurrency()));
+        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getCurrency()));
         dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumWeek + ""));
-        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getNativeCurrency()));
+        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getCurrency()));
         dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumMonth + ""));
-        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getNativeCurrency()));
+        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getCurrency()));
 
         if (fSumDay2 > 0) {
             percentDay = (int) (fSumDay / (fSumDay2 / 100) - 100) + " %";
@@ -815,7 +815,7 @@ public class DashFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public String getNativeCurrency();
+        public String getCurrency();
 
         public void startProgress();
 

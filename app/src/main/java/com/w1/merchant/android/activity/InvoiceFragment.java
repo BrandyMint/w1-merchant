@@ -125,7 +125,7 @@ public class InvoiceFragment extends Fragment {
                 intent.putExtra("date", holder.date.getText().toString());
                 intent.putExtra("descr", entry.description);
                 intent.putExtra("amount", holder.amount0);
-                intent.putExtra("currency", mListener.getNativeCurrency());
+                intent.putExtra("currency", mListener.getCurrency());
 
                 int stateRes;
                 if (entry.isPaid()) {
@@ -333,7 +333,7 @@ public class InvoiceFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        public String getNativeCurrency();
+        public String getCurrency();
 
         public void startProgress();
 

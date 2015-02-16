@@ -96,7 +96,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     private TextView tvUrl;
 
     private List<Balance> mBalances = new ArrayList<>();
-    public String nativeCurrency = "643";
+    public String mCurrency = "643";
 
     private DashFragment fragmentDash;
 
@@ -194,7 +194,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
             @Override
             public void onPageSelected(int arg0) {
                 //меняем валюту
-                nativeCurrency = mBalances.get(arg0).currencyId;
+                mCurrency = mBalances.get(arg0).currencyId;
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
                 if (fragment != null && fragment instanceof DashFragment) {
                     ((DashFragment) fragment).refreshDashboard();
@@ -307,8 +307,8 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     @Override
-    public String getNativeCurrency() {
-        return nativeCurrency;
+    public String getCurrency() {
+        return mCurrency;
     }
 
     @Override
@@ -340,7 +340,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
                     break;
                 }
             }
-            if (!nativeCurrencyInitialized) this.nativeCurrency = nativeCurrency;
+            if (!nativeCurrencyInitialized) this.mCurrency = nativeCurrency;
             if (DBG) Log.v(TAG, "native currency: " + nativeCurrency);
             refreshCurrencyViewPager();
         }
@@ -392,7 +392,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     private int findCurrentCurrencyPosition() {
         int size = mBalances.size();
         for (int position = 0; position < size; position += 1) {
-            if (TextUtils.equals(mBalances.get(position).currencyId, nativeCurrency)) return position;
+            if (TextUtils.equals(mBalances.get(position).currencyId, mCurrency)) return position;
         }
         return 0;
     }
