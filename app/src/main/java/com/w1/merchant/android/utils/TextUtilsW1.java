@@ -196,6 +196,29 @@ public final class TextUtilsW1 {
         return split;
     }
 
+    public static CharSequence formatUserId(String id) {
+        if (id == null) return "";
+        if (id.length() <= 3 || !id.matches("\\d+")) {
+            return id;
+        }
+        StringBuilder builder = new StringBuilder();
+        int pos = 0;
+        if (id.length() % 3 != 0) {
+            pos = id.length() % 3;
+            builder.append(id.substring(0, pos));
+        } else {
+            pos = 0;
+        }
+
+        int cnt = id.length() / 3;
+        for (int i = 0; i < cnt; ++i) {
+            if (builder.length() != 0) builder.append('\u2009');
+            builder.append(id.substring(pos + i * 3, pos + 3 + i * 3));
+        }
+
+        return builder;
+    }
+
     public static String dateFormat(Calendar calendar, Resources resources) {
         String dateOut = "";
         long diff = 0;

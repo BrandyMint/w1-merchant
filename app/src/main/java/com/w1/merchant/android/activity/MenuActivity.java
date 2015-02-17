@@ -92,8 +92,6 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     public static final int FRAGMENT_DASH = 3;
 
     private ImageView ivAccountIcon;
-    private TextView tvName;
-    private TextView tvUrl;
 
     private List<Balance> mBalances = new ArrayList<>();
     public String mCurrency = "643";
@@ -181,8 +179,6 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
 
         //шапка меню
         ivAccountIcon = (ImageView) findViewById(R.id.ivAccountIcon);
-        tvName = (TextView) findViewById(R.id.tvName);
-        tvUrl = (TextView) findViewById(R.id.tvUrl);
 
         // enable ActionBar app icon TO behave as action TO toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -289,8 +285,9 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
                             .into(ivAccountIcon);
                 }
 
-                tvName.setText(title == null ? "" : title.displayValue);
-                tvUrl.setText(url == null ? "" : url.displayValue);
+                ((TextView)findViewById(R.id.tvName)).setText(title == null ? "" : title.displayValue);
+                ((TextView)findViewById(R.id.account_id)).setText(TextUtilsW1.formatUserId(profile.userId));
+                ((TextView)findViewById(R.id.tvUrl)).setText(url == null ? "" : url.displayValue);
                 mIsBusinessAccount = "Business".equals(profile.accountTypeId);
             }
         }.execute();
