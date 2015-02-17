@@ -22,19 +22,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/pbMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:visibility="visible" />
     <!-- As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions. -->
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:layout_height="match_parent">
 
     </FrameLayout>
     <!-- android:layout_gravity="start" tells DrawerLayout to treat
@@ -50,7 +43,6 @@
         android:fillViewport="true"
         android:overScrollMode="never"
         android:layout_gravity="start"
-        android:background="#111"
         android:fadingEdge="none"
         android:scrollbars="none">
 
@@ -58,6 +50,7 @@
             android:id="@+id/left_drawer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/navdrawer_background"
             android:orientation="vertical">
 
             <LinearLayout

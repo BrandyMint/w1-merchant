@@ -130,7 +130,8 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         // create new ProgressBar and style it
         progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
-        progressBar.setIndeterminate(false);
+        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.INVISIBLE);
 
         // retrieve the top view of our application
         final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
@@ -161,15 +162,8 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, new NavDrawerMenu.OnItemClickListener() {
             @Override
-            public boolean onItemClicked(View view, int itemId) {
+            public void onItemClicked(View view, int itemId) {
                 selectItem(itemId);
-                switch (itemId) {
-                    case R.id.drawer_menu_support:
-                    case R.id.drawer_menu_logout:
-                        return false;
-                    default:
-                        return true;
-                }
             }
         });
 
@@ -237,6 +231,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
+            mNavDrawerMenu.setActivatedItem(R.id.drawer_menu_dashboard);
             selectItem(R.id.drawer_menu_dashboard);
         }
     }
@@ -352,18 +347,22 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         switch (position) {
             case R.id.drawer_menu_dashboard:
                 changeFragment(fragmentDash);
+                mNavDrawerMenu.setActivatedItem(position);
                 break;
             case R.id.drawer_menu_statement:
                 Fragment fragmentUserEntry = new UserEntryFragment();
                 changeFragment(fragmentUserEntry);
+                mNavDrawerMenu.setActivatedItem(position);
                 break;
             case R.id.drawer_menu_invoices:
                 Fragment fragmentInvoice = new InvoiceFragment();
                 changeFragment(fragmentInvoice);
+                mNavDrawerMenu.setActivatedItem(position);
                 break;
             case R.id.drawer_menu_withdrawal:
                 Fragment fragmentTemplate = new TemplateFragment();
                 changeFragment(fragmentTemplate);
+                mNavDrawerMenu.setActivatedItem(position);
                 break;
             case R.id.drawer_menu_support:
                 Intent intent = new Intent(this, TicketListActivity.class);
@@ -464,14 +463,14 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     public void startPBAnim() {
         totalReq += 1;
         if (totalReq == 1) {
-            progressBar.setIndeterminate(true);
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
     public void stopPBAnim() {
         totalReq -= 1;
         if (totalReq == 0) {
-            progressBar.setIndeterminate(false);
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -659,13 +658,12 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
             @Override
             public void onClick(View v) {
                 if (v.isActivated()) return;
-                boolean activatePosition = mListener.onItemClicked(v, v.getId());
-                if (activatePosition) setActivatedItem(v.getId());
+                mListener.onItemClicked(v, v.getId());
             }
         };
 
         public interface OnItemClickListener {
-            public boolean onItemClicked(View view, int itemId);
+            public void onItemClicked(View view, int itemId);
         }
 
     }
