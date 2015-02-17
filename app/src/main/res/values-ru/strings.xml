@@ -15,14 +15,14 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string-array name="menu_array">
-        <item>Дэшборд</item>
-        <item>Выписка</item>
-        <item>Счета</item>
-        <item>Вывод</item>
-        <item>Поддержка</item>
-        <item>Выход</item>
-    </string-array>
+
+    <string name="drawer_menu_dashboard">Дэшборд</string>
+    <string name="drawer_menu_statement">Выписка</string>
+    <string name="drawer_menu_invoices">Счета</string>
+    <string name="drawer_menu_withdrawal">Вывод</string>
+    <string name="drawer_menu_support">Поддержка</string>
+    <string name="drawer_menu_logout">Выход</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Добавить</string>
@@ -171,7 +171,6 @@
     <string name="send_button_short">Отпр.</string>
     <string name="your_message_hint">Ваше сообщение</string>
     <string name="send_message_hint">Отправить сообщение</string>
-    <string name="messages_will_be_displayed_here">Здесь будут отображаться сообщения</string>
 
     <string name="title_activity_create_ticket">Новый вопрос</string>
     <string name="create_ticket_subject_hint">Тема</string>
@@ -187,10 +186,8 @@
     <string name="error_camera_not_available">Камера недоступна</string>
     <string name="error_no_place_to_save">Некуда сохранять</string>
 
-    <string name="images_directory">Pictures</string>
     <string name="remove_attachment">Удалить вложение</string>
 
-    <string name="enter_captcha_dialog_title">Введите код с картинки</string>
     <string name="enter_captcha_hint">Введите код с картинки для продолжения</string>
 
     <string name="network_error">Ошибка сети. Попробуйте позже.</string>

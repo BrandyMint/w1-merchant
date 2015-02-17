@@ -1,103 +1,165 @@
 package com.w1.merchant.android.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.request.GETProvider;
-import com.w1.merchant.android.request.GETTemplate;
-import com.w1.merchant.android.request.JSONParsing;
+import com.w1.merchant.android.Session;
+import com.w1.merchant.android.model.Provider;
+import com.w1.merchant.android.model.Template;
+import com.w1.merchant.android.service.ApiPayments;
+import com.w1.merchant.android.service.ApiRequestTask;
+import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.TextUtilsW1;
+import com.w1.merchant.android.utils.Utils;
 import com.w1.merchant.android.viewextended.EditTextRouble;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+
+import retrofit.Callback;
+import retrofit.client.Response;
 
 public class EditTemplate extends Activity {
 
-	EditTextRouble etSum, etSumCommis;
-	TextView tvRemove, tvCardNumber, tvOutputName;
-	ImageView ivBack, ivOutputIcon;
-	public ProgressBar pbTemplates;
-	String[] requestData = { "", "", "", "" };
-	String[] provider = { "", "", "", "", "", "", "" };
-    GETTemplate getTemplate;
-    GETProvider getProvider;
-    String httpResultStr, token, title, templateId;
-    boolean accountTypeId;
-    Intent intent;
-    ArrayList<String[]> dataFields = new ArrayList<String[]>();
-    LinearLayout llMain;
-    int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
-    int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
-    Context context;
-    int totalReq = 0;
-    LinearLayout.LayoutParams lParams4;
-    String pattern = "[^0-9]";
-    String sum = "";
-    // Минимальная допустимая сумма платежа
-    float minAmount = 0;
-    // Максимальная допустимая сумма платежа
-    float maxAmount = 0;
-    // Надбавка к комиссии 
-    float cost = 0;
-    // Максимальная комиссия
-    float maxComis = 0;
-    float bonusRate = 0;
-    // Минимальная комиссия
-    float minComis = 0;
-    // Процент комиссии
-    float rate = 0;
-    // Минимальная сумма с комиссией
-    float minSumWithComis = 0;
-    // Максимальная сумма с комиссией
-    float maxSumWithComis = 0;
-    
+    private static final String pattern = "[^0-9]";
+
+	private EditTextRouble etSum;
+    private EditTextRouble etSumCommis;
+    private TextView tvOutputName;
+    private ImageView ivOutputIcon;
+	private ProgressBar pbTemplates;
+    private String templateId;
+    private boolean mIsBusinessAccount;
+    private LinearLayout llMain;
+    private int totalReq = 0;
+    private LinearLayout.LayoutParams lParams4;
+    private String sum = "";
+
+    private Provider mProvider;
+
+    private ApiPayments mApiPayments;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.template_free);
-		
+		setContentView(R.layout.activity_edit_template);
+
+        mApiPayments = NetworkUtils.getInstance().createRestAdapter().create(ApiPayments.class);
+
 		llMain = (LinearLayout) findViewById(R.id.llMain);
-		ivBack = (ImageView) findViewById(R.id.ivBack);
-		ivBack.setOnClickListener(myOnClickListener);
+        findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 		
 		ivOutputIcon = (ImageView) findViewById(R.id.ivOutputIcon);
-		context = this;
-		
 		tvOutputName = (TextView) findViewById(R.id.tvOutputName);
 		
 		pbTemplates = (ProgressBar) findViewById(R.id.pbTemplates);
-		intent = getIntent();
-		token = intent.getStringExtra("token");
-		templateId = intent.getStringExtra("templateId");
-		accountTypeId = intent.getBooleanExtra("accountTypeId", false);
-		
-		//запрос шаблона
-		startPBAnim();
-        requestData[0] = Constants.URL_TEMPLATES + intent.getStringExtra("templateId");
-        requestData[1] = token;
-        getTemplate = new GETTemplate(this);
-        getTemplate.execute(requestData);
+		templateId = getIntent().getStringExtra("templateId");
+		mIsBusinessAccount =  getIntent().getBooleanExtra("mIsBusinessAccount", false);
+
+        loadTemplate();
 	}	
-	
-	public boolean checkFields() {
-		boolean result = true;
+
+    private void loadTemplate() {
+        startPBAnim();
+        new ApiRequestTask<Template>() {
+
+            @Override
+            protected void doRequest(Callback<Template> callback) {
+                mApiPayments.getTemplate(templateId, callback);
+            }
+
+            @Nullable
+            @Override
+            protected Activity getContainerActivity() {
+                return EditTemplate.this;
+            }
+
+            @Override
+            protected void onFailure(NetworkUtils.ResponseErrorException error) {
+                stopPBAnim();
+                if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", error);
+                CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
+                Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 0, 50);
+                toast.show();
+            }
+
+            @Override
+            protected void onCancelled() {
+                stopPBAnim();
+            }
+
+            @Override
+            protected void onSuccess(Template template, Response response) {
+                stopPBAnim();
+                onTemplateLoaded(template);
+            }
+        }.execute();
+    }
+
+    private void loadProvider(final String providerId) {
+        startPBAnim();
+        new ApiRequestTask<Provider>() {
+
+            @Override
+            protected void doRequest(Callback<Provider> callback) {
+                mApiPayments.getProvider(providerId, callback);
+            }
+
+            @Nullable
+            @Override
+            protected Activity getContainerActivity() {
+                return EditTemplate.this;
+            }
+
+            @Override
+            protected void onFailure(NetworkUtils.ResponseErrorException error) {
+                stopPBAnim();
+                if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", error);
+                CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
+                Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 0, 50);
+                toast.show();
+            }
+
+            @Override
+            protected void onCancelled() {
+                stopPBAnim();
+            }
+
+            @Override
+            protected void onSuccess(Provider provider, Response response) {
+                stopPBAnim();
+                onProviderLoaded(provider);
+            }
+        }.execute();
+    }
+
+	boolean checkFields() {
+		boolean result;
 		
 		if (TextUtils.isEmpty(etSumCommis.getText().toString())) {
 			etSumCommis.setError(getString(R.string.error_field));
@@ -110,53 +172,42 @@ public class EditTemplate extends Activity {
 		
 		return result;
 	}
-	
-	OnClickListener myOnClickListener = new View.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			finish();
-		}
-	};
-	
+
 	//ответ на запрос Template
-	public void httpResult(String result) {
-		//запрос провайдера
-		startPBAnim();
-		requestData[0] = Constants.URL_PROVIDERS + JSONParsing.templateField(result, "ProviderId");
-        requestData[1] = token;
-        getProvider = new GETProvider(this);
-        getProvider.execute(requestData);
+	private void onTemplateLoaded(Template template) {
+        loadProvider(template.providerId);
 		
 		LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(
-		          wrapContent, wrapContent);
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		lParams.gravity = Gravity.LEFT;
 		lParams.topMargin = 40;
 		lParams.leftMargin = 30;
 		lParams.rightMargin = 30;
 		      
 		LinearLayout.LayoutParams lParams2 = new LinearLayout.LayoutParams(
-		          wrapContent, wrapContent);
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		lParams2.gravity = Gravity.LEFT;
 		lParams2.leftMargin = 30;
 		lParams2.rightMargin = 30;
-			  
-		dataFields = JSONParsing.templateId(result);
-		for (int i = 0; i < dataFields.size(); i++) {
-			if (!dataFields.get(i)[1].startsWith("Сумма")) {
-				TextView tvNew = new TextView(this);
-				tvNew.setText(dataFields.get(i)[1]);
-				tvNew.setTextColor(Color.parseColor("#BDBDBD"));
-				llMain.addView(tvNew, lParams);
-				TextView tvNew2 = new TextView(this);
-				tvNew2.setText(dataFields.get(i)[2]);
-				tvNew2.setTextSize(22);
-				llMain.addView(tvNew2, lParams2);
-			} else {
-				sum = dataFields.get(i)[2];
-			}
-		}
-		
-		if (!accountTypeId) {
+
+        if (template.fields != null) {
+            for (Template.Field field : template.fields) {
+                if (!field.fieldTitle.startsWith("Сумма")) {
+                    TextView tvNew = new TextView(this);
+                    tvNew.setText(field.fieldTitle);
+                    tvNew.setTextColor(Color.parseColor("#BDBDBD"));
+                    llMain.addView(tvNew, lParams);
+                    TextView tvNew2 = new TextView(this);
+                    tvNew2.setText(field.fieldValue);
+                    tvNew2.setTextSize(22);
+                    llMain.addView(tvNew2, lParams2);
+                } else {
+                    sum += field.fieldValue;
+                }
+            }
+        }
+
+		if (!mIsBusinessAccount) {
 			//сумма с комиссией
 			TextView tvSumCommis = new TextView(this);
 			tvSumCommis.setText(getString(R.string.sum_commis));
@@ -198,7 +249,7 @@ public class EditTemplate extends Activity {
 			
 			//Вывести
 			LinearLayout.LayoutParams lParams3 = new LinearLayout.LayoutParams(
-			          wrapContent, wrapContent);
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 			lParams3.gravity = Gravity.CENTER_HORIZONTAL;
 		    lParams3.topMargin = 20;
 			TextView tvRemove = new TextView(this);
@@ -209,13 +260,13 @@ public class EditTemplate extends Activity {
 				@Override
 				public void onClick(View v) {
 					if (checkFields()) {
-						intent = new Intent(context, ConfirmOutActivity.class);
+						Intent intent = new Intent(EditTemplate.this, ConfirmOutActivity.class);
 						intent.putExtra("SumOutput", 
 								etSum.getText().toString().replaceAll(pattern, ""));
 						intent.putExtra("SumCommis", 
 								etSumCommis.getText().toString().replaceAll(pattern, ""));
 						intent.putExtra("templateId", templateId);
-						intent.putExtra("token", token);
+						intent.putExtra("token", Session.getInstance().getBearer());
 						startActivity(intent);
 						finish();
 					}
@@ -224,28 +275,24 @@ public class EditTemplate extends Activity {
 		    llMain.addView(tvRemove, lParams3);
 		}
 		
-		Picasso.with(context)
-				.load(JSONParsing.templateField(result, "ProviderLogoUrl"))
+		Picasso.with(this)
+				.load(template.providerLogoUrl)
 				.into(ivOutputIcon);
-		title = JSONParsing.templateTitle(result, "\"Title\":\"");
-		if (title.length() < 23) {
-			tvOutputName.setText(title);
-		} else {
-			char[] buffer = new char[22];
-			title.getChars(0, 21, buffer, 0);
-			tvOutputName.setText(new String(buffer) + "...");
-		}
+
+
+        tvOutputName.setText(template.title);
 		
 		//Расписание
 		lParams4 = new LinearLayout.LayoutParams(
-		          matchParent, wrapContent);
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		//lParams4.gravity = Gravity.CENTER_HORIZONTAL;
 		lParams4.topMargin = 20;
 		lParams4.leftMargin = 30;
 		lParams4.rightMargin = 30;
 		lParams4.bottomMargin = 20;
 		TextView tvSchedule = new TextView(this);
-	    tvSchedule.setText(JSONParsing.templateSchedule(result, getResources()));
+	    tvSchedule.setText(template.schedule == null ? "" :
+                template.schedule.getDescription(getResources()));
 	    tvSchedule.setTextColor(Color.parseColor("#BDBDBD"));
 	    llMain.addView(tvSchedule, lParams4);
 	    tvSchedule.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -253,45 +300,28 @@ public class EditTemplate extends Activity {
 	}
 	
 	//ответ на запрос Provider
-	public void providerResult(String result) {
+	public void onProviderLoaded(Provider provider) {
+        mProvider = provider;
+
 		com.w1.merchant.android.viewextended.TextViewRouble tvComis =
 				new com.w1.merchant.android.viewextended.TextViewRouble(this);
-		provider = JSONParsing.templateProvider(result);
-		if (provider[6].equals("0")) {
+
+		if (BigDecimal.ZERO.compareTo(provider.commission.rate) == 0) {
 			tvComis.setText(getString(R.string.wo_comis, 
-					JSONParsing.formatNumber(provider[0]) + " " + "C",
-					JSONParsing.formatNumber(provider[1]) + " " + "C"));
+					TextUtilsW1.formatNumber(provider.minAmount) + " " + "C",
+					TextUtilsW1.formatNumber(provider.maxAmount) + " " + "C"));
 		} else {
-			tvComis.setText(getString(R.string.comis_sum, 
-					provider[6] + "% + " + (provider[2].equals("0") ? "" : 
-						JSONParsing.formatNumber(provider[2]) + " " + "C"), 
-					JSONParsing.formatNumber(provider[0]) + " " + "C",
-					JSONParsing.formatNumber(provider[1]) + " " + "C"));
+			tvComis.setText(getString(R.string.comis_sum,
+                    provider.commission.rate + "% + " + (BigDecimal.ZERO.compareTo(provider.commission.cost) == 0 ? "" :
+						TextUtilsW1.formatNumber(provider.commission.cost) + " " + "C"),
+					TextUtilsW1.formatNumber(provider.minAmount) + " " + "C",
+					TextUtilsW1.formatNumber(provider.maxAmount) + " " + "C"));
 		}
 	    tvComis.setTextColor(Color.parseColor("#BDBDBD"));
 	    llMain.addView(tvComis, lParams4);
 	    tvComis.setGravity(Gravity.CENTER_HORIZONTAL);
-	    
-	    
-	    
-	    // Минимальная допустимая сумма платежа
-	    minAmount = Float.parseFloat(provider[0]);
-	    // Максимальная допустимая сумма платежа
-	    maxAmount = Float.parseFloat(provider[1]);
-	    // Надбавка к комиссии 
-	    cost = Float.parseFloat(provider[2]);
-	    // Максимальная комиссия
-	    maxComis = Float.parseFloat(provider[3]);
-	    
-	    bonusRate = Float.parseFloat(provider[4]);
-	    // Минимальная комиссия
-	    minComis = Float.parseFloat(provider[5]);
-	    // Процент комиссии
-	    rate = Float.parseFloat(provider[6]);
-	    minSumWithComis = minAmount + getComis(minAmount);
-	    maxSumWithComis = maxAmount + getComis(maxAmount);
-	    
-	    if (!accountTypeId) {    
+
+	    if (!mIsBusinessAccount) {
 	    	if (!sum.equals("")) {
 		    	etSum.setText(sum.substring(0, sum.indexOf(",")));
 				afterSumChange();
@@ -299,7 +329,7 @@ public class EditTemplate extends Activity {
 	    }
 	}
 	
-	public void startPBAnim() {
+	void startPBAnim() {
     	totalReq += 1;
     	if (totalReq == 1) {
     		pbTemplates.setVisibility(View.VISIBLE);
@@ -312,137 +342,34 @@ public class EditTemplate extends Activity {
     		pbTemplates.setVisibility(View.INVISIBLE);
     	}
     }
-    
-//    public class SumTextWatcher implements TextWatcher {
-//	    boolean mEditing;
-//	    
-//	    public SumTextWatcher() {
-//	    	mEditing = false;
-//	    }
-//	    
-//	    public synchronized void afterTextChanged(Editable s) {
-//	        if (!mEditing) {
-//	            mEditing = true;
-//	            s.replace(0, s.length(), s.toString().replaceAll(pattern, ""));
-//	            if (!s.toString().isEmpty()) {
-//	            	float inputSum = Float.parseFloat(s.toString());
-//					if (inputSum < minAmount) {
-//						s.replace(0, s.length(), minAmount + "");
-//					} else if (inputSum > maxAmount) {
-//						s.replace(0, s.length(), maxAmount + "");
-//					}
-//					
-//					inputSum = Float.parseFloat(s.toString());
-//					s.replace(0, s.length(), s.toString() + " C");
-//					float sumComis = inputSum + getComis(inputSum);
-//					etSumCommis.setText((int)sumComis + " C");
-//	            }
-//	            mEditing = false;
-//	        }
-//	    }
-//	    
-//	    public void beforeTextChanged(CharSequence s, int start, int count,
-//	    		int after) {
-//	    }
-//	    
-//	    public void onTextChanged(CharSequence s, int start, int before, int count) {
-//	    }
-//	}
-    
-//    public class ComisTextWatcher implements TextWatcher {
-//	    boolean mEditing;
-//	    
-//	    public ComisTextWatcher() {
-//	    	mEditing = false;
-//	    }
-//	    
-//	    public synchronized void afterTextChanged(Editable s) {
-//	        if (!mEditing) {
-//	            mEditing = true;
-//	            s.replace(0, s.length(), s.toString().replaceAll(pattern, ""));
-//	            if (!s.toString().isEmpty()) {
-//	            	float inputSum = Float.parseFloat(s.toString());
-//					if (inputSum < minSumWithComis) {
-//						s.replace(0, s.length(), minSumWithComis + "");
-//					} else if (inputSum > maxSumWithComis) {
-//						s.replace(0, s.length(), maxSumWithComis + "");
-//					}
-//					
-//					inputSum = Float.parseFloat(s.toString()) - cost;
-//					s.replace(0, s.length(), s.toString() + " C");
-//					float sumWOComis = inputSum / (1 + rate / 100);
-//					//etSum.removeTextChangedListener(twSum);
-//					etSum.setText((int) sumWOComis + " C");
-//					//etSum.addTextChangedListener(twSum);
-//				}
-//	            mEditing = false;
-//	        }
-//	    }
-//	    
-//	    public void beforeTextChanged(CharSequence s, int start, int count,
-//	    		int after) {
-//	    }
-//	    
-//	    public void onTextChanged(CharSequence s, int start, int before, int count) {
-//	    }
-//	}
-    
-    public float getComis(float inSum) {
-    	float comis = (float) Math.ceil(inSum * rate / 100) +
-				cost;
-		if (minComis > 0) {
-			if (comis < minComis) {
-				comis = minComis;
-			}
-		}
-		if (maxComis > 0) {
-			if (comis > maxComis) {
-				comis = maxComis;
-			}
-		}
-		return comis;
-    }
-    
-    public void afterSumChange() {
+
+    void afterSumChange() {
     	String inSum = etSum.getText().toString();
 		inSum = inSum.replaceAll(pattern, "");
 		if (!inSum.isEmpty()) {
-			float inputSum = Float.parseFloat(inSum);
-			if (inputSum < minAmount) {
-				etSum.setText((int)minAmount + " C");
-				inputSum = minAmount;
-			} else if (inputSum > maxAmount) {
-				etSum.setText((int)maxAmount + " C");
-				inputSum = maxAmount;
-			}  else {
-				etSum.setText((int)inputSum + " C");
-			}
-			
-			float sumComis = inputSum + getComis(inputSum);
-			etSumCommis.setText((int)sumComis + " C");
+            BigDecimal inputSum = Utils.clamp(new BigDecimal(inSum), mProvider.minAmount, mProvider.maxAmount)
+                    .setScale(0, BigDecimal.ROUND_UP);
+
+            etSum.setText(inputSum + " C");
+			etSumCommis.setText(mProvider.getSumWithCommission(inputSum).setScale(0, BigDecimal.ROUND_UP) + " C");
 		} else {
 			etSumCommis.setText("");
 		}
 	}
     
-    public void afterComisChange() {
+    void afterComisChange() {
     	String inSumCommis = etSumCommis.getText().toString(); 	
 		inSumCommis = inSumCommis.replaceAll(pattern, "");
 		if (!inSumCommis.isEmpty()) {
-        	float inputSum = Float.parseFloat(inSumCommis);
-			if (inputSum < minSumWithComis) {
-				etSumCommis.setText((int)minSumWithComis + " C");
-				inputSum = minSumWithComis;
-			} else if (inputSum > maxSumWithComis) {
-				etSumCommis.setText((int)maxSumWithComis + " C");
-				inputSum = maxSumWithComis;
-			} else {
-				etSumCommis.setText((int)inputSum + " C");
-			}
-			
-			inputSum -= cost;
-			float sumWOComis = inputSum / (1 + rate / 100);
-			etSum.setText((int) sumWOComis + " C");
+            BigDecimal inputSum = Utils.clamp(new BigDecimal(inSumCommis),
+                    mProvider.getMinAmountWithComission(), mProvider.getMaxAmountWithComission())
+                    .setScale(0, BigDecimal.ROUND_UP);
+
+            etSumCommis.setText(inputSum + " C");
+            inputSum = inputSum.subtract(mProvider.commission.cost);
+            BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP);
+			BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, BigDecimal.ROUND_HALF_UP);
+			etSum.setText(sumWOComis + " C");
 		} else {
 			etSum.setText("");
 		}

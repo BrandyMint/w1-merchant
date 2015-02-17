@@ -252,7 +252,7 @@ public class LoginActivity extends Activity {
 
         @Nullable
         @Override
-        protected Activity getActivity() {
+        protected Activity getContainerActivity() {
             return LoginActivity.this;
         }
 
@@ -372,7 +372,7 @@ public class LoginActivity extends Activity {
 
             @Nullable
             @Override
-            protected Activity getActivity() {
+            protected Activity getContainerActivity() {
                 return LoginActivity.this;
             }
 

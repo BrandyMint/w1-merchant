@@ -24,7 +24,7 @@ public interface ApiSessions {
     @POST("/sessions")
     public void auth(@Body AuthCreateModel req, Callback<AuthModel> cb);
 
-    @DELETE("/sessions")
+    @DELETE("/sessions/current")
     public void logout(Callback<Void> cb);
 
     @POST("/captcha")

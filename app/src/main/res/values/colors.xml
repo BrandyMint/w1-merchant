@@ -2,4 +2,8 @@
 <resources>
     <color name="green_background_normal">#24b166</color>
     <color name="conversation_background_color">#f1f1f1</color>
+
+    <color name="amount_color_minus">#ff0000</color>
+    <color name="amount_color_zero">#FFA500</color>
+    <color name="amount_color_plus">#9ACD32</color>
 </resources>

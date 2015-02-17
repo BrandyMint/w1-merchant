@@ -1,41 +1,29 @@
 package com.w1.merchant.android.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.w1.merchant.android.R;
 
 public class ConfirmPayment extends Activity {
 
-	EditText etDescrText, etTelRecipient, etSum;
-	TextView tvBack, tvConfirmText;
-	ImageView ivBack;
-	Intent intent;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.confirmation);
-		
-		intent = getIntent();
-		tvConfirmText = (TextView) findViewById(R.id.tvConfirmText);
+		setContentView(R.layout.activity_confirm);
+
+		TextView tvConfirmText = (TextView) findViewById(R.id.tvConfirmText);
 		tvConfirmText.setText(getString(R.string.transact_proces, 
-				intent.getStringExtra("sum") + " C"));
+				getIntent().getStringExtra("sum") + " C"));
 		
-		tvBack = (TextView) findViewById(R.id.tvBack);
-		tvBack.setOnClickListener(myOnClickListener);
-		ivBack = (ImageView) findViewById(R.id.ivBack);
-		ivBack.setOnClickListener(myOnClickListener);
+		findViewById(R.id.tvBack).setOnClickListener(myOnClickListener);
+		findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);
 	}	
 	
-	OnClickListener myOnClickListener = new View.OnClickListener() {
+	private final OnClickListener myOnClickListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			finish();

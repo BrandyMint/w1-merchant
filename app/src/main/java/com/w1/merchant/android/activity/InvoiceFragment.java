@@ -1,153 +1,343 @@
 package com.w1.merchant.android.activity;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.extra.InvoiceSupport;
-import com.w1.merchant.android.extra.UserEntryAdapter;
+import com.w1.merchant.android.Session;
+import com.w1.merchant.android.extra.InvoicesAdapter;
+import com.w1.merchant.android.model.Invoice;
+import com.w1.merchant.android.model.Invoices;
+import com.w1.merchant.android.service.ApiInvoices;
+import com.w1.merchant.android.service.ApiRequestTask;
+import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.client.Response;
 
 public class InvoiceFragment extends Fragment {
 
-    private View parentView;
+    public static final int ITEMS_PER_PAGE = 25;
+    private static final int ACT_ADD = 1;
+
     private ListView lvInvoice;
-    ArrayList<String> numberArray, dateArray, amountArray;
-    ArrayList<Integer> imgArray;
-	ArrayList<Map<String, Object>> data;
-	Map<String, Object> m;
-	SimpleAdapter sAdapter;
-	TextView tvAmount, tvFooterText, tv;
-	Context context;
-	MenuActivity menuActivity;
 	SegmentedRadioGroup srgInvoice;
-	private LinearLayout llFooter;
-	InvoiceSupport invoiceSupport;
-	SwipeRefreshLayout srlInvoice;
-	SearchView svList;
-	String token;
-	RelativeLayout rlListItem;
-	
-	@Override
+	private TextView llFooter;
+
+    private ApiInvoices mApiInvoices;
+
+    private InvoicesAdapter mAdapter;
+
+    private OnFragmentInteractionListener mListener;
+
+    private int mCurrentPage = 1;
+
+    private String mSearchString;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mApiInvoices = NetworkUtils.getInstance().createRestAdapter().create(ApiInvoices.class);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //подтверждение добавления счета
+        if (requestCode == ACT_ADD) {
+            if (resultCode == Activity.RESULT_OK) {
+                Intent confirmIntent = new Intent(getActivity().getApplicationContext(),
+                        ConfirmActivity.class);
+                startActivity(confirmIntent);
+            }
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        parentView = inflater.inflate(R.layout.invoices, container, false);
-        context = getActivity();
-        menuActivity = (MenuActivity) context;
-        token = menuActivity.token;
+        View parentView = inflater.inflate(R.layout.invoices, container, false);
         srgInvoice = (SegmentedRadioGroup) parentView.findViewById(R.id.srgInvoice);
         lvInvoice = (ListView) parentView.findViewById(R.id.lvAccounts);
-        llFooter = (LinearLayout) inflater.inflate(R.layout.footer2, null);
-        invoiceSupport = new InvoiceSupport(context);
-        tvFooterText = (TextView) llFooter.findViewById(R.id.tvFooterText);
+        llFooter = (TextView)inflater.inflate(R.layout.footer2, lvInvoice, false);
         
         srgInvoice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
     		@Override
     		public void onCheckedChanged(RadioGroup group, int checkedId) {
     			lvInvoice.removeFooterView(llFooter);
-    			menuActivity.currentPage = 1;
-    			switch (checkedId) {
-    			case R.id.rbPaid:
-    				invoiceSupport.getData("Accepted", menuActivity.currentPage, "", token);
-    				menuActivity.filter = "Accepted";
-        			break;
-    			case R.id.rbNotPaid:
-    				invoiceSupport.getData("Created", menuActivity.currentPage, "", token);
-    				menuActivity.filter = "Created";
-    				break;
-    			case R.id.rbPartially:
-    				invoiceSupport.getData("HasSuspense", menuActivity.currentPage, "", token);
-    				menuActivity.filter = "HasSuspense";
-    				break;
-    			}
+                mCurrentPage = 1;
+    			refreshList();
     		}
     	});
+
+        mAdapter = new InvoicesAdapter(getActivity());
+        lvInvoice.setAdapter(mAdapter);
+
+        lvInvoice.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScroll(AbsListView arg0,
+                                 int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                switch (scrollState) {
+                    case OnScrollListener.SCROLL_STATE_IDLE:
+                        // when list scrolling stops
+                        manipulateWithVisibleViews(view);
+                        break;
+                }
+            }
+        });
+
+        lvInvoice.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                InvoicesAdapter.ViewHolder holder = (InvoicesAdapter.ViewHolder)view.getTag(R.id.tag_invoice_view_holder);
+                Invoice entry = (Invoice)parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(getActivity(), Details.class);
+                intent.putExtra("number", entry.invoiceId.toString());
+                intent.putExtra("date", holder.date.getText().toString());
+                intent.putExtra("descr", entry.description);
+                intent.putExtra("amount", holder.amount0);
+                intent.putExtra("currency", mListener.getCurrency());
+
+                int stateRes;
+                if (entry.isPaid()) {
+                    stateRes = R.string.paid;
+                } else if (entry.isInProcessing()) {
+                    stateRes = R.string.processing;
+                } else {
+                    stateRes = R.string.canceled;
+                }
+                intent.putExtra("state", view.getResources().getString(stateRes));
+
+                startActivity(intent);
+
+            }
+        });
+        lvInvoice.setTextFilterEnabled(true);
+
         return parentView;
     }
-    
-    void createListView() {
-    	//заполнение ListView
-    	if ((menuActivity.dataInvoice.size() > 24) & 
-    			(lvInvoice.getFooterViewsCount() == 0)) {
-    		lvInvoice.addFooterView(llFooter);
-    	} else {
-    		removeFooter();
-    	}
-		
-		sAdapter = new UserEntryAdapter(context, menuActivity.dataInvoice);
-		lvInvoice.setAdapter(sAdapter);
-		lvInvoice.setOnScrollListener(new AbsListView.OnScrollListener() {
-			@Override
-			public void onScroll(AbsListView arg0, 
-					int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-						}
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				switch (scrollState) {
-                case OnScrollListener.SCROLL_STATE_IDLE:
-                    // when list scrolling stops
-                    manipulateWithVisibleViews(view);
-                    break;
-                }
-			}
-        });
-		
-		lvInvoice.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
-					long arg3) {
-				rlListItem = (RelativeLayout) v;
-				Intent intent = new Intent(getActivity(), Details.class);
-				tv = (TextView) rlListItem.getChildAt(0);
-				intent.putExtra("number", tv.getText().toString());
-				tv = (TextView) rlListItem.getChildAt(1);
-				intent.putExtra("date", tv.getText().toString());
-				tv = (TextView) rlListItem.getChildAt(2);
-				intent.putExtra("descr", tv.getText().toString());
-				tv = (TextView) rlListItem.getChildAt(3);
-				intent.putExtra("state", tv.getText().toString());
-				tv = (TextView) rlListItem.getChildAt(4);
-				intent.putExtra("amount", tv.getText().toString());
-				intent.putExtra("currency", menuActivity.nativeCurrency);
-				startActivity(intent);
-			}
-	    });
-		lvInvoice.setTextFilterEnabled(true);
-    }
-    
-    private void manipulateWithVisibleViews(AbsListView view) {
-        int lastVisibleItemPosition = view.getLastVisiblePosition();
-        if ((lastVisibleItemPosition) == menuActivity.dataInvoice.size()) {
-        	menuActivity.currentPage += 1;
-        	tvFooterText.setText(menuActivity.getString(R.string.loading));
-        	invoiceSupport.getData(menuActivity.filter,	menuActivity.currentPage, "", token);
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
-    
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.invoices_list, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        SearchView searchView = (SearchView) menu.findItem(
+                R.id.ic_menu_search0).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (mListener != null) {
+                    mCurrentPage = 1;
+                    setSearchString(newText);
+                }
+                return true;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                if (mListener != null) {
+                    mCurrentPage = 1;
+                    setSearchString(null);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ic_menu_add0:
+                //добавления счета
+                Intent intent = new Intent(getActivity(), AddInvoice.class);
+                intent.putExtra("token", Session.getInstance().getBearer());
+                startActivityForResult(intent, ACT_ADD);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshList();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public void setSearchString(String searchString) {
+        this.mSearchString = TextUtils.isEmpty(searchString) ? null : searchString;
+        refreshList();
+    }
+
+    private void refreshList() {
+        mListener.startProgress();
+
+        new ApiRequestTask<Invoices>() {
+
+            @Override
+            protected void doRequest(Callback<Invoices> callback) {
+                final String invoiceStateId;
+                switch (srgInvoice.getCheckedRadioButtonId()) {
+                    case R.id.rbPaid:
+                        invoiceStateId = Invoice.STATE_ACCEPTED;
+                        break;
+                    case R.id.rbNotPaid:
+                        invoiceStateId = Invoice.STATE_CREATED;
+                        break;
+                    case R.id.rbPartially:
+                        invoiceStateId = Invoice.STATE_CREATED;
+                        break;
+                    default:
+                        invoiceStateId = null;
+                        break;
+                }
+                mApiInvoices.getInvoices(mCurrentPage,
+                        ITEMS_PER_PAGE, invoiceStateId, null, null, null, mSearchString, callback);
+            }
+
+            @Nullable
+            @Override
+            protected Activity getContainerActivity() {
+                return InvoiceFragment.this.getActivity();
+            }
+
+            @Override
+            protected void onFailure(NetworkUtils.ResponseErrorException error) {
+                if (mListener != null) {
+                    mListener.stopProgress();
+                    CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
+                    Toast toast = Toast.makeText(getContainerActivity(), errText, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP, 0, 50);
+                    toast.show();
+                }
+            }
+
+            @Override
+            protected void onCancelled() {
+                if (mListener != null) {
+                    mListener.stopProgress();
+                }
+            }
+
+            @Override
+            protected void onSuccess(Invoices invoices, Response response) {
+                if (mListener != null) {
+                    mListener.stopProgress();
+                    addUserEntry(invoices);
+                }
+            }
+        }.execute();
+    }
+
+    private void addUserEntry(Invoices newData) {
+        if (newData != null) {
+            List<Invoice> invoices;
+            if (srgInvoice.getCheckedRadioButtonId() == R.id.rbPartially) {
+                invoices = new ArrayList<>(newData.invoices.size());
+                for (Invoice invoice: newData.invoices) if (invoice.hasSuspense) invoices.add(invoice);
+            } else {
+                invoices = newData.invoices;
+            }
+
+            if (mCurrentPage == 1) {
+                mAdapter.setItems(invoices);
+                createListView();
+            } else {
+                mAdapter.addItems(invoices);
+                llFooter.setText(R.string.data_load);
+            }
+            if (invoices.size() == 0) removeFooter();
+        } else {
+            removeFooter();
+        }
+    }
+
+    public void createListView() {
+        //заполнение ListView
+        if ((mAdapter.getCount() >= ITEMS_PER_PAGE) &
+                (lvInvoice.getFooterViewsCount() == 0)) {
+            lvInvoice.addFooterView(llFooter);
+        } else {
+            removeFooter();
+        }
+    }
+
+    private void manipulateWithVisibleViews(AbsListView view) {
+        if (view.getLastVisiblePosition() == mAdapter.getCount()) {
+            mCurrentPage += 1;
+            llFooter.setText(R.string.loading);
+            refreshList();
+        }
+    }
+
     public void removeFooter() {
 		lvInvoice.removeFooterView(llFooter);
 	}
-    
-    public void setHeaderText(String text) {
-    	tvFooterText.setText(text);
+
+
+    public interface OnFragmentInteractionListener {
+        public String getCurrency();
+
+        public void startProgress();
+
+        public void stopProgress();
+
     }
 }

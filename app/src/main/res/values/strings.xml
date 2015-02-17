@@ -16,14 +16,12 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string-array name="menu_array">
-        <item>Dashboard</item>
-        <item>Statement</item>
-        <item>Invoices</item>
-        <item>Withdrawal</item>
-        <item>Support</item>
-        <item>Log out</item>
-    </string-array>
+    <string name="drawer_menu_dashboard">Dashboard</string>
+    <string name="drawer_menu_statement">Statement</string>
+    <string name="drawer_menu_invoices">Invoices</string>
+    <string name="drawer_menu_withdrawal">Withdrawal</string>
+    <string name="drawer_menu_support">Support</string>
+    <string name="drawer_menu_logout">Log out</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -175,7 +173,6 @@
     <string name="send_button_short">Send</string>
     <string name="your_message_hint">Your message</string>
     <string name="send_message_hint">Send message</string>
-    <string name="messages_will_be_displayed_here">Your messages will be displayed here</string>
     <string name="load_ticket_error">Failed to load conversation. Please try again later</string>
     <string name="send_message_error">Failed to send message. Please try again later</string>
     <string name="title_activity_create_ticket">New support inquiry</string>
@@ -193,10 +190,8 @@
     <string name="error_camera_not_available">Camera not available</string>
     <string name="error_no_place_to_save">Low disk space</string>
 
-    <string name="images_directory">Pictures</string>
     <string name="remove_attachment">Remove this attachment</string>
 
-    <string name="enter_captcha_dialog_title">Enter code from image</string>
     <string name="enter_captcha_hint">Enter the text you see in the picture</string>
 
     <string name="network_error">Network error. Please try again later</string>

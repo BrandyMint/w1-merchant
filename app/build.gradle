@@ -105,7 +105,6 @@ dependencies {
     compile 'org.quanqi:mpandroidchart:1.7.5' // TODO: заменить на PhiJay, когда тот выложит
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
-    compile 'com.squareup.okhttp:okhttp-apache:2.2.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])

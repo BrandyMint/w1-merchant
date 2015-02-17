@@ -3,4 +3,7 @@
     <item type="id" name="conversation_view_my_message" />
     <item type="id" name="conversation_view_their_message" />
     <item type="id" name="tag_text_view_img_loader"/>
+    <item type="id" name="tag_transaction_history_view_holder"/>
+    <item type="id" name="tag_invoice_view_holder"/>
+    <item type="id" name="tag_template_view_holder"/>
 </resources>
