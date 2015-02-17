@@ -79,6 +79,8 @@ public class LoginActivity extends Activity {
 
     private ApiSessions mApiSessions;
 
+    private String mLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,10 +243,7 @@ public class LoginActivity extends Activity {
 
     private void attemptLogin() {
         if (!validateForm()) return;
-
         mVibrator.vibrate(VIBRATE_TIME_MS);
-        mLogins.add(mLoginTextView.getText().toString());
-        persistLogins();
         attemptLogin(mLoginTextView.getText().toString(), mPasswordView.getText().toString());
     }
 
@@ -291,6 +290,8 @@ public class LoginActivity extends Activity {
     }
 
     private void attemptLogin(final String login, final String password) {
+
+        mLogin = login;
 
         new ApiSubrequestTask<AuthModel>() {
 
@@ -345,6 +346,12 @@ public class LoginActivity extends Activity {
 
     private void onAuthDone(AuthModel authModel) {
         Session.getInstance().setAuth(authModel);
+
+        if (!TextUtils.isEmpty(mLogin) && !mLogins.contains(mLogin)) {
+            mLogins.add(mLogin);
+            persistLogins();
+        }
+
         mPasswordView.setText("");
         mLoginTextView.setText("");
         mForgotButton.setVisibility(View.INVISIBLE);
