@@ -279,6 +279,7 @@ public class LoginActivity extends Activity {
             toast = Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.TOP, 0, 50);
             toast.show();
+            Session.getInstance().clear();
             setProgress(false);
         }
 
