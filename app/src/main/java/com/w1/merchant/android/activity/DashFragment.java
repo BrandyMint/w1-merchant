@@ -327,6 +327,9 @@ public class DashFragment extends Fragment {
         } else {
             removeFooter();
         }
+        if (getView() != null && llHeader != null) {
+            llHeader.findViewById(R.id.empty_text).setVisibility(mAdapter.isEmpty() ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void removeFooter() {

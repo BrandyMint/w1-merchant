@@ -307,6 +307,9 @@ public class InvoiceFragment extends Fragment {
         } else {
             removeFooter();
         }
+        if (getView() != null) {
+            getView().findViewById(R.id.empty_text).setVisibility(mAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 
     public void createListView() {

@@ -3,66 +3,59 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <com.w1.merchant.android.viewextended.SegmentedRadioGroup
+        android:id="@+id/srgInvoice"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#fff">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="40dp"
+        android:checkedButton="@+id/button_one"
+        android:orientation="horizontal">
 
-        <com.w1.merchant.android.viewextended.SegmentedRadioGroup
-            android:id="@+id/srgInvoice"
+        <RadioButton
+            android:id="@+id/rbPaid"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="40dp"
-            android:layout_marginTop="40dp"
-            android:checkedButton="@+id/button_one"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:gravity="center"
+            android:minHeight="33dip"
+            android:minWidth="100dip"
+            android:text="@string/paid"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/radio_colors" />
 
-            <RadioButton
-                android:id="@+id/rbPaid"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:button="@null"
-                android:gravity="center"
-                android:minHeight="33dip"
-                android:minWidth="100dip"
-                android:text="@string/paid"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/radio_colors" />
+        <RadioButton
+            android:id="@+id/rbNotPaid"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:gravity="center"
+            android:minHeight="33dip"
+            android:minWidth="100dip"
+            android:text="@string/not_paid"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/radio_colors" />
 
-            <RadioButton
-                android:id="@+id/rbNotPaid"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:button="@null"
-                android:gravity="center"
-                android:minHeight="33dip"
-                android:minWidth="100dip"
-                android:text="@string/not_paid"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/radio_colors" />
+        <RadioButton
+            android:id="@+id/rbPartially"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:gravity="center"
+            android:minHeight="33dip"
+            android:minWidth="100dip"
+            android:text="@string/partially"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/radio_colors" />
+    </com.w1.merchant.android.viewextended.SegmentedRadioGroup>
 
-            <RadioButton
-                android:id="@+id/rbPartially"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:button="@null"
-                android:gravity="center"
-                android:minHeight="33dip"
-                android:minWidth="100dip"
-                android:text="@string/partially"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/radio_colors" />
-        </com.w1.merchant.android.viewextended.SegmentedRadioGroup>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/llInvoice"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <ListView
             android:id="@+id/lvAccounts"
@@ -71,5 +64,13 @@
             android:divider="#FFFFFF"
             android:dividerHeight="8dp" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/empty_text"
+            style="@style/EmptyTextStyle"
+            android:text="@string/no_invoices"
+            android:drawableTop="@drawable/no_invoices"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 </LinearLayout>

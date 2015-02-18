@@ -28,7 +28,7 @@
         android:id="@+id/empty_text"
         style="@style/EmptyTextStyle"
         android:text="@string/you_havent_started_any_conversations"
-        android:visibility="invisible"
+        android:drawableTop="@drawable/no_messages"
         tools:visibility="visible" />
 
 </FrameLayout>

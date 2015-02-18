@@ -175,7 +175,8 @@
     <string name="start_conversation">Start conversation</string>
     <string name="load_ticket_list_error">Failed to load conversations. Please try again later</string>
     <string name="title_activity_conversation">Conversation</string>
-
+    <string name="no_transfers">No transfers</string>
+    <string name="no_invoices">No invoices</string>
 
     <string name="send_button_short">Send</string>
     <string name="your_message_hint">Your message</string>

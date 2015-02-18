@@ -178,6 +178,8 @@
     <string name="send_button_short">Отпр.</string>
     <string name="your_message_hint">Ваше сообщение</string>
     <string name="send_message_hint">Отправить сообщение</string>
+    <string name="no_transfers">Нет операций</string>
+    <string name="no_invoices">Нет счетов</string>
 
     <string name="title_activity_create_ticket">Новый вопрос</string>
     <string name="create_ticket_subject_hint">Тема</string>
