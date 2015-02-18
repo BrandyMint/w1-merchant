@@ -6,4 +6,11 @@
     <color name="amount_color_minus">#ff0000</color>
     <color name="amount_color_zero">#FFA500</color>
     <color name="amount_color_plus">#9ACD32</color>
+
+    <color name="ticket_list_unread_message">#1b1b1b</color>
+    <color name="ticket_list_read_message">#bbbbbb</color>
+
+    <color name="ticket_list_unread_message_date">#c9c9c9</color>
+    <color name="ticket_list_read_message_date">#d9d9d9</color>
+
 </resources>

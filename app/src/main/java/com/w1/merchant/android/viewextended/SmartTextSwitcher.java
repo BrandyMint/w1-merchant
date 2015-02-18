@@ -1,6 +1,7 @@
 package com.w1.merchant.android.viewextended;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -43,6 +44,11 @@ public class SmartTextSwitcher extends TextSwitcher {
         } else {
             return null;
         }
+    }
+
+    public void setTextColor(ColorStateList color) {
+        ((TextView)getChildAt(0)).setTextColor(color);
+        ((TextView)getChildAt(1)).setTextColor(color);
     }
 
     public void setText(int resId) {

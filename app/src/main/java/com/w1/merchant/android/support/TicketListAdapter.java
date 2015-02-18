@@ -1,6 +1,7 @@
 package com.w1.merchant.android.support;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -16,8 +17,8 @@ import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.model.SupportTicket;
 import com.w1.merchant.android.model.SupportTicketPost;
-import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.SortedList;
+import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;
 import com.w1.merchant.android.viewextended.SmartTextSwitcher;
@@ -109,7 +110,15 @@ public abstract class TicketListAdapter extends RecyclerView.Adapter<TicketListA
 
 
     private void bindReadStatus(ViewHolder holder, SupportTicket ticket) {
-        // TODO серый цвет текста?
+        // TODO Определять не по закрыти, а по прочитано/не прочитано?
+        Resources resources = holder.itemView.getResources();
+        if (ticket.isClosed()) {
+            holder.lastMessage.setTextColor(resources.getColorStateList(R.color.ticket_list_read_message));
+            holder.date.setTextColor(resources.getColorStateList(R.color.ticket_list_read_message_date));
+        } else {
+            holder.lastMessage.setTextColor(resources.getColorStateList(R.color.ticket_list_unread_message));
+            holder.date.setTextColor(resources.getColorStateList(R.color.ticket_list_unread_message_date));
+        }
     }
 
     private void bindText(ViewHolder holder, SupportTicket ticket) {
@@ -119,7 +128,8 @@ public abstract class TicketListAdapter extends RecyclerView.Adapter<TicketListA
         if (!TextUtilsW1.isBlank(ticket.subject)) {
             String subject = TextUtilsW1.removeTrailingWhitespaces(ticket.subject).toString();
             builder.append(TextUtilsW1.removeTrailingWhitespaces(ticket.subject));
-            TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(holder.itemView.getContext(), R.style.TicketListSubjectTextAppearance);
+            TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(holder.itemView.getContext(),
+                    R.style.TicketListSubjectTextAppearance);
             builder.setSpan(textAppearanceSpan, 0, ticket.subject.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
 
