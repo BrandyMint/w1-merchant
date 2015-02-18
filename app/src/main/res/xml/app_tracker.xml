@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="TypographyDashes,UnusedResources">
+
+    <integer name="ga_sessionTimeout">300</integer>
+    <bool name="ga_autoActivityTracking">true</bool>
+    <string name="ga_trackingId">UA-55389353-1</string>
+
+    <screenName name="com.w1.merchant.android.activity.LoginActivity">
+        Логин
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.MenuActivity">
+        Главная
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.AddInvoice">
+        Выставление счета
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.ConfirmActivity">
+        Сообщение "cчет выставлен"
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.ConfirmPayment">
+        Сообщение "платеж принят к исполнению"
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.ConfirmOutActivity">
+        Подтверждение платежа
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.EditTemplate">
+        Заполнение вывода по шаблону
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.Details">
+        Детали транзакции
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.UserEntryTotal">
+        Сводка по выписке
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.support.TicketListActivity">
+        Список диалогов
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.support.ConversationActivity">
+        Диалог
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.support.CreateTicketActivity">
+        Создание запроса в тех. поддержку
+    </screenName>
+
+    <screenName name="com.w1.merchant.android.activity.SessionExpiredDialogActivity">
+        Диалог "сессия истекла"
+    </screenName>
+
+</resources>

@@ -47,7 +47,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.picasso.Picasso;
+import com.w1.merchant.android.Application;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
@@ -344,25 +347,30 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     public void selectItem(int position) {
+
         switch (position) {
             case R.id.drawer_menu_dashboard:
                 changeFragment(fragmentDash);
                 mNavDrawerMenu.setActivatedItem(position);
+                sendScreenName(position);
                 break;
             case R.id.drawer_menu_statement:
                 Fragment fragmentUserEntry = new UserEntryFragment();
                 changeFragment(fragmentUserEntry);
                 mNavDrawerMenu.setActivatedItem(position);
+                sendScreenName(position);
                 break;
             case R.id.drawer_menu_invoices:
                 Fragment fragmentInvoice = new InvoiceFragment();
                 changeFragment(fragmentInvoice);
                 mNavDrawerMenu.setActivatedItem(position);
+                sendScreenName(position);
                 break;
             case R.id.drawer_menu_withdrawal:
                 Fragment fragmentTemplate = new TemplateFragment();
                 changeFragment(fragmentTemplate);
                 mNavDrawerMenu.setActivatedItem(position);
+                sendScreenName(position);
                 break;
             case R.id.drawer_menu_support:
                 Intent intent = new Intent(this, TicketListActivity.class);
@@ -383,6 +391,12 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
             }
         });
 
+    }
+
+    private void sendScreenName(int menuId) {
+        Tracker tracker = ((Application) getApplication()).getTracker();
+        tracker.setScreenName(getString(NavDrawerMenu.getMenuItemTitle(menuId)));
+        tracker.send(new HitBuilders.AppViewBuilder().build());
     }
 
     private int findCurrentCurrencyPosition() {
