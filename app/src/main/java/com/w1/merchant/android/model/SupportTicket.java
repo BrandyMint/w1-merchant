@@ -27,6 +27,9 @@ public class SupportTicket implements Parcelable {
 
     public static final String STATUS_RESOLVED = "9";
 
+    /**
+     * Сортировка по дате модификации / создания, затем - по id
+     */
     public static Comparator<SupportTicket> SORT_BY_DATE_DESC_DESC_ID_COMPARATOR = new Comparator<SupportTicket>() {
         @Override
         public int compare(SupportTicket lhs, SupportTicket rhs) {
@@ -37,8 +40,11 @@ public class SupportTicket implements Parcelable {
             } else if (rhs == null) {
                 return 1;
             } else {
-                long lhsDate = lhs.createDate != null ? lhs.createDate.getTime() : 0;
-                long rhsDate = rhs.createDate != null ? rhs.createDate.getTime() : 0;
+                long lhsDate, rhsDate;
+
+                lhsDate = lhs.getUpdateOrCreateDate() != null ? lhs.getUpdateOrCreateDate().getTime() : 0;
+                rhsDate = rhs.getUpdateOrCreateDate() != null ? rhs.getUpdateOrCreateDate().getTime() : 0;
+
                 int compareDates = Utils.compare(rhsDate, lhsDate);
                 return compareDates != 0 ? compareDates : Utils.compare(lhs.ticketId, rhs.ticketId);
             }
@@ -80,6 +86,10 @@ public class SupportTicket implements Parcelable {
 
     public boolean isClosed() {
         return STATUS_CLOSED.equals(statusId) || STATUS_RESOLVED.equals(statusId);
+    }
+
+    public Date getUpdateOrCreateDate() {
+        return updateDate != null ? updateDate : createDate;
     }
 
     public boolean isResolved() {
