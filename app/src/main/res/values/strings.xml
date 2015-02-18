@@ -23,6 +23,13 @@
     <string name="drawer_menu_support">Support</string>
     <string name="drawer_menu_logout">Log out</string>
 
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_statement">Statement</string>
+    <string name="title_invoices">Invoices</string>
+    <string name="title_withdrawal">Funds withdrawal</string>
+    <string name="title_support">Support</string>
+    <string name="title_logout">Log out</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Add</string>

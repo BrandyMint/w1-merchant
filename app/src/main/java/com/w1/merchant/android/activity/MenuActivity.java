@@ -615,12 +615,12 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
 
         public static int getMenuItemTitle(int viewId) {
             switch (viewId)  {
-                case R.id.drawer_menu_dashboard: return R.string.drawer_menu_dashboard;
-                case R.id.drawer_menu_statement: return R.string.drawer_menu_statement;
-                case R.id.drawer_menu_invoices: return  R.string.drawer_menu_invoices;
-                case R.id.drawer_menu_withdrawal: return R.string.drawer_menu_withdrawal;
-                case R.id.drawer_menu_support: return R.string.drawer_menu_support;
-                case R.id.drawer_menu_logout: return R.string.drawer_menu_logout;
+                case R.id.drawer_menu_dashboard: return R.string.title_dashboard;
+                case R.id.drawer_menu_statement: return R.string.title_statement;
+                case R.id.drawer_menu_invoices: return  R.string.title_invoices;
+                case R.id.drawer_menu_withdrawal: return R.string.title_withdrawal;
+                case R.id.drawer_menu_support: return R.string.title_support;
+                case R.id.drawer_menu_logout: return R.string.title_logout;
                 default:
                     return -1;
             }

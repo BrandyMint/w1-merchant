@@ -23,6 +23,13 @@
     <string name="drawer_menu_support">Поддержка</string>
     <string name="drawer_menu_logout">Выход</string>
 
+    <string name="title_dashboard">Дэшборд</string>
+    <string name="title_statement">Выписка</string>
+    <string name="title_invoices">Счета</string>
+    <string name="title_withdrawal">Вывод средств</string>
+    <string name="title_support">Поддержка</string>
+    <string name="title_logout">Выход</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Добавить</string>
