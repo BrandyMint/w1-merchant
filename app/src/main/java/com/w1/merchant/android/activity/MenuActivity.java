@@ -77,7 +77,7 @@ import retrofit.client.Response;
 public class MenuActivity extends FragmentActivity implements UserEntryFragment.OnFragmentInteractionListener,
     InvoiceFragment.OnFragmentInteractionListener,
     DashFragment.OnFragmentInteractionListener,
-        TemplateFragment.OnFragmentInteractionListener
+    TemplateFragment.OnFragmentInteractionListener
 {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
@@ -304,7 +304,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     @Override
-    public boolean ismIsBusinessAccount() {
+    public boolean isBusinessAccount() {
         return mIsBusinessAccount;
     }
 

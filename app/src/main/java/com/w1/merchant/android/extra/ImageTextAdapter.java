@@ -76,9 +76,8 @@ public class ImageTextAdapter extends BaseAdapter {
         if (position == getDummyTemplatePosition()) {
             if (convertView != null) return convertView;
             View root = mInflater.inflate(R.layout.template_cell, parent,false);
-            root.findViewById(R.id.imagepart).setBackgroundResource(R.drawable.ring);
-            root.findViewById(R.id.tvGoWeb).setVisibility(View.VISIBLE);
-            root.findViewById(R.id.tvMoveOn).setVisibility(View.VISIBLE);
+            root.findViewById(R.id.open_web_message).setVisibility(View.VISIBLE);
+            root.findViewById(R.id.tvDate).setVisibility(View.GONE);
             return root;
         }
 

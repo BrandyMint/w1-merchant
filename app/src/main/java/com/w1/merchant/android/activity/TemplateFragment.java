@@ -137,14 +137,14 @@ public class TemplateFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), EditTemplate.class);
                 intent.putExtra("templateId", String.valueOf(template.templateId));
                 intent.putExtra("token", Session.getInstance().getBearer());
-                intent.putExtra("mIsBusinessAccount", mListener.ismIsBusinessAccount());
+                intent.putExtra("mIsBusinessAccount", mListener.isBusinessAccount());
                 startActivity(intent);
             }
         }
     };
 
     public interface OnFragmentInteractionListener {
-        public boolean ismIsBusinessAccount();
+        public boolean isBusinessAccount();
         public void startProgress();
         public void stopProgress();
 

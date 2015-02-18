@@ -2,6 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_horizontal_padding_scrollbar">12dp</dimen>
+    <dimen name="activity_horizontal_margin_scrollbar">4dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="pie_segment_label_font_size">10dp</dimen>
     <dimen name="avatar_small_diameter">48dp</dimen>
@@ -11,4 +13,6 @@
 
     <dimen name="captcha_width">180dp</dimen>
     <dimen name="captcha_height">100dp</dimen>
+
+    <integer name="templates_num_columns">2</integer>
 </resources>
