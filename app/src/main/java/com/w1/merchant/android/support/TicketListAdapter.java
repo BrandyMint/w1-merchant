@@ -166,7 +166,7 @@ public abstract class TicketListAdapter extends RecyclerView.Adapter<TicketListA
     private void bindUnreadMessages(ViewHolder holder, SupportTicket ticket) {
         if (ticket.repliesCount > 0) {
             holder.repliesCount.setVisibility(View.VISIBLE);
-            holder.repliesCount.setText(String.valueOf(ticket.repliesCount));
+            holder.repliesCount.setText(String.valueOf(ticket.postsCount));
         } else {
             holder.repliesCount.setVisibility(View.INVISIBLE);
         }
