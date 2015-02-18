@@ -88,13 +88,15 @@ public class InvoiceFragment extends Fragment {
         srgInvoice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
     		@Override
     		public void onCheckedChanged(RadioGroup group, int checkedId) {
-    			lvInvoice.removeFooterView(llFooter);
+    			hideFooter();
                 mCurrentPage = 1;
     			refreshList();
     		}
     	});
 
         mAdapter = new InvoicesAdapter(getActivity());
+        llFooter.setVisibility(View.GONE);
+        lvInvoice.addFooterView(llFooter, null, false);
         lvInvoice.setAdapter(mAdapter);
 
         lvInvoice.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -298,27 +300,21 @@ public class InvoiceFragment extends Fragment {
 
             if (mCurrentPage == 1) {
                 mAdapter.setItems(invoices);
-                createListView();
+                if (mAdapter.getCount() >= ITEMS_PER_PAGE) {
+                    showFooter();
+                } else {
+                    hideFooter();
+                }
             } else {
                 mAdapter.addItems(invoices);
                 llFooter.setText(R.string.data_load);
             }
-            if (invoices.size() == 0) removeFooter();
+            if (invoices.size() == 0) hideFooter();
         } else {
-            removeFooter();
+            hideFooter();
         }
         if (getView() != null) {
             getView().findViewById(R.id.empty_text).setVisibility(mAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        }
-    }
-
-    public void createListView() {
-        //заполнение ListView
-        if ((mAdapter.getCount() >= ITEMS_PER_PAGE) &
-                (lvInvoice.getFooterViewsCount() == 0)) {
-            lvInvoice.addFooterView(llFooter);
-        } else {
-            removeFooter();
         }
     }
 
@@ -330,10 +326,13 @@ public class InvoiceFragment extends Fragment {
         }
     }
 
-    public void removeFooter() {
-		lvInvoice.removeFooterView(llFooter);
+    public void showFooter() {
+        if (llFooter != null) llFooter.setVisibility(View.VISIBLE);
 	}
 
+    public void hideFooter() {
+        if (llFooter != null) llFooter.setVisibility(View.GONE);
+    }
 
     public interface OnFragmentInteractionListener {
         public String getCurrency();

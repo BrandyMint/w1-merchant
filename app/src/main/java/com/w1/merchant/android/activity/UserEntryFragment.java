@@ -77,13 +77,15 @@ public class UserEntryFragment extends Fragment {
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                lvUserEntry.removeFooterView(mFooter);
+                hideFooter();
                 mCurrentPage = 1;
                 refreshList();
             }
         });
 
         mAdapter = new UserEntryAdapter2(getActivity());
+        mFooter.setVisibility(View.GONE);
+        lvUserEntry.addFooterView(mFooter, null, false);
         lvUserEntry.setAdapter(mAdapter);
 
         lvUserEntry.setOnItemClickListener(new OnItemClickListener() {
@@ -283,28 +285,21 @@ public class UserEntryFragment extends Fragment {
         if (!(newData == null)) {
             if (mCurrentPage == 1) {
                 mAdapter.setItems(newData.items);
-                createListView();
+                if (mAdapter.getCount() >= ITEMS_PER_PAGE) {
+                    showFooter();
+                } else {
+                    hideFooter();
+                }
             } else {
                 mAdapter.addItems(newData.items);
                 setHeaderText(getString(R.string.data_load));
             }
-            if (newData.items.size() == 0) removeFooter();
+            if (newData.items.size() == 0) hideFooter();
         } else {
-            removeFooter();
+            hideFooter();
         }
         if (getView() != null) {
             getView().findViewById(R.id.empty_text).setVisibility(mAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        }
-    }
-
-    public void createListView() {
-        //заполнение ListView
-        if ((mAdapter.getCount() >= ITEMS_PER_PAGE) &
-                (lvUserEntry.getFooterViewsCount() == 0)) {
-            lvUserEntry.addFooterView(mFooter, null, false);
-            lvUserEntry.setAdapter(mAdapter);
-        } else {
-            removeFooter();
         }
     }
 
@@ -403,8 +398,12 @@ public class UserEntryFragment extends Fragment {
         }
     }
 
-    public void removeFooter() {
-        lvUserEntry.removeFooterView(mFooter);
+    void hideFooter() {
+        if (mFooter != null) mFooter.setVisibility(View.GONE);
+    }
+
+    void showFooter() {
+        if (mFooter != null) mFooter.setVisibility(View.VISIBLE);
     }
 
     public void setHeaderText(String text) {
