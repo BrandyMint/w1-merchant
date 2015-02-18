@@ -83,8 +83,8 @@
     <string name="go_back">Back</string>
     <string name="end_date">End date</string>
     <string name="cancel">Cancel</string>
-    <string name="comis_sum">Commission is %1$s, amount starting from %2$s to %3$s</string>
-    <string name="wo_comis">Commission-free amount from %1$s to %2$s</string>
+    <string name="comis_sum">Commission is $commission, amount starting from $from to $to</string>
+    <string name="wo_comis">Commission-free amount from $from to $to</string>
     <string name="payment_one">The payment will be made once %1$s at %2$s</string>
     <string name="payment_begin">Payment will be made %1$s at %2$s, starting from %3$s</string>
     <string name="payment_begin_end">The payment will be made on %1$s at %2$s, starting from %3$s, till %4$s at %5$s</string>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
@@ -303,19 +304,49 @@ public class EditTemplate extends Activity {
 	public void onProviderLoaded(Provider provider) {
         mProvider = provider;
 
-		com.w1.merchant.android.viewextended.TextViewRouble tvComis =
-				new com.w1.merchant.android.viewextended.TextViewRouble(this);
+		TextView tvComis = new TextView(this);
 
-		if (BigDecimal.ZERO.compareTo(provider.commission.rate) == 0) {
-			tvComis.setText(getString(R.string.wo_comis, 
-					TextUtilsW1.formatNumber(provider.minAmount) + " " + "C",
-					TextUtilsW1.formatNumber(provider.maxAmount) + " " + "C"));
+        SpannableStringBuilder from = new SpannableStringBuilder(TextUtilsW1.formatNumber(provider.minAmount));
+        from.append('\u00a0');
+        from.append(TextUtilsW1.getRoubleSymbol(2));
+
+        SpannableStringBuilder to = new SpannableStringBuilder(TextUtilsW1.formatNumber(provider.maxAmount));
+        to.append('\u00a0');
+        to.append(TextUtilsW1.getRoubleSymbol(2));
+
+        if (BigDecimal.ZERO.compareTo(provider.commission.rate) == 0) {
+            String pattern = getString(R.string.wo_comis);
+            SpannableStringBuilder sb = new SpannableStringBuilder(pattern);
+
+            int fromPos = pattern.indexOf("$from");
+            sb.replace(fromPos, fromPos + "$from".length(), from);
+
+            int toPos = sb.toString().indexOf("$to");
+            sb.replace(toPos, toPos + "$to".length(), to, 0, to.length());
+
+			tvComis.setText(sb);
 		} else {
-			tvComis.setText(getString(R.string.comis_sum,
-                    provider.commission.rate + "% + " + (BigDecimal.ZERO.compareTo(provider.commission.cost) == 0 ? "" :
-						TextUtilsW1.formatNumber(provider.commission.cost) + " " + "C"),
-					TextUtilsW1.formatNumber(provider.minAmount) + " " + "C",
-					TextUtilsW1.formatNumber(provider.maxAmount) + " " + "C"));
+            String pattern = getString(R.string.comis_sum);
+            SpannableStringBuilder commission = new SpannableStringBuilder(String.valueOf(provider.commission.rate));
+            commission.append("%");
+            if (BigDecimal.ZERO.compareTo(provider.commission.cost) != 0) {
+                commission.append("\u00a0+\u00a0");
+                commission.append(TextUtilsW1.formatNumber(provider.commission.cost));
+                commission.append('\u00a0');
+                commission.append(TextUtilsW1.getRoubleSymbol(2));
+            }
+
+            SpannableStringBuilder sb = new SpannableStringBuilder(pattern);
+            int commissionPos = pattern.indexOf("$commission");
+            sb.replace(commissionPos, commissionPos + "$commission".length(), commission);
+
+            int fromPos = sb.toString().indexOf("$from");
+            sb.replace(fromPos, fromPos + "$from".length(), from);
+
+            int toPos = sb.toString().indexOf("$to");
+            sb.replace(toPos, toPos + "$to".length(), to);
+
+            tvComis.setText(sb);
 		}
 	    tvComis.setTextColor(Color.parseColor("#BDBDBD"));
 	    llMain.addView(tvComis, lParams4);

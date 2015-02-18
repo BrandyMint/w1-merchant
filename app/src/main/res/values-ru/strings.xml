@@ -84,8 +84,8 @@
 	<string name="go_back">Назад</string>
 	<string name="end_date">Конечная дата</string>
 	<string name="cancel">Отмена</string>
-	<string name="comis_sum">Комиссия %1$s, сумма от %2$s до %3$s</string>
-	<string name="wo_comis">Без комиссии, сумма от %1$s до %2$s</string>
+	<string name="comis_sum">Комиссия $commission, сумма от $from до $to</string>
+	<string name="wo_comis">Без комиссии, сумма от $from до $to</string>
 	<string name="payment_one">Платеж будет исполнен однократно, %1$s в %2$s</string>
 	<string name="payment_begin">Платеж будет производиться %1$s в %2$s, начиная с %3$s</string>
 	<string name="payment_begin_end">Платеж будет производиться %1$s в %2$s, начиная с %3$s, заканчивая %4$s в %5$s</string>
