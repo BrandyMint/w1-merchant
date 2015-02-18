@@ -22,6 +22,8 @@ public final class Constants {
 
     public static final String URL_WALLETONE = "https://www.walletone.com/wallet/client/";
 
+    public static final String URL_PROVIDER_LOGO = "https://www.walletone.com/logo/provider/%s.png";
+
     public static final String HEADER_CAPTCHA_ID = "X-Wallet-CaptchaId";
     public static final String HEADER_CAPTCHA_CODE = "X-Wallet-CaptchaCode";
 

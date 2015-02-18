@@ -95,7 +95,7 @@ public class ImageTextAdapter extends BaseAdapter {
 		}
 
 		Picasso.with(grid.getContext())
-                .load(template.providerLogoUrl)
+                .load(template.getLogoUrl())
                 .into(holder.imagePart);
 
         if (template.schedule != null && template.schedule.getNextExecutionDate() != null) {

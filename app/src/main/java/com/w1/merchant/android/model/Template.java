@@ -2,10 +2,13 @@ package com.w1.merchant.android.model;
 
 import android.support.annotation.Nullable;
 
+import com.w1.merchant.android.Constants;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Template {
 
@@ -17,7 +20,7 @@ public class Template {
 
     public String providerTitle;
 
-    public String providerLogoUrl;
+    private String providerLogoUrl;
 
     public BigInteger prototypePaymentId;
 
@@ -52,6 +55,11 @@ public class Template {
 
         public List<Template> items;
 
+    }
+
+    public String getLogoUrl() {
+        // Не используем providerLogoUrl, ибо там слишком маленькие иконки
+        return String.format(Locale.US, Constants.URL_PROVIDER_LOGO, providerId);
     }
 
 }

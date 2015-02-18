@@ -276,7 +276,7 @@ public class EditTemplate extends Activity {
 		}
 		
 		Picasso.with(this)
-				.load(template.providerLogoUrl)
+				.load(template.getLogoUrl())
 				.into(ivOutputIcon);
 
 
