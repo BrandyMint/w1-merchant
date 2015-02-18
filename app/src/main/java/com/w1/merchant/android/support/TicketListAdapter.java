@@ -183,7 +183,7 @@ public abstract class TicketListAdapter extends RecyclerView.Adapter<TicketListA
 
         if (ticket.getLastMessage() != null) {
             avatarUri = ticket.getLastMessage().getAvatarUri(avatarDiameter);
-            defaultUserpicDrawable.setUser(ticket.getLastMessage().userTitle);
+            defaultUserpicDrawable.setUser(ticket.getLastMessage().email);
         } else {
             avatarUri = null;
         }

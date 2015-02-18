@@ -218,7 +218,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
         defaultUserpicDrawable = new DefaultUserpicDrawable();
         defaultUserpicDrawable.setBounds(0, 0, avatarDiameter, avatarDiameter);
-        defaultUserpicDrawable.setUser(message.userTitle);
+        defaultUserpicDrawable.setUser(message.email);
 
         holder.avatarUri = avatarUri;
         if (avatarUri != null) {
