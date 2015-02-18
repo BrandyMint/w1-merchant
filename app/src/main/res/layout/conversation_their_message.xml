@@ -61,7 +61,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="12dp"
         android:paddingTop="8dp"
-        android:textColor="@android:color/white"
+        android:textColor="#1b1b1b"
         tools:text="text блаблабла"
         android:layout_gravity="fill_horizontal"
         android:layout_marginRight="16dp" />

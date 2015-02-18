@@ -30,7 +30,7 @@
         android:paddingLeft="12dp"
         android:paddingRight="20dp"
         android:paddingTop="8dp"
-        android:textColor="#1b1b1b"
+        android:textColor="@android:color/white"
         tools:text="text блаблабла" />
 
 </LinearLayout>
