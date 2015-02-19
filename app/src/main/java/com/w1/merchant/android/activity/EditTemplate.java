@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -42,8 +43,8 @@ public class EditTemplate extends Activity {
 
     private static final String pattern = "[^0-9]";
 
-	private EditTextRouble etSum;
-    private EditTextRouble etSumCommis;
+	private EditTextRouble mAmountEditText;
+    private EditTextRouble mCommissionEditText;
     private TextView tvOutputName;
     private ImageView ivOutputIcon;
 	private ProgressBar pbTemplates;
@@ -57,6 +58,9 @@ public class EditTemplate extends Activity {
     private Provider mProvider;
 
     private ApiPayments mApiPayments;
+
+    private boolean mAmountManualChange;
+    private boolean mCommissionManualChange;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -162,12 +166,12 @@ public class EditTemplate extends Activity {
 	boolean checkFields() {
 		boolean result;
 		
-		if (TextUtils.isEmpty(etSumCommis.getText().toString())) {
-			etSumCommis.setError(getString(R.string.error_field));
+		if (TextUtils.isEmpty(mCommissionEditText.getText().toString())) {
+			mCommissionEditText.setError(getString(R.string.error_field));
 			result = false;
 		} else result = true;
-		if (TextUtils.isEmpty(etSum.getText().toString())) {
-			if (result)	etSum.setError(getString(R.string.error_field));
+		if (TextUtils.isEmpty(mAmountEditText.getText().toString())) {
+			if (result)	mAmountEditText.setError(getString(R.string.error_field));
 			result = false;
 		} else result = true;
 		
@@ -214,39 +218,61 @@ public class EditTemplate extends Activity {
 			tvSumCommis.setText(getString(R.string.sum_commis));
 			tvSumCommis.setTextColor(Color.parseColor("#BDBDBD"));
 			llMain.addView(tvSumCommis, lParams);
-			etSumCommis = new EditTextRouble(this);
-			etSumCommis.setTextSize(22);
-			llMain.addView(etSumCommis, lParams2);
+			mCommissionEditText = new EditTextRouble(this);
+			mCommissionEditText.setTextSize(22);
 			DigitsKeyListener digkl2 = DigitsKeyListener.getInstance();
-			etSumCommis.setKeyListener(digkl2);
-			//etSumCommis.addTextChangedListener(new ComisTextWatcher());
-			etSumCommis.setOnFocusChangeListener(new OnFocusChangeListener() {
-				@Override
-				public void onFocusChange(View v, boolean hasFocus) {
-					if (!hasFocus) {
-						afterComisChange();
-					}
-				}
-			});
+			mCommissionEditText.setKeyListener(digkl2);
+            mCommissionEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (mCommissionManualChange) {
+                        mCommissionManualChange = false;
+                    } else {
+                        afterComisChange();
+                    }
+                }
+            });
+            llMain.addView(mCommissionEditText, lParams2);
 			
 			//сумма к выводу
 			TextView tvSum = new TextView(this);
 			tvSum.setText(getString(R.string.sum_output));
 			tvSum.setTextColor(Color.parseColor("#BDBDBD"));
 			llMain.addView(tvSum, lParams);
-			etSum = new EditTextRouble(this);
-			etSum.setTextSize(22);
-			llMain.addView(etSum, lParams2);
-			etSum.setKeyListener(digkl2);
-			//etSum.addTextChangedListener(new SumTextWatcher());
-			etSum.setOnFocusChangeListener(new OnFocusChangeListener() {
-				@Override
-				public void onFocusChange(View v, boolean hasFocus) {
-					if (!hasFocus) {
-						afterSumChange();
-					}
-				}
-			});
+			mAmountEditText = new EditTextRouble(this);
+			mAmountEditText.setTextSize(22);
+			mAmountEditText.setKeyListener(digkl2);
+            mAmountEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (mAmountManualChange) {
+                        mAmountManualChange = false;
+                    } else {
+                        afterSumChange();
+                    }
+                }
+            });
+            llMain.addView(mAmountEditText, lParams2);
 			
 			//Вывести
 			LinearLayout.LayoutParams lParams3 = new LinearLayout.LayoutParams(
@@ -262,10 +288,10 @@ public class EditTemplate extends Activity {
 				public void onClick(View v) {
 					if (checkFields()) {
 						Intent intent = new Intent(EditTemplate.this, ConfirmOutActivity.class);
-						intent.putExtra("SumOutput", 
-								etSum.getText().toString().replaceAll(pattern, ""));
-						intent.putExtra("SumCommis", 
-								etSumCommis.getText().toString().replaceAll(pattern, ""));
+						intent.putExtra("SumOutput",
+                                mAmountEditText.getText().toString().replaceAll(pattern, ""));
+						intent.putExtra("SumCommis",
+                                mCommissionEditText.getText().toString().replaceAll(pattern, ""));
 						intent.putExtra("templateId", templateId);
 						intent.putExtra("token", Session.getInstance().getBearer());
 						startActivity(intent);
@@ -354,8 +380,7 @@ public class EditTemplate extends Activity {
 
 	    if (!mIsBusinessAccount) {
 	    	if (!sum.equals("")) {
-		    	etSum.setText(sum.substring(0, sum.indexOf(",")));
-				afterSumChange();
+                mAmountEditText.setText(sum.substring(0, sum.indexOf(",")));
 			}
 	    }
 	}
@@ -374,35 +399,81 @@ public class EditTemplate extends Activity {
     	}
     }
 
+
+    void setAmountText(String summ) {
+        String current = mAmountEditText.getText().toString();
+        if (!current.equals(summ)) {
+            mAmountManualChange = true;
+            mAmountEditText.setText(summ);
+        }
+    }
+
+    void setCommissionText(String commission) {
+        String current = mCommissionEditText.getText().toString();
+        if (!current.equals(commission)) {
+            mCommissionManualChange = true;
+            mCommissionEditText.setText(commission);
+        }
+    }
+
     void afterSumChange() {
-    	String inSum = etSum.getText().toString();
-		inSum = inSum.replaceAll(pattern, "");
+    	String inSumStringOrig = mAmountEditText.getText().toString();
+		String inSum = inSumStringOrig.replaceAll(pattern, "");
 		if (!inSum.isEmpty()) {
-            BigDecimal inputSum = Utils.clamp(new BigDecimal(inSum), mProvider.minAmount, mProvider.maxAmount)
+            BigDecimal origInputSum =  new BigDecimal(inSum);
+            BigDecimal inputSum = Utils.clamp(origInputSum, mProvider.minAmount, mProvider.maxAmount)
                     .setScale(0, BigDecimal.ROUND_UP);
 
-            etSum.setText(inputSum + " C");
-			etSumCommis.setText(mProvider.getSumWithCommission(inputSum).setScale(0, BigDecimal.ROUND_UP) + " C");
+            if (origInputSum.compareTo(inputSum) != 0) {
+                // Сумма за пределами разрешенных значений
+                setCommissionText("");
+                if (TextUtils.isEmpty(mCommissionEditText.getHint())) {
+                    mCommissionEditText.setHint(origInputSum.compareTo(inputSum) < 0 ? R.string.amount_too_small : R.string.amount_too_large);
+                }
+            } else {
+                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, BigDecimal.ROUND_UP) + " C");
+                if (!TextUtils.isEmpty(mCommissionEditText.getHint())) mCommissionEditText.setHint("");
+            }
+
+            if (inSumStringOrig.indexOf("C") != inSumStringOrig.length() - 1) {
+                setAmountText(origInputSum + " C");
+            }
 		} else {
-			etSumCommis.setText("");
+            setCommissionText("");
+            if (!TextUtils.isEmpty(mCommissionEditText.getHint())) mCommissionEditText.setHint("");
 		}
 	}
     
     void afterComisChange() {
-    	String inSumCommis = etSumCommis.getText().toString(); 	
-		inSumCommis = inSumCommis.replaceAll(pattern, "");
-		if (!inSumCommis.isEmpty()) {
-            BigDecimal inputSum = Utils.clamp(new BigDecimal(inSumCommis),
+    	String commissionTextOrig = mCommissionEditText.getText().toString();
+		String commissionTextNum = commissionTextOrig.replaceAll(pattern, "");
+		if (!commissionTextNum.isEmpty()) {
+            BigDecimal commissionVal = new BigDecimal(commissionTextNum);
+            BigDecimal inputSum = Utils.clamp(commissionVal,
                     mProvider.getMinAmountWithComission(), mProvider.getMaxAmountWithComission())
                     .setScale(0, BigDecimal.ROUND_UP);
 
-            etSumCommis.setText(inputSum + " C");
-            inputSum = inputSum.subtract(mProvider.commission.cost);
-            BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP);
-			BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, BigDecimal.ROUND_HALF_UP);
-			etSum.setText(sumWOComis + " C");
+            if (commissionVal.compareTo(inputSum) != 0) {
+                // Комиссия за пределами разрешенных значений
+                setAmountText("");
+                if (TextUtils.isEmpty(mAmountEditText.getHint())) {
+                    mAmountEditText.setHint(commissionVal.compareTo(inputSum) < 0 ? R.string.commission_too_small : R.string.commission_too_large);
+                }
+            } else {
+                inputSum = inputSum.subtract(mProvider.commission.cost);
+                BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP);
+                BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, BigDecimal.ROUND_HALF_UP);
+                setAmountText(sumWOComis + " C");
+                if (!TextUtils.isEmpty(mAmountEditText.getHint())) mAmountEditText.setHint("");
+            }
+
+            if (commissionTextOrig.indexOf("C") != commissionTextOrig.length() - 1) {
+                setCommissionText(commissionVal + " C");
+            }
+
 		} else {
-			etSum.setText("");
+            setAmountText("");
+            if (!TextUtils.isEmpty(mAmountEditText.getHint())) mAmountEditText.setHint("");
 		}
     }
 }

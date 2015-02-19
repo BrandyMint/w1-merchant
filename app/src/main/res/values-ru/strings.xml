@@ -244,4 +244,10 @@
     <string name="invoice_state_received">Получен, ожидает принятия</string>
     <string name="invoice_state_rejected">Отвергнут получателем</string>
 
+    <string name="amount_too_small">Маленькая сумма</string>
+    <string name="amount_too_large">Большая сумма</string>
+
+    <string name="commission_too_small">Маленькая комиссия</string>
+    <string name="commission_too_large">Большая комиссия</string>
+
 </resources>

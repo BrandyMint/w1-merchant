@@ -247,5 +247,12 @@
     <string name="invoice_state_received">Received</string>
     <string name="invoice_state_rejected">Rejected</string>
 
+    <string name="amount_too_small">The amount is too small</string>
+    <string name="amount_too_large">The amount is too large</string>
+
+    <string name="commission_too_small">The commission is too small</string>
+    <string name="commission_too_large">The commission is too large</string>
+
+
 </resources>
 
