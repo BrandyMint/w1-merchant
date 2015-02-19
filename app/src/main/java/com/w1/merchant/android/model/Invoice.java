@@ -194,6 +194,11 @@ public class Invoice implements Parcelable {
         return STATE_ACCEPTED.equals(invoiceStateId);
     }
 
+    public boolean isPartiallyPaid() {
+        if (hasSuspense) return true;
+        if (paidAmount == null || BigDecimal.ZERO.compareTo(paidAmount) == 0) return false;
+        return paidAmount.compareTo(amount) < 0;
+    }
 
     public CharSequence getLocalizedDirection(Resources resources) {
         switch (direction) {

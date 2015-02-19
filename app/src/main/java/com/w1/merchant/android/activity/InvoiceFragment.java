@@ -274,7 +274,9 @@ public class InvoiceFragment extends Fragment {
             List<Invoice> invoices;
             if (srgInvoice.getCheckedRadioButtonId() == R.id.rbPartially) {
                 invoices = new ArrayList<>(newData.invoices.size());
-                for (Invoice invoice: newData.invoices) if (invoice.hasSuspense) invoices.add(invoice);
+                for (Invoice invoice: newData.invoices) {
+                    if (invoice.isPartiallyPaid()) invoices.add(invoice);
+                }
             } else {
                 invoices = newData.invoices;
             }
