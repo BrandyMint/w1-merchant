@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -192,9 +191,12 @@ public class LoginActivity extends Activity {
                     int rootHeight = findViewById(R.id.root).getRootView().getHeight();
                     int below = rootHeight - authButtonLoc[1];
                     bottomView.setMaxHeight(below);
-                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) bottomView.getLayoutParams();
-                    lp.topMargin = authButtonLoc[1];
-                    bottomView.setLayoutParams(lp);
+                    //ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) bottomView.getLayoutParams();
+                    //lp.topMargin = authButtonLoc[1];
+                    //bottomView.setLayoutParams(lp);
+                    int top0 = findViewById(R.id.root).getHeight() - bottomView.getHeight();
+                    bottomView.setTranslationY(Math.max(top0, authButtonLoc[1]));
+                    bottomView.setVisibility(View.VISIBLE);
                 }
                 return false;
             }

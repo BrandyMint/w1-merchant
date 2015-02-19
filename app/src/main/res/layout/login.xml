@@ -10,8 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        android:adjustViewBounds="true"
-        android:maxHeight="150dp"
+        android:adjustViewBounds="false"
         android:scaleType="fitCenter"
         android:src="@drawable/back_top"
         tools:ignore="ContentDescription" />
@@ -21,13 +20,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="475dp"
-        android:adjustViewBounds="true"
-        android:maxHeight="@dimen/login_background_bottom_max_height"
+        android:visibility="invisible"
+        android:adjustViewBounds="false"
         android:src="@drawable/back_bottom"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/pbLogin"
@@ -42,6 +39,7 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:scrollbarStyle="outsideOverlay"
         android:fillViewport="true">
 
@@ -49,14 +47,14 @@
             android:id="@+id/rlCenter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:paddingTop="78dp">
 
             <ImageView
                 android:id="@+id/ivLogo"
                 android:layout_width="100dp"
                 android:layout_height="70dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="100dp"
                 android:src="@mipmap/logo_black" />
 
             <com.w1.merchant.android.viewextended.TextViewRobotoLight
