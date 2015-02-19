@@ -44,8 +44,7 @@ public class InvoiceFragment extends Fragment {
     public static final int ITEMS_PER_PAGE = 25;
     private static final int ACT_ADD = 1;
 
-    private ListView lvInvoice;
-	SegmentedRadioGroup srgInvoice;
+    SegmentedRadioGroup srgInvoice;
 	private TextView llFooter;
 
     private ApiInvoices mApiInvoices;
@@ -82,7 +81,7 @@ public class InvoiceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.invoices, container, false);
         srgInvoice = (SegmentedRadioGroup) parentView.findViewById(R.id.srgInvoice);
-        lvInvoice = (ListView) parentView.findViewById(R.id.lvAccounts);
+        ListView lvInvoice = (ListView) parentView.findViewById(R.id.lvAccounts);
         llFooter = (TextView)inflater.inflate(R.layout.footer2, lvInvoice, false);
         
         srgInvoice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -104,6 +103,7 @@ public class InvoiceFragment extends Fragment {
             public void onScroll(AbsListView arg0,
                                  int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             }
+
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 switch (scrollState) {
@@ -119,27 +119,8 @@ public class InvoiceFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                InvoicesAdapter.ViewHolder holder = (InvoicesAdapter.ViewHolder)view.getTag(R.id.tag_invoice_view_holder);
-                Invoice entry = (Invoice)parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(getActivity(), Details.class);
-                intent.putExtra("number", entry.invoiceId.toString());
-                intent.putExtra("date", holder.date.getText().toString());
-                intent.putExtra("descr", entry.description);
-                intent.putExtra("amount", holder.amount0);
-                intent.putExtra("currency", mListener.getCurrency());
-
-                int stateRes;
-                if (entry.isPaid()) {
-                    stateRes = R.string.paid;
-                } else if (entry.isInProcessing()) {
-                    stateRes = R.string.processing;
-                } else {
-                    stateRes = R.string.canceled;
-                }
-                intent.putExtra("state", view.getResources().getString(stateRes));
-
-                startActivity(intent);
+                Invoice entry = (Invoice) parent.getItemAtPosition(position);
+                Details.startActivity(getActivity(), entry, view);
 
             }
         });

@@ -3,7 +3,6 @@ package com.w1.merchant.android.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -92,27 +91,8 @@ public class UserEntryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                UserEntryAdapter2.ViewHolder holder = (UserEntryAdapter2.ViewHolder)view.getTag(R.id.tag_transaction_history_view_holder);
                 TransactionHistoryEntry entry = (TransactionHistoryEntry)parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(getActivity(), Details.class);
-                intent.putExtra("number", holder.name.getText().toString());
-                intent.putExtra("date", holder.date.getText().toString());
-                intent.putExtra("descr", entry.description);
-                intent.putExtra("amount", holder.amount0);
-                intent.putExtra("currency", String.valueOf(entry.currencyId));
-
-                int stateRes;
-                if (entry.isAccepted()) {
-                    stateRes = R.string.paid;
-                } else if (entry.isCanceled() || entry.isRejected()) {
-                    stateRes = R.string.canceled;
-                } else {
-                    stateRes = R.string.processing;
-                }
-                intent.putExtra("state", view.getResources().getString(stateRes));
-
-                startActivity(intent);
+                Details.startActivity(getActivity(), entry, view);
             }
         });
 

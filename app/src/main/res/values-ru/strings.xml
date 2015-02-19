@@ -204,4 +204,44 @@
     <string name="refresh">Обновить</string>
     <string name="captcha_wrong_code">Неверный код, попробуйте ещё раз</string>
 
+    <string name="recipient_title">Название получателя</string>
+    <string name="from_wallet">От кошелька</string>
+    <string name="transaction_id">Идентификатор проводки</string>
+    <string name="sender_title">Название отправителя</string>
+    <string name="to_wallet">Кошельку</string>
+    <string name="commission">Комиссия</string>
+    <string name="description">Описание</string>
+    <string name="last_edit_date">Дата последнего изменения</string>
+    <string name="transaction_status">Состояние операции</string>
+    <string name="operation_id">Идентификатор операции</string>
+
+    <string name="invoice_title_invoice_id">Идентификатор счета, назначенный сервисом</string>
+    <string name="invoice_title_from_user_id">Идентификатор отправителя счета</string>
+    <string name="invoice_title_to_user_id">Идентификатор получателя счета</string>
+    <string name="invoice_title_user_id">Идентификатор контрагента по счету</string>
+    <string name="invoice_title_user_title">Имя контрагента по счету</string>
+    <string name="invoice_title_direction">Направление счета</string>
+    <string name="invoice_title_amount">Сумма счета</string>
+    <string name="invoice_title_currency">Валюта</string>
+    <string name="invoice_title_order_id">Внешний идентификатор счета</string>
+    <string name="invoice_title_description">Описание счета</string>
+    <string name="invoice_title_create_date">Дата создания счета</string>
+    <string name="invoice_title_update_date">Дата последнего изменения счета</string>
+    <string name="invoice_title_expire_date">Дата истечения счета</string>
+    <string name="invoice_title_invoice_state_id">Состояние счета</string>
+    <string name="invoice_title_paid_amount">Уплаченная сумма по счету</string>
+    <string name="invoice_title_comment">Пользовательский комментарий к счету</string>
+    <string name="invoice_title_tags">Теги счета</string>
+
+    <string name="invoice_direction_incoming">Входящий</string>
+    <string name="invoice_direction_outcoming">Исходящий</string>
+
+    <string name="invoice_state_accepted">Оплачен</string>
+    <string name="invoice_state_canceled">Отменен отправителем</string>
+    <string name="invoice_state_created">Создан, но не получен</string>
+    <string name="invoice_state_expired">Истек срок действия счета</string>
+    <string name="invoice_state_processing">В процессе подтверждения</string>
+    <string name="invoice_state_received">Получен, ожидает принятия</string>
+    <string name="invoice_state_rejected">Отвергнут получателем</string>
+
 </resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.w1.merchant.android.viewextended.TextViewRobotoLight
+        android:id="@+id/title"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#646464"
+        android:textIsSelectable="true"
+        android:includeFontPadding="false"
+        tools:text="Название получателя" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:textIsSelectable="true"
+        android:includeFontPadding="false"
+        tools:text="Сбербанк" />
+
+</LinearLayout>

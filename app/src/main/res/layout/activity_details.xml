@@ -1,104 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_padding_scrollbar"
+    android:paddingRight="@dimen/activity_horizontal_padding_scrollbar"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin_scrollbar"
+    android:layout_marginRight="@dimen/activity_horizontal_margin_scrollbar"
+    android:clipToPadding="false"
+    android:scrollbarStyle="outsideOverlay">
 
     <LinearLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/ivBack"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_margin="20dp"
-                android:src="@drawable/ic_menu_back" />
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:src="@drawable/ic_menu_back"
+            android:cropToPadding="false"
+            android:contentDescription="@string/go_back" />
 
         <ImageView
-            android:id="@+id/ivStatusIcon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/status_icon"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/icon_ok_big" />
+            android:src="@drawable/ic_invoices_output"
+            tools:ignore="ContentDescription" />
 
-        <RelativeLayout
-            android:id="@+id/RelativeLayout1"
+        <com.w1.merchant.android.viewextended.TextViewRobotoThin
+            android:id="@+id/amount"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.w1.merchant.android.viewextended.TextViewRobotoLight
-                android:id="@+id/tvSum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textColor="#9ACD32"
-                android:textSize="20pt"/>
-
-            <com.w1.merchant.android.viewextended.TextViewRouble
-                android:id="@+id/tvRub"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/tvSum"
-                android:paddingLeft="5dp"
-                android:paddingTop="15dp"
-                android:textColor="#9ACD32"
-                android:textSize="20pt"/>
-        </RelativeLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
-            android:paddingTop="10dp"
-            android:text="@string/account_number"
-            android:textColor="#757575" />
+            android:textSize="60sp"
+            android:textColor="@color/details_invoice_processing"
+            android:includeFontPadding="false"
+            android:textIsSelectable="true"
+            tools:text="-100 594 396 $"
+            android:singleLine="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp"
+            android:scrollHorizontally="true"
+            android:ellipsize="marquee"
+            android:gravity="center_horizontal" />
 
-        <TextView
-            android:id="@+id/tvAccountNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
-            android:textSize="12pt" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="15dp"
-            android:text="@string/status"
-            android:textColor="#757575" />
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textSize="12pt" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="15dp"
-            android:text="@string/descr"
-            android:textColor="#757575" />
-
-        <TextView
-            android:id="@+id/tvDescr"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="15dp"
-            android:textSize="12pt" />
     </LinearLayout>
 </ScrollView>

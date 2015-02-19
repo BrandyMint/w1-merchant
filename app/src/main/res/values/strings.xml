@@ -207,5 +207,45 @@
     <string name="refresh">Refresh</string>
     <string name="captcha_wrong_code">Wrong code. Please try again.</string>
 
+    <string name="recipient_title">Recipient title</string>
+    <string name="from_wallet">From wallet</string>
+    <string name="transaction_id">Transaction id</string>
+    <string name="sender_title">Sender title</string>
+    <string name="to_wallet">To wallet</string>
+    <string name="commission">Commission</string>
+    <string name="description">Description</string>
+    <string name="last_edit_date">Last edit date</string>
+    <string name="transaction_status">Transaction status</string>
+    <string name="operation_id">Operation id</string>
+
+    <string name="invoice_title_invoice_id">Transaction id set by system</string>
+    <string name="invoice_title_from_user_id">Sender id</string>
+    <string name="invoice_title_to_user_id">Recipient id</string>
+    <string name="invoice_title_user_id">Contractor id</string>
+    <string name="invoice_title_user_title">Contractor title</string>
+    <string name="invoice_title_direction">Invoice direction</string>
+    <string name="invoice_title_amount">Amount</string>
+    <string name="invoice_title_currency">Currency</string>
+    <string name="invoice_title_order_id">External account id, known only to sender</string>
+    <string name="invoice_title_description">Invoice description</string>
+    <string name="invoice_title_create_date">Date of invoice</string>
+    <string name="invoice_title_update_date">Last edit date</string>
+    <string name="invoice_title_expire_date">Invoice expiration date</string>
+    <string name="invoice_title_invoice_state_id">Invoice status</string>
+    <string name="invoice_title_paid_amount">Invoice amount management</string>
+    <string name="invoice_title_comment">User’s comment</string>
+    <string name="invoice_title_tags">Invoice tags</string>
+
+    <string name="invoice_direction_incoming">Incoming</string>
+    <string name="invoice_direction_outcoming">Outcoming</string>
+
+    <string name="invoice_state_accepted">Accepted</string>
+    <string name="invoice_state_canceled">Canceled</string>
+    <string name="invoice_state_created">Created</string>
+    <string name="invoice_state_expired">Expired</string>
+    <string name="invoice_state_processing">Processing</string>
+    <string name="invoice_state_received">Received</string>
+    <string name="invoice_state_rejected">Rejected</string>
+
 </resources>
 

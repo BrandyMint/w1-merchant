@@ -13,4 +13,7 @@
     <color name="ticket_list_unread_message_date">#c9c9c9</color>
     <color name="ticket_list_read_message_date">#d9d9d9</color>
 
+    <color name="details_invoice_accepted">#6fd55f</color>
+    <color name="details_invoice_processing">#ff541f</color>
+
 </resources>

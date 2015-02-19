@@ -167,7 +167,6 @@ public class InvoicesAdapter extends BaseAdapter {
             textColor = holder.amount.getResources().getColor(R.color.amount_color_zero);
         }
 
-        holder.amount0 = amount;
         holder.amount.setTextColor(textColor);
         holder.amount.setText(res);
     }
@@ -191,8 +190,6 @@ public class InvoicesAdapter extends BaseAdapter {
         public final TextView amount;
         public final TextView date;
         public final TextView name;
-
-        public String amount0;
 
         public ViewHolder(View root) {
             this.root = root;

@@ -1,7 +1,11 @@
 package com.w1.merchant.android.model;
 
+import android.content.res.Resources;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.w1.merchant.android.R;
 import com.w1.merchant.android.utils.Utils;
 
 import java.math.BigDecimal;
@@ -9,7 +13,7 @@ import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.Date;
 
-public class Invoice {
+public class Invoice implements Parcelable {
 
     public static Comparator<Invoice> SORT_BY_DATE_DESC_DESC_ID_COMPARATOR = new Comparator<Invoice>() {
         @Override
@@ -83,6 +87,7 @@ public class Invoice {
     /**
      * Идентификатор получателя счета
      */
+    @Nullable
     public BigInteger toUserId;
 
     /**
@@ -93,6 +98,7 @@ public class Invoice {
     /**
      * Имя контрагента по счету
      */
+    @Nullable
     public String userTitle;
 
     /**
@@ -175,8 +181,8 @@ public class Invoice {
     /**
      * Теги счета
      */
-    //@Nullable
-    //public String tags;
+    @Nullable
+    public String tags;
 
     public boolean isInProcessing() {
         return STATE_CREATED.equals(invoiceStateId)
@@ -188,4 +194,106 @@ public class Invoice {
         return STATE_ACCEPTED.equals(invoiceStateId);
     }
 
+
+    public CharSequence getLocalizedDirection(Resources resources) {
+        switch (direction) {
+            case DIRECTION_INCOMING:
+                return resources.getText(R.string.invoice_direction_incoming);
+            case DIRECTION_OUTCOMING:
+                return resources.getText(R.string.invoice_direction_outcoming);
+            default:
+                return direction;
+        }
+    }
+
+    public CharSequence getLocalizedInvoiceState(Resources resources) {
+        switch (invoiceStateId) {
+            case STATE_ACCEPTED:
+                return resources.getText(R.string.invoice_state_accepted);
+            case STATE_CANCELED:
+                return resources.getText(R.string.invoice_state_canceled);
+            case STATE_CREATED:
+                return resources.getText(R.string.invoice_state_created);
+            case STATE_EXPIRED:
+                return resources.getText(R.string.invoice_state_expired);
+            case STATE_PROCESSING:
+                return resources.getText(R.string.invoice_state_processing);
+            case STATE_RECEIVED:
+                return resources.getText(R.string.invoice_state_received);
+            case STATE_REJECTED:
+                return resources.getText(R.string.invoice_state_rejected);
+            default:
+                return invoiceId == null ? null : invoiceStateId;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(this.invoiceId);
+        dest.writeSerializable(this.fromUserId);
+        dest.writeSerializable(this.toUserId);
+        dest.writeSerializable(this.userId);
+        dest.writeString(this.userTitle);
+        dest.writeString(this.direction);
+        dest.writeSerializable(this.amount);
+        dest.writeString(this.currencyId);
+        dest.writeString(this.orderId);
+        dest.writeString(this.description);
+        dest.writeLong(createDate != null ? createDate.getTime() : -1);
+        dest.writeLong(updateDate != null ? updateDate.getTime() : -1);
+        dest.writeLong(expireDate != null ? expireDate.getTime() : -1);
+        dest.writeString(this.invoiceStateId);
+        dest.writeSerializable(this.paidAmount);
+        dest.writeString(this.comment);
+        dest.writeString(this.successUrl);
+        dest.writeString(this.legalTitle);
+        dest.writeString(this.legalTaxNumber);
+        dest.writeByte(hasSuspense ? (byte) 1 : (byte) 0);
+        dest.writeString(this.tags);
+    }
+
+    public Invoice() {
+    }
+
+    private Invoice(Parcel in) {
+        this.invoiceId = (BigInteger) in.readSerializable();
+        this.fromUserId = (BigInteger) in.readSerializable();
+        this.toUserId = (BigInteger) in.readSerializable();
+        this.userId = (BigInteger) in.readSerializable();
+        this.userTitle = in.readString();
+        this.direction = in.readString();
+        this.amount = (BigDecimal) in.readSerializable();
+        this.currencyId = in.readString();
+        this.orderId = in.readString();
+        this.description = in.readString();
+        long tmpCreateDate = in.readLong();
+        this.createDate = tmpCreateDate == -1 ? null : new Date(tmpCreateDate);
+        long tmpUpdateDate = in.readLong();
+        this.updateDate = tmpUpdateDate == -1 ? null : new Date(tmpUpdateDate);
+        long tmpExpireDate = in.readLong();
+        this.expireDate = tmpExpireDate == -1 ? null : new Date(tmpExpireDate);
+        this.invoiceStateId = in.readString();
+        this.paidAmount = (BigDecimal) in.readSerializable();
+        this.comment = in.readString();
+        this.successUrl = in.readString();
+        this.legalTitle = in.readString();
+        this.legalTaxNumber = in.readString();
+        this.hasSuspense = in.readByte() != 0;
+        this.tags = in.readString();
+    }
+
+    public static final Parcelable.Creator<Invoice> CREATOR = new Parcelable.Creator<Invoice>() {
+        public Invoice createFromParcel(Parcel source) {
+            return new Invoice(source);
+        }
+
+        public Invoice[] newArray(int size) {
+            return new Invoice[size];
+        }
+    };
 }
