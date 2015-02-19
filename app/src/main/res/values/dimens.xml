@@ -9,7 +9,6 @@
     <dimen name="avatar_small_diameter">48dp</dimen>
     <dimen name="avatar_small_diameter_42dp">42dp</dimen>
     <dimen name="image_loading_placeholder_default_size">64dp</dimen>
-    <dimen name="login_background_bottom_max_height">150dp</dimen>
 
     <dimen name="captcha_width">180dp</dimen>
     <dimen name="captcha_height">100dp</dimen>
