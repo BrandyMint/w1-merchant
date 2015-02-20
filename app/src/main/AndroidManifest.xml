@@ -15,6 +15,7 @@
   limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.w1.merchant.android" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -97,7 +98,8 @@
             android:label="@string/title_activity_conversation"
             android:theme="@style/ConversationActivityTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"
-            android:parentActivityName=".support.TicketListActivity" >
+            android:parentActivityName=".support.TicketListActivity"
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.w1.merchant.android.support.TicketListActivity"/>

@@ -14,6 +14,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="20dp"
+            android:contentDescription="@string/go_back"
             android:src="@drawable/ic_menu_back" />
     </LinearLayout>
 

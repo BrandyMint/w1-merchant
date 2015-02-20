@@ -63,14 +63,11 @@
 	<string name="hour_24">24 часа</string>
 	<string name="week">неделя</string>
 	<string name="month">месяц</string>
-	<string name="account_number">Счет номер</string>
-	<string name="status">Статус</string>
+    <string name="clear_field">очистить</string>
 	<string name="user_not_found">Не корректный емайл или телефон</string>
 	<string name="bad_password">Пароль пользователя не соответствует</string>
     <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
-	<string name="input_captcha">Введите текст с картинки</string>
-	<string name="send">Отправить</string>
 	<string name="web_vers">Шаблоны\nвывода\nсоздаются на\nвеб-версии</string>
 	<string name="move_on">Перейти</string>
 	<string name="data_load">Данные будут загружены</string>

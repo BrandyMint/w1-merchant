@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent">
 
@@ -18,6 +19,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="20dp"
+                android:contentDescription="@string/go_back"
                 android:src="@drawable/ic_menu_back" />
 
             <TextView
@@ -44,7 +46,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/icon_ok_big" />
+            android:src="@drawable/icon_ok_big"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"

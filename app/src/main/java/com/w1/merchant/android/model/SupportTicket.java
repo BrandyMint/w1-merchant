@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SupportTicket implements Parcelable {
 
@@ -116,7 +117,7 @@ public class SupportTicket implements Parcelable {
 
         private String getSupportEmail(Resources resources) {
             try {
-                switch (resources.getConfiguration().locale.getISO3Language().toLowerCase()) {
+                switch (resources.getConfiguration().locale.getISO3Language().toLowerCase(Locale.US)) {
                     case "ua":
                     case "uah":
                         return Constants.SUPPORT_EMAIL_UAH;

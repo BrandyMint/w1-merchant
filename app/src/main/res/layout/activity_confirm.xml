@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:contentDescription="@string/go_back"
             android:src="@drawable/ic_menu_back" />
 
     </LinearLayout>
@@ -24,7 +26,8 @@
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="150dp"
-        android:src="@drawable/invoices_ok" />
+        android:src="@drawable/invoices_ok"
+        tools:ignore="ContentDescription" />
 
     <com.w1.merchant.android.viewextended.TextViewRouble
         android:id="@+id/tvConfirmText"

@@ -63,13 +63,9 @@
     <string name="hour_24">24 hours</string>
     <string name="week">week</string>
     <string name="month">month</string>
-    <string name="account_number">Invoice number</string>
-    <string name="status">State</string>
     <string name="user_not_found">Invalid e-mail or telephone</string>
     <string name="bad_password">Invalid password</string>
     <string name="forgot">Send</string>
-    <string name="input_captcha"></string>
-    <string name="send">Send</string>
     <string name="web_vers">You may create\nwithdrawal templates\nusing web-version\nof Checkout</string>
     <string name="move_on">Proceed</string>
     <string name="data_load">Data will be load</string>
@@ -83,6 +79,7 @@
     <string name="go_back">Back</string>
     <string name="end_date">End date</string>
     <string name="cancel">Cancel</string>
+    <string name="clear_field">Clear</string>
     <string name="comis_sum">Commission is $commission, amount starting from $from to $to</string>
     <string name="wo_comis">Commission-free amount from $from to $to</string>
     <string name="payment_one">The payment will be made once %1$s at %2$s</string>

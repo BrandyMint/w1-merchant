@@ -1,5 +1,6 @@
 package com.w1.merchant.android.service;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -76,7 +77,7 @@ public abstract class ApiRequestTask<T> {
         FragmentManager fm = activity.getFragmentManager();
         if (fm.findFragmentByTag(CAPTCHA_DIALOG_TAG) == null) {
             CaptchaDialogFragment dialog = CaptchaDialogFragment.newInstance(error.isErrorInvalidCaptcha()); // XXX
-            FragmentTransaction ft = fm.beginTransaction()
+            @SuppressLint("CommitTransaction") FragmentTransaction ft = fm.beginTransaction()
                     .addToBackStack(null);
 
             dialog.show(ft, CAPTCHA_DIALOG_TAG);

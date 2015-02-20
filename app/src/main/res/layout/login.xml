@@ -55,7 +55,8 @@
                 android:layout_width="100dp"
                 android:layout_height="70dp"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/logo_black" />
+                android:src="@mipmap/logo_black"
+                tools:ignore="ContentDescription" />
 
             <com.w1.merchant.android.viewextended.TextViewRobotoLight
                 android:id="@+id/tvLogoText"
@@ -75,6 +76,7 @@
                 android:layout_below="@+id/tvLogoText"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="17dp"
+                tools:ignore="ContentDescription"
                 android:src="@drawable/login" />
 
             <AutoCompleteTextView
@@ -102,6 +104,7 @@
                 tools:visibility="visible"
                 android:layout_marginTop="10dp"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:contentDescription="@string/clear_field"
                 android:layout_alignBottom="@+id/actvLogin"
                 android:layout_alignRight="@+id/actvLogin"
                 android:layout_marginBottom="2dp" />
@@ -114,6 +117,7 @@
                 android:layout_below="@+id/actvLogin"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="22dp"
+                tools:ignore="ContentDescription"
                 android:src="@drawable/password" />
 
             <EditText
