@@ -20,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -126,6 +127,12 @@ public class LoginActivity extends Activity {
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
         });
+        mLoginTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mPasswordView.requestFocus();
+            }
+        });
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -169,6 +176,7 @@ public class LoginActivity extends Activity {
                     break;
                 case R.id.ivDelete:
                     mLoginTextView.setText("");
+                    mLoginTextView.requestFocus();
                     break;
                 case R.id.tvForgot:
                     sendOneTimePassword();
