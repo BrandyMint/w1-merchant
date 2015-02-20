@@ -178,6 +178,7 @@
     <string name="no_transfers">No transfers</string>
     <string name="no_invoices">No invoices</string>
 
+    <string name="hello_how_can_we_help_you_message">Hello, how can we help you?</string>
     <string name="send_button_short">Send</string>
     <string name="your_message_hint">Your message</string>
     <string name="send_message_hint">Send message</string>
@@ -252,6 +253,8 @@
 
     <string name="commission_too_small">The commission is too small</string>
     <string name="commission_too_large">The commission is too large</string>
+
+    <string name="new_conversation_subject">Request from merchant private office</string>
 
 
 </resources>

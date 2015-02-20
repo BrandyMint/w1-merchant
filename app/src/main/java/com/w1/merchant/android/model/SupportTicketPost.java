@@ -1,10 +1,13 @@
 package com.w1.merchant.android.model;
 
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.Html;
 
+import com.w1.merchant.android.Constants;
+import com.w1.merchant.android.R;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
 
@@ -47,6 +50,18 @@ public class SupportTicketPost implements Parcelable {
     public String email;
 
     private transient volatile String mEmailMd5Cached;
+
+    public static SupportTicketPost createMayIHelpYouFakePost(Resources resources) {
+        SupportTicketPost post = new SupportTicketPost();
+        post.postId = -1;
+        post.ticketId = -1;
+        post.userId = 0;
+        post.userTitle = "";
+        post.createDate = new Date();
+        post.body = resources.getString(R.string.hello_how_can_we_help_you_message);
+        post.email = Constants.SUPPORT_EMAIL_MAIN;
+        return post;
+    }
 
     public boolean isMyPost() {
         return userId != 0; // TODO

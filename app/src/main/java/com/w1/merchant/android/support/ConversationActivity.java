@@ -26,18 +26,22 @@ import static android.app.ActionBar.DISPLAY_SHOW_HOME;
 import static android.app.ActionBar.DISPLAY_USE_LOGO;
 
 public class ConversationActivity extends Activity implements ConversationFragment.OnFragmentInteractionListener {
+    public static final String SUPPORT_TICKET_RESULT_KEY = "com.w1.merchant.android.support.CreateTicketActivity.SUPPORT_TICKET_RESULT_KEY";
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
 
     private static final String ARG_TICKET = "com.w1.merchant.android.support.ConversationActivity.ARG_TICKET";
 
+    private static final String BUNDLE_KEY_TICKET = "com.w1.merchant.android.support.ConversationActivity.BUNDLE_KEY_TICKET";
+
     private boolean imeKeyboardShown;
 
+    @Nullable
     private SupportTicket mTicket;
 
-    public static void startConversationActivity(Context source, SupportTicket ticket, View animateFrom) {
+    public static void startConversationActivity(Context source, @Nullable SupportTicket ticket, @Nullable View animateFrom) {
         Intent intent = new Intent(source, ConversationActivity.class);
-        intent.putExtra(ARG_TICKET, ticket);
+        if (ticket != null) intent.putExtra(ARG_TICKET, ticket);
         if (animateFrom != null && source instanceof Activity) {
             ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(
                     animateFrom, 0, 0, animateFrom.getWidth(), animateFrom.getHeight());
@@ -47,18 +51,29 @@ public class ConversationActivity extends Activity implements ConversationFragme
         }
     }
 
+    public static void startActivityForResult(Activity source, int requestCode, @Nullable  View animateFrom) {
+        Intent intent = new Intent(source, ConversationActivity.class);
+        if (animateFrom != null) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(
+                    animateFrom, 0, 0, animateFrom.getWidth(), animateFrom.getHeight());
+            ActivityCompat.startActivityForResult(source, intent, requestCode, options.toBundle());
+        } else {
+            source.startActivityForResult(intent, requestCode);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
-        mTicket = getIntent().getParcelableExtra(ARG_TICKET);
-        if (mTicket == null) throw new IllegalArgumentException("Ticket not defined");
-
         if (savedInstanceState == null) {
+            mTicket = getIntent().getParcelableExtra(ARG_TICKET);
             getFragmentManager().beginTransaction()
                     .add(R.id.container, ConversationFragment.newInstance(mTicket))
                     .commit();
+        } else {
+            mTicket = savedInstanceState.getParcelable(ARG_TICKET);
         }
 
         setupActionBar();
@@ -96,12 +111,27 @@ public class ConversationActivity extends Activity implements ConversationFragme
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mTicket != null) outState.putParcelable(BUNDLE_KEY_TICKET, mTicket);
+    }
+
     public void notifyError(CharSequence error, @Nullable Throwable exception) {
         if (DBG && exception != null) Log.e(TAG, error.toString(), exception);
         if (DBG) {
             error = error.toString() + " " + (exception == null ? "" : exception.getLocalizedMessage());
         }
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSupportTicketCreated(SupportTicket ticket) {
+        mTicket = ticket;
+        setupActionBar();
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(SUPPORT_TICKET_RESULT_KEY, ticket);
+        setResult(RESULT_OK, resultIntent);
     }
 
     void onImeKeyboardShown() {
@@ -118,7 +148,7 @@ public class ConversationActivity extends Activity implements ConversationFragme
         if (ab == null) return;
         ab.setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
                 DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP|DISPLAY_USE_LOGO);
-        ab.setTitle(mTicket.ticketMask);
+        ab.setTitle(mTicket == null ? "" : mTicket.ticketMask);
     }
 
 }

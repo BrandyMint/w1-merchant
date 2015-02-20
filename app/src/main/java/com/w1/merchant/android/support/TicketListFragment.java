@@ -188,7 +188,7 @@ public class TicketListFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_start_conversation:
-                if (mListener != null) mListener.onStartConversationClicked();
+                if (mListener != null) mListener.onStartConversationClicked(getActivity().findViewById(item.getItemId()));
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -305,7 +305,7 @@ public class TicketListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onStartConversationClicked();
+        public void onStartConversationClicked(@Nullable View animateFrom);
         public void onOpenConversationClicked(View view, SupportTicket ticket);
         public void notifyError(String error, Throwable e);
     }

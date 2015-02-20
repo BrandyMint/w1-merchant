@@ -300,7 +300,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             message.setMovementMethod(LinkMovementMethodNoSelection.getInstance());
         }
 
-
     }
 
     public static class ViewHolderMyMessage extends ViewHolderMessage {

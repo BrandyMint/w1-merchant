@@ -2,6 +2,7 @@ package com.w1.merchant.android.support;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ import com.w1.merchant.android.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit.Callback;
@@ -50,10 +53,11 @@ public class ConversationFragment extends Fragment {
 
     private static final String ARG_TICKET = "com.w1.merchant.android.support.ARG_TICKET";
 
-    private static final String BUNDLE_KEY_POSTS = "com.w1.merchant.android.support.BUNDLE_KEY_POSTS";
-    private static final String BUNDLE_KEY_PHOTO_DST_URI = "com.w1.merchant.android.support.BUNDLE_KEY_PHOTO_DST_URI";
+    private static final String BUNDLE_KEY_TICKET = "com.w1.merchant.android.support.ConversationFragment.BUNDLE_KEY_TICKET";
+    private static final String BUNDLE_KEY_POSTS = "com.w1.merchant.android.support.ConversationFragment.BUNDLE_KEY_POSTS";
+    private static final String BUNDLE_KEY_PHOTO_DST_URI = "com.w1.merchant.android.support.ConversationFragment.BUNDLE_KEY_PHOTO_DST_URI";
 
-    private static final int REFRESH_PERIOD = 60;
+    private static final int REFRESH_PERIOD = 20;
 
     private static final int REQUEST_PICK_PHOTO = Activity.RESULT_FIRST_USER + 100;
 
@@ -61,6 +65,7 @@ public class ConversationFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    @Nullable
     private SupportTicket mTicket;
 
     private RecyclerView mListView;
@@ -79,7 +84,7 @@ public class ConversationFragment extends Fragment {
     @Nullable
     private Uri mMakePhotoDstUri;
 
-    public static ConversationFragment newInstance(SupportTicket ticket) {
+    public static ConversationFragment newInstance(@Nullable SupportTicket ticket) {
         ConversationFragment fragment = new ConversationFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_TICKET, ticket);
@@ -94,9 +99,12 @@ public class ConversationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTicket = getArguments().getParcelable(ARG_TICKET);
+
         if (savedInstanceState != null) {
+            mTicket = savedInstanceState.getParcelable(ARG_TICKET);
             mMakePhotoDstUri = savedInstanceState.getParcelable(BUNDLE_KEY_PHOTO_DST_URI);
+        } else {
+            mTicket = getArguments().getParcelable(ARG_TICKET);
         }
     }
 
@@ -160,7 +168,11 @@ public class ConversationFragment extends Fragment {
             List<SupportTicketPost> tickets = savedInstanceState.getParcelableArrayList(BUNDLE_KEY_POSTS);
             if (tickets != null) mAdapter.setMessages(tickets);
         } else {
-            mAdapter.setMessages(mTicket.posts);
+            if (mTicket == null) {
+                mAdapter.setMessages(Collections.singletonList(SupportTicketPost.createMayIHelpYouFakePost(getResources())));
+            } else {
+                mAdapter.setMessages(mTicket.posts);
+            }
         }
 
         mListView.setAdapter(mAdapter);
@@ -174,12 +186,24 @@ public class ConversationFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mRefreshHandler = new Handler();
         smoothScrollToEnd();
+
+        if (mTicket == null && savedInstanceState == null) {
+            mSendMessageText.requestFocus();
+            mSendMessageText.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mSendMessageText == null) return;
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm != null) imm.showSoftInput(mSendMessageText, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }, 50);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        startPeriodicRefresh();
+        if (mTicket != null) startPeriodicRefresh();
     }
 
     @Override
@@ -200,6 +224,7 @@ public class ConversationFragment extends Fragment {
         List<SupportTicketPost> posts = mAdapter.getMessages();
         if (!posts.isEmpty()) outState.putParcelableArrayList(BUNDLE_KEY_POSTS, new ArrayList<>(posts));
         if (mMakePhotoDstUri != null) outState.putParcelable(BUNDLE_KEY_PHOTO_DST_URI, mMakePhotoDstUri);
+        if (mTicket != null) outState.putParcelable(BUNDLE_KEY_TICKET, mTicket);
     }
 
     @Override
@@ -307,22 +332,47 @@ public class ConversationFragment extends Fragment {
 
         setupStatusSending();
 
-        apiMessenger.postReply(mTicket.ticketId, new SupportTicket.ReplyRequest(message), new Callback<SupportTicketPost>() {
-            @Override
-            public void success(SupportTicketPost supportTicket, Response response) {
-                if (mListView == null) return;
-                addMessageScrollToEnd(supportTicket);
-                mSendMessageText.setText("");
-                setupStatusReady();
-            }
+        if (mTicket == null) {
+            // Создаем тикет
+            SupportTicket.CreateRequest req = new SupportTicket.CreateRequest(
+                    getResources().getString(R.string.new_conversation_subject), message, getResources());
+            apiMessenger.createTicket(req, new Callback<SupportTicket>() {
+                @Override
+                public void success(SupportTicket supportTicket, Response response) {
+                    if (mListView == null) return;
+                    if (mListener != null) mListener.onSupportTicketCreated(supportTicket);
+                    mTicket = supportTicket;
+                    mSendMessageText.setText("");
+                    mAdapter.setMessages(supportTicket.posts);
+                    startPeriodicRefresh();
+                    setupStatusReady();
+                }
 
-            @Override
-            public void failure(RetrofitError error) {
-                if (mListener != null)
-                    mListener.notifyError(getText(R.string.load_ticket_error), error);
-                setupStatusReady();
-            }
-        });
+                @Override
+                public void failure(RetrofitError error) {
+                    if (mListener != null) mListener.notifyError(getText(R.string.send_message_error), error);
+                    setupStatusReady();
+                }
+            });
+
+        } else {
+            apiMessenger.postReply(mTicket.ticketId, new SupportTicket.ReplyRequest(message), new Callback<SupportTicketPost>() {
+                @Override
+                public void success(SupportTicketPost supportTicket, Response response) {
+                    if (mListView == null) return;
+                    addMessageScrollToEnd(supportTicket);
+                    mSendMessageText.setText("");
+                    setupStatusReady();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    if (mListener != null)
+                        mListener.notifyError(getText(R.string.load_ticket_error), error);
+                    setupStatusReady();
+                }
+            });
+        }
     }
 
     private void sendImage(Uri imageUri) {
@@ -374,6 +424,8 @@ public class ConversationFragment extends Fragment {
 
     private void refreshMessages(boolean showSpinner) {
         if (mLoading) return;
+        if (mTicket == null) return;
+
         ApiSupport api = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
         if (showSpinner) getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
         api.getTicket(mTicket.ticketId, new Callback<SupportTicket>() {
@@ -487,6 +539,7 @@ public class ConversationFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         public void notifyError(CharSequence text, @Nullable Throwable error);
+        public void onSupportTicketCreated(SupportTicket ticket);
     }
 
 }

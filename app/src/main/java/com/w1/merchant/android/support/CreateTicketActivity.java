@@ -16,8 +16,6 @@ public class CreateTicketActivity extends Activity implements CreateTicketFragme
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
 
-    public static final String SUPPORT_TICKET_RESULT_KEY = "com.w1.merchant.android.support.CreateTicketActivity.SUPPORT_TICKET_RESULT_KEY";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +30,7 @@ public class CreateTicketActivity extends Activity implements CreateTicketFragme
     @Override
     public void onSupportTicketCreated(SupportTicket ticket) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(SUPPORT_TICKET_RESULT_KEY, ticket);
+        resultIntent.putExtra(ConversationActivity.SUPPORT_TICKET_RESULT_KEY, ticket);
         setResult(RESULT_OK, resultIntent);
         finish();
     }

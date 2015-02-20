@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,11 +43,9 @@ public class TicketListActivity extends Activity implements TicketListFragment.O
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_TICKET_REQUEST) {
             if (resultCode == RESULT_OK) {
-                SupportTicket ticket = data.getParcelableExtra(CreateTicketActivity.SUPPORT_TICKET_RESULT_KEY);
+                SupportTicket ticket = data.getParcelableExtra(ConversationActivity.SUPPORT_TICKET_RESULT_KEY);
                 TicketListFragment fragment = (TicketListFragment)getFragmentManager().findFragmentById(R.id.container);
                 fragment.onTicketCreated(ticket);
-                ConversationActivity.startConversationActivity(this, ticket, null);
-                overridePendingTransition(0, 0);
             }
         }
     }
@@ -62,9 +61,9 @@ public class TicketListActivity extends Activity implements TicketListFragment.O
     }
 
     @Override
-    public void onStartConversationClicked() {
+    public void onStartConversationClicked(View animateFrom) {
         if (DBG) Log.v(TAG, "onStartConversationClicked");
-        startConversation();
+        startConversation(animateFrom);
     }
 
     @Override
@@ -85,8 +84,7 @@ public class TicketListActivity extends Activity implements TicketListFragment.O
         Toast.makeText(this, errMsg, Toast.LENGTH_LONG).show();
     }
 
-    private void startConversation() {
-        Intent intent = new Intent(this, CreateTicketActivity.class);
-        startActivityForResult(intent, CREATE_TICKET_REQUEST);
+    private void startConversation(@Nullable View animateFrom) {
+        ConversationActivity.startActivityForResult(this, CREATE_TICKET_REQUEST, animateFrom);
     }
 }
