@@ -52,10 +52,6 @@
         Диалог
     </screenName>
 
-    <screenName name="com.w1.merchant.android.support.CreateTicketActivity">
-        Создание запроса в тех. поддержку
-    </screenName>
-
     <screenName name="com.w1.merchant.android.activity.SessionExpiredDialogActivity">
         Диалог "сессия истекла"
     </screenName>

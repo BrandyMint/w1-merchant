@@ -103,14 +103,6 @@
                 android:value="com.w1.merchant.android.support.TicketListActivity"/>
         </activity>
         <activity
-            android:name=".support.CreateTicketActivity"
-            android:label="@string/title_activity_create_ticket"
-            android:parentActivityName=".support.TicketListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.w1.merchant.android.support.TicketListActivity" />
-        </activity>
-        <activity
             android:name=".activity.SessionExpiredDialogActivity"
             android:launchMode="singleTop"
             android:excludeFromRecents="true"

@@ -182,14 +182,9 @@
     <string name="no_invoices">Нет счетов</string>
 
     <string name="hello_how_can_we_help_you_message">Здравствуйте, чем мы можем вам помочь?</string>
-    <string name="title_activity_create_ticket">Новый вопрос</string>
-    <string name="create_ticket_subject_hint">Тема</string>
-    <string name="create_ticket_text_hint">Текст обращения</string>
     <string name="new_conversation_subject">Обращение из личного кабинета мерчанта</string>
-    <string name="send_button">Отправить</string>
 
     <string name="attach_button">Прикрепить</string>
-    <string name="text_should_not_be_empty">Текст не должен быть пустым. Пожалуйста, напишите ваше обращение</string>
 
     <string name="pick_from_gallery">Выбрать из галереи</string>
     <string name="take_photo">Сфотографировать</string>

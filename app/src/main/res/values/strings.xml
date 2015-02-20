@@ -184,14 +184,8 @@
     <string name="send_message_hint">Send message</string>
     <string name="load_ticket_error">Failed to load conversation. Please try again later</string>
     <string name="send_message_error">Failed to send message. Please try again later</string>
-    <string name="title_activity_create_ticket">New support inquiry</string>
-
-    <string name="create_ticket_subject_hint">Subject</string>
-    <string name="create_ticket_text_hint">Text</string>
-    <string name="send_button">Send</string>
 
     <string name="attach_button">Attach</string>
-    <string name="text_should_not_be_empty">Text should not be empty. Please write your message</string>
 
     <string name="pick_from_gallery">Pick image from gallery</string>
     <string name="take_photo">Take photo</string>
