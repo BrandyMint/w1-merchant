@@ -10,8 +10,11 @@ import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
@@ -67,6 +70,12 @@ public class AddInvoice extends Activity {
 		}
 		mDescriptionView.setAdapter(new ArrayAdapter(this,
                 android.R.layout.simple_dropdown_item_1line, descrsArray));
+        mDescriptionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mPhoneView.requestFocus();
+            }
+        });
 		
 		mPhoneView = (AutoCompleteTextView) findViewById(R.id.actvTelEmail);
         Set<String> telEmail = mPref.getStringSet("telEmail", new HashSet<String>());
@@ -75,11 +84,45 @@ public class AddInvoice extends Activity {
 		}
 		mPhoneView.setAdapter(new ArrayAdapter(this,
                 android.R.layout.simple_dropdown_item_1line, telEmailArray));
+        mPhoneView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                etSum.requestFocus();
+            }
+        });
 
 		etSum = (EditTextRouble) findViewById(R.id.etSum);
-		etSum.addTextChangedListener(new CurrencyTextWatcher());
-		//DigitsKeyListener digkl1 = DigitsKeyListener.getInstance(true, true);
-		//etSum.setKeyListener(digkl1);
+        etSum.addTextChangedListener(new TextWatcher() {
+            boolean mEditing = false;
+
+            public synchronized void afterTextChanged(Editable s) {
+                if (!mEditing) {
+                    if (!s.toString().endsWith(" C")) {
+                        mEditing = true;
+                        etSum.setText(s.toString().replaceAll("[^0-9]+", "") + " C");
+                        etSum.setSelection(etSum.getText().length() - 2);
+                        mEditing = false;
+                    }
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+        etSum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    bill();
+                    return true;
+                }
+                return false;
+            }
+        });
         TextView tvBillButton = (TextView) findViewById(R.id.tvBillButton);
 		tvBillButton.setOnClickListener(myOnClickListener);
 		findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);
@@ -115,38 +158,7 @@ public class AddInvoice extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case (R.id.tvBillButton):
-				if (checkFields()) {
-                    long milliseconds = 100;
-                    mVibrator.vibrate(milliseconds);
-					
-					Editor ed = mPref.edit();
-					descrsArray.add(mDescriptionView.getText().toString());
-					Set<String> newDescr = new HashSet<>();
-					for (String n : descrsArray) {
-						newDescr.add(n);
-					}
-					ed.putStringSet("descrs", newDescr);
-					
-					telEmailArray.add(mPhoneView.getText().toString());
-					Set<String> newTelEmail = new HashSet<>();
-					for (String n : telEmailArray) {
-						newTelEmail.add(n);
-					}
-					ed.putStringSet("telEmail", newTelEmail);
-					ed.apply();
-
-                    String recipient = mPhoneView.getText().toString();
-                    String description =  mDescriptionView.getText().toString();
-                    BigDecimal amount;
-
-                    try {
-                        amount = new BigDecimal(etSum.getText().toString().replaceAll("C", ""));
-                    } catch (NumberFormatException ne) {
-                        etSum.setError(getString(R.string.error_field));
-                        break;
-                    }
-                    createInvoice(recipient, amount, description);
-	    		}
+				bill();
 				break;
 			case (R.id.ivBack):
 				finish();
@@ -154,6 +166,41 @@ public class AddInvoice extends Activity {
 			}
 		}
 	};
+
+    private void bill() {
+        if (checkFields()) {
+            long milliseconds = 100;
+            mVibrator.vibrate(milliseconds);
+
+            Editor ed = mPref.edit();
+            descrsArray.add(mDescriptionView.getText().toString());
+            Set<String> newDescr = new HashSet<>();
+            for (String n : descrsArray) {
+                newDescr.add(n);
+            }
+            ed.putStringSet("descrs", newDescr);
+
+            telEmailArray.add(mPhoneView.getText().toString());
+            Set<String> newTelEmail = new HashSet<>();
+            for (String n : telEmailArray) {
+                newTelEmail.add(n);
+            }
+            ed.putStringSet("telEmail", newTelEmail);
+            ed.apply();
+
+            String recipient = mPhoneView.getText().toString();
+            String description =  mDescriptionView.getText().toString();
+            BigDecimal amount;
+
+            try {
+                amount = new BigDecimal(etSum.getText().toString().replaceAll("[ C]+", ""));
+            } catch (NumberFormatException ne) {
+                etSum.setError(getString(R.string.error_field));
+                return;
+            }
+            createInvoice(recipient, amount, description);
+        }
+    }
 
     private void createInvoice(final String recipient, final BigDecimal amount, final String description) {
 
@@ -182,29 +229,6 @@ public class AddInvoice extends Activity {
         }.execute();
     }
 
-	
-	public class CurrencyTextWatcher implements TextWatcher {
-	    boolean mEditing;
-	    
-	    public CurrencyTextWatcher() {
-	    	mEditing = false;
-	    }
-	    
-	    public synchronized void afterTextChanged(Editable s) {
-	        if (!mEditing) {
-	            mEditing = true;
-	            String digits = s.toString().replaceAll(" C", "");
-	            s.replace(0, s.length(), digits + " C");
-	            mEditing = false;
-	        }
-	    }
-	    
-	    public void beforeTextChanged(CharSequence s, int start, int count,
-	    		int after) {
-	    }
-	    
-	    public void onTextChanged(CharSequence s, int start, int before, int count) {
-	    }
-	}
+
 }
 

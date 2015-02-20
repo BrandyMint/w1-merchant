@@ -2,14 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -45,15 +48,19 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
+            android:layout_below="@id/header"
+            android:layout_centerHorizontal="true"
             android:scaleType="fitCenter"
             android:src="@drawable/icon_ok_big"
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/currency_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
+            android:layout_below="@id/ivAccountIcon"
             android:text="@string/currency"
             android:textColor="#757575" />
 
@@ -62,14 +69,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_below="@id/currency_title"
             android:text="@string/rus_rubl"
             android:textSize="10pt" />
 
         <TextView
+            android:id="@+id/description_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_below="@id/tvCurrencyName"
             android:text="@string/descr"
             android:textColor="#757575" />
 
@@ -78,14 +88,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_below="@id/description_title"
             android:hint="@string/exampl_pizza"
-            android:textSize="10pt" />
+            android:imeOptions="actionNext"
+            android:textSize="22sp"
+            android:singleLine="true"
+            android:minHeight="40dp" />
 
         <TextView
+            android:id="@+id/recipient_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/actvDescr"
             android:text="@string/tel_recipient"
             android:textColor="#757575" />
 
@@ -94,14 +110,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_below="@id/recipient_title"
             android:hint="@string/mail_or_tel"
-            android:textSize="10pt" />
+            android:imeOptions="actionNext"
+            android:textSize="22sp"
+            android:singleLine="true"
+            android:textIsSelectable="false"
+            android:minHeight="40dp" />
 
         <TextView
+            android:id="@+id/amount_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/actvTelEmail"
             android:text="@string/sum"
             android:textColor="#757575" />
 
@@ -110,18 +133,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_below="@id/amount_title"
+            android:inputType="number"
+            android:imeOptions="actionDone"
             android:hint="@string/enter_amount"
-            android:textSize="10pt" />
+            android:textSize="22sp"
+            android:singleLine="true"
+            android:minHeight="40dp" />
 
         <TextView
             android:id="@+id/tvBillButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/etSum"
+            android:layout_centerHorizontal="true"
+            android:background="?android:selectableItemBackground"
             android:text="@string/bill"
             android:textColor="#f00"
-            android:textSize="10pt" />
-    </LinearLayout>
+            android:textSize="22sp"
+            android:layout_marginBottom="20dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp" />
+    </RelativeLayout>
 </ScrollView>
