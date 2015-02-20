@@ -193,10 +193,16 @@ public class LoginActivity extends Activity {
             @Override
             public boolean onPreDraw() {
                 if (bottomView.getViewTreeObserver().isAlive()) {
+                    int rootHeight = findViewById(R.id.root).getRootView().getHeight();
+                    if (rootHeight == 0) {
+                        if (DBG) Log.v(TAG, "onPreDrawListener root height is 0");
+                        return true;
+                    }
+
                     bottomView.getViewTreeObserver().removeOnPreDrawListener(this);
                     int authButtonLoc[] = new int[]{0, 0};
                     mAuthButton.getLocationOnScreen(authButtonLoc);
-                    int rootHeight = findViewById(R.id.root).getRootView().getHeight();
+
                     int below = rootHeight - authButtonLoc[1];
                     bottomView.setMaxHeight(below);
                     //ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) bottomView.getLayoutParams();
