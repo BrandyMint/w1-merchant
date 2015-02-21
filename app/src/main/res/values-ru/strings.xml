@@ -244,4 +244,11 @@
     <string name="commission_too_small">Маленькая комиссия</string>
     <string name="commission_too_large">Большая комиссия</string>
 
+    <string name="text_banner_1">Аналитика продаж</string>
+    <string name="text_banner_2">Удобный&#160;вывод средств по&#160;шаблонам</string>
+    <string name="text_banner_3">История операций</string>
+    <string name="text_banner_4">Выставление счетов</string>
+    <string name="text_banner_btn">OK</string>
+
+
 </resources>

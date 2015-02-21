@@ -247,6 +247,11 @@
 
     <string name="new_conversation_subject">Request from merchant private office</string>
 
+    <string name="text_banner_1">Sales analytics</string>
+    <string name="text_banner_2">Templates&#160;for money&#160;withdrawal</string>
+    <string name="text_banner_3">Payment history</string>
+    <string name="text_banner_4">Invoicing</string>
+    <string name="text_banner_btn">OK</string>
 
 </resources>
 
