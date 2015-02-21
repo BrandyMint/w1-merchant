@@ -112,6 +112,10 @@
             android:launchMode="singleTop"
             android:excludeFromRecents="true"
             android:theme="@style/SessionExpiredDialogTheme"/>
+        <activity
+            android:name=".support.ShowPhotoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/ShowPhotoTheme" />
 
         <meta-data
             android:name="com.google.android.gms.version"

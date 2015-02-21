@@ -197,14 +197,14 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     private void bindMyMessage(ViewHolderMyMessage holder, SupportTicketPost message) {
         holder.message.setText(TextUtilsW1.removeTrailingWhitespaces(message.getBodyHtml(mImageGetterMyMessage)));
-        TextViewImgLoader.bindAndLoadImages(holder.message);
+        TextViewImgLoader.bindAndLoadImages(holder.message, SHOW_PHOTO_ON_CLICK_LISTENER);
     }
 
     private void bindTheirMessage(ViewHolderTheirMessage holder, SupportTicketPost message) {
         holder.message.setText(TextUtilsW1.removeTrailingWhitespaces(message.getBodyHtml(mImageGetterTheirMessage)));
         holder.username.setText(message.userTitle);
         bindAvatar(holder, message);
-        TextViewImgLoader.bindAndLoadImages(holder.message);
+        TextViewImgLoader.bindAndLoadImages(holder.message, SHOW_PHOTO_ON_CLICK_LISTENER);
     }
 
     private void bindAvatar(ViewHolderTheirMessage holder, SupportTicketPost message) {
@@ -319,4 +319,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             this.avatar = (ImageView)v.findViewById(R.id.avatar);
         }
     }
+
+    private static final TextViewImgLoader.OnClickListener SHOW_PHOTO_ON_CLICK_LISTENER = new TextViewImgLoader.OnClickListener() {
+        @Override
+        public void onImageClicked(TextView widget, String source) {
+            int width = widget.getWidth() - widget.getPaddingLeft() - widget.getPaddingRight();
+            ShowPhotoActivity.startShowPhotoActivity(widget.getContext(), source, width, widget);
+        }
+    };
 }

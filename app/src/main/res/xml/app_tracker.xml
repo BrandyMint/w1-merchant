@@ -52,8 +52,13 @@
         Диалог
     </screenName>
 
+    <screenName name="com.w1.merchant.android.support.ShowPhotoActivity">
+        Просмотр изображения
+    </screenName>
+
     <screenName name="com.w1.merchant.android.activity.SessionExpiredDialogActivity">
         Диалог "сессия истекла"
     </screenName>
+
 
 </resources>

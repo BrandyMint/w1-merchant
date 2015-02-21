@@ -11,6 +11,9 @@ public final class Constants {
     public static final int CONNECT_TIMEOUT_S = 15;
     public static final int READ_TIMEOUT_S = 60;
 
+    public static final int MIN_DISK_CACHE_SIZE = 5 * 1024 * 1024;
+    public static final int MAX_DISK_CACHE_SIZE = 50 * 1024 * 1024;
+
     public static final String SUPPORT_EMAIL_UAH = "support@w1.ua";
 
     public static final String SUPPORT_EMAIL_ZAR = "support_sa@walletone.com";

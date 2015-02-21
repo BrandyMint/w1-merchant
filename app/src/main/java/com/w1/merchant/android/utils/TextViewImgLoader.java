@@ -64,7 +64,7 @@ public class TextViewImgLoader {
         return bindAndLoadImages(view, null);
     }
 
-    public TextViewImgLoader(Context context, OnClickListener listener) {
+    public TextViewImgLoader(Context context, @Nullable OnClickListener listener) {
         mListener = listener;
         mPicasso = Picasso.with(context);
     }
@@ -83,10 +83,17 @@ public class TextViewImgLoader {
             mTextView = view;
             mTargets.add(target);
             int drawableWidth = span.getDrawable().getBounds().width();
+            if (DBG ) Log.v(TAG, "drawable width: " + drawableWidth);
             RequestCreator rq = mPicasso
                     .load(span.getSource());
-            if (drawableWidth > 0) rq.resize(drawableWidth, 0);
-            rq.error(R.drawable.image_load_error)
+
+            if (drawableWidth > 0) {
+                rq.resize(drawableWidth, 0).onlyScaleDown();
+            } else {
+                rq.resize(2048, 0).onlyScaleDown();
+            }
+            rq
+                    .error(R.drawable.image_load_error)
                     .into(target);
         }
         if (mTargets.isEmpty()) mTextView = null;
@@ -177,13 +184,11 @@ public class TextViewImgLoader {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            // Размеры TextView тут могут быть еще неизвестны. Пытаемся угадать откуда-нибудь из drawable
-            int width;
-            if (mTextView.getWidth() != 0) {
-                width = mTextView.getWidth() - mTextView.getPaddingLeft() - mTextView.getPaddingRight();
-            } else {
-                width = mImageSpan.getDrawable().getBounds().width();
-            }
+            // Размеры TextView тут могут быть еще неизвестны, либо использованы неверные с
+            // прошлого сообщения. Пытаемся угадать откуда-нибудь из drawable
+            int width = mImageSpan.getDrawable().getBounds().width();
+            if (DBG) Log.v(TAG, "imagespan width: " + width);
+
             Drawable d = new BitmapDrawable(mTextView.getResources(), bitmap);
             ImageSpan newSpan = new ResizeImageSpan(d, mImageSpan.getSource(), width);
             replaceSpan(newSpan);
@@ -228,5 +233,4 @@ public class TextViewImgLoader {
             mTextView.setText(spannable);
         }
     }
-
 }

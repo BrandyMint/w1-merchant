@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.os.StatFs;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.util.Log;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -19,8 +21,8 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.model.ResponseError;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -99,6 +101,19 @@ public class NetworkUtils {
         mOkHttpClient = new OkHttpClient();
         mOkHttpClient.setConnectTimeout(Constants.CONNECT_TIMEOUT_S, TimeUnit.SECONDS);
         mOkHttpClient.setReadTimeout(Constants.READ_TIMEOUT_S, TimeUnit.SECONDS);
+        File httpCacheDir = context.getCacheDir();
+        if (httpCacheDir != null) {
+            long cacheSize = NetworkUtils.calculateDiskCacheSize(httpCacheDir);
+            if (DBG) Log.v(TAG, "cache size, mb: " + cacheSize / 1024 / 1024);
+            try {
+                // HttpResponseCache.install(httpCacheDir, cacheSize);
+                Cache cache = new Cache(httpCacheDir, cacheSize);
+                mOkHttpClient.setCache(cache);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         mRetrofitClient = new OkClient(mOkHttpClient);
     }
 
@@ -106,13 +121,30 @@ public class NetworkUtils {
         Picasso picasso = new Picasso.Builder(context.getApplicationContext())
                 .downloader(new OkHttpDownloader(mOkHttpClient) {
                                 @Override
-                                protected HttpURLConnection openConnection(Uri uri) throws IOException {
-                                    if (DBG) Log.v(TAG, "Load uri: " + uri);
-                                    return super.openConnection(uri);
+                                public Response load(Uri uri, int networkPolicy) throws IOException {
+                                    if (DBG)
+                                        Log.v(TAG, "Load uri: " + uri + " net policy: " + networkPolicy);
+                                    return super.load(uri, networkPolicy);
                                 }
                             }
-                ).build();
+                )
+                .build();
         Picasso.setSingletonInstance(picasso);
+    }
+
+    public static long calculateDiskCacheSize(File dir) {
+        long size = Constants.MIN_DISK_CACHE_SIZE;
+
+        try {
+            StatFs statFs = new StatFs(dir.getAbsolutePath());
+            long available = ((long) statFs.getBlockCount()) * statFs.getBlockSize();
+            // Target 2% of the total space.
+            size = available / 50;
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        // Bound inside min/max size for disk cache.
+        return Math.max(Math.min(size, Constants.MAX_DISK_CACHE_SIZE), Constants.MIN_DISK_CACHE_SIZE);
     }
 
     private final RequestInterceptor sRequestInterceptor = new RequestInterceptor() {

@@ -5,6 +5,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
+import android.util.Log;
+
+import com.w1.merchant.android.BuildConfig;
+import com.w1.merchant.android.Constants;
 
 import java.lang.ref.WeakReference;
 
@@ -17,7 +21,7 @@ import java.lang.ref.WeakReference;
  */
 public class ResizeImageSpan extends ImageSpan {
 
-    private static final int MIN_SCALE_WIDTH = 240;
+    private static final int MIN_SCALE_WIDTH = 50;
 
     // TextView's width.
     private int mContainerWidth;
@@ -47,10 +51,11 @@ public class ResizeImageSpan extends ImageSpan {
     private Rect getResizedDrawableBounds(Drawable d) {
         int scaledHeight;
 
+        if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "getResizedDrawableBounds container width: " + mContainerWidth);
         if (d.getIntrinsicWidth() < mContainerWidth ) {
             // Image smaller than container's width.
-            if (d.getIntrinsicWidth() > MIN_SCALE_WIDTH &&
-                    d.getIntrinsicWidth() >= d.getIntrinsicHeight()) {
+            if (d.getIntrinsicWidth() > MIN_SCALE_WIDTH
+                    /* && d.getIntrinsicWidth() >= d.getIntrinsicHeight() */) {
                 // But larger than the minimum scale size, we need to scale the image to fit
                 // the width of the container.
                 int scaledWidth = mContainerWidth;
