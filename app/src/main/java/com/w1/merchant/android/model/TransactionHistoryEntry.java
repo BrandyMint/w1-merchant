@@ -22,7 +22,7 @@ public class TransactionHistoryEntry implements Parcelable {
 
     public static final String OPERATION_TYPE_PROVIDER_PAYNENT = "ProviderPayment";
     public static final String DIRECTION_INCOMING = "Inc";
-    public static final String DIRECTION_OUTCOMING = "Out";
+    public static final String DIRECTION_OUTGOING = "Out";
 
     public static Comparator<TransactionHistoryEntry> SORT_BY_DATE_DESC_DESC_ID_COMPARATOR = new Comparator<TransactionHistoryEntry>() {
         @Override

@@ -46,7 +46,7 @@
     <string name="currency">Currency</string>
     <string name="rus_rubl">Russian rouble</string>
     <string name="descr">Description</string>
-    <string name="exampl_pizza">Pizza deivery, for example</string>
+    <string name="exampl_pizza">Pizza delivery, for example</string>
     <string name="tel_recipient">Recipient telephone number or email</string>
     <string name="mail_or_tel">my@mail.ru or 89031234567</string>
     <string name="sum">Amount</string>
@@ -229,7 +229,7 @@
     <string name="invoice_title_tags">Invoice tags</string>
 
     <string name="invoice_direction_incoming">Incoming</string>
-    <string name="invoice_direction_outcoming">Outcoming</string>
+    <string name="invoice_direction_outgoing">Outgoing</string>
 
     <string name="invoice_state_accepted">Accepted</string>
     <string name="invoice_state_canceled">Canceled</string>

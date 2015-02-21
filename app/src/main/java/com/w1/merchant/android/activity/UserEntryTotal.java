@@ -96,7 +96,7 @@ public class UserEntryTotal extends Activity {
         mProgressCount = 2;
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
         startLoadIncomingSummary();
-        startLoadOutcomingSummary();
+        startLoadOutgoingSummary();
     }
 
     private void startLoadIncomingSummary() {
@@ -154,7 +154,7 @@ public class UserEntryTotal extends Activity {
         }.execute();
     }
 
-    private void startLoadOutcomingSummary() {
+    private void startLoadOutgoingSummary() {
         new ApiRequestTask<TransactionHistory>() {
 
             final String dateFrom = ISO8601Utils.format(mDateFrom);
@@ -168,7 +168,7 @@ public class UserEntryTotal extends Activity {
             @Override
             protected void doRequest(Callback<TransactionHistory> callback) {
                 mApiUserEntry.getEntries(pageNo, 1000, dateFrom, dateTo, null, null,
-                        mCurrency, null, TransactionHistoryEntry.DIRECTION_OUTCOMING, callback);
+                        mCurrency, null, TransactionHistoryEntry.DIRECTION_OUTGOING, callback);
             }
 
             @Nullable
@@ -198,7 +198,7 @@ public class UserEntryTotal extends Activity {
                     commission = commission.add(entry.commissionAmount);
                 }
                 if (transactionHistory.items.isEmpty()) {
-                    onOutcomingSummaryCompleted(summ, commission);
+                    onOutgoingSummaryCompleted(summ, commission);
                 } else {
                     pageNo += 1;
                     execute();
@@ -214,7 +214,7 @@ public class UserEntryTotal extends Activity {
         if (mProgressCount <= 0) findViewById(R.id.progress).setVisibility(View.GONE);
     }
 
-    void onOutcomingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
+    void onOutgoingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
         ((TextView)findViewById(R.id.summ_out)).setText(buildValue(R.string.sum_period, amount));
         ((TextView)findViewById(R.id.comis_out)).setText(buildValue(R.string.comis_period, commission));
         mProgressCount -= 1;

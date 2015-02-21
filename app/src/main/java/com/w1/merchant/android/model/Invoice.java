@@ -36,7 +36,7 @@ public class Invoice implements Parcelable {
 
     public static final String DIRECTION_INCOMING = "Inc";
 
-    public static final String DIRECTION_OUTCOMING = "Out";
+    public static final String DIRECTION_OUTGOING = "Out";
 
     /**
      * оплачен
@@ -204,8 +204,8 @@ public class Invoice implements Parcelable {
         switch (direction) {
             case DIRECTION_INCOMING:
                 return resources.getText(R.string.invoice_direction_incoming);
-            case DIRECTION_OUTCOMING:
-                return resources.getText(R.string.invoice_direction_outcoming);
+            case DIRECTION_OUTGOING:
+                return resources.getText(R.string.invoice_direction_outgoing);
             default:
                 return direction;
         }

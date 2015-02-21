@@ -216,7 +216,7 @@ public class UserEntryFragment extends Fragment {
                         direction = TransactionHistoryEntry.DIRECTION_INCOMING;
                         break;
                     case R.id.rbOutput:
-                        direction = TransactionHistoryEntry.DIRECTION_OUTCOMING;
+                        direction = TransactionHistoryEntry.DIRECTION_OUTGOING;
                         break;
                     default:
                         direction = null;

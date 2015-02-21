@@ -228,7 +228,7 @@
     <string name="invoice_title_tags">Теги счета</string>
 
     <string name="invoice_direction_incoming">Входящий</string>
-    <string name="invoice_direction_outcoming">Исходящий</string>
+    <string name="invoice_direction_outgoing">Исходящий</string>
 
     <string name="invoice_state_accepted">Оплачен</string>
     <string name="invoice_state_canceled">Отменен отправителем</string>
