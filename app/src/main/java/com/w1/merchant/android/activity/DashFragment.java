@@ -151,6 +151,7 @@ public class DashFragment extends Fragment {
             }
         });
         mAdapter = new UserEntryAdapter2(getActivity());
+        setupChartView();
 
         return parentView;
     }
@@ -316,28 +317,22 @@ public class DashFragment extends Fragment {
         lvDash.removeFooterView(mFooter);
     }
 
-    public void setViewPager() {
+    public void setupViewPager() {
         srgDash.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rbHour:
                         vpDash.setCurrentItem(0, true);
-                        createPlot(dataPlotDayX, dataPlotDay);
-                        currentPlot = PLOT_24;
-                        setPercent(percentDay);
+                        switchCurrentPlot(PLOT_24);
                         break;
                     case R.id.rbWeek:
                         vpDash.setCurrentItem(1);
-                        createPlot(dataPlotWeekX, dataPlotWeek);
-                        currentPlot = PLOT_WEEK;
-                        setPercent(percentWeek);
+                        switchCurrentPlot(PLOT_WEEK);
                         break;
                     case R.id.rbMonth:
                         vpDash.setCurrentItem(2);
-                        createPlot(dataPlotMonthX, dataPlotMonth);
-                        currentPlot = PLOT_30;
-                        setPercent(percentMonth);
+                        switchCurrentPlot(PLOT_30);
                         break;
                     default:
                         break;
@@ -374,6 +369,27 @@ public class DashFragment extends Fragment {
         });
     }
 
+    private void switchCurrentPlot(int newPlot) {
+        currentPlot = newPlot;
+        switch (newPlot) {
+            case PLOT_24:
+                createPlot(dataPlotDayX, dataPlotDay);
+                setupPercent(percentDay);
+                break;
+            case PLOT_WEEK:
+                createPlot(dataPlotWeekX, dataPlotWeek);
+                currentPlot = PLOT_WEEK;
+                setupPercent(percentWeek);
+                break;
+            case PLOT_30:
+                createPlot(dataPlotMonthX, dataPlotMonth);
+                setupPercent(percentMonth);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+
+    }
 
     private void refreshBalance() {
         mListener.startProgress();
@@ -421,9 +437,12 @@ public class DashFragment extends Fragment {
 
     private void refresh60DayData() {
         mListener.startProgress();
+        final Calendar cal60DaysAgo = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        cal60DaysAgo.add(Calendar.DAY_OF_MONTH, -60);
+
         new ApiRequestTask<TransactionHistory>() {
 
-            final String date60DaysAgo = ISO8601Utils.format(getDate60DaysAgo());
+            final String date60DaysAgo = ISO8601Utils.format(cal60DaysAgo.getTime());
 
             @Override
             protected void doRequest(Callback<TransactionHistory> callback) {
@@ -474,7 +493,7 @@ public class DashFragment extends Fragment {
         }.execute();
     }
 
-    public void createPlot(ArrayList<String> dataPlotX, ArrayList<Integer> dataPlotY) {
+    private void setupChartView() {
         mChart.setOnChartGestureListener(new OnChartGestureListener() {
 
             @Override
@@ -553,13 +572,15 @@ public class DashFragment extends Fragment {
 
         // set the marker TO the chart
         mChart.setMarkerView(mv);
+    }
 
+    public void createPlot(ArrayList<String> dataPlotX, ArrayList<? extends Number> dataPlotY) {
         // add data
         //ArrayList<String> xVals = new ArrayList<String>();
         ArrayList<Entry> yVals = new ArrayList<Entry>();
         for (int i = 0; i < dataPlotY.size(); i++) {
             //xVals.add(i + "");
-            yVals.add(new Entry(dataPlotY.get(i), i));
+            yVals.add(new Entry(dataPlotY.get(i).floatValue(), i));
         }
 
         // create a dataset and give it a type
@@ -589,7 +610,7 @@ public class DashFragment extends Fragment {
         mChart.animateXY(animTime, animTime);
     }
 
-    public void setPercent(String text) {
+    public void setupPercent(String text) {
         if (text.isEmpty()) {
             tvPercent.setText("");
             tvPercent.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -692,7 +713,9 @@ public class DashFragment extends Fragment {
         fSumMonth += fSumWeek;
         //Log.d("1", fSumDay + " " + fSumWeek + " " + fSumMonth);
 
-        clearVPData();
+        dataDayWeekMonth.clear();
+        dataDWMCurrency.clear();
+
         dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumDay + ""));
         dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getCurrency()));
         dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumWeek + ""));
@@ -718,21 +741,10 @@ public class DashFragment extends Fragment {
             percentMonth = "";
         }
 
-        setViewPager();
+        setupViewPager();
         createPlot(dataPlotDayX, dataPlotDay);
-        setPercent(percentDay);
+        setupPercent(percentDay);
         currentPlot = DashFragment.PLOT_24;
-    }
-
-    private void clearVPData() {
-        dataDayWeekMonth.clear();
-        dataDWMCurrency.clear();
-    }
-
-    private Date getDate60DaysAgo() {
-        Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-        calendar.add(Calendar.DAY_OF_MONTH, -60);
-        return calendar.getTime();
     }
 
     public class MyMarkerView extends MarkerView {
