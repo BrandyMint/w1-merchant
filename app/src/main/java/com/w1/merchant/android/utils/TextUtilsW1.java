@@ -188,14 +188,6 @@ public final class TextUtilsW1 {
         return split.replace(",", ".");
     }
 
-    //форматирование чисел
-    public static String formatNumberNoFract(String in) {
-        DecimalFormat myFormatter = new DecimalFormat("##,###,###");
-        String split = myFormatter.format(Float.parseFloat(in));
-        split = split.replace(",", ".");
-        return split;
-    }
-
     public static CharSequence formatUserId(String id) {
         if (id == null) return "";
         if (id.length() <= 3 || !id.matches("\\d+")) {

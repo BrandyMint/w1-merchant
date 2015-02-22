@@ -1,70 +1,57 @@
 package com.w1.merchant.android.extra;
 
-import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.viewextended.TextViewRobotoLight;
-import com.w1.merchant.android.viewextended.TextViewRouble;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //адаптер для ViewPager с поступлениями за день, неделю, месяц
 public class MainVPAdapter extends PagerAdapter {
-    private Context mContext;
-    private ArrayList<String> mName;
-    private ArrayList<String> mRubl;
-    LayoutInflater mInflater;
+    private final List<CharSequence> mValues;
  
-    public MainVPAdapter(Context context, ArrayList<String> name,
-    		ArrayList<String> counter) {
-        this.mContext = context;
-        this.mName = name;
-        this.mRubl = counter;
+    public MainVPAdapter() {
+        this.mValues = new ArrayList<>();
     }
- 
+
+    public void setItems(List<CharSequence> items) {
+        mValues.clear();
+        mValues.addAll(items);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
-        return mName.size();
+        return mValues.size();
     }
  
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
- 
+
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+        TextView textView = (TextView)LayoutInflater.from(container.getContext()).inflate(R.layout.currency_view_pager_2_item,
+                container, false);
+
+        textView.setText(mValues.get(position));
+        container.addView(textView);
  
-        TextViewRobotoLight tvName;
-        TextViewRouble tvRubl;
-        
-        mInflater = (LayoutInflater) mContext
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = mInflater.inflate(R.layout.fragment, container,
-                false);
- 
-        tvName = (TextViewRobotoLight) itemView.findViewById(R.id.tvName);
-        tvRubl = (TextViewRouble) itemView.findViewById(R.id.tvRubl);
-        if (mRubl.get(position).equals("RUB")) { 
-	        tvName.setText(mName.get(position));
-	        tvRubl.setText("B"); 
-        } else {
-        	tvName.setText(mName.get(position) + " " + mRubl.get(position));
-	        tvRubl.setText("");
-        }
-        
-        container.addView(itemView);
- 
-        return itemView;
+        return textView;
     }
  
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((RelativeLayout) object);
+        container.removeView((View) object);
     }
 }

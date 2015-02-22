@@ -9,11 +9,12 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -79,7 +80,7 @@ public class DashFragment extends Fragment {
     TextView tvPercent;
 
     ViewPager vpDash;
-    PagerAdapter pagerAdapter;
+    MainVPAdapter mPagerAdapter;
     SegmentedRadioGroup srgDash;
     RadioButton rbHour, rbWeek, rbMonth;
     private TextView mFooter;
@@ -94,8 +95,7 @@ public class DashFragment extends Fragment {
     public int currentPlot = PLOT_24;
 
     public ArrayList<Integer> dataPlotDay, dataPlotWeek, dataPlotMonth;
-    public ArrayList<String> dataPlotDayX, dataPlotWeekX,
-            dataPlotMonthX, dataDayWeekMonth, dataDWMCurrency;
+    public ArrayList<String> dataPlotDayX, dataPlotWeekX, dataPlotMonthX;
 
     public String percentDay = "";
     public String percentWeek = "";
@@ -121,8 +121,6 @@ public class DashFragment extends Fragment {
         dataPlotWeekX = new ArrayList<>();
         dataPlotMonthX = new ArrayList<>();
         mHistory60day = new ArrayList<>();
-        dataDayWeekMonth = new ArrayList<>();
-        dataDWMCurrency = new ArrayList<>();
     }
 
     @SuppressLint("InflateParams")
@@ -153,6 +151,7 @@ public class DashFragment extends Fragment {
         });
         mAdapter = new UserEntryAdapter2(getActivity());
         setupChartView();
+        setupViewPager();
 
         return parentView;
     }
@@ -318,7 +317,7 @@ public class DashFragment extends Fragment {
         lvDash.removeFooterView(mFooter);
     }
 
-    public void setupViewPager() {
+    private void setupViewPager() {
         srgDash.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -342,9 +341,8 @@ public class DashFragment extends Fragment {
         });
 
         vpDash = (ViewPager) llHeader.findViewById(R.id.vpDash);
-        pagerAdapter = new MainVPAdapter(getActivity(),
-                dataDayWeekMonth, dataDWMCurrency);
-        vpDash.setAdapter(pagerAdapter);
+        mPagerAdapter = new MainVPAdapter();
+        vpDash.setAdapter(mPagerAdapter);
         vpDash.setOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -703,15 +701,24 @@ public class DashFragment extends Fragment {
         fSumMonth += fSumWeek;
         //Log.d("1", fSumDay + " " + fSumWeek + " " + fSumMonth);
 
-        dataDayWeekMonth.clear();
-        dataDWMCurrency.clear();
 
-        dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumDay + ""));
-        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getCurrency()));
-        dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumWeek + ""));
-        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getCurrency()));
-        dataDayWeekMonth.add(TextUtilsW1.formatNumberNoFract(fSumMonth + ""));
-        dataDWMCurrency.add(TextUtilsW1.getCurrencySymbol(mListener.getCurrency()));
+        List<CharSequence> dataDayWeekMonth = new ArrayList<>(3);
+
+        Spanned currencySumbol =  TextUtilsW1.getCurrencySymbol2(mListener.getCurrency(), 1);
+        SpannableStringBuilder sumDay = new SpannableStringBuilder(TextUtilsW1.formatNumber(Math.round(fSumDay)));
+        sumDay.append('\u00a0');
+        sumDay.append(currencySumbol);
+        dataDayWeekMonth.add(sumDay);
+
+        SpannableStringBuilder sumWeek = new SpannableStringBuilder(TextUtilsW1.formatNumber(Math.round(fSumWeek)));
+        sumWeek.append('\u00a0');
+        sumWeek.append(currencySumbol);
+        dataDayWeekMonth.add(sumWeek);
+
+        SpannableStringBuilder sumMonth = new SpannableStringBuilder(TextUtilsW1.formatNumber(Math.round(fSumMonth)));
+        sumMonth.append('\u00a0');
+        sumMonth.append(currencySumbol);
+        dataDayWeekMonth.add(sumMonth);
 
         if (fSumDay2 > 0) {
             percentDay = (int) (fSumDay / (fSumDay2 / 100) - 100) + " %";
@@ -731,7 +738,7 @@ public class DashFragment extends Fragment {
             percentMonth = "";
         }
 
-        setupViewPager();
+        mPagerAdapter.setItems(dataDayWeekMonth);
         setPlot(dataPlotDayX, dataPlotDay);
         setupPercent(percentDay);
         currentPlot = DashFragment.PLOT_24;
@@ -773,9 +780,8 @@ public class DashFragment extends Fragment {
                 CandleEntry ce = (CandleEntry) e;
                 tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
             } else {
-                String amount = e.getVal() + "";
                 tvDate.setText((CharSequence)e.getData());
-                tvContent.setText(TextUtilsW1.formatNumberNoFract(amount));
+                tvContent.setText(TextUtilsW1.formatNumber(Math.round(e.getVal())));
             }
         }
     }

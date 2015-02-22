@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.w1.merchant.android.model.Invoice;
 import com.w1.merchant.android.model.InvoiceRequest;
+import com.w1.merchant.android.model.InvoiceStats;
 import com.w1.merchant.android.model.Invoices;
 
 import java.util.Date;
@@ -36,5 +37,9 @@ public interface ApiInvoices {
                             @Nullable @Query("searchString") String searchString,
                             Callback<Invoices> cb
     );
+
+    @GET("/invoices/statistics")
+    public void getStats(String currencyId, Date fromDate, Date toDate, Callback<InvoiceStats> stats);
+
 
 }
