@@ -58,6 +58,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -373,16 +374,16 @@ public class DashFragment extends Fragment {
         currentPlot = newPlot;
         switch (newPlot) {
             case PLOT_24:
-                createPlot(dataPlotDayX, dataPlotDay);
+                setPlot(dataPlotDayX, dataPlotDay);
                 setupPercent(percentDay);
                 break;
             case PLOT_WEEK:
-                createPlot(dataPlotWeekX, dataPlotWeek);
+                setPlot(dataPlotWeekX, dataPlotWeek);
                 currentPlot = PLOT_WEEK;
                 setupPercent(percentWeek);
                 break;
             case PLOT_30:
-                createPlot(dataPlotMonthX, dataPlotMonth);
+                setPlot(dataPlotMonthX, dataPlotMonth);
                 setupPercent(percentMonth);
                 break;
             default:
@@ -574,21 +575,17 @@ public class DashFragment extends Fragment {
         mChart.setMarkerView(mv);
     }
 
-    public void createPlot(ArrayList<String> dataPlotX, ArrayList<? extends Number> dataPlotY) {
+    public void setPlot(ArrayList<String> dataPlotX, ArrayList<? extends Number> dataPlotY) {
         // add data
-        //ArrayList<String> xVals = new ArrayList<String>();
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
+        ArrayList<Entry> yVals = new ArrayList<>(dataPlotY.size());
         for (int i = 0; i < dataPlotY.size(); i++) {
-            //xVals.add(i + "");
-            yVals.add(new Entry(dataPlotY.get(i).floatValue(), i));
+            yVals.add(new Entry(dataPlotY.get(i).floatValue(), i, dataPlotX.get(i)));
         }
 
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(yVals, "DataSet 1");
         set1.setColor(Color.parseColor("#ADFF2F"));
-        //set1.setCircleColor(ColorTemplate.getHoloBlue());
         set1.setLineWidth(2f);
-        //set1.setCircleSize(4f);
         set1.setFillAlpha(65);
         set1.setFillColor(ColorTemplate.getHoloBlue());
         set1.setHighLightColor(Color.rgb(117, 117, 117));
@@ -596,16 +593,9 @@ public class DashFragment extends Fragment {
         set1.setDrawCubic(true);
         set1.setCubicIntensity(0.1f);
 
-
-        ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-        dataSets.add(set1); // add the datasets
-
-        // create a data object with the datasets
-        LineData data = new LineData(dataPlotX, dataSets);
-
+        LineData data = new LineData(dataPlotX, new ArrayList<>(Collections.singleton(set1)));
         // set data
         mChart.setData(data);
-
         int animTime = getResources().getInteger(R.integer.graphics_anim_time);
         mChart.animateXY(animTime, animTime);
     }
@@ -742,12 +732,12 @@ public class DashFragment extends Fragment {
         }
 
         setupViewPager();
-        createPlot(dataPlotDayX, dataPlotDay);
+        setPlot(dataPlotDayX, dataPlotDay);
         setupPercent(percentDay);
         currentPlot = DashFragment.PLOT_24;
     }
 
-    public class MyMarkerView extends MarkerView {
+    public static class MyMarkerView extends MarkerView {
 
         private TextView tvContent, tvDate;
 
@@ -783,22 +773,9 @@ public class DashFragment extends Fragment {
                 CandleEntry ce = (CandleEntry) e;
                 tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
             } else {
-
                 String amount = e.getVal() + "";
+                tvDate.setText((CharSequence)e.getData());
                 tvContent.setText(TextUtilsW1.formatNumberNoFract(amount));
-                if (currentPlot == DashFragment.PLOT_24) {
-                    if (dataPlotDayX.size() > 0) {
-                        tvDate.setText(dataPlotDayX.get(e.getXIndex()));
-                    }
-                } else if (currentPlot == DashFragment.PLOT_WEEK) {
-                    if (dataPlotWeekX.size() > 0) {
-                        tvDate.setText(dataPlotWeekX.get(e.getXIndex()));
-                    }
-                } else if (currentPlot == DashFragment.PLOT_30) {
-                    if (dataPlotMonthX.size() > 0) {
-                        tvDate.setText(dataPlotMonthX.get(e.getXIndex()));
-                    }
-                }
             }
         }
     }
