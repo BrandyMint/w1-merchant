@@ -201,7 +201,7 @@ public class LoginFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (BuildConfig.DEBUG && "debug".equals(BuildConfig.BUILD_TYPE) && !TextUtils.isEmpty(BuildConfig.API_TEST_USER)) {
             // Ибо заебал
-            //attemptLogin(BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS);
+            attemptLogin(BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS);
         }
     }
 

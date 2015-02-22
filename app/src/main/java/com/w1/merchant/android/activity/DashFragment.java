@@ -3,6 +3,7 @@ package com.w1.merchant.android.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -23,7 +24,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -86,7 +86,6 @@ public class DashFragment extends Fragment {
     //XYSeries series1;
     SwipeRefreshLayout swipeLayout;
     LineChart mChart;
-    ImageView ivPercent;
 
     private int mCurrentPage = 1;
     private int mCurrentPageUEGraph = 1;
@@ -137,7 +136,6 @@ public class DashFragment extends Fragment {
 
         mChart = (LineChart) llHeader.findViewById(R.id.chart1);
         tvPercent = (TextView) llHeader.findViewById(R.id.tvPercent);
-        ivPercent = (ImageView) llHeader.findViewById(R.id.ivPercent);
 
         srgDash = (SegmentedRadioGroup) llHeader.findViewById(R.id.srgDash);
         rbHour = (RadioButton) llHeader.findViewById(R.id.rbHour);
@@ -542,13 +540,12 @@ public class DashFragment extends Fragment {
         mChart.setDrawVerticalGrid(false);
         mChart.setDrawHorizontalGrid(false);
         mChart.setDrawLegend(false);
-        mChart.setPadding(0, 0, 0, 0);
         //mChart.setFadingEdgeLength(20);
         // if disabled, scaling can be done on x- and y-axis separately
         mChart.setPinchZoom(false);
-
-        // set an alternative background color
-        mChart.setBackgroundColor(Color.BLACK);
+        mChart.setDrawXLabels(false);
+        mChart.setDrawYLabels(false);
+        mChart.setOffsets(0, 0, 0, 0);
 
         // create a custom MarkerView (extend MarkerView) and specify the layout
         // TO use for it
@@ -576,7 +573,7 @@ public class DashFragment extends Fragment {
         set1.setHighLightColor(Color.rgb(117, 117, 117));
         set1.setDrawCircles(false);
         set1.setDrawCubic(true);
-        set1.setCubicIntensity(0.05f);
+        set1.setCubicIntensity(0.1f);
 
 
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
@@ -588,38 +585,22 @@ public class DashFragment extends Fragment {
         // set data
         mChart.setData(data);
 
-        mChart.animateXY(2000, 2000);
-
-        //get the legend (only possible after setting data)
-        //Legend l = mChart.getLegend();
-        //l.setTextColor(Color.TRANSPARENT);
-        // modify the legend ...
-        // l.setPosition(LegendPosition.LEFT_OF_CHART);
-//        l.setForm(LegendForm.LINE);
-//        l.setTextColor(Color.WHITE);
-//
-//        XLabels xl = mChart.getXLabels();
-//        xl.setTextColor(Color.WHITE);
-//
-//        YLabels yl = mChart.getYLabels();
-//        yl.setTextColor(Color.WHITE);
-
+        int animTime = getResources().getInteger(R.integer.graphics_anim_time);
+        mChart.animateXY(animTime, animTime);
     }
 
     public void setPercent(String text) {
         if (text.isEmpty()) {
             tvPercent.setText("");
-            ivPercent.setVisibility(View.INVISIBLE);
+            tvPercent.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else if (text.startsWith("-")) {
             tvPercent.setText(text.replace("-", ""));
             tvPercent.setTextColor(Color.RED);
-            ivPercent.setVisibility(View.VISIBLE);
-            ivPercent.setImageResource(R.drawable.down);
+            tvPercent.setCompoundDrawablesWithIntrinsicBounds(R.drawable.down, 0, 0, 0);
         } else {
             tvPercent.setText(text);
             tvPercent.setTextColor(Color.parseColor("#9ACD32"));
-            ivPercent.setVisibility(View.VISIBLE);
-            ivPercent.setImageResource(R.drawable.up);
+            tvPercent.setCompoundDrawablesWithIntrinsicBounds(R.drawable.up, 0, 0, 0);
         }
     }
 
@@ -757,30 +738,40 @@ public class DashFragment extends Fragment {
     public class MyMarkerView extends MarkerView {
 
         private TextView tvContent, tvDate;
-        MenuActivity menuActivity;
 
         public MyMarkerView(Context context, int layoutResource) {
             super(context, layoutResource);
-            menuActivity = (MenuActivity) context;
             tvContent = (TextView) findViewById(R.id.tvContent);
             tvDate = (TextView) findViewById(R.id.tvDate);
+        }
+
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            // define an offset to change the original position of the marker
+            // (optional)
+            setOffsets(-getMeasuredWidth() / 2, -getMeasuredHeight() / 2);
+        }
+
+        @Override
+        public void draw(Canvas canvas, float posx, float posy) {
+            if (posx+getXOffset() < 0) {
+                posx = -getXOffset();
+            } else if (posx + getXOffset() + getWidth() > canvas.getWidth()) {
+                posx = canvas.getWidth() - getWidth() - getXOffset();
+            }
+            super.draw(canvas, posx, posy);
         }
 
         // callbacks everytime the MarkerView is redrawn, can be used to update the
         // content
         @Override
         public void refreshContent(Entry e, int dataSetIndex) {
-
             if (e instanceof CandleEntry) {
                 CandleEntry ce = (CandleEntry) e;
                 tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
             } else {
-                // define an offset to change the original position of the marker
-                // (optional)
 
-                setOffsets(-getMeasuredWidth() / 2, -getMeasuredHeight() / 2);
-                int[] location = new int[2];
-                getLocationInWindow(location);
                 String amount = e.getVal() + "";
                 tvContent.setText(TextUtilsW1.formatNumberNoFract(amount));
                 if (currentPlot == DashFragment.PLOT_24) {
