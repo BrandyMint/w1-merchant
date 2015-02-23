@@ -169,9 +169,14 @@ public class DashFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        refreshDashboard();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        refreshDashboard();
     }
 
     @Override
@@ -179,7 +184,6 @@ public class DashFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
 
     public void refreshDashboard() {
         clearDataArrays();
