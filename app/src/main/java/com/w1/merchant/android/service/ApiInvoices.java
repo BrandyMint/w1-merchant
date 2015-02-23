@@ -37,7 +37,8 @@ public interface ApiInvoices {
                             @Nullable @Query("searchString") String searchString);
 
     @GET("/invoices/statistics")
-    public Observable<InvoiceStats> getStats(String currencyId, Date fromDate, Date toDate);
-
+    public Observable<InvoiceStats> getStats(@Query("currencyId")String currencyId,
+                                             @Query("fromDate")String fromDate,
+                                             @Query("toDate")String toDate);
 
 }

@@ -132,6 +132,11 @@ public class TransactionHistoryEntry implements Parcelable {
     public boolean isProcessed() { return OPERATION_STATE_PROCESSING.equals(entryStateId);
     }
 
+    public Date getUpdateOrCreateDate() {
+        return updateDate == null ? createDate : updateDate;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;

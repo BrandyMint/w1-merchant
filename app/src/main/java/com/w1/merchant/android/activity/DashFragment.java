@@ -2,21 +2,19 @@ package com.w1.merchant.android.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -29,15 +27,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.w1.merchant.android.BuildConfig;
+import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.extra.MainVPAdapter;
+import com.w1.merchant.android.activity.graphs.DayGraphFragment;
+import com.w1.merchant.android.activity.graphs.WeekMonthGraphFragment;
 import com.w1.merchant.android.extra.UserEntryAdapter2;
 import com.w1.merchant.android.model.Balance;
 import com.w1.merchant.android.model.TransactionHistory;
@@ -46,59 +40,38 @@ import com.w1.merchant.android.service.ApiBalance;
 import com.w1.merchant.android.service.ApiUserEntry;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
 
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class DashFragment extends Fragment {
+public class DashFragment extends Fragment  implements
+        DayGraphFragment.OnFragmentInteractionListener,
+        WeekMonthGraphFragment.OnFragmentInteractionListener{
+    private static final boolean DBG = BuildConfig.DEBUG;
+    private static final String TAG = Constants.LOG_TAG;
+    private static final int TRANSACTION_HISTORY_ITEMS_PER_PAGE = 25;
+    private ListView lvDash;
 
-    public static final int PLOT_24 = 1;
-    public static final int PLOT_WEEK = 2;
-    public static final int PLOT_30 = 3;
-    public static final int TRANSACTION_HISTORY_ITEMS_PER_PAGE = 25;
-    public ListView lvDash;
-    TextView tvPercent;
-
-    ViewPager vpDash;
-    MainVPAdapter mPagerAdapter;
-    SegmentedRadioGroup srgDash;
-    RadioButton rbHour, rbWeek, rbMonth;
+    private ViewPager vpDash;
+    private GraphicsAdapter mPagerAdapter;
+    private SegmentedRadioGroup srgDash;
+    private RadioButton rbHour;
+    private RadioButton rbWeek;
+    private RadioButton rbMonth;
     private TextView mFooter;
     private View llHeader;
     //XYSeries series1;
-    SwipeRefreshLayout swipeLayout;
-    LineChart mChart;
+    private SwipeRefreshLayout swipeLayout;
 
     private int mCurrentPage = 1;
-
-    public int currentPlot = PLOT_24;
-
-    public ArrayList<Integer> dataPlotDay, dataPlotWeek, dataPlotMonth;
-    public ArrayList<String> dataPlotDayX, dataPlotWeekX, dataPlotMonthX;
-
-    public String percentDay = "";
-    public String percentWeek = "";
-    public String percentMonth = "";
 
     private OnFragmentInteractionListener mListener;
 
@@ -106,24 +79,18 @@ public class DashFragment extends Fragment {
     private ApiUserEntry mApiUserEntry;
     private ApiBalance mApiBalance;
 
-    private Collection<TransactionHistoryEntry> mHistory60day;
+    private List<Fragment> mFragments = new ArrayList<>(3);
+
+    private boolean mCurrencyLoaded;
 
     private Subscription mRefreshBalanceSubscription = Subscriptions.empty();
     private Subscription mLoadTransactionsSubscription = Subscriptions.empty();
-    private TransactionStatsDaysDataLoader mHistoryDataLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
         mApiBalance = NetworkUtils.getInstance().createRestAdapter().create(ApiBalance.class);
-        dataPlotDay = new ArrayList<>();
-        dataPlotWeek = new ArrayList<>();
-        dataPlotMonth = new ArrayList<>();
-        dataPlotDayX = new ArrayList<>();
-        dataPlotWeekX = new ArrayList<>();
-        dataPlotMonthX = new ArrayList<>();
-        mHistory60day = new ArrayList<>();
     }
 
     @SuppressLint("InflateParams")
@@ -135,9 +102,6 @@ public class DashFragment extends Fragment {
 
         mFooter = (TextView)inflater.inflate(R.layout.footer2, lvDash, false);
         llHeader = inflater.inflate(R.layout.dash_header, lvDash, false);
-
-        mChart = (LineChart) llHeader.findViewById(R.id.chart1);
-        tvPercent = (TextView) llHeader.findViewById(R.id.tvPercent);
 
         srgDash = (SegmentedRadioGroup) llHeader.findViewById(R.id.srgDash);
         rbHour = (RadioButton) llHeader.findViewById(R.id.rbHour);
@@ -154,7 +118,6 @@ public class DashFragment extends Fragment {
         });
         mAdapter = new UserEntryAdapter2(getActivity());
         setupListView();
-        setupChartView();
         setupViewPager();
 
         return parentView;
@@ -187,10 +150,6 @@ public class DashFragment extends Fragment {
         super.onDestroyView();
         mRefreshBalanceSubscription.unsubscribe();
         mLoadTransactionsSubscription.unsubscribe();
-        if (mHistoryDataLoader != null && !mHistoryDataLoader.isCancelled()) {
-            mHistoryDataLoader.cancel();
-            mHistoryDataLoader = null;
-        }
     }
 
     @Override
@@ -200,19 +159,46 @@ public class DashFragment extends Fragment {
     }
 
     public void refreshDashboard() {
-        clearDataArrays();
         mCurrentPage = 1;
         refreshBalance();
     }
 
-    private void clearDataArrays() {
-        dataPlotDay.clear();
-        dataPlotWeek.clear();
-        dataPlotMonth.clear();
-        dataPlotDayX.clear();
-        dataPlotWeekX.clear();
-        dataPlotMonthX.clear();
-        mHistory60day.clear();
+    @Override
+    public void onFragmentAttached(Fragment fragment) {
+        mFragments.add(fragment);
+    }
+
+    @Override
+    public void onFragmentDetached(Fragment fragment) {
+        mFragments.remove(fragment);
+    }
+
+    @Override
+    public Object startProgress() {
+        if (mListener != null) {
+            return mListener.startProgress();
+        } else {
+            return new Object();
+        }
+    }
+
+    @Override
+    public void stopProgress(Object token) {
+        if (mListener != null) mListener.stopProgress(token);
+    }
+
+    @Override
+    public String getCurrency() {
+        if (mListener == null) {
+            return "643";
+        } else {
+            return mListener.getCurrency();
+        }
+    }
+
+    @Override
+    public boolean isCurrencyLoaded() {
+        return mCurrencyLoaded;
     }
 
     private void setupListView() {
@@ -230,7 +216,7 @@ public class DashFragment extends Fragment {
         });
 
         lvDash.setOnScrollListener(new AbsListView.OnScrollListener() {
-            private Rect scrollBounds = new Rect();
+            private final Rect scrollBounds = new Rect();
 
             @Override
             public void onScroll(AbsListView arg0,
@@ -335,15 +321,12 @@ public class DashFragment extends Fragment {
                 switch (checkedId) {
                     case R.id.rbHour:
                         vpDash.setCurrentItem(0, true);
-                        switchCurrentPlot(PLOT_24);
                         break;
                     case R.id.rbWeek:
                         vpDash.setCurrentItem(1);
-                        switchCurrentPlot(PLOT_WEEK);
                         break;
                     case R.id.rbMonth:
                         vpDash.setCurrentItem(2);
-                        switchCurrentPlot(PLOT_30);
                         break;
                     default:
                         break;
@@ -352,8 +335,9 @@ public class DashFragment extends Fragment {
         });
 
         vpDash = (ViewPager) llHeader.findViewById(R.id.vpDash);
-        mPagerAdapter = new MainVPAdapter();
+        mPagerAdapter = new GraphicsAdapter(getChildFragmentManager());
         vpDash.setAdapter(mPagerAdapter);
+        vpDash.setOffscreenPageLimit(4);
         vpDash.setOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -377,28 +361,6 @@ public class DashFragment extends Fragment {
                 swipeLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
             }
         });
-    }
-
-    private void switchCurrentPlot(int newPlot) {
-        currentPlot = newPlot;
-        switch (newPlot) {
-            case PLOT_24:
-                setPlot(dataPlotDayX, dataPlotDay);
-                setupPercent(percentDay);
-                break;
-            case PLOT_WEEK:
-                setPlot(dataPlotWeekX, dataPlotWeek);
-                currentPlot = PLOT_WEEK;
-                setupPercent(percentWeek);
-                break;
-            case PLOT_30:
-                setPlot(dataPlotMonthX, dataPlotMonth);
-                setupPercent(percentMonth);
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-
     }
 
     private void refreshBalance() {
@@ -427,365 +389,51 @@ public class DashFragment extends Fragment {
                     @Override
                     public void onNext(List<Balance> balances) {
                         if (mListener != null) {
+                            mCurrencyLoaded = true;
                             mListener.onBalanceLoaded(balances);
                             refreshTransactionHistory();
-                            refresh60DayData();
+                            refreshGraphFragments();
                         }
                     }
                 });
         stopProgressAction.token = mListener.startProgress();
     }
 
-    private void refresh60DayData() {
-        if (mHistoryDataLoader != null && !mHistoryDataLoader.isCancelled()) {
-            mHistoryDataLoader.cancel();
-        }
-
-        final NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
-        mHistoryDataLoader = new TransactionStatsDaysDataLoader(this, mListener.getCurrency()) {
-            @Override
-            public void onError(Throwable e) {
-                if (mListener != null) {
-                    stopProgressAction.call();
-                    CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
-                    Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 0, 50);
-                    toast.show();
-                }
+    private void refreshGraphFragments() {
+        if (DBG) Log.v(TAG, "DashFragment: refreshGraphFragments");
+        for (Fragment fragment: mFragments) {
+            if (fragment instanceof  DayGraphFragment) {
+                ((DayGraphFragment) fragment).reloadData();
+            } else if (fragment instanceof WeekMonthGraphFragment) {
+                ((WeekMonthGraphFragment) fragment).reloadData();
             }
-
-            @Override
-            public void onCompleted(Collection<TransactionHistoryEntry> history) {
-                stopProgressAction.call();
-                if (mListener != null) {
-                    mHistory60day.clear();
-                    mHistory60day.addAll(history);
-                    dataGraphVPPercents();
-                }
-            }
-
-            @Override
-            public void onUnsubscribed() {
-                stopProgressAction.call();
-            }
-        };
-        stopProgressAction.token = mListener.startProgress();
-        mHistoryDataLoader.start();
-    }
-
-    private void setupChartView() {
-        mChart.setOnChartGestureListener(new OnChartGestureListener() {
-
-            @Override
-            public void onChartSingleTapped(MotionEvent me) {
-            }
-
-            @Override
-            public void onChartLongPressed(MotionEvent me) {
-            }
-
-            @Override
-            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX,
-                                     float velocityY) {
-                //Log.d("1", "Chart flinged. VeloX: " + velocityX + ", VeloY: " + velocityY);
-                int currVP = vpDash.getCurrentItem();
-                if (velocityX < 0) {
-                    Log.d("1", "Свайп влево");
-                    if (!(currVP == 2)) {
-                        vpDash.setCurrentItem(currVP + 1);
-                    }
-                } else {
-                    Log.d("1", "Свайп вправо");
-                    if (!(currVP == 0)) {
-                        vpDash.setCurrentItem(currVP - 1);
-                    }
-                }
-            }
-
-            @Override
-            public void onChartDoubleTapped(MotionEvent me) {
-            }
-        });
-    }
-
-    public void setPlot(ArrayList<String> dataPlotX, ArrayList<? extends Number> dataPlotY) {
-        // add data
-        ArrayList<Entry> yVals = new ArrayList<>(dataPlotY.size());
-        for (int i = 0; i < dataPlotY.size(); i++) {
-            yVals.add(new Entry(dataPlotY.get(i).floatValue(), i, dataPlotX.get(i)));
-        }
-
-        // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(yVals, "DataSet 1");
-        set1.setColor(Color.parseColor("#ADFF2F"));
-        set1.setLineWidth(2f);
-        set1.setFillAlpha(65);
-        set1.setFillColor(ColorTemplate.getHoloBlue());
-        set1.setHighLightColor(Color.rgb(117, 117, 117));
-        set1.setDrawCircles(false);
-        //set1.enableDashedLine(1, 1, 1); // Заготовка для HackyPaint
-
-        set1.setDrawCubic(true);
-        set1.setCubicIntensity(0.07f);
-        set1.setDrawValues(false);
-
-        LineData data = new LineData(dataPlotX, new ArrayList<>(Collections.singleton(set1)));
-        // set data
-        mChart.setData(data);
-        int animTime = getResources().getInteger(R.integer.graphics_anim_time);
-        mChart.animateXY(animTime, animTime);
-    }
-
-    public void setupPercent(String text) {
-        if (text.isEmpty()) {
-            tvPercent.setText("");
-            tvPercent.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        } else if (text.startsWith("-")) {
-            tvPercent.setText(text.replace("-", ""));
-            tvPercent.setTextColor(Color.RED);
-            tvPercent.setCompoundDrawablesWithIntrinsicBounds(R.drawable.down, 0, 0, 0);
-        } else {
-            tvPercent.setText(text);
-            tvPercent.setTextColor(Color.parseColor("#9ACD32"));
-            tvPercent.setCompoundDrawablesWithIntrinsicBounds(R.drawable.up, 0, 0, 0);
         }
     }
 
-    //подготовка данных для графика, для ViewPager, для процентов
-    void dataGraphVPPercents() {
-        String[] dataPeriodElem;
-        Date currentDate = new Date();
-        float fSumDay = 0;
-        float fSumWeek = 0;
-        float fSumMonth = 0;
-        float fSumDay2 = 0;
-        float fSumWeek2 = 0;
-        float fSumMonth2 = 0;
-        int sum;
-        long diffSecond;
-        int diffHour;
-        int diffDay;
-        Calendar calendar;
+    private static class GraphicsAdapter extends FragmentPagerAdapter {
 
-        for (int i = 23; i > -1; i--) {
-            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
-            calendar.add(Calendar.HOUR_OF_DAY, -i);
-            dataPlotDay.add(0);
-            dataPlotDayX.add(calendar.get(Calendar.HOUR_OF_DAY) + " " +
-                    getString(R.string.hour_cut));
-        }
-        for (int i = 6; i > -1; i--) {
-            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
-            calendar.add(Calendar.DAY_OF_YEAR, -i);
-            dataPlotWeek.add(0);
-            dataPlotWeekX.add(getResources().getStringArray(R.array.day_of_week)
-                    [calendar.get(Calendar.DAY_OF_WEEK) - 1]);
-        }
-        for (int i = 29; i > -1; i--) {
-            calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+3"));
-            calendar.add(Calendar.DAY_OF_YEAR, -i);
-            dataPlotMonth.add(0);
-            dataPlotMonthX.add(calendar.get(Calendar.DAY_OF_MONTH)
-                    + " " + getResources().getStringArray(R.array.month_array_cut)
-                    [calendar.get(Calendar.MONTH)] +
-                    ", " + getResources().getStringArray(R.array.day_of_week)
-                    [calendar.get(Calendar.DAY_OF_WEEK) - 1]);
+        public GraphicsAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        //за 24 часа и пред день
-        for (TransactionHistoryEntry entry: mHistory60day) {
-            diffSecond = Math.abs(currentDate.getTime() - entry.createDate.getTime()) / 1000;
-            diffHour = (int) diffSecond / 3600;
+        @Override
+        public int getCount() {
+            return 3;
+        }
 
-            sum = entry.amount
-                    .subtract(entry.commissionAmount)
-                    .setScale(0, BigDecimal.ROUND_HALF_UP)
-                    .intValue();
-
-            if (diffHour < 24) {
-                fSumDay += sum;
-                dataPlotDay.set(23 - diffHour, dataPlotDay.get(23 - diffHour) + sum);
-                //предыдущий день для процента
-            } else if (diffHour < 48) {
-                fSumDay2 += sum;
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return DayGraphFragment.newInstance();
+                case 1:
+                    return WeekMonthGraphFragment.newInstanceWeekStats();
+                case 2:
+                    return WeekMonthGraphFragment.newInstanceMonthStats();
+                default:
+                    throw new IllegalArgumentException();
             }
         }
-
-        // за неделю, месяц и пред
-        for (TransactionHistoryEntry entry: mHistory60day) {
-            sum = entry.amount
-                    .subtract(entry.commissionAmount)
-                    .setScale(0, BigDecimal.ROUND_HALF_UP)
-                    .intValue();
-
-            diffDay = (int)(Math.abs(currentDate.getTime() - entry.createDate.getTime()) / 86400000);
-
-            if (diffDay < 7) {
-                dataPlotWeek.set(6 - diffDay, dataPlotWeek.get(6 - diffDay) + sum);
-                dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
-                fSumWeek += sum;
-            } else if (diffDay < 14) {
-                fSumWeek2 += sum;
-                dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
-            } else if (diffDay < 30) {
-                dataPlotMonth.set(29 - diffDay, dataPlotMonth.get(29 - diffDay) + sum);
-                fSumMonth += sum;
-            } else {
-                fSumMonth2 += sum;
-            }
-        }
-
-        fSumMonth += fSumWeek2;
-        fSumMonth += fSumWeek;
-        //Log.d("1", fSumDay + " " + fSumWeek + " " + fSumMonth);
-
-
-        List<CharSequence> dataDayWeekMonth = new ArrayList<>(3);
-
-        Spanned currencySumbol =  TextUtilsW1.getCurrencySymbol2(mListener.getCurrency(), 1);
-        SpannableStringBuilder sumDay = new SpannableStringBuilder(TextUtilsW1.formatNumber(Math.round(fSumDay)));
-        sumDay.append('\u00a0');
-        sumDay.append(currencySumbol);
-        dataDayWeekMonth.add(sumDay);
-
-        SpannableStringBuilder sumWeek = new SpannableStringBuilder(TextUtilsW1.formatNumber(Math.round(fSumWeek)));
-        sumWeek.append('\u00a0');
-        sumWeek.append(currencySumbol);
-        dataDayWeekMonth.add(sumWeek);
-
-        SpannableStringBuilder sumMonth = new SpannableStringBuilder(TextUtilsW1.formatNumber(Math.round(fSumMonth)));
-        sumMonth.append('\u00a0');
-        sumMonth.append(currencySumbol);
-        dataDayWeekMonth.add(sumMonth);
-
-        if (fSumDay2 > 0) {
-            percentDay = (int) (fSumDay / (fSumDay2 / 100) - 100) + " %";
-        } else {
-            percentDay = "";
-        }
-
-        if (fSumWeek2 > 0) {
-            percentWeek = (int) (fSumWeek / (fSumWeek2 / 100) - 100) + " %";
-        } else {
-            percentWeek = "";
-        }
-
-        if (fSumMonth2 > 0) {
-            percentMonth = (int) (fSumMonth / (fSumMonth2 / 100) - 100) + " %";
-        } else {
-            percentMonth = "";
-        }
-
-        mPagerAdapter.setItems(dataDayWeekMonth);
-        setPlot(dataPlotDayX, dataPlotDay);
-        setupPercent(percentDay);
-        currentPlot = DashFragment.PLOT_24;
-    }
-
-    private static abstract class TransactionStatsDaysDataLoader {
-
-        private final ApiUserEntry mApiUserEntry;
-
-        private final String mDateFrom;
-
-        private final String mCurrency;
-
-        private int mPageNo = 1;
-
-        private boolean mCancelled;
-
-        private Subscription mSubscription  = Subscriptions.unsubscribed();
-
-        private List<TransactionHistoryEntry> mHistory;
-
-        private final Fragment mFragment;
-
-        public TransactionStatsDaysDataLoader(Fragment fragment, String currency) {
-            mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
-            mFragment = fragment;
-            mHistory = new ArrayList<>();
-            mCurrency = currency;
-            final Calendar cal60DaysAgo = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-            cal60DaysAgo.add(Calendar.DAY_OF_MONTH, -60);
-            mDateFrom = ISO8601Utils.format(cal60DaysAgo.getTime());
-        }
-
-        public void start() {
-            mHistory.clear();
-            mPageNo = 1;
-            doRequest();
-        }
-
-        private void doRequest() {
-            if (mCancelled) return;
-
-
-            Observable<TransactionHistory> observable = AppObservable.bindFragment(mFragment,
-                            mApiUserEntry.getEntries(mPageNo, 1000, mDateFrom, null, null, null,
-                                    mCurrency, null, TransactionHistoryEntry.DIRECTION_INCOMING));
-
-            mSubscription = observable
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .retryWhen(new RetryWhenCaptchaReady(mFragment))
-                    .doOnUnsubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                            if (mCancelled) TransactionStatsDaysDataLoader.this.onUnsubscribed();
-                        }
-                    })
-                    .subscribe(new Observer<TransactionHistory>() {
-                        @Override
-                        public void onCompleted() {
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            if (mCancelled) return;
-                            TransactionStatsDaysDataLoader.this.onError(e);
-                        }
-
-                        @Override
-                        public void onNext(TransactionHistory transactionHistory) {
-                            if (mCancelled) return;
-                            if (!transactionHistory.items.isEmpty()) {
-                                mHistory.addAll(transactionHistory.items);
-                                mPageNo += 1;
-                                if (mPageNo < 300) {
-                                    doRequest();
-                                } else {
-                                    TransactionStatsDaysDataLoader.this.sortResultOnCompleted();
-                                }
-                            } else {
-                                TransactionStatsDaysDataLoader.this.sortResultOnCompleted();
-                            }
-                        }
-                    });
-
-        }
-
-        void sortResultOnCompleted() {
-            Map<BigInteger, TransactionHistoryEntry> uniqMap = new HashMap<>(mHistory.size());
-            for (TransactionHistoryEntry entry: mHistory) uniqMap.put(entry.entryId, entry);
-
-            mHistory.clear();
-            onCompleted(uniqMap.values());
-        }
-
-        public void cancel() {
-            mCancelled  = true;
-            mSubscription.unsubscribe();
-        }
-
-        public boolean isCancelled() {
-            return mCancelled;
-        }
-
-        public abstract void onError(Throwable e);
-
-        public abstract void onCompleted(Collection<TransactionHistoryEntry> history);
-
-        public abstract void onUnsubscribed();
-
     }
 
     public interface OnFragmentInteractionListener extends IProgressbarProvider {
