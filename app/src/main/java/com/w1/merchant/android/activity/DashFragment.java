@@ -150,6 +150,7 @@ public class DashFragment extends Fragment {
             }
         });
         mAdapter = new UserEntryAdapter2(getActivity());
+        setupListView();
         setupChartView();
         setupViewPager();
 
@@ -198,20 +199,11 @@ public class DashFragment extends Fragment {
     }
 
 
-    public void createListView() {
-        //заполнение ListView
-        swipeLayout.setRefreshing(false);
-        if (lvDash.getHeaderViewsCount() == 0) {
-            lvDash.addHeaderView(llHeader);
-        }
-        if ((mAdapter.getCount() > TRANSACTION_HISTORY_ITEMS_PER_PAGE - 1) & (lvDash.getFooterViewsCount() == 0)) {
-            lvDash.addFooterView(mFooter);
-        }
-        if ((mAdapter.getCount() < TRANSACTION_HISTORY_ITEMS_PER_PAGE) & (mCurrentPage == 1)) {
-            lvDash.removeFooterView(mFooter);
-        }
+    private void setupListView() {
+        hideFooter();
+        lvDash.addHeaderView(llHeader);
+        lvDash.addFooterView(mFooter);
         lvDash.setAdapter(mAdapter);
-
         lvDash.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -249,6 +241,14 @@ public class DashFragment extends Fragment {
                 }
             }
         });
+    }
+
+    void showFooter() {
+        if (mFooter != null) mFooter.setVisibility(View.VISIBLE);
+    }
+
+    void hideFooter() {
+        if (mFooter != null) mFooter.setVisibility(View.GONE);
     }
 
     void refreshTransactionHistory() {
@@ -299,22 +299,23 @@ public class DashFragment extends Fragment {
         if (newData != null) {
             if (mCurrentPage == 1) {
                 mAdapter.setItems(newData.items);
-                createListView();
+                swipeLayout.setRefreshing(false);
+                if (mAdapter.getCount() >= TRANSACTION_HISTORY_ITEMS_PER_PAGE) {
+                    showFooter();
+                } else {
+                    hideFooter();
+                }
             } else {
                 mAdapter.addItems(newData.items);
                 mFooter.setText(R.string.data_load);
             }
-            if (newData.items.size() == 0) removeFooter();
+            if (newData.items.size() == 0) hideFooter();
         } else {
-            removeFooter();
+            hideFooter();
         }
         if (getView() != null && llHeader != null) {
             llHeader.findViewById(R.id.empty_text).setVisibility(mAdapter.isEmpty() ? View.VISIBLE : View.GONE);
         }
-    }
-
-    public void removeFooter() {
-        lvDash.removeFooterView(mFooter);
     }
 
     private void setupViewPager() {
