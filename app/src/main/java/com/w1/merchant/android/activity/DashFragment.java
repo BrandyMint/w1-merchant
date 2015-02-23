@@ -5,6 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
@@ -570,6 +575,13 @@ public class DashFragment extends Fragment {
         mChart.setDrawYLabels(false);
         mChart.setOffsets(0, 0, 0, 0);
 
+        Paint paint = new HackyPaint(mChart.getPaint(Chart.PAINT_RENDER));
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setDither(true);
+        paint.setAntiAlias(true);
+        mChart.setPaint(paint, Chart.PAINT_RENDER);
+
         // create a custom MarkerView (extend MarkerView) and specify the layout
         // TO use for it
         MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
@@ -593,14 +605,41 @@ public class DashFragment extends Fragment {
         set1.setFillColor(ColorTemplate.getHoloBlue());
         set1.setHighLightColor(Color.rgb(117, 117, 117));
         set1.setDrawCircles(false);
-        set1.setDrawCubic(true);
-        set1.setCubicIntensity(0.1f);
+        set1.enableDashedLine(1, 1, 1); // Заготовка для HackyPaint
+
+        //set1.setDrawCubic(true);
+        //set1.setCubicIntensity(0.1f);
 
         LineData data = new LineData(dataPlotX, new ArrayList<>(Collections.singleton(set1)));
         // set data
         mChart.setData(data);
         int animTime = getResources().getInteger(R.integer.graphics_anim_time);
         mChart.animateXY(animTime, animTime);
+    }
+
+    public static class HackyPaint extends Paint {
+        private final CornerPathEffect mCornerPathEffect = new CornerPathEffect(30);
+
+        public HackyPaint() {
+        }
+
+        public HackyPaint(int flags) {
+            super(flags);
+        }
+
+        public HackyPaint(Paint paint) {
+            super(paint);
+        }
+
+        @Override
+        public PathEffect setPathEffect(PathEffect effect) {
+            if (effect instanceof DashPathEffect) {
+                super.setPathEffect(mCornerPathEffect); // Хуякс
+                return effect;
+            } else {
+                return super.setPathEffect(effect);
+            }
+        }
     }
 
     public void setupPercent(String text) {
