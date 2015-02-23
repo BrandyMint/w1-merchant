@@ -112,7 +112,6 @@ public class DashFragment extends Fragment  implements
         swipeLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                rbHour.setChecked(true);
                 refreshDashboard();
             }
         });
