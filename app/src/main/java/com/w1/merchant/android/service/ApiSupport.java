@@ -13,22 +13,23 @@ import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.mime.TypedOutput;
+import rx.Observable;
 
 public interface ApiSupport {
 
     @GET("/support/tickets/{id}")
-    public void getTicket(@Path("id") long ticketId, Callback<SupportTicket> cb);
+    public Observable<SupportTicket> getTicket(@Path("id") long ticketId);
 
     @GET("/support/tickets/")
-    public void getTickets(Callback<SupportTickets> cb);
+    public Observable<SupportTickets> getTickets();
 
     @POST("/support/tickets")
-    public void createTicket(@Body SupportTicket.CreateRequest request, Callback<SupportTicket> cb);
+    public Observable<SupportTicket> createTicket(@Body SupportTicket.CreateRequest request);
 
     @POST("/support/tickets/{id}/posts")
-    public void postReply(@Path("id") long ticketId, @Body SupportTicket.ReplyRequest body, Callback<SupportTicketPost> cb);
+    public Observable<SupportTicketPost> postReply(@Path("id") long ticketId, @Body SupportTicket.ReplyRequest body);
 
     @Multipart
     @POST("/file")
-    public void uploadFile(@Part("file") TypedOutput file, Callback<UploadFileResponse> cb);
+    public Observable<UploadFileResponse> uploadFile(@Part("file") TypedOutput file);
 }

@@ -34,6 +34,7 @@ import com.w1.merchant.android.model.SupportTicket;
 import com.w1.merchant.android.model.SupportTicketPost;
 import com.w1.merchant.android.model.UploadFileResponse;
 import com.w1.merchant.android.service.ApiSupport;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.ContentTypedOutput;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.Utils;
@@ -43,9 +44,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class ConversationFragment extends Fragment {
     private static final boolean DBG = BuildConfig.DEBUG;
@@ -77,12 +82,13 @@ public class ConversationFragment extends Fragment {
     private View mSendMessageProgress;
     private View mAttachButton;
 
-    private boolean mLoading;
-
     private Handler mRefreshHandler;
 
     @Nullable
     private Uri mMakePhotoDstUri;
+
+    private Subscription mPostMessageSubscription = Subscriptions.unsubscribed();
+    private Subscription mRefreshMessagesSubscription = Subscriptions.unsubscribed();
 
     public static ConversationFragment newInstance(@Nullable SupportTicket ticket) {
         ConversationFragment fragment = new ConversationFragment();
@@ -230,7 +236,8 @@ public class ConversationFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        //mPostMessageSubscription.unsubscribe();
+        mPostMessageSubscription.unsubscribe();
+        mRefreshMessagesSubscription.unsubscribe();
         mSendMessageText = null;
         mSendMessageButton = null;
         mSendMessageProgress = null;
@@ -330,48 +337,77 @@ public class ConversationFragment extends Fragment {
     private void sendMessage(String message) {
         ApiSupport apiMessenger = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
 
+        mPostMessageSubscription.unsubscribe();
+
         setupStatusSending();
 
         if (mTicket == null) {
             // Создаем тикет
             SupportTicket.CreateRequest req = new SupportTicket.CreateRequest(
                     getResources().getString(R.string.new_conversation_subject), message, getResources());
-            apiMessenger.createTicket(req, new Callback<SupportTicket>() {
-                @Override
-                public void success(SupportTicket supportTicket, Response response) {
-                    if (mListView == null) return;
-                    if (mListener != null) mListener.onSupportTicketCreated(supportTicket);
-                    mTicket = supportTicket;
-                    mSendMessageText.setText("");
-                    mAdapter.setMessages(supportTicket.posts);
-                    startPeriodicRefresh();
-                    setupStatusReady();
-                }
+            Observable<SupportTicket> observable = AppObservable.bindFragment(this,
+                    apiMessenger.createTicket(req));
+            mPostMessageSubscription = observable
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .retryWhen(new RetryWhenCaptchaReady(this))
+                    .finallyDo(new Action0() {
+                        @Override
+                        public void call() {
+                            setupStatusReady();
+                        }
+                    })
+                    .subscribe(new Observer<SupportTicket>() {
+                        @Override
+                        public void onCompleted() {
+                        }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    if (mListener != null) mListener.notifyError(getText(R.string.send_message_error), error);
-                    setupStatusReady();
-                }
-            });
+                        @Override
+                        public void onError(Throwable e) {
+                            if (mListener != null) mListener.notifyError(getText(R.string.send_message_error), e);
+                        }
 
+                        @Override
+                        public void onNext(SupportTicket supportTicket) {
+                            if (mListView == null) return;
+                            if (mListener != null) mListener.onSupportTicketCreated(supportTicket);
+                            mTicket = supportTicket;
+                            mSendMessageText.setText("");
+                            mAdapter.setMessages(supportTicket.posts);
+                            startPeriodicRefresh();
+                        }
+                    });
         } else {
-            apiMessenger.postReply(mTicket.ticketId, new SupportTicket.ReplyRequest(message), new Callback<SupportTicketPost>() {
-                @Override
-                public void success(SupportTicketPost supportTicket, Response response) {
-                    if (mListView == null) return;
-                    addMessageScrollToEnd(supportTicket);
-                    mSendMessageText.setText("");
-                    setupStatusReady();
-                }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    if (mListener != null)
-                        mListener.notifyError(getText(R.string.load_ticket_error), error);
-                    setupStatusReady();
-                }
-            });
+            Observable<SupportTicketPost> observable = AppObservable.bindFragment(this,
+                    apiMessenger.postReply(mTicket.ticketId, new SupportTicket.ReplyRequest(message)));
+            mPostMessageSubscription = observable
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .retryWhen(new RetryWhenCaptchaReady(this))
+                    .finallyDo(new Action0() {
+                        @Override
+                        public void call() {
+                            setupStatusReady();
+                        }
+                    })
+                    .subscribe(new Observer<SupportTicketPost>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (mListener != null)
+                                mListener.notifyError(getText(R.string.load_ticket_error), e);
+                        }
+
+                        @Override
+                        public void onNext(SupportTicketPost supportTicketPost) {
+                            if (mListView == null) return;
+                            addMessageScrollToEnd(supportTicketPost);
+                            mSendMessageText.setText("");
+                        }
+                    });
         }
     }
 
@@ -379,22 +415,39 @@ public class ConversationFragment extends Fragment {
         if (DBG) Log.v(TAG, "sendImage image uri: " + imageUri);
         ApiSupport apiMessenger = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
 
-        setupStatusSending();
-        apiMessenger.uploadFile(new ContentTypedOutput(getActivity(), imageUri, null), new Callback<UploadFileResponse>() {
-            @Override
-            public void success(UploadFileResponse response, Response response2) {
-                sendMessage(mSendMessageText.getText().toString() + "\n" + response.getLinkAImg());
-                deleteTakenPicture();
-            }
+        mPostMessageSubscription.unsubscribe();
 
-            @Override
-            public void failure(RetrofitError error) {
-                if (mListener != null)
-                    mListener.notifyError(getText(R.string.send_message_error), error);
-                setupStatusReady();
-                deleteTakenPicture();
-            }
-        });
+        setupStatusSending();
+
+        Observable<UploadFileResponse> observable = AppObservable.bindFragment(this,
+                apiMessenger.uploadFile(new ContentTypedOutput(getActivity(), imageUri, null)));
+
+        mPostMessageSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        deleteTakenPicture();
+                    }
+                })
+                .subscribe(new Observer<UploadFileResponse>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (mListener != null)
+                            mListener.notifyError(getText(R.string.send_message_error), e);
+                        setupStatusReady();
+                    }
+
+                    @Override
+                    public void onNext(UploadFileResponse response) {
+                        sendMessage(mSendMessageText.getText().toString() + "\n" + response.getLinkAImg());
+                    }
+                });
     }
 
     private void setupStatusSending() {
@@ -423,29 +476,42 @@ public class ConversationFragment extends Fragment {
     }
 
     private void refreshMessages(boolean showSpinner) {
-        if (mLoading) return;
+        if (!mRefreshMessagesSubscription.isUnsubscribed()) return;
         if (mTicket == null) return;
 
         ApiSupport api = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
         if (showSpinner) getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
-        api.getTicket(mTicket.ticketId, new Callback<SupportTicket>() {
-            @Override
-            public void success(SupportTicket supportTicket, Response response) {
-                mLoading = false;
-                if (mAdapter == null) return;
-                addMessagesDoNotScrollList(supportTicket.posts);
-                getView().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-                mLoading = false;
-                if (getView() == null) return;
-                getView().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
-                if (mListener != null)
-                    mListener.notifyError(getText(R.string.load_ticket_error), error);
-            }
-        });
+        Observable<SupportTicket> observable = AppObservable.bindFragment(this,
+                api.getTicket(mTicket.ticketId));
+
+        mRefreshMessagesSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        if (getView() != null) getView().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
+                    }
+                })
+                .subscribe(new Observer<SupportTicket>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (mListener != null)
+                            mListener.notifyError(getText(R.string.load_ticket_error), e);
+                    }
+
+                    @Override
+                    public void onNext(SupportTicket supportTicket) {
+                        if (mAdapter == null) return;
+                        addMessagesDoNotScrollList(supportTicket.posts);
+                    }
+                });
     }
 
     private void addMessageScrollToEnd(SupportTicketPost message) {

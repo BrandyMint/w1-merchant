@@ -1,6 +1,5 @@
 package com.w1.merchant.android.extra;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,15 +10,10 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.TransactionHistory;
-import com.w1.merchant.android.service.ApiRequestTask;
 import com.w1.merchant.android.service.ApiUserEntry;
 import com.w1.merchant.android.utils.NetworkUtils;
 
 import java.util.Calendar;
-
-import retrofit.Callback;
-import retrofit.client.Response;
 
 public class RequestSummaryDialogFragment extends DialogFragment {
 
@@ -113,45 +107,4 @@ public class RequestSummaryDialogFragment extends DialogFragment {
 
         return root;
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    private void loadSummary() {
-
-        new ApiRequestTask<TransactionHistory>() {
-
-            int pageNumber = 1;
-
-            @Override
-            protected void doRequest(Callback<TransactionHistory> callback) {
-
-            }
-
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return null;
-            }
-
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-
-            }
-
-            @Override
-            protected void onCancelled() {
-
-            }
-
-            @Override
-            protected void onSuccess(TransactionHistory transactionHistory, Response response) {
-
-            }
-        }.execute();
-
-    }
-
 }

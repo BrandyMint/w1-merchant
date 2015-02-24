@@ -3,7 +3,6 @@ package com.w1.merchant.android.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,8 +18,7 @@ import com.w1.merchant.android.model.PaymentForm;
 import com.w1.merchant.android.model.PaymentState;
 import com.w1.merchant.android.model.SubmitPaymentFormRequest;
 import com.w1.merchant.android.service.ApiPayments;
-import com.w1.merchant.android.service.ApiRequestTask;
-import com.w1.merchant.android.service.ApiRequestTaskActivity;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -28,8 +26,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.subscriptions.Subscriptions;
 
 public class ConfirmOutActivity extends Activity {
 
@@ -43,6 +46,11 @@ public class ConfirmOutActivity extends Activity {
     private ApiPayments mApiPayments;
 
     private SubmitPaymentFormRequest mLastRequest;
+
+    private Subscription mInitPaymentStepSubscription = Subscriptions.unsubscribed();
+    private Subscription mSubmitFormSubscription = Subscriptions.unsubscribed();
+    private Subscription mGetPaymentStateSubscription = Subscriptions.unsubscribed();
+    private Subscription mSubmitForm2Subscription = Subscriptions.unsubscribed();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +72,15 @@ public class ConfirmOutActivity extends Activity {
         mApiPayments = NetworkUtils.getInstance().createRestAdapter().create(ApiPayments.class);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInitPaymentStepSubscription.unsubscribe();
+        mSubmitFormSubscription.unsubscribe();
+        mGetPaymentStateSubscription.unsubscribe();
+        mSubmitForm2Subscription.unsubscribe();
+    }
+
     private final OnClickListener myOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -79,41 +96,41 @@ public class ConfirmOutActivity extends Activity {
         }
     };
 
+    private <T> Observable<T> initObservable(Observable<T> observable) {
+        return AppObservable.bindActivity(this, observable)
+                .observeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new  Action0() {
+                    @Override
+                    public void call() {
+                        stopPBAnim();
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        CharSequence errText = ((NetworkUtils.ResponseErrorException) throwable).getErrorDescription(getText(R.string.network_error), getResources());
+                        Toast toast = Toast.makeText(ConfirmOutActivity.this, errText, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 50);
+                        toast.show();
+                    }
+                });
+    }
+
     private void initPayment() {
+        mInitPaymentStepSubscription.unsubscribe();
+
         startPBAnim();
-        new ApiRequestTask<InitPaymentStep>() {
 
-            @Override
-            protected void doRequest(Callback<InitPaymentStep> callback) {
-                mApiPayments.initTemplatePayment(new InitTemplatePaymentRequest(templateId), callback);
-            }
+        Observable<InitPaymentStep> observable = initObservable(
+                mApiPayments.initTemplatePayment(new InitTemplatePaymentRequest(templateId)));
 
-            @Nullable
+        mInitPaymentStepSubscription = observable.subscribe(new Action1<InitPaymentStep>() {
             @Override
-            protected Activity getContainerActivity() {
-                return ConfirmOutActivity.this;
-            }
-
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                stopPBAnim();
-                CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                Toast toast = Toast.makeText(ConfirmOutActivity.this, errText, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, 50);
-                toast.show();
-            }
-
-            @Override
-            protected void onCancelled() {
-                stopPBAnim();
-            }
-
-            @Override
-            protected void onSuccess(InitPaymentStep initPaymentStep, Response response) {
-                stopPBAnim();
+            public void call(InitPaymentStep initPaymentStep) {
                 onNextStep(initPaymentStep);
             }
-        }.execute();
+        });
     }
 
     //ответ на запрос Инициализация платежа с помощью шаблона
@@ -145,90 +162,67 @@ public class ConfirmOutActivity extends Activity {
     private void submitForm() {
         final SubmitPaymentFormRequest form = mLastRequest;
 
+        mSubmitFormSubscription.unsubscribe();
+
         startPBAnim();
-        new ApiRequestTaskActivity<InitPaymentStep>(this, R.string.payment_not) {
 
-            @Override
-            protected void doRequest(Callback<InitPaymentStep> callback) {
-                mApiPayments.submitPaymentForm(paymentId, form, callback);
-            }
+        Observable<InitPaymentStep> observable = initObservable(
+                mApiPayments.submitPaymentForm(paymentId, form));
 
+        mSubmitFormSubscription = observable.subscribe(new Action1<InitPaymentStep>() {
             @Override
-            protected void stopAnimation() {
-                stopPBAnim();
-            }
-
-            @Override
-            protected void onSuccess(InitPaymentStep initPaymentStep, Response response, Activity activity) {
-                stopPBAnim();
+            public void call(InitPaymentStep initPaymentStep) {
                 getPaymentState(String.valueOf(initPaymentStep.paymentId));
             }
-
-
-        }.execute();
+        });
     }
 
     //ответ на запрос Получение состояния платежа
     private void getPaymentState(final String paymentId) {
+        mGetPaymentStateSubscription.unsubscribe();
         startPBAnim();
-        new ApiRequestTaskActivity<PaymentState>(this, R.string.payment_not) {
 
-            @Override
-            protected void doRequest(Callback<PaymentState> callback) {
-                mApiPayments.getPaymentState(paymentId, callback);
-            }
+        Observable<PaymentState> observable = initObservable(
+                mApiPayments.getPaymentState(paymentId));
 
-            @Override
-            protected void stopAnimation() {
-                stopPBAnim();
-            }
-
-            @Override
-            protected void onSuccess(PaymentState paymentState, Response response, Activity activity) {
-                if (PaymentState.PAYMENT_STATE_UPDATED.equals(paymentState.stateId)
-                        || PaymentState.PAYMENT_STATE_PROCESSING.equals(paymentState.stateId)
-                        || PaymentState.PAYMENT_STATE_CHECKING.equals(paymentState.stateId)
-                        || PaymentState.PAYMENT_STATE_PAYING.equals(paymentState.stateId)
-                        ) {
-                    // Повторное заполнение формы платежа
-                    submitForm2();
-                } else {
-                    Toast toast = Toast.makeText(activity,
-                            getString(R.string.payment_error), Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 0, 50);
-                    toast.show();
-                }
-            }
-
-        }.execute();
+        mGetPaymentStateSubscription = observable
+                .subscribe(new Action1<PaymentState>() {
+                    @Override
+                    public void call(PaymentState paymentState) {
+                        if (PaymentState.PAYMENT_STATE_UPDATED.equals(paymentState.stateId)
+                                || PaymentState.PAYMENT_STATE_PROCESSING.equals(paymentState.stateId)
+                                || PaymentState.PAYMENT_STATE_CHECKING.equals(paymentState.stateId)
+                                || PaymentState.PAYMENT_STATE_PAYING.equals(paymentState.stateId)
+                                ) {
+                            // Повторное заполнение формы платежа
+                            submitForm2();
+                        } else {
+                            Toast toast = Toast.makeText(ConfirmOutActivity.this,
+                                    getString(R.string.payment_error), Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 50);
+                            toast.show();
+                        }
+                    }
+                });
     }
 
     private void submitForm2() {
+        mSubmitForm2Subscription.unsubscribe();
         startPBAnim();
 
         final SubmitPaymentFormRequest form = new SubmitPaymentFormRequest("$Final", mLastRequest.params);
+        Observable<InitPaymentStep> observable = initObservable(
+                mApiPayments.submitPaymentForm(paymentId, form));
 
-        new ApiRequestTaskActivity<InitPaymentStep>(this, R.string.payment_error) {
-
-            @Override
-            protected void doRequest(Callback<InitPaymentStep> callback) {
-                mApiPayments.submitPaymentForm(paymentId, form, callback);
-            }
-
-            @Override
-            protected void stopAnimation() {
-                stopPBAnim();
-            }
-
-            @Override
-            protected void onSuccess(InitPaymentStep initPaymentStep, Response response, Activity activity) {
-                Intent intent = new Intent(ConfirmOutActivity.this, ConfirmPayment.class);
-                intent.putExtra("sum", sumComis);
-                startActivity(intent);
-                ConfirmOutActivity.this.finish();
-            }
-
-        }.execute();
+        mSubmitForm2Subscription = observable.subscribe(new Action1<InitPaymentStep>() {
+                    @Override
+                    public void call(InitPaymentStep initPaymentStep) {
+                        Intent intent = new Intent(ConfirmOutActivity.this, ConfirmPayment.class);
+                        intent.putExtra("sum", sumComis);
+                        startActivity(intent);
+                        ConfirmOutActivity.this.finish();
+                    }
+                });
     }
 
     void startPBAnim() {

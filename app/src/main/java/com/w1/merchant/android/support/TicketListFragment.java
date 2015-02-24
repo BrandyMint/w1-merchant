@@ -21,14 +21,18 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.model.SupportTicket;
 import com.w1.merchant.android.model.SupportTickets;
 import com.w1.merchant.android.service.ApiSupport;
-import com.w1.merchant.android.service.ApiRequestTask;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.viewextended.DividerItemDecoration;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.Subscriptions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,9 +60,9 @@ public class TicketListFragment extends Fragment {
 
     private TicketListAdapter mAdapter;
 
-    private boolean mLoading;
-
     private Handler mRefreshDatesHandler;
+
+    private Subscription mRefreshConversationsSubscription = Subscriptions.unsubscribed();
 
     /**
      * Use this factory method to create a new instance of
@@ -160,6 +164,7 @@ public class TicketListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mRefreshConversationsSubscription.unsubscribe();
         stopRefreshRelativeDates();
         mRefreshDatesHandler = null;
         mListView = null;
@@ -228,49 +233,36 @@ public class TicketListFragment extends Fragment {
     public void refreshConversationList() {
         if (DBG) Log.v(TAG, "refreshConversationList");
 
-        if (mLoading) {
-            return;
-        } else {
-            mLoading = true;
-        }
+        if (!mRefreshConversationsSubscription.isUnsubscribed()) return;
 
         setStatusLoading();
 
-        ApiRequestTask<SupportTickets> rq = new ApiRequestTask<SupportTickets>() {
-            @Override
-            protected void doRequest(Callback<SupportTickets> callback) {
-                mApiSupport.getTickets(callback);
-            }
+        Observable<SupportTickets> observable = AppObservable.bindFragment(this,
+                mApiSupport.getTickets());
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return TicketListFragment.this.getActivity();
-            }
+        mRefreshConversationsSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .subscribe(new Observer<SupportTickets>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                mLoading = false;
-                if (mListView == null) return;
-                setStatusFailure(getResources().getString(R.string.load_ticket_list_error));
-                if (mListener != null) mListener.notifyError(getResources().getString(R.string.load_ticket_list_error), error);
-            }
+                    }
 
-            @Override
-            protected void onCancelled() {
-            }
+                    @Override
+                    public void onError(Throwable error) {
+                        if (mListView == null) return;
+                        setStatusFailure(getResources().getString(R.string.load_ticket_list_error));
+                        if (mListener != null) mListener.notifyError(getResources().getString(R.string.load_ticket_list_error), error);
+                    }
 
-            @Override
-            protected void onSuccess(SupportTickets supportTickets, Response response) {
-                mLoading = false;
-                if (mListView == null) return;
-                if (mAdapter != null) mAdapter.setTickets(supportTickets.items);
-                setStatusReady();
-            }
-        };
-
-        rq.execute();
-
+                    @Override
+                    public void onNext(SupportTickets supportTickets) {
+                        if (mListView == null) return;
+                        if (mAdapter != null) mAdapter.setTickets(supportTickets.items);
+                        setStatusReady();
+                    }
+                });
     }
 
 

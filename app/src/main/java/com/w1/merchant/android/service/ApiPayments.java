@@ -15,7 +15,6 @@ import com.w1.merchant.android.model.Schedule;
 import com.w1.merchant.android.model.SubmitPaymentFormRequest;
 import com.w1.merchant.android.model.Template;
 
-import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -23,67 +22,64 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 public interface ApiPayments {
 
 
     @POST("/payments")
-    public void initPayment(@Body InitPaymentRequest request, Callback<InitPaymentStep> cb);
+    public Observable<InitPaymentStep> initPayment(@Body InitPaymentRequest request);
 
     @POST("/payments")
-    public void initTemplatePayment(@Body InitTemplatePaymentRequest request, Callback<InitPaymentStep> cb);
+    public Observable<InitPaymentStep> initTemplatePayment(@Body InitTemplatePaymentRequest request);
 
     @PUT("/payments/{paymentId}")
-    public void submitPaymentForm(@Path("paymentId") String paymentId, @Body SubmitPaymentFormRequest request,
-                                  Callback<InitPaymentStep> cb);
+    public Observable<InitPaymentStep> submitPaymentForm(@Path("paymentId") String paymentId, @Body SubmitPaymentFormRequest request);
 
 
     @PUT("/payments")
-    public void submitPaymentFormExternalId(@Query("externalId") String externalId,
-                                            @Body SubmitPaymentFormRequest request,
-                                            Callback<InitPaymentStep> cb);
+    public Observable<InitPaymentStep> submitPaymentFormExternalId(@Query("externalId") String externalId,
+                                            @Body SubmitPaymentFormRequest request);
 
     @POST("/payments/{paymentId}/code")
-    public void sendPaymentOtpCode(Callback<Void> callback);
+    public Observable<Void> sendPaymentOtpCode();
 
     @GET("/payments/{paymentId}/state")
-    public void getPaymentState(@Path("paymentId") String paymentId, Callback<PaymentState> cb);
+    public Observable<PaymentState> getPaymentState(@Path("paymentId") String paymentId);
 
     @GET("/payments/{paymentId}")
-    public void getPaymentDetails(@Path("paymentId") String paymentId, Callback<PaymentDetails> cb);
+    public Observable<PaymentDetails> getPaymentDetails(@Path("paymentId") String paymentId);
 
     @GET("/payments")
-    public void getPaymentDetailsExternalId(@Query("externalId") String externalId, Callback<PaymentDetails> cb);
+    public Observable<PaymentDetails> getPaymentDetailsExternalId(@Query("externalId") String externalId);
 
     @POST("/payments/{paymentId}/check")
-    public void checkPaymentForm(@Path("paymentId") String paymentId, Callback<PaymentDetails> cb);
+    public Observable<PaymentDetails> checkPaymentForm(@Path("paymentId") String paymentId);
 
     @GET("/payments/templates/{templateId}")
-    public void getTemplate(@Path("templateId") String templateId, Callback<Template> cb);
+    public Observable<Template> getTemplate(@Path("templateId") String templateId);
 
     @GET("/payments/templates")
-    public void getTemplates(Callback<Template.TempateList> cb);
+    public Observable<Template.TempateList> getTemplates();
 
     @GET("/payments/templates")
-    public void getTemplates(@Query("hasSchedule") Boolean hasSchedule, Callback<Template.TempateList> cb);
+    public Observable<Template.TempateList> getTemplates(@Query("hasSchedule") Boolean hasSchedule);
 
     @DELETE("/payments/templates/{templateId}")
-    public void deleteTemplate(@Path("templateId") String templateId, Callback<Void> cb);
+    public Observable<Void> deleteTemplate(@Path("templateId") String templateId);
 
     @GET("/providers")
-    public void getProviders(@Query("page") int page, @Query("itemsPerPage") int itemsPerPage,
+    public Observable<ProviderList> getProviders(@Query("page") int page, @Query("itemsPerPage") int itemsPerPage,
                              @Nullable @Query("providerGroupId") String providerGroupId,
                              @Nullable @Query("locationId") String locationId,
                              @Nullable @Query("searchString") String searchString,
-                             @Nullable @Query("isFavourite") Boolean isFavourite,
-                             Callback<ProviderList> cb
-                             );
+                             @Nullable @Query("isFavourite") Boolean isFavourite);
 
     @GET("/providers/{providerId}")
-    public void getProvider(@Path("providerId") String providerId, Callback<Provider> cb);
+    public Observable<Provider> getProvider(@Path("providerId") String providerId);
 
 
     @POST("/tasks")
-    public void createSchedule(@Body Schedule request, Callback<CreateScheduleResponse> response);
+    public Observable<CreateScheduleResponse> createSchedule(@Body Schedule request);
 
 }

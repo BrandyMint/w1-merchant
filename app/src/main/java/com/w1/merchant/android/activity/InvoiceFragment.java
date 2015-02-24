@@ -3,7 +3,6 @@ package com.w1.merchant.android.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -29,15 +28,20 @@ import com.w1.merchant.android.extra.InvoicesAdapter;
 import com.w1.merchant.android.model.Invoice;
 import com.w1.merchant.android.model.Invoices;
 import com.w1.merchant.android.service.ApiInvoices;
-import com.w1.merchant.android.service.ApiRequestTask;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class InvoiceFragment extends Fragment {
 
@@ -56,6 +60,8 @@ public class InvoiceFragment extends Fragment {
     private int mCurrentPage = 1;
 
     private String mSearchString;
+
+    private Subscription mGetInvoicesSubscription = Subscriptions.empty();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,6 +205,12 @@ public class InvoiceFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mGetInvoicesSubscription.unsubscribe();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -210,63 +222,58 @@ public class InvoiceFragment extends Fragment {
     }
 
     private void refreshList() {
+        mGetInvoicesSubscription.unsubscribe();
         mListener.startProgress();
 
-        new ApiRequestTask<Invoices>() {
+        final String invoiceStateId;
+        switch (srgInvoice.getCheckedRadioButtonId()) {
+            case R.id.rbPaid:
+                invoiceStateId = Invoice.STATE_ACCEPTED;
+                break;
+            case R.id.rbNotPaid:
+                invoiceStateId = Invoice.STATE_CREATED;
+                break;
+            case R.id.rbPartially:
+                invoiceStateId = Invoice.STATE_CREATED;
+                break;
+            default:
+                invoiceStateId = null;
+                break;
+        }
 
-            @Override
-            protected void doRequest(Callback<Invoices> callback) {
-                final String invoiceStateId;
-                switch (srgInvoice.getCheckedRadioButtonId()) {
-                    case R.id.rbPaid:
-                        invoiceStateId = Invoice.STATE_ACCEPTED;
-                        break;
-                    case R.id.rbNotPaid:
-                        invoiceStateId = Invoice.STATE_CREATED;
-                        break;
-                    case R.id.rbPartially:
-                        invoiceStateId = Invoice.STATE_CREATED;
-                        break;
-                    default:
-                        invoiceStateId = null;
-                        break;
-                }
+        Observable<Invoices> observable = AppObservable.bindFragment(this,
                 mApiInvoices.getInvoices(mCurrentPage,
-                        ITEMS_PER_PAGE, invoiceStateId, null, null, null, mSearchString, callback);
-            }
+                        ITEMS_PER_PAGE, invoiceStateId, null, null, null, mSearchString));
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return InvoiceFragment.this.getActivity();
-            }
+        mGetInvoicesSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        if (mListener != null) mListener.stopProgress();
+                    }
+                }).subscribe(new Observer<Invoices>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                    Toast toast = Toast.makeText(getContainerActivity(), errText, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 0, 50);
-                    toast.show();
-                }
-            }
+                    }
 
-            @Override
-            protected void onCancelled() {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (mListener != null) {
+                            CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                            Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 50);
+                            toast.show();
+                        }
+                    }
 
-            @Override
-            protected void onSuccess(Invoices invoices, Response response) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    addUserEntry(invoices);
-                }
-            }
-        }.execute();
+                    @Override
+                    public void onNext(Invoices invoices) {
+                        addUserEntry(invoices);
+                    }
+                });
     }
 
     private void addUserEntry(Invoices newData) {

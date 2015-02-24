@@ -16,7 +16,6 @@
 
 package com.w1.merchant.android.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -59,8 +58,8 @@ import com.w1.merchant.android.extra.DialogExit;
 import com.w1.merchant.android.model.Balance;
 import com.w1.merchant.android.model.Profile;
 import com.w1.merchant.android.service.ApiProfile;
-import com.w1.merchant.android.service.ApiRequestTask;
 import com.w1.merchant.android.service.ApiSessions;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.support.TicketListActivity;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -73,9 +72,13 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class MenuActivity extends FragmentActivity implements UserEntryFragment.OnFragmentInteractionListener,
     InvoiceFragment.OnFragmentInteractionListener,
@@ -106,6 +109,8 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     private boolean mIsBusinessAccount = false;
 
     private NavDrawerMenu mNavDrawerMenu;
+
+    private Subscription mProfileSubscription = Subscriptions.unsubscribed();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,55 +245,57 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     void loadProfile() {
-        new ApiRequestTask<Profile>() {
+        mProfileSubscription.unsubscribe();
 
-            @Override
-            protected void doRequest(Callback<Profile> callback) {
-                NetworkUtils.getInstance().createRestAdapter().create(ApiProfile.class).getProfile(callback);
-            }
+        ApiProfile apiProfile = NetworkUtils.getInstance().createRestAdapter().create(ApiProfile.class);
+        Observable<Profile> observable = AppObservable.bindActivity(this, apiProfile.getProfile());
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return MenuActivity.this;
-            }
+        mProfileSubscription = observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .subscribe(new Observer<Profile>() {
 
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                Toast toast = Toast.makeText(getContainerActivity(), errText, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, 50);
-                toast.show();
-            }
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            protected void onCancelled() {
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        CharSequence errText;
+                        if (e instanceof NetworkUtils.ResponseErrorException) {
+                            errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error));
+                        } else {
+                            errText = getText(R.string.network_error);
+                        }
+                        Toast toast = Toast.makeText(MenuActivity.this, errText, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 50);
+                        toast.show();
+                    }
 
-            @Override
-            protected void onSuccess(Profile profile, Response response) {
-                Profile.Attribute title = profile.findTitle();
-                Profile.Attribute url = profile.findMerchantUrl();
-                Profile.Attribute logo = profile.findMerchantLogo();
+                    @Override
+                    public void onNext(Profile profile) {
+                        Profile.Attribute title = profile.findTitle();
+                        Profile.Attribute url = profile.findMerchantUrl();
+                        Profile.Attribute logo = profile.findMerchantLogo();
 
-                if (logo == null || TextUtils.isEmpty(logo.displayValue)) {
-                    Picasso.with(MenuActivity.this)
-                            .load(R.drawable.no_avatar)
-                            .transform(CircleTransformation.getInstance())
-                            .into(ivAccountIcon);
-                } else {
-                    Picasso.with(MenuActivity.this)
-                            .load(logo.displayValue)
-                            .transform(CircleTransformation.getInstance())
-                            .into(ivAccountIcon);
-                }
+                        if (logo == null || TextUtils.isEmpty(logo.displayValue)) {
+                            Picasso.with(MenuActivity.this)
+                                    .load(R.drawable.no_avatar)
+                                    .transform(CircleTransformation.getInstance())
+                                    .into(ivAccountIcon);
+                        } else {
+                            Picasso.with(MenuActivity.this)
+                                    .load(logo.displayValue)
+                                    .transform(CircleTransformation.getInstance())
+                                    .into(ivAccountIcon);
+                        }
 
-                ((TextView)findViewById(R.id.tvName)).setText(title == null ? "" : title.displayValue);
-                ((TextView)findViewById(R.id.account_id)).setText(TextUtilsW1.formatUserId(profile.userId));
-                ((TextView)findViewById(R.id.tvUrl)).setText(url == null ? "" : url.displayValue);
-                mIsBusinessAccount = "Business".equals(profile.accountTypeId);
-            }
-        }.execute();
+                        ((TextView) findViewById(R.id.tvName)).setText(title == null ? "" : title.displayValue);
+                        ((TextView) findViewById(R.id.account_id)).setText(TextUtilsW1.formatUserId(profile.userId));
+                        ((TextView) findViewById(R.id.tvUrl)).setText(url == null ? "" : url.displayValue);
+                        mIsBusinessAccount = "Business".equals(profile.accountTypeId);
+                    }
+                });
     }
 
     @Override
@@ -299,6 +306,12 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mProfileSubscription.unsubscribe();
     }
 
     @Override
@@ -459,19 +472,20 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
         finish();
     }
 
+
     //закрытие сессии
     void closeSession() {
-        NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class).logout(new Callback<Void>() {
-            @Override
-            public void success(Void aVoid, Response response) {
-                Session.getInstance().clear();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Session.getInstance().clear();
-            }
-        });
+        Observable<Void> observer =
+                NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class).logout();
+        observer
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        Session.getInstance().clear();
+                    }
+                })
+                .subscribe();
     }
 
     public void startPBAnim() {

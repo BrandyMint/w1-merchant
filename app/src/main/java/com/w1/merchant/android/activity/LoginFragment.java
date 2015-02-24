@@ -38,8 +38,8 @@ import com.w1.merchant.android.model.AuthModel;
 import com.w1.merchant.android.model.AuthPrincipalRequest;
 import com.w1.merchant.android.model.OneTimePassword;
 import com.w1.merchant.android.model.PrincipalUser;
-import com.w1.merchant.android.service.ApiRequestTask;
 import com.w1.merchant.android.service.ApiSessions;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -50,8 +50,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class LoginFragment extends Fragment {
     private static final String TAG = Constants.LOG_TAG;
@@ -78,6 +83,11 @@ public class LoginFragment extends Fragment {
     private String mLogin;
 
     private OnFragmentInteractionListener mListener;
+
+    private Subscription mLoginSubscription = Subscriptions.unsubscribed();
+    private Subscription mRequestPrincipalUsersSubscription = Subscriptions.unsubscribed();
+    private Subscription mAuthPrincipalSubscription = Subscriptions.unsubscribed();
+    private Subscription mSendOneTimePasswordSubscription = Subscriptions.unsubscribed();
 
     public LoginFragment newInstance() {
         return new LoginFragment();
@@ -201,13 +211,17 @@ public class LoginFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (BuildConfig.DEBUG && "debug".equals(BuildConfig.BUILD_TYPE) && !TextUtils.isEmpty(BuildConfig.API_TEST_USER)) {
             // Ибо заебал
-            attemptLogin(BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS);
+            // attemptLogin(BuildConfig.API_TEST_USER, BuildConfig.API_TEST_PASS);
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mLoginSubscription.unsubscribe();
+        mRequestPrincipalUsersSubscription.unsubscribe();
+        mAuthPrincipalSubscription.unsubscribe();
+        mSendOneTimePasswordSubscription.unsubscribe();
         mLoginTextView = null;
         mAuthButton = null;
         mForgotButton = null;
@@ -305,104 +319,153 @@ public class LoginFragment extends Fragment {
         attemptLogin(mLoginTextView.getText().toString(), mPasswordView.getText().toString());
     }
 
-    private abstract class ApiSubrequestTask<T> extends ApiRequestTask<T> {
+    void actionOnError(Throwable e) {
+        if (getActivity() == null) return;
+        NetworkUtils.ResponseErrorException error = (NetworkUtils.ResponseErrorException)e;
+        Toast toast;
+        CharSequence errMsg;
 
-        @Nullable
-        @Override
-        protected Activity getContainerActivity() {
-            return LoginFragment.this.getActivity();
-        }
+        Session.getInstance().clear();
 
-        @Override
-        protected void onFailure(NetworkUtils.ResponseErrorException error) {
-            if (DBG) Log.v(TAG, "auth error", error);
-            if (getContainerActivity() == null) return;
-            Toast toast;
-            CharSequence errMsg;
-
-            errMsg = error.getErrorDescription();
-            if (TextUtils.isEmpty(errMsg)) {
-                switch (error.getHttpStatus()) {
-                    case 400:
-                        errMsg = getText(R.string.bad_password);
-                        break;
-                    case 404:
-                        errMsg = getText(R.string.user_not_found);
-                        break;
-                    default:
-                        errMsg = getText(R.string.network_error);
-                        break;
-                }
+        if (error.isErrorCaptchaRequired() || error.isErrorInvalidCaptcha()) return;
+        errMsg = error.getErrorDescription(getResources());
+        if (TextUtils.isEmpty(errMsg)) {
+            switch (error.getHttpStatus()) {
+                case 400:
+                    errMsg = getText(R.string.bad_password);
+                    break;
+                case 404:
+                    errMsg = getText(R.string.user_not_found);
+                    break;
+                default:
+                    errMsg = getText(R.string.network_error);
+                    break;
             }
-
-            toast = Toast.makeText(getContainerActivity(), errMsg, Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 0, 50);
-            toast.show();
-            Session.getInstance().clear();
-            setProgress(false);
         }
 
-        @Override
-        protected void onCancelled() {
-            if (getContainerActivity() == null) return;
-            if (DBG) Toast.makeText(getContainerActivity(), R.string.canceled, Toast.LENGTH_SHORT).show();
-            setProgress(false);
-        }
+        toast = Toast.makeText(getActivity(), errMsg, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP, 0, 50);
+        toast.show();
     }
 
     private void attemptLogin(final String login, final String password) {
-
         mLogin = login;
+        mLoginSubscription.unsubscribe();
 
-        new ApiSubrequestTask<AuthModel>() {
+        Observable<AuthModel> observer = AppObservable.bindFragment(this, mApiSessions.auth(new AuthCreateModel(login, password)));
 
-            @Override
-            protected void doRequest(Callback<AuthModel> callback) {
-                mApiSessions.auth(new AuthCreateModel(login, password), callback);
-            }
+        mLoginSubscription = observer
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this) {
+                    @Override
+                    protected void onInvalidToken() {
+                        // Ничего не делаем, обработаем в onError
+                    }
+                })
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        setProgress(false);
+                    }
+                }).subscribe(new Observer<AuthModel>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onSuccess(AuthModel response, Response responseRaw) {
-                if (DBG) Log.v(TAG, "auth success ");
-                Session.getInstance().setAuth(response);
-                requestPrincipalUsers(response);
-            }
-        }.execute();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (DBG) Log.v(TAG, "auth error", e);
+                        actionOnError(e);
+                    }
+
+                    @Override
+                    public void onNext(AuthModel response) {
+                        if (DBG) Log.v(TAG, "auth success ");
+                        Session.getInstance().setAuth(response);
+                        requestPrincipalUsers(response);
+                    }
+                });
         setProgress(true);
     }
 
     void requestPrincipalUsers(final AuthModel authModel) {
-        new ApiSubrequestTask<List<PrincipalUser>>() {
+        mRequestPrincipalUsersSubscription.unsubscribe();
 
-            @Override
-            protected void doRequest(Callback<List<PrincipalUser>> callback) {
-                mApiSessions.getPrincipalUsers(callback);
-            }
+        Observable<List<PrincipalUser>> observer = AppObservable.bindFragment(this, mApiSessions.getPrincipalUsers());
+        mRequestPrincipalUsersSubscription = observer
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this) {
+                    @Override
+                    protected void onInvalidToken() {
+                        // Ничего не делаем, обработаем в onError
+                    }
+                })
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        setProgress(false);
+                    }
+                }).subscribe(new Observer<List<PrincipalUser>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            protected void onSuccess(List<PrincipalUser> principalUsers, Response response) {
-                if (principalUsers == null || principalUsers.isEmpty()) {
-                    onAuthDone(authModel);
-                } else {
-                    selectPrincipal(principalUsers.get(0));
-                }
-            }
-        }.execute();
+                    @Override
+                    public void onError(Throwable e) {
+                        if (DBG) Log.v(TAG, "getPrincipalUsers error", e);
+                        actionOnError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<PrincipalUser> principalUsers) {
+                        if (principalUsers == null || principalUsers.isEmpty()) {
+                            onAuthDone(authModel);
+                        } else {
+                            selectPrincipal(principalUsers.get(0));
+                        }
+                    }
+                });
+        setProgress(true);
     }
 
     void selectPrincipal(final PrincipalUser user) {
-        new ApiSubrequestTask<AuthModel>() {
+        mAuthPrincipalSubscription.unsubscribe();
+        Observable<AuthModel> observer = AppObservable.bindFragment(this,
+                mApiSessions.authPrincipal(new AuthPrincipalRequest(user.principalUserId)));
 
-            @Override
-            protected void doRequest(Callback<AuthModel> callback) {
-                mApiSessions.authPrincipal(new AuthPrincipalRequest(user.principalUserId), callback);
-            }
+        mAuthPrincipalSubscription = observer
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this) {
+                    @Override
+                    protected void onInvalidToken() {
+                        // Ничего не делаем, обработаем в onError
+                    }
+                })
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        setProgress(false);
+                    }
+                })
+                .subscribe(new Observer<AuthModel>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onSuccess(AuthModel authModel, Response response) {
-                onAuthDone(authModel);
-            }
-        }.execute();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (DBG) Log.v(TAG, "selectPrincipal error", e);
+                        actionOnError(e);
+                    }
+
+                    @Override
+                    public void onNext(AuthModel authModel) {
+                        onAuthDone(authModel);
+                    }
+                });
+        setProgress(true);
     }
 
     private void onAuthDone(AuthModel authModel) {
@@ -425,54 +488,57 @@ public class LoginFragment extends Fragment {
         final String login = mLoginTextView.getText().toString();
         mVibrator.vibrate(VIBRATE_TIME_MS);
 
+        mSendOneTimePasswordSubscription.unsubscribe();
+
+        Observable<Void> observer = AppObservable.bindFragment(this,
+                mApiSessions.sendOneTimePassword(new OneTimePassword.Request(login)));
+
+        mSendOneTimePasswordSubscription = observer
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this) {
+                    @Override
+                    protected void onInvalidToken() {
+                        // Ничего не делаем, обработаем в onError
+                    }
+                })
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        setProgress(false);
+                    }
+                })
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onCompleted() {
+                        if (LoginFragment.this.getActivity() == null) return;
+                        Toast toast = Toast.makeText(LoginFragment.this.getActivity(), getString(R.string.pass_sent,
+                                mLoginTextView.getText().toString()), Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 50);
+                        toast.show();
+                        setProgress(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        NetworkUtils.ResponseErrorException error = (NetworkUtils.ResponseErrorException)e;
+                        if (DBG) Log.v(TAG, "sendOneTimePassword error", error);
+                        if (error.getHttpStatus() >= 200 && error.getHttpStatus() < 300) {
+                            // Ignore malformed JSON ("")
+                            onCompleted();
+                        } else {
+                            if (LoginFragment.this.getActivity() == null) return;
+                            CharSequence errText = error.getErrorDescription(getText(R.string.failed_to_send_one_time_password));
+                            Toast toast = Toast.makeText(LoginFragment.this.getActivity(), errText, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 50);
+                            toast.show();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                    }
+                });
         setProgress(true);
-        new ApiRequestTask<Void>() {
-
-            @Override
-            protected void doRequest(Callback<Void> callback) {
-                mApiSessions.sendOneTimePassword(new OneTimePassword.Request(login), callback);
-            }
-
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return LoginFragment.this.getActivity();
-            }
-
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                if (DBG) Log.v(TAG, "sendOneTimePassword error", error);
-                setProgress(false);
-                if (error.getHttpStatus() >= 200 && error.getHttpStatus() < 300) {
-                    // Ignore malformed JSON ("")
-                    onSuccess(null, error.getRetrofitError().getResponse());
-                } else {
-                    if (LoginFragment.this.getActivity() == null) return;
-                    CharSequence errText = error.getErrorDescription(getText(R.string.failed_to_send_one_time_password));
-                    Toast toast = Toast.makeText(LoginFragment.this.getActivity(), errText, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 0, 50);
-                    toast.show();
-                    setProgress(false);
-                }
-            }
-
-            @Override
-            protected void onCancelled() {
-                if (LoginFragment.this.getActivity() == null) return;
-                if (DBG) Toast.makeText(LoginFragment.this.getActivity(), R.string.canceled, Toast.LENGTH_SHORT).show();
-                setProgress(false);
-            }
-
-            @Override
-            protected void onSuccess(Void aVoid, Response response) {
-                if (LoginFragment.this.getActivity() == null) return;
-                Toast toast = Toast.makeText(LoginFragment.this.getActivity(), getString(R.string.pass_sent,
-                        mLoginTextView.getText().toString()), Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, 50);
-                toast.show();
-                setProgress(false);
-            }
-        }.execute();
     }
 
     //Проверка логина и пароля на пустоту

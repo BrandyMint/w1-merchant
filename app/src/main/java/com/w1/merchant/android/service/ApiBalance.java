@@ -4,9 +4,9 @@ import com.w1.merchant.android.model.Balance;
 
 import java.util.List;
 
-import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import rx.Observable;
 
 /**
  * Created by alexey on 09.02.15.
@@ -14,9 +14,9 @@ import retrofit.http.Path;
 public interface ApiBalance {
 
     @GET("/balance")
-    public void getBalance(Callback<List<Balance>> cb);
+    public Observable<List<Balance>> getBalance();
 
     @GET("/balance/{currencyId}")
-    public void getBalance(@Path("currencyId") String currencyId, Callback<Balance> cb);
+    public Observable<Balance> getBalance(@Path("currencyId") String currencyId);
 
 }
