@@ -6,7 +6,7 @@
 
     <integer name="ga_sessionTimeout">300</integer>
     <bool name="ga_autoActivityTracking">true</bool>
-    <string name="ga_trackingId">UA-55389353-1</string>
+    <string name="ga_trackingId">UA-55389353-2</string>
 
     <screenName name="com.w1.merchant.android.activity.LoginActivity">
         Логин
