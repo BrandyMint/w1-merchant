@@ -61,6 +61,7 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
 
         setDescription("");
         setNoDataTextDescription("");
+        setNoDataText("");
         setHighlightEnabled(true);
         setTouchEnabled(true);
         setDoubleTapToZoomEnabled(false);
