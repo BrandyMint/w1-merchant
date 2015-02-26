@@ -192,12 +192,13 @@
 
     <string name="remove_attachment">Remove this attachment</string>
 
+    <string name="error_you_must_enter_the_verification_code">You must enter the verification code</string>
     <string name="enter_captcha_hint">Enter the text you see in the picture</string>
 
     <string name="network_error">Network error. Please try again later</string>
     <string name="enter_captcha_error">Please enter code from image</string>
     <string name="refresh">Refresh</string>
-    <string name="captcha_wrong_code">Wrong code. Please try again.</string>
+    <string name="error_captcha_wrong_code">Wrong code. Please try again.</string>
 
     <string name="recipient_title">Recipient title</string>
     <string name="from_wallet">From wallet</string>
@@ -252,6 +253,8 @@
     <string name="text_banner_3">Payment history</string>
     <string name="text_banner_4">Invoicing</string>
     <string name="text_banner_btn">OK</string>
+
+
 
 </resources>
 

@@ -3,10 +3,6 @@ package com.w1.merchant.android.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.CornerPathEffect;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -47,9 +43,9 @@ import com.w1.merchant.android.model.Balance;
 import com.w1.merchant.android.model.TransactionHistory;
 import com.w1.merchant.android.model.TransactionHistoryEntry;
 import com.w1.merchant.android.service.ApiBalance;
-import com.w1.merchant.android.service.ApiRequestTask;
 import com.w1.merchant.android.service.ApiUserEntry;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
@@ -66,8 +62,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class DashFragment extends Fragment {
 
@@ -89,7 +90,6 @@ public class DashFragment extends Fragment {
     LineChart mChart;
 
     private int mCurrentPage = 1;
-    private int mCurrentPageUEGraph = 1;
 
     public int currentPlot = PLOT_24;
 
@@ -107,6 +107,10 @@ public class DashFragment extends Fragment {
     private ApiBalance mApiBalance;
 
     private Collection<TransactionHistoryEntry> mHistory60day;
+
+    private Subscription mRefreshBalanceSubscription = Subscriptions.empty();
+    private Subscription mLoadTransactionsSubscription = Subscriptions.empty();
+    private TransactionStatsDaysDataLoader mHistoryDataLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -179,6 +183,18 @@ public class DashFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mRefreshBalanceSubscription.unsubscribe();
+        mLoadTransactionsSubscription.unsubscribe();
+        if (mHistoryDataLoader != null && !mHistoryDataLoader.isCancelled()) {
+            mHistoryDataLoader.cancel();
+            mListener.stopProgress();
+            mHistoryDataLoader = null;
+        }
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -186,7 +202,6 @@ public class DashFragment extends Fragment {
 
     public void refreshDashboard() {
         clearDataArrays();
-        mCurrentPageUEGraph = 1;
         mCurrentPage = 1;
         refreshBalance();
     }
@@ -255,47 +270,45 @@ public class DashFragment extends Fragment {
     }
 
     void refreshTransactionHistory() {
+        mLoadTransactionsSubscription.unsubscribe();
         mListener.startProgress();
-        new ApiRequestTask<TransactionHistory>() {
 
-            @Override
-            protected void doRequest(Callback<TransactionHistory> callback) {
+        Observable<TransactionHistory> observable = AppObservable.bindFragment(this,
                 mApiUserEntry.getEntries(mCurrentPage, TRANSACTION_HISTORY_ITEMS_PER_PAGE,
                         null, null, null, null,
                         mListener.getCurrency(),
-                        null, null, callback);
-            }
+                        null, null));
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return DashFragment.this.getActivity();
-            }
+        mLoadTransactionsSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        if (mListener != null) mListener.stopProgress();
+                    }
+                })
+                .subscribe(new Observer<TransactionHistory>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                    Toast toast = Toast.makeText(getContainerActivity(), errText, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 0, 50);
-                    toast.show();
-                }
-            }
+                    }
 
-            @Override
-            protected void onCancelled() {
-                if (mListener != null) mListener.stopProgress();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (getActivity() != null) {
+                            CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                            Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 50);
+                            toast.show();
+                        }
+                    }
 
-            @Override
-            protected void onSuccess(TransactionHistory transactionHistory, Response response) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    addTransactionHistoryResult(transactionHistory);
-                }
-            }
-        }.execute();
+                    @Override
+                    public void onNext(TransactionHistory transactionHistory) {
+                        addTransactionHistoryResult(transactionHistory);
+                    }
+                });
     }
 
     private void addTransactionHistoryResult(TransactionHistory newData) {
@@ -395,105 +408,72 @@ public class DashFragment extends Fragment {
     }
 
     private void refreshBalance() {
+        mRefreshBalanceSubscription.unsubscribe();
+
         mListener.startProgress();
-        new ApiRequestTask<List<Balance>>() {
+        Observable<List<Balance>> observer = AppObservable.bindFragment(this,
+                mApiBalance.getBalance());
+        mRefreshBalanceSubscription = observer
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        if (mListener != null) mListener.stopProgress();
+                    }})
+                .subscribe(new Observer<List<Balance>>() {
+                    @Override
+                    public void onCompleted() {}
 
-            @Override
-            protected void doRequest(Callback<List<Balance>> callback) {
-                mApiBalance.getBalance(callback);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                        Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 50);
+                        toast.show();
+                    }
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return DashFragment.this.getActivity();
-            }
-
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                    Toast toast = Toast.makeText(getContainerActivity(), errText, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 0, 50);
-                    toast.show();
-                }
-            }
-
-            @Override
-            protected void onCancelled() {
-                if (mListener != null) mListener.stopProgress();
-            }
-
-            @Override
-            protected void onSuccess(List<Balance> balances, Response response) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    mListener.onBalanceLoaded(balances);
-                    mCurrentPageUEGraph = 1;
-                    refreshTransactionHistory();
-                    refresh60DayData();
-                }
-            }
-        }.execute();
+                    @Override
+                    public void onNext(List<Balance> balances) {
+                        if (mListener != null) {
+                            mListener.onBalanceLoaded(balances);
+                            refreshTransactionHistory();
+                            refresh60DayData();
+                        }
+                    }
+                });
     }
 
     private void refresh60DayData() {
-        mListener.startProgress();
-        final Calendar cal60DaysAgo = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-        cal60DaysAgo.add(Calendar.DAY_OF_MONTH, -60);
+        if (mHistoryDataLoader != null && !mHistoryDataLoader.isCancelled()) {
+            mHistoryDataLoader.cancel();
+            mListener.stopProgress();
+        }
 
-        new ApiRequestTask<TransactionHistory>() {
-
-            final String date60DaysAgo = ISO8601Utils.format(cal60DaysAgo.getTime());
-
+        mHistoryDataLoader = new TransactionStatsDaysDataLoader(this, mListener.getCurrency()) {
             @Override
-            protected void doRequest(Callback<TransactionHistory> callback) {
-                mApiUserEntry.getEntries(mCurrentPageUEGraph, 1000, date60DaysAgo, null,
-                        null, null, mListener.getCurrency(), null, TransactionHistoryEntry.DIRECTION_INCOMING, callback);
-            }
-
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return DashFragment.this.getActivity();
-            }
-
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
+            public void onError(Throwable e) {
                 if (mListener != null) {
                     mListener.stopProgress();
-                    CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                    Toast toast = Toast.makeText(getContainerActivity(), errText, Toast.LENGTH_LONG);
+                    CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                    Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP, 0, 50);
                     toast.show();
                 }
             }
 
             @Override
-            protected void onCancelled() {
-                if (mListener != null) mListener.stopProgress();
-            }
-
-            @Override
-            protected void onSuccess(TransactionHistory transactionHistory, Response response) {
+            public void onCompleted(Collection<TransactionHistoryEntry> history) {
                 if (mListener != null) {
-                    if (!transactionHistory.items.isEmpty()) {
-                        mHistory60day.addAll(transactionHistory.items);
-                        mCurrentPageUEGraph += 1;
-                        if (mCurrentPageUEGraph < 300) execute();
-                    } else {
-                        mListener.stopProgress();
-                        Map<BigInteger, TransactionHistoryEntry> uniqMap = new HashMap<>(mHistory60day.size());
-                        for (TransactionHistoryEntry entry: mHistory60day) uniqMap.put(entry.entryId, entry);
-
-                        mHistory60day.clear();
-                        mHistory60day.addAll(uniqMap.values());
-                        dataGraphVPPercents();
-                    }
+                    mListener.stopProgress();
+                    mHistory60day.clear();
+                    mHistory60day.addAll(history);
+                    dataGraphVPPercents();
                 }
             }
-        }.execute();
+        };
+        mHistoryDataLoader.start();
+        mListener.startProgress();
     }
 
     private void setupChartView() {
@@ -557,31 +537,6 @@ public class DashFragment extends Fragment {
         mChart.setData(data);
         int animTime = getResources().getInteger(R.integer.graphics_anim_time);
         mChart.animateXY(animTime, animTime);
-    }
-
-    public static class HackyPaint extends Paint {
-        private final CornerPathEffect mCornerPathEffect = new CornerPathEffect(30);
-
-        public HackyPaint() {
-        }
-
-        public HackyPaint(int flags) {
-            super(flags);
-        }
-
-        public HackyPaint(Paint paint) {
-            super(paint);
-        }
-
-        @Override
-        public PathEffect setPathEffect(PathEffect effect) {
-            if (effect instanceof DashPathEffect) {
-                super.setPathEffect(mCornerPathEffect); // Хуякс
-                return effect;
-            } else {
-                return super.setPathEffect(effect);
-            }
-        }
     }
 
     public void setupPercent(String text) {
@@ -728,6 +683,103 @@ public class DashFragment extends Fragment {
         setPlot(dataPlotDayX, dataPlotDay);
         setupPercent(percentDay);
         currentPlot = DashFragment.PLOT_24;
+    }
+
+    private static abstract class TransactionStatsDaysDataLoader {
+
+        private final ApiUserEntry mApiUserEntry;
+
+        private final String mDateFrom;
+
+        private final String mCurrency;
+
+        private int mPageNo = 1;
+
+        private boolean mCancelled;
+
+        private Subscription mSubscription  = Subscriptions.unsubscribed();
+
+        private List<TransactionHistoryEntry> mHistory;
+
+        private final Fragment mFragment;
+
+        public TransactionStatsDaysDataLoader(Fragment fragment, String currency) {
+            mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
+            mFragment = fragment;
+            mHistory = new ArrayList<>();
+            mCurrency = currency;
+            final Calendar cal60DaysAgo = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+            cal60DaysAgo.add(Calendar.DAY_OF_MONTH, -60);
+            mDateFrom = ISO8601Utils.format(cal60DaysAgo.getTime());
+        }
+
+        public void start() {
+            mHistory.clear();
+            mPageNo = 1;
+            doRequest();
+        }
+
+        private void doRequest() {
+            if (mCancelled) return;
+
+
+            Observable<TransactionHistory> observable = AppObservable.bindFragment(mFragment,
+                            mApiUserEntry.getEntries(mPageNo, 1000, mDateFrom, null, null, null,
+                                    mCurrency, null, TransactionHistoryEntry.DIRECTION_INCOMING));
+
+            mSubscription = observable
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .retryWhen(new RetryWhenCaptchaReady(mFragment))
+                    .subscribe(new Observer<TransactionHistory>() {
+                        @Override
+                        public void onCompleted() { }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (mCancelled) return;
+                            TransactionStatsDaysDataLoader.this.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(TransactionHistory transactionHistory) {
+                            if (mCancelled) return;
+                            if (!transactionHistory.items.isEmpty()) {
+                                mHistory.addAll(transactionHistory.items);
+                                mPageNo += 1;
+                                if (mPageNo < 300) {
+                                    doRequest();
+                                } else {
+                                    TransactionStatsDaysDataLoader.this.sortResultOnCompleted();
+                                }
+                            } else {
+                                TransactionStatsDaysDataLoader.this.sortResultOnCompleted();
+                            }
+                        }
+                    });
+
+        }
+
+        void sortResultOnCompleted() {
+            Map<BigInteger, TransactionHistoryEntry> uniqMap = new HashMap<>(mHistory.size());
+            for (TransactionHistoryEntry entry: mHistory) uniqMap.put(entry.entryId, entry);
+
+            mHistory.clear();
+            onCompleted(uniqMap.values());
+        }
+
+        public void cancel() {
+            mCancelled  = true;
+            mSubscription.unsubscribe();
+        }
+
+        public boolean isCancelled() {
+            return mCancelled;
+        }
+
+        public abstract void onError(Throwable e);
+
+        public abstract void onCompleted(Collection<TransactionHistoryEntry> history);
+
     }
 
     public interface OnFragmentInteractionListener {

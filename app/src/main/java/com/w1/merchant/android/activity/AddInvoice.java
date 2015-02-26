@@ -10,6 +10,7 @@ import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,12 +20,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.model.Invoice;
 import com.w1.merchant.android.model.InvoiceRequest;
 import com.w1.merchant.android.service.ApiInvoices;
-import com.w1.merchant.android.service.ApiRequestTaskActivity;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.viewextended.EditTextRouble;
 
@@ -33,8 +35,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class AddInvoice extends Activity {
 
@@ -54,6 +61,8 @@ public class AddInvoice extends Activity {
     private final ArrayList<String> telEmailArray = new ArrayList<>();
 
     private ApiInvoices mApiInvoices;
+
+    private Subscription mCreateInvoiceSubscription = Subscriptions.unsubscribed();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +137,15 @@ public class AddInvoice extends Activity {
 		findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);
 		pbInvoice = (ProgressBar) findViewById(R.id.pbInvoice);
 		mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-	}	
-	
-	boolean checkFields() {
+	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCreateInvoiceSubscription.unsubscribe();
+    }
+
+    boolean checkFields() {
 		int err = 0;
 		if (TextUtils.isEmpty(mDescriptionView.getText().toString())) {
 			mDescriptionView.setError(getString(R.string.error_field));
@@ -203,32 +218,43 @@ public class AddInvoice extends Activity {
     }
 
     private void createInvoice(final String recipient, final BigDecimal amount, final String description) {
-
         pbInvoice.setVisibility(View.INVISIBLE);
-        new ApiRequestTaskActivity<Invoice>(this, R.string.network_error) {
 
-            @Override
-            protected void doRequest(Callback<Invoice> callback) {
-                mApiInvoices.createInvoice(new InvoiceRequest(recipient, amount, description, "643"), callback);
-            }
+        mCreateInvoiceSubscription.unsubscribe();
+        Observable<Invoice> observer = AppObservable.bindActivity(this,
+                mApiInvoices.createInvoice(new InvoiceRequest(recipient, amount, description, "643")));
 
-            @Override
-            protected void stopAnimation() {
-                pbInvoice.setVisibility(View.VISIBLE);
-            }
+        mCreateInvoiceSubscription = observer
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        pbInvoice.setVisibility(View.VISIBLE);
+                    }
+                })
+                .subscribe(new Observer<Invoice>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onSuccess(Invoice invoice, Response response, Activity activity) {
-                Intent intent = new Intent(AddInvoice.this, ConfirmActivity.class);
-                intent.putExtra("sum", etSum.getText().toString());
-                startActivity(intent);
-                finish();
-            }
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                        Toast toast = Toast.makeText(AddInvoice.this, errText, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 50);
+                        toast.show();
+                    }
 
-        }.execute();
+                    @Override
+                    public void onNext(Invoice invoice) {
+                        Intent intent = new Intent(AddInvoice.this, ConfirmActivity.class);
+                        intent.putExtra("sum", etSum.getText().toString());
+                        startActivity(intent);
+                        finish();
+                    }
+                });
     }
-
-
 }
 

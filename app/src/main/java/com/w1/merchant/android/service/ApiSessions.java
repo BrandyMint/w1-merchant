@@ -15,31 +15,32 @@ import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import rx.Observable;
 
 public interface ApiSessions {
 
     @GET("/sessions/current")
-    public void getCurrent(Callback<AuthModel> cb);
+    public Observable<AuthModel> getCurrent(Callback<AuthModel> cb);
 
     @POST("/sessions")
-    public void auth(@Body AuthCreateModel req, Callback<AuthModel> cb);
+    public Observable<AuthModel> auth(@Body AuthCreateModel req);
 
     @DELETE("/sessions/current")
-    public void logout(Callback<Void> cb);
+    public Observable<Void> logout();
 
     @POST("/captcha")
-    public void createCaptchaCode(@Body Captcha.CaptchaRequest request, Callback<Captcha> cb);
+    public Observable<Captcha> createCaptchaCode(@Body Captcha.CaptchaRequest request);
 
     @POST("/password/otp")
-    public void sendOneTimePassword(@Body OneTimePassword.Request request, Callback<Void> response);
+    public Observable<Void> sendOneTimePassword(@Body OneTimePassword.Request request);
 
     @POST("/password")
-    public void restorePassword(@Path("sendto") String login, Callback<Void> response);
+    public Observable<Void> restorePassword(@Path("sendto") String login);
 
     @POST("/sessions/principal")
-    public void authPrincipal(@Body AuthPrincipalRequest request, Callback<AuthModel> cb);
+    public Observable<AuthModel> authPrincipal(@Body AuthPrincipalRequest request);
 
     @GET("/principalusers")
-    public void getPrincipalUsers(Callback<List<PrincipalUser>> cb);
+    public Observable<List<PrincipalUser>> getPrincipalUsers();
 
 }

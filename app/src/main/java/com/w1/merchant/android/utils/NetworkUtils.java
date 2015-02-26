@@ -2,6 +2,7 @@ package com.w1.merchant.android.utils;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StatFs;
@@ -18,6 +19,7 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
+import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.model.ResponseError;
 
@@ -206,13 +208,32 @@ public class NetworkUtils {
             return error == null || error.error == null? "" : error.error;
         }
 
+        @Deprecated
         public String getErrorDescription() {
-            return error == null || error.errorDescription == null ? "" : error.errorDescription;
+            return getErrorDescription((Resources)null);
         }
 
-        public CharSequence getErrorDescription(CharSequence fallbackText) {
-            String desc = getErrorDescription();
+        public String getErrorDescription(@Nullable Resources resources) {
+            if (error == null) return "";
+            if (isErrorCaptchaRequired() && resources != null) {
+                // Иначе по API отдается какаой-то невразумительный текст
+                return resources.getString(R.string.error_you_must_enter_the_verification_code);
+            } else if (isErrorInvalidCaptcha() && resources != null) {
+                // А тут ещё больший ахтунг
+                return resources.getString(R.string.error_captcha_wrong_code);
+
+            }
+            return error.errorDescription == null ? "" : error.errorDescription;
+        }
+
+        public CharSequence getErrorDescription(CharSequence fallbackText, @Nullable Resources resources) {
+            String desc = getErrorDescription((Resources)resources);
             return !TextUtils.isEmpty(desc) ? desc : fallbackText;
+        }
+
+        @Deprecated
+        public CharSequence getErrorDescription(CharSequence fallbackText) {
+            return getErrorDescription(fallbackText, null);
         }
 
         public RetrofitError getRetrofitError() {

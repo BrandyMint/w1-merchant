@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -28,7 +27,7 @@ import com.w1.merchant.android.Session;
 import com.w1.merchant.android.model.Provider;
 import com.w1.merchant.android.model.Template;
 import com.w1.merchant.android.service.ApiPayments;
-import com.w1.merchant.android.service.ApiRequestTask;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
@@ -36,8 +35,13 @@ import com.w1.merchant.android.viewextended.EditTextRouble;
 
 import java.math.BigDecimal;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class EditTemplate extends Activity {
 
@@ -62,6 +66,9 @@ public class EditTemplate extends Activity {
     private boolean mAmountManualChange;
     private boolean mCommissionManualChange;
 
+    private Subscription mGetProviderSubscription = Subscriptions.empty();
+    private Subscription mGetTemplateSubscription = Subscriptions.empty();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,82 +92,87 @@ public class EditTemplate extends Activity {
 		mIsBusinessAccount =  getIntent().getBooleanExtra("mIsBusinessAccount", false);
 
         loadTemplate();
-	}	
+	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mGetProviderSubscription.unsubscribe();
+        mGetTemplateSubscription.unsubscribe();
+    }
 
     private void loadTemplate() {
+        mGetTemplateSubscription.unsubscribe();
         startPBAnim();
-        new ApiRequestTask<Template>() {
 
-            @Override
-            protected void doRequest(Callback<Template> callback) {
-                mApiPayments.getTemplate(templateId, callback);
-            }
+        Observable<Template> observable = AppObservable.bindActivity(this,
+                mApiPayments.getTemplate(templateId));
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return EditTemplate.this;
-            }
+        mGetTemplateSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        stopPBAnim();
+                    }
+                }).subscribe(new Observer<Template>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                stopPBAnim();
-                if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", error);
-                CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, 50);
-                toast.show();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", e);
+                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                        Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 50);
+                        toast.show();
+                    }
 
-            @Override
-            protected void onCancelled() {
-                stopPBAnim();
-            }
-
-            @Override
-            protected void onSuccess(Template template, Response response) {
-                stopPBAnim();
-                onTemplateLoaded(template);
-            }
-        }.execute();
+                    @Override
+                    public void onNext(Template template) {
+                        onTemplateLoaded(template);
+                    }
+                });
     }
 
     private void loadProvider(final String providerId) {
+        mGetProviderSubscription.unsubscribe();
         startPBAnim();
-        new ApiRequestTask<Provider>() {
 
-            @Override
-            protected void doRequest(Callback<Provider> callback) {
-                mApiPayments.getProvider(providerId, callback);
-            }
+        Observable<Provider> observable = AppObservable.bindActivity(this,
+                mApiPayments.getProvider(providerId));
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return EditTemplate.this;
-            }
+        mGetProviderSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        stopPBAnim();
+                    }
+                })
+                .subscribe(new Observer<Provider>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                stopPBAnim();
-                if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", error);
-                CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, 50);
-                toast.show();
-            }
+                    }
 
-            @Override
-            protected void onCancelled() {
-                stopPBAnim();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", e);
+                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error));
+                        Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 50);
+                        toast.show();
+                    }
 
-            @Override
-            protected void onSuccess(Provider provider, Response response) {
-                stopPBAnim();
-                onProviderLoaded(provider);
-            }
-        }.execute();
+                    @Override
+                    public void onNext(Provider provider) {
+                        onProviderLoaded(provider);
+                    }
+                });
     }
 
 	boolean checkFields() {

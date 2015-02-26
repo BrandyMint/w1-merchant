@@ -3,11 +3,11 @@ package com.w1.merchant.android.extra;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -34,9 +34,9 @@ import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class CaptchaDialogFragment extends DialogFragment {
+public class CaptchaDialogFragmentV4 extends DialogFragment {
 
-    public static final String ACTION_DIALOG_NEW_STATUS = "com.w1.merchant.android.extra.CaptchaDialogFragment.ACTION_DIALOG_NEW_STATUS";
+    public static final String ACTION_DIALOG_NEW_STATUS = "com.w1.merchant.android.extra.CaptchaDialogFragmentV4.ACTION_DIALOG_NEW_STATUS";
 
     public static final int STATUS_SHOWN = 1;
 
@@ -44,7 +44,7 @@ public class CaptchaDialogFragment extends DialogFragment {
 
     public static final int STATUS_DONE = 3;
 
-    private static final String ARG_SHOW_INVALID_CODE = "com.w1.merchant.android.extra.CaptchaDialogFragment.ARG_SHOW_INVALID_CODE";
+    private static final String ARG_SHOW_INVALID_CODE = "com.w1.merchant.android.extra.CaptchaDialogFragmentV4.ARG_SHOW_INVALID_CODE";
 
     private ImageView mImageView;
 
@@ -58,8 +58,8 @@ public class CaptchaDialogFragment extends DialogFragment {
 
     private boolean mInProgress;
 
-    public static CaptchaDialogFragment newInstance(boolean showInvalidCode) {
-        CaptchaDialogFragment fragment = new CaptchaDialogFragment();
+    public static CaptchaDialogFragmentV4 newInstance(boolean showInvalidCode) {
+        CaptchaDialogFragmentV4 fragment = new CaptchaDialogFragmentV4();
         Bundle bundle = new Bundle(1);
         bundle.putBoolean(ARG_SHOW_INVALID_CODE, showInvalidCode);
         fragment.setArguments(bundle);

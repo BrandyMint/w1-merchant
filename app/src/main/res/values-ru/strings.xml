@@ -191,12 +191,13 @@
 
     <string name="remove_attachment">Удалить вложение</string>
 
+    <string name="error_you_must_enter_the_verification_code">Требуется ввод кода подтверждения</string>
     <string name="enter_captcha_hint">Введите код с картинки для продолжения</string>
 
     <string name="network_error">Ошибка сети. Попробуйте позже.</string>
     <string name="enter_captcha_error">Введите код с картинки</string>
     <string name="refresh">Обновить</string>
-    <string name="captcha_wrong_code">Неверный код, попробуйте ещё раз</string>
+    <string name="error_captcha_wrong_code">Неверный код, попробуйте ещё раз</string>
 
     <string name="recipient_title">Название получателя</string>
     <string name="from_wallet">От кошелька</string>

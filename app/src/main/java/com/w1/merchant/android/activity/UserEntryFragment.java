@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -30,15 +29,20 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.extra.UserEntryAdapter2;
 import com.w1.merchant.android.model.TransactionHistory;
 import com.w1.merchant.android.model.TransactionHistoryEntry;
-import com.w1.merchant.android.service.ApiRequestTask;
 import com.w1.merchant.android.service.ApiUserEntry;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
 import java.util.Calendar;
 
-import retrofit.Callback;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 public class UserEntryFragment extends Fragment {
 
@@ -57,6 +61,8 @@ public class UserEntryFragment extends Fragment {
     private UserEntryAdapter2 mAdapter;
 
     private int mCurrentPage = 1;
+
+    private Subscription mTransactionHistorySubscription = Subscriptions.empty();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,6 +193,12 @@ public class UserEntryFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mTransactionHistorySubscription.unsubscribe();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -203,62 +215,62 @@ public class UserEntryFragment extends Fragment {
     }
 
     private void refreshList() {
+        mTransactionHistorySubscription.unsubscribe();
+
+        if (mRadioGroup == null) return;
+
         mListener.startProgress();
-        new ApiRequestTask<TransactionHistory>() {
 
-            @Override
-            protected void doRequest(Callback<TransactionHistory> callback) {
-                final String direction;
-                if (mRadioGroup == null) return;
+        final String direction;
+        switch (mRadioGroup.getCheckedRadioButtonId()) {
+            case R.id.rbEntrance:
+                direction = TransactionHistoryEntry.DIRECTION_INCOMING;
+                break;
+            case R.id.rbOutput:
+                direction = TransactionHistoryEntry.DIRECTION_OUTGOING;
+                break;
+            default:
+                direction = null;
+                break;
+        }
 
-                switch (mRadioGroup.getCheckedRadioButtonId()) {
-                    case R.id.rbEntrance:
-                        direction = TransactionHistoryEntry.DIRECTION_INCOMING;
-                        break;
-                    case R.id.rbOutput:
-                        direction = TransactionHistoryEntry.DIRECTION_OUTGOING;
-                        break;
-                    default:
-                        direction = null;
-                        break;
-                }
-
+        Observable<TransactionHistory> observable = AppObservable.bindFragment(this,
                 mApiUserEntry.getEntries(mCurrentPage, ITEMS_PER_PAGE,
                         null, null, null, null,
                         mListener.getCurrency(),
-                        mSearchString, direction, callback);
-            }
+                        mSearchString, direction));
 
-            @Nullable
-            @Override
-            protected Activity getContainerActivity() {
-                return UserEntryFragment.this.getActivity();
-            }
 
-            @Override
-            protected void onFailure(NetworkUtils.ResponseErrorException error) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    CharSequence errText = error.getErrorDescription(getText(R.string.network_error));
-                    Toast toast = Toast.makeText(getContainerActivity(), errText, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 0, 50);
-                    toast.show();
-                }
-            }
+        mTransactionHistorySubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        if (mListener != null) mListener.stopProgress();
+                    }
+                })
+                .subscribe(new Observer<TransactionHistory>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            protected void onCancelled() {
-                if (mListener != null) mListener.stopProgress();
-            }
+                    }
 
-            @Override
-            protected void onSuccess(TransactionHistory transactionHistory, Response response) {
-                if (mListener != null) {
-                    mListener.stopProgress();
-                    addUserEntry(transactionHistory);
-                }
-            }
-        }.execute();
+                    @Override
+                    public void onError(Throwable e) {
+                        if (getActivity() != null) {
+                            CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                            Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 50);
+                            toast.show();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(TransactionHistory transactionHistory) {
+                        addUserEntry(transactionHistory);
+                    }
+                });
     }
 
     private void addUserEntry(TransactionHistory newData) {
