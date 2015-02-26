@@ -59,9 +59,9 @@ import com.w1.merchant.android.model.Balance;
 import com.w1.merchant.android.model.Profile;
 import com.w1.merchant.android.service.ApiProfile;
 import com.w1.merchant.android.service.ApiSessions;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.support.TicketListActivity;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
 import com.w1.merchant.android.viewextended.CircleTransformation;
@@ -71,6 +71,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.WeakHashMap;
 
 import rx.Observable;
 import rx.Observer;
@@ -83,8 +84,8 @@ import rx.subscriptions.Subscriptions;
 public class MenuActivity extends FragmentActivity implements UserEntryFragment.OnFragmentInteractionListener,
     InvoiceFragment.OnFragmentInteractionListener,
     DashFragment.OnFragmentInteractionListener,
-    TemplateFragment.OnFragmentInteractionListener
-{
+    TemplateFragment.OnFragmentInteractionListener,
+    IProgressbarProvider {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
 
@@ -104,7 +105,7 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
 
     private DashFragment fragmentDash;
 
-    private int totalReq = 0;
+    private WeakHashMap<Object, Void> mProgressConsumers = new WeakHashMap<>();
     private ProgressBar progressBar;
     private boolean mIsBusinessAccount = false;
 
@@ -325,13 +326,13 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     @Override
-    public void startProgress() {
-        startPBAnim();
+    public Object startProgress() {
+        return startPBAnim();
     }
 
     @Override
-    public void stopProgress() {
-        stopPBAnim();
+    public void stopProgress(Object consumer) {
+        stopPBAnim(consumer);
     }
 
     @Override
@@ -451,6 +452,12 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        refreshProgressBar();
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change TO the drawer toggls
@@ -488,17 +495,23 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
                 .subscribe();
     }
 
-    public void startPBAnim() {
-        totalReq += 1;
-        if (totalReq == 1) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
+    public Object startPBAnim() {
+        Object token = new Object();
+        mProgressConsumers.put(token, null);
+        if (DBG) Log.v(TAG, "startPBAnim tokens: " + mProgressConsumers.size());
+        refreshProgressBar();
+        return token;
     }
 
-    public void stopPBAnim() {
-        totalReq -= 1;
-        if (totalReq == 0) {
-            progressBar.setVisibility(View.INVISIBLE);
+    public void stopPBAnim(Object token) {
+        mProgressConsumers.remove(token);
+        if (DBG) Log.v(TAG, "stopPBAnim tokens: " + mProgressConsumers.size());
+        refreshProgressBar();
+    }
+
+    public void refreshProgressBar() {
+        if (!isFinishing()) {
+            progressBar.setVisibility(mProgressConsumers.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         }
     }
 

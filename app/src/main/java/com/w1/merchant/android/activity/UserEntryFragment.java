@@ -30,8 +30,8 @@ import com.w1.merchant.android.extra.UserEntryAdapter2;
 import com.w1.merchant.android.model.TransactionHistory;
 import com.w1.merchant.android.model.TransactionHistoryEntry;
 import com.w1.merchant.android.service.ApiUserEntry;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
 import java.util.Calendar;
@@ -41,7 +41,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
 public class UserEntryFragment extends Fragment {
@@ -219,8 +218,6 @@ public class UserEntryFragment extends Fragment {
 
         if (mRadioGroup == null) return;
 
-        mListener.startProgress();
-
         final String direction;
         switch (mRadioGroup.getCheckedRadioButtonId()) {
             case R.id.rbEntrance:
@@ -240,16 +237,11 @@ public class UserEntryFragment extends Fragment {
                         mListener.getCurrency(),
                         mSearchString, direction));
 
-
+        NetworkUtils.StopProgressAction action0 = new NetworkUtils.StopProgressAction(mListener);
         mTransactionHistorySubscription = observable
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this))
-                .finallyDo(new Action0() {
-                    @Override
-                    public void call() {
-                        if (mListener != null) mListener.stopProgress();
-                    }
-                })
+                .doOnUnsubscribe(action0)
                 .subscribe(new Observer<TransactionHistory>() {
                     @Override
                     public void onCompleted() {
@@ -271,6 +263,7 @@ public class UserEntryFragment extends Fragment {
                         addUserEntry(transactionHistory);
                     }
                 });
+        action0.token = mListener.startProgress();
     }
 
     private void addUserEntry(TransactionHistory newData) {
@@ -402,12 +395,8 @@ public class UserEntryFragment extends Fragment {
         mFooter.setText(text);
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener extends IProgressbarProvider {
         public String getCurrency();
-
-        public void startProgress();
-
-        public void stopProgress();
 
         public View getPopupAnchorView();
     }

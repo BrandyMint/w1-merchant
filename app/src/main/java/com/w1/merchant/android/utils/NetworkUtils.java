@@ -21,6 +21,7 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
+import com.w1.merchant.android.activity.IProgressbarProvider;
 import com.w1.merchant.android.model.ResponseError;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
+import rx.functions.Action0;
 
 public class NetworkUtils {
     private static final boolean DBG = BuildConfig.DEBUG;
@@ -269,5 +271,21 @@ public class NetworkUtils {
         }
     }
 
+    public static class StopProgressAction implements Action0 {
+
+        private final IProgressbarProvider mListener;
+
+        public Object token;
+
+        public StopProgressAction(IProgressbarProvider listener) {
+            mListener = listener;
+            token = null;
+        }
+
+        @Override
+        public void call() {
+            mListener.stopProgress(token);
+        }
+    }
 
 }

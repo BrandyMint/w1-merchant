@@ -189,7 +189,6 @@ public class DashFragment extends Fragment {
         mLoadTransactionsSubscription.unsubscribe();
         if (mHistoryDataLoader != null && !mHistoryDataLoader.isCancelled()) {
             mHistoryDataLoader.cancel();
-            mListener.stopProgress();
             mHistoryDataLoader = null;
         }
     }
@@ -215,7 +214,6 @@ public class DashFragment extends Fragment {
         dataPlotMonthX.clear();
         mHistory60day.clear();
     }
-
 
     private void setupListView() {
         hideFooter();
@@ -271,7 +269,6 @@ public class DashFragment extends Fragment {
 
     void refreshTransactionHistory() {
         mLoadTransactionsSubscription.unsubscribe();
-        mListener.startProgress();
 
         Observable<TransactionHistory> observable = AppObservable.bindFragment(this,
                 mApiUserEntry.getEntries(mCurrentPage, TRANSACTION_HISTORY_ITEMS_PER_PAGE,
@@ -279,15 +276,11 @@ public class DashFragment extends Fragment {
                         mListener.getCurrency(),
                         null, null));
 
+        NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
         mLoadTransactionsSubscription = observable
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this))
-                .finallyDo(new Action0() {
-                    @Override
-                    public void call() {
-                        if (mListener != null) mListener.stopProgress();
-                    }
-                })
+                .doOnUnsubscribe(stopProgressAction)
                 .subscribe(new Observer<TransactionHistory>() {
                     @Override
                     public void onCompleted() {
@@ -309,6 +302,7 @@ public class DashFragment extends Fragment {
                         addTransactionHistoryResult(transactionHistory);
                     }
                 });
+        stopProgressAction.token = mListener.startProgress();
     }
 
     private void addTransactionHistoryResult(TransactionHistory newData) {
@@ -410,24 +404,21 @@ public class DashFragment extends Fragment {
     private void refreshBalance() {
         mRefreshBalanceSubscription.unsubscribe();
 
-        mListener.startProgress();
+        NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
         Observable<List<Balance>> observer = AppObservable.bindFragment(this,
                 mApiBalance.getBalance());
         mRefreshBalanceSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this))
-                .finallyDo(new Action0() {
-                    @Override
-                    public void call() {
-                        if (mListener != null) mListener.stopProgress();
-                    }})
+                .doOnUnsubscribe(stopProgressAction)
                 .subscribe(new Observer<List<Balance>>() {
                     @Override
-                    public void onCompleted() {}
+                    public void onCompleted() {
+                    }
 
                     @Override
                     public void onError(Throwable e) {
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();
@@ -442,19 +433,20 @@ public class DashFragment extends Fragment {
                         }
                     }
                 });
+        stopProgressAction.token = mListener.startProgress();
     }
 
     private void refresh60DayData() {
         if (mHistoryDataLoader != null && !mHistoryDataLoader.isCancelled()) {
             mHistoryDataLoader.cancel();
-            mListener.stopProgress();
         }
 
+        final NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
         mHistoryDataLoader = new TransactionStatsDaysDataLoader(this, mListener.getCurrency()) {
             @Override
             public void onError(Throwable e) {
                 if (mListener != null) {
-                    mListener.stopProgress();
+                    stopProgressAction.call();
                     CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
                     Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP, 0, 50);
@@ -464,16 +456,21 @@ public class DashFragment extends Fragment {
 
             @Override
             public void onCompleted(Collection<TransactionHistoryEntry> history) {
+                stopProgressAction.call();
                 if (mListener != null) {
-                    mListener.stopProgress();
                     mHistory60day.clear();
                     mHistory60day.addAll(history);
                     dataGraphVPPercents();
                 }
             }
+
+            @Override
+            public void onUnsubscribed() {
+                stopProgressAction.call();
+            }
         };
+        stopProgressAction.token = mListener.startProgress();
         mHistoryDataLoader.start();
-        mListener.startProgress();
     }
 
     private void setupChartView() {
@@ -730,9 +727,16 @@ public class DashFragment extends Fragment {
             mSubscription = observable
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .retryWhen(new RetryWhenCaptchaReady(mFragment))
+                    .doOnUnsubscribe(new Action0() {
+                        @Override
+                        public void call() {
+                            if (mCancelled) TransactionStatsDaysDataLoader.this.onUnsubscribed();
+                        }
+                    })
                     .subscribe(new Observer<TransactionHistory>() {
                         @Override
-                        public void onCompleted() { }
+                        public void onCompleted() {
+                        }
 
                         @Override
                         public void onError(Throwable e) {
@@ -780,14 +784,12 @@ public class DashFragment extends Fragment {
 
         public abstract void onCompleted(Collection<TransactionHistoryEntry> history);
 
+        public abstract void onUnsubscribed();
+
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener extends IProgressbarProvider {
         public String getCurrency();
-
-        public void startProgress();
-
-        public void stopProgress();
 
         public void onBalanceLoaded(List<Balance> balance);
 

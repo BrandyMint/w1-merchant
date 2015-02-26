@@ -19,15 +19,14 @@ import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.ImageTextAdapter;
 import com.w1.merchant.android.model.Template;
 import com.w1.merchant.android.service.ApiPayments;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
 public class TemplateFragment extends Fragment {
@@ -91,24 +90,18 @@ public class TemplateFragment extends Fragment {
     private void reloadTemplates() {
         if (mListener == null) return;
         mGetTemplatesSubscription.unsubscribe();
-        mListener.startProgress();
 
         Observable<Template.TempateList> observable = AppObservable.bindFragment(this,
                 mApiPayments.getTemplates());
 
+        NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
         mGetTemplatesSubscription = observable
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this))
-                .finallyDo(new Action0() {
-                    @Override
-                    public void call() {
-                        if (mListener != null) mListener.stopProgress();
-                    }
-                })
+                .doOnUnsubscribe(stopProgressAction)
                 .subscribe(new Observer<Template.TempateList>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -125,6 +118,7 @@ public class TemplateFragment extends Fragment {
                         if (gridview.getAdapter() != mAdapter) gridview.setAdapter(mAdapter);
                     }
                 });
+        stopProgressAction.token = mListener.startProgress();
     }
 
     private GridView.OnItemClickListener gridviewOnItemClickListener = new GridView.OnItemClickListener() {
@@ -145,10 +139,7 @@ public class TemplateFragment extends Fragment {
         }
     };
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener extends IProgressbarProvider{
         public boolean isBusinessAccount();
-        public void startProgress();
-        public void stopProgress();
-
     }
 }

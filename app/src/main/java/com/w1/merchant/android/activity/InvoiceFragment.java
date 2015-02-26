@@ -28,8 +28,8 @@ import com.w1.merchant.android.extra.InvoicesAdapter;
 import com.w1.merchant.android.model.Invoice;
 import com.w1.merchant.android.model.Invoices;
 import com.w1.merchant.android.service.ApiInvoices;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
 
 import java.util.ArrayList;
@@ -40,7 +40,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
 public class InvoiceFragment extends Fragment {
@@ -223,7 +222,6 @@ public class InvoiceFragment extends Fragment {
 
     private void refreshList() {
         mGetInvoicesSubscription.unsubscribe();
-        mListener.startProgress();
 
         final String invoiceStateId;
         switch (srgInvoice.getCheckedRadioButtonId()) {
@@ -245,18 +243,14 @@ public class InvoiceFragment extends Fragment {
                 mApiInvoices.getInvoices(mCurrentPage,
                         ITEMS_PER_PAGE, invoiceStateId, null, null, null, mSearchString));
 
+        NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
         mGetInvoicesSubscription = observable
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this))
-                .finallyDo(new Action0() {
-                    @Override
-                    public void call() {
-                        if (mListener != null) mListener.stopProgress();
-                    }
-                }).subscribe(new Observer<Invoices>() {
+                .doOnUnsubscribe(stopProgressAction)
+                .subscribe(new Observer<Invoices>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -274,6 +268,7 @@ public class InvoiceFragment extends Fragment {
                         addUserEntry(invoices);
                     }
                 });
+        stopProgressAction.token = mListener.startProgress();
     }
 
     private void addUserEntry(Invoices newData) {
@@ -324,12 +319,6 @@ public class InvoiceFragment extends Fragment {
         if (llFooter != null) llFooter.setVisibility(View.GONE);
     }
 
-    public interface OnFragmentInteractionListener {
-        public String getCurrency();
-
-        public void startProgress();
-
-        public void stopProgress();
-
+    public interface OnFragmentInteractionListener extends  IProgressbarProvider {
     }
 }
