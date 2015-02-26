@@ -2,8 +2,6 @@ package com.w1.merchant.android.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.DashPathEffect;
@@ -36,16 +34,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.OnChartGestureListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MarkerView;
-import com.github.mikephil.charting.utils.Utils;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.extra.MainVPAdapter;
 import com.w1.merchant.android.extra.UserEntryAdapter2;
@@ -535,59 +529,6 @@ public class DashFragment extends Fragment {
             public void onChartDoubleTapped(MotionEvent me) {
             }
         });
-
-        //mChart.setUnit(" $");
-        mChart.setDrawUnitsInChart(false);
-
-        // if enabled, the chart will always start at zero on the y-axis
-        mChart.setStartAtZero(false);
-
-        // disable the drawing of values into the chart
-        mChart.setDrawYValues(false);
-
-        mChart.setDrawBorder(false);
-//        mChart.setBorderPositions(new BorderPosition[] {
-//                BorderPosition.BOTTOM
-//        });
-
-        // no description text
-        mChart.setDescription("");
-        mChart.setNoDataTextDescription("");
-
-        // enable value highlighting
-        mChart.setHighlightEnabled(true);
-
-        // enable touch gestures
-        mChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        mChart.setDoubleTapToZoomEnabled(false);
-        mChart.setDragEnabled(false);
-        mChart.setScaleEnabled(false);
-        mChart.setDrawGridBackground(false);
-        mChart.setDrawVerticalGrid(false);
-        mChart.setDrawHorizontalGrid(false);
-        mChart.setDrawLegend(false);
-        //mChart.setFadingEdgeLength(20);
-        // if disabled, scaling can be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-        mChart.setDrawXLabels(false);
-        mChart.setDrawYLabels(false);
-        mChart.setOffsets(0, 0, 0, 0);
-
-        Paint paint = new HackyPaint(mChart.getPaint(Chart.PAINT_RENDER));
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        paint.setDither(true);
-        paint.setAntiAlias(true);
-        mChart.setPaint(paint, Chart.PAINT_RENDER);
-
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // TO use for it
-        MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
-
-        // set the marker TO the chart
-        mChart.setMarkerView(mv);
     }
 
     public void setPlot(ArrayList<String> dataPlotX, ArrayList<? extends Number> dataPlotY) {
@@ -605,10 +546,11 @@ public class DashFragment extends Fragment {
         set1.setFillColor(ColorTemplate.getHoloBlue());
         set1.setHighLightColor(Color.rgb(117, 117, 117));
         set1.setDrawCircles(false);
-        set1.enableDashedLine(1, 1, 1); // Заготовка для HackyPaint
+        //set1.enableDashedLine(1, 1, 1); // Заготовка для HackyPaint
 
-        //set1.setDrawCubic(true);
-        //set1.setCubicIntensity(0.1f);
+        set1.setDrawCubic(true);
+        set1.setCubicIntensity(0.07f);
+        set1.setDrawValues(false);
 
         LineData data = new LineData(dataPlotX, new ArrayList<>(Collections.singleton(set1)));
         // set data
@@ -786,48 +728,6 @@ public class DashFragment extends Fragment {
         setPlot(dataPlotDayX, dataPlotDay);
         setupPercent(percentDay);
         currentPlot = DashFragment.PLOT_24;
-    }
-
-    public static class MyMarkerView extends MarkerView {
-
-        private TextView tvContent, tvDate;
-
-        public MyMarkerView(Context context, int layoutResource) {
-            super(context, layoutResource);
-            tvContent = (TextView) findViewById(R.id.tvContent);
-            tvDate = (TextView) findViewById(R.id.tvDate);
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            // define an offset to change the original position of the marker
-            // (optional)
-            setOffsets(-getMeasuredWidth() / 2, -getMeasuredHeight() / 2);
-        }
-
-        @Override
-        public void draw(Canvas canvas, float posx, float posy) {
-            if (posx+getXOffset() < 0) {
-                posx = -getXOffset();
-            } else if (posx + getXOffset() + getWidth() > canvas.getWidth()) {
-                posx = canvas.getWidth() - getWidth() - getXOffset();
-            }
-            super.draw(canvas, posx, posy);
-        }
-
-        // callbacks everytime the MarkerView is redrawn, can be used to update the
-        // content
-        @Override
-        public void refreshContent(Entry e, int dataSetIndex) {
-            if (e instanceof CandleEntry) {
-                CandleEntry ce = (CandleEntry) e;
-                tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
-            } else {
-                tvDate.setText((CharSequence)e.getData());
-                tvContent.setText(TextUtilsW1.formatNumber(Math.round(e.getVal())));
-            }
-        }
     }
 
     public interface OnFragmentInteractionListener {
