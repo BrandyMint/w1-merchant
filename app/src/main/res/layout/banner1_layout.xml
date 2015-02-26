@@ -30,16 +30,14 @@
     <TextView
         android:id="@+id/banner_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/intro_header_size"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textColor="@android:color/white"
         android:layout_alignParentTop="true"
         android:lines="2"
-        android:textSize="28sp"
+        android:textSize="28dp"
         android:gravity="center"
-        android:minHeight="72dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
+        tools:ignore="SpUsage" />
 
 </RelativeLayout>

@@ -58,7 +58,7 @@ public class IntroFragment extends DialogFragment {
 
         pagerIndicator = (NewDotPageIndicator)getView().findViewById(R.id.indicator_banner);
         viewPager = (InfiniteViewPager)getView().findViewById(R.id.pager_banner);
-        adapter = new BannerInfinitePagerAdapter(0, viewPager, LayoutInflater.from(getActivity()));
+        adapter = new BannerInfinitePagerAdapter(0, viewPager, LayoutInflater.from(getView().getContext()));
         viewPager.setAdapter(adapter);
         pagerIndicator.setViewPager(viewPager, new String[] {"", "", "", ""});
         pagerIndicator.setChangePoint(0);

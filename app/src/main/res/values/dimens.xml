@@ -12,6 +12,8 @@
 
     <dimen name="captcha_width">180dp</dimen>
     <dimen name="captcha_height">100dp</dimen>
+    <dimen name="intro_page_indicator_margin_top">84dp</dimen>
+    <dimen name="intro_header_size">86dp</dimen>
 
     <integer name="templates_num_columns">2</integer>
     <integer name="graphics_anim_time">650</integer>

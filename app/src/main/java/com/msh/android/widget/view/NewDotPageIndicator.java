@@ -70,7 +70,6 @@ public class NewDotPageIndicator extends View implements PageIndicator{
 	@SuppressWarnings("deprecation")
 	public NewDotPageIndicator(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		if (isInEditMode()) return;
 
 		mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		mDisplay = mWindowManager.getDefaultDisplay();
