@@ -120,9 +120,13 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
         if (changed) {
             // Убираем странные константные 11dp по краям
             prepareOffsetMatrix();
-            mRightAxisTransformer.prepareMatrixValuePx(mXChartMin, mDeltaX, mAxisRight.mAxisRange,
+            mRightAxisTransformer.prepareMatrixValuePx(mXChartMin,
+                    mDeltaX == 0 ? 1 : mDeltaX,
+                    mAxisRight.mAxisRange == 0 ? 1 : mAxisRight.mAxisRange,
                     mAxisRight.mAxisMinimum);
-            mLeftAxisTransformer.prepareMatrixValuePx(mXChartMin, mDeltaX, mAxisLeft.mAxisRange,
+            mLeftAxisTransformer.prepareMatrixValuePx(mXChartMin,
+                    mDeltaX == 0 ? 1 : mDeltaX,
+                    mAxisLeft.mAxisRange == 0 ? 1 : mAxisLeft.mAxisRange,
                     mAxisLeft.mAxisMinimum);
         }
     }
