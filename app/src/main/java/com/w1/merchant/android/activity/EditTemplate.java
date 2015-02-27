@@ -1,6 +1,5 @@
 package com.w1.merchant.android.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,8 +26,8 @@ import com.w1.merchant.android.Session;
 import com.w1.merchant.android.model.Provider;
 import com.w1.merchant.android.model.Template;
 import com.w1.merchant.android.service.ApiPayments;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
 import com.w1.merchant.android.viewextended.EditTextRouble;
@@ -43,7 +42,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class EditTemplate extends Activity {
+public class EditTemplate extends ActivityBase {
 
     private static final String pattern = "[^0-9]";
 

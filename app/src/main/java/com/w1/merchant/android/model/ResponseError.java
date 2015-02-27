@@ -16,9 +16,24 @@ public class ResponseError {
 
     public static final String ERROR_INVALID_CAPTCHA = "invalid_captcha";
 
-    public String error;
+    String error;
 
-    public String errorDescription;
+    String errorDescription;
+
+    /**
+     * @return Текстовый код
+     * {@linkplain #ERROR_CAPTCHA_REQUIRED}, {@linkplain #ERROR_INVALID_CAPTCHA}, и т.п.
+     */
+    public String getTextCode() {
+        return error;
+    }
+
+    /**
+     * @return Описание
+     */
+    public String getDesription() {
+        return errorDescription;
+    }
 
     @Override
     public String toString() {

@@ -1,6 +1,5 @@
 package com.w1.merchant.android.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import com.w1.merchant.android.R;
 
-public class ConfirmActivity extends Activity {
+public class ConfirmActivity extends ActivityBase {
 
 	EditText etDescrText, etTelRecipient, etSum;
 	TextView tvBack, tvConfirmText;

@@ -32,7 +32,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.Subscriptions;
 
-public class UserEntryTotal extends Activity {
+public class UserEntryTotal extends ActivityBase {
 
     private static final String ARG_CURRENCY = "com.w1.merchant.android.activity.ARG_CURRENCY";
 

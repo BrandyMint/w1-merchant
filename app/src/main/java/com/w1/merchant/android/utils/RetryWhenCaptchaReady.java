@@ -16,11 +16,11 @@ import android.util.Log;
 
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
+import com.w1.merchant.android.Session;
 import com.w1.merchant.android.activity.SessionExpiredDialogActivity;
 import com.w1.merchant.android.extra.CaptchaDialogFragment;
 import com.w1.merchant.android.extra.CaptchaDialogFragmentV4;
 import com.w1.merchant.android.model.Profile;
-import com.w1.merchant.android.utils.NetworkUtils;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -84,7 +84,7 @@ public class RetryWhenCaptchaReady implements
 
                         if (ex.isCaptchaError()) {
                             return startRefreshCaptcha(ex);
-                        } else if (ex.isErrorInvalidToken()) {
+                        } else if (ex.isErrorInvalidToken() || ex.isErrorInsufficientScope()) {
                             onInvalidToken();
                         }
 
@@ -95,7 +95,9 @@ public class RetryWhenCaptchaReady implements
     }
 
     protected void onInvalidToken() {
-        Activity activity = null;
+        if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "Invalid token. Show session expired dialog");
+        Activity activity;
+        Session.getInstance().markAsExpired();
         if (mActivity != null) {
             activity = mActivity;
         } else if (mFragment != null) {
@@ -108,16 +110,7 @@ public class RetryWhenCaptchaReady implements
             return;
         }
 
-        Intent intent = new Intent(activity, SessionExpiredDialogActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (mActivity != null) {
-            activity.startActivity(intent);
-        } else if (mFragment != null) {
-            mFragment.startActivity(intent);
-        } else {
-            mV4Fragment.startActivity(intent);
-        }
-
+        SessionExpiredDialogActivity.show(activity);
     }
 
     private Observable<Profile> startRefreshCaptcha(final NetworkUtils.ResponseErrorException error) {

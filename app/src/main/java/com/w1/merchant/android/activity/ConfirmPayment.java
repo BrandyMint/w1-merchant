@@ -1,6 +1,5 @@
 package com.w1.merchant.android.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -8,7 +7,7 @@ import android.widget.TextView;
 
 import com.w1.merchant.android.R;
 
-public class ConfirmPayment extends Activity {
+public class ConfirmPayment extends ActivityBase {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

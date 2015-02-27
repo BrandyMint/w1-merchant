@@ -27,7 +27,7 @@ import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class Details extends Activity {
+public class Details extends ActivityBase {
     private static final String TAG = Constants.LOG_TAG;
     private static final boolean DBG = BuildConfig.DEBUG;
 

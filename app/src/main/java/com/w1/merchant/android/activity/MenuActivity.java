@@ -23,7 +23,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -58,7 +57,6 @@ import com.w1.merchant.android.extra.DialogExit;
 import com.w1.merchant.android.model.Balance;
 import com.w1.merchant.android.model.Profile;
 import com.w1.merchant.android.service.ApiProfile;
-import com.w1.merchant.android.service.ApiSessions;
 import com.w1.merchant.android.support.TicketListActivity;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
@@ -69,8 +67,6 @@ import com.w1.merchant.android.viewextended.CircleTransformation;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.WeakHashMap;
 
 import rx.Observable;
@@ -78,10 +74,9 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class MenuActivity extends FragmentActivity implements UserEntryFragment.OnFragmentInteractionListener,
+public class MenuActivity extends FragmentActivityBase implements UserEntryFragment.OnFragmentInteractionListener,
     InvoiceFragment.OnFragmentInteractionListener,
     DashFragment.OnFragmentInteractionListener,
     TemplateFragment.OnFragmentInteractionListener,
@@ -122,19 +117,6 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
             Utils.restartApp(this);
             return;
         }
-
-        // TODO избавиться
-        long timeout = Session.getInstance().getAuthTimeout() * 1000;
-        Timer myTimer;
-        myTimer = new Timer();
-        myTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                exit();
-            }
-        }, timeout);
 
         // create new ProgressBar and style it
         progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
@@ -475,24 +457,8 @@ public class MenuActivity extends FragmentActivity implements UserEntryFragment.
     }
 
     public void exit() {
-        closeSession();
+        Session.getInstance().close();
         finish();
-    }
-
-
-    //закрытие сессии
-    void closeSession() {
-        Observable<Void> observer =
-                NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class).logout();
-        observer
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0() {
-                    @Override
-                    public void call() {
-                        Session.getInstance().clear();
-                    }
-                })
-                .subscribe();
     }
 
     public Object startPBAnim() {

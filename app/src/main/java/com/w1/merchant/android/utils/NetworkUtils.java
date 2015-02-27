@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.BuildConfig;
@@ -54,6 +55,8 @@ public class NetworkUtils {
     private OkHttpClient mOkHttpClient;
 
     private OkClient mRetrofitClient;
+
+    private com.squareup.picasso.Cache mPicassoMemoryCache;
 
     public static NetworkUtils getInstance() {
         if (sInstance == null) {
@@ -122,6 +125,7 @@ public class NetworkUtils {
     }
 
     private void initPicasso(Context context) {
+        mPicassoMemoryCache = new LruCache(context);
         Picasso picasso = new Picasso.Builder(context.getApplicationContext())
                 .downloader(new OkHttpDownloader(mOkHttpClient) {
                                 @Override
@@ -132,6 +136,7 @@ public class NetworkUtils {
                                 }
                             }
                 )
+                .memoryCache(mPicassoMemoryCache)
                 .build();
         Picasso.setSingletonInstance(picasso);
     }
@@ -151,6 +156,14 @@ public class NetworkUtils {
         return Math.max(Math.min(size, Constants.MAX_DISK_CACHE_SIZE), Constants.MIN_DISK_CACHE_SIZE);
     }
 
+    public static void onTrimMemory() {
+        synchronized (NetworkUtils.class) {
+            if (sInstance != null) {
+                if (sInstance.mPicassoMemoryCache != null) sInstance.mPicassoMemoryCache.clear();
+            }
+        }
+    }
+
     private final RequestInterceptor sRequestInterceptor = new RequestInterceptor() {
         @Override
         public void intercept(RequestFacade request) {
@@ -160,7 +173,7 @@ public class NetworkUtils {
             request.addHeader("Accept", "application/vnd.wallet.openapi.v1+json");
 
             synchronized (Session.class) {
-                if (!TextUtils.isEmpty(session.captchaCode)) {
+                if (!TextUtils.isEmpty(session.captchaCode) && session.captcha != null) {
                     request.addHeader(Constants.HEADER_CAPTCHA_ID, String.valueOf(session.captcha.captchaId));
                     request.addHeader(Constants.HEADER_CAPTCHA_CODE, session.captchaCode);
                 }
@@ -206,10 +219,6 @@ public class NetworkUtils {
             this.error = error;
         }
 
-        public String getErrorCode() {
-            return error == null || error.error == null? "" : error.error;
-        }
-
         @Deprecated
         public String getErrorDescription() {
             return getErrorDescription((Resources)null);
@@ -225,7 +234,7 @@ public class NetworkUtils {
                 return resources.getString(R.string.error_captcha_wrong_code);
 
             }
-            return error.errorDescription == null ? "" : error.errorDescription;
+            return error.getDesription() == null ? "" : error.getDesription();
         }
 
         public CharSequence getErrorDescription(CharSequence fallbackText, @Nullable Resources resources) {
@@ -255,7 +264,12 @@ public class NetworkUtils {
         }
 
         public boolean isErrorInvalidToken() {
-            return getHttpStatus() == 401;
+            return getHttpStatus() == 401
+                    || (error != null && ResponseError.ERROR_INVALID_TOKEN.equalsIgnoreCase(error.getTextCode()));
+        }
+
+        public boolean isErrorInsufficientScope() {
+            return error != null && ResponseError.ERROR_INSUFFICIENT_SCOPE.equalsIgnoreCase(error.getTextCode());
         }
 
         public boolean isCaptchaError() {
@@ -263,11 +277,11 @@ public class NetworkUtils {
         }
 
         public boolean isErrorCaptchaRequired() {
-            return error != null && ResponseError.ERROR_CAPTCHA_REQUIRED.equalsIgnoreCase(error.error);
+            return error != null && ResponseError.ERROR_CAPTCHA_REQUIRED.equalsIgnoreCase(error.getTextCode());
         }
 
         public boolean isErrorInvalidCaptcha() {
-            return error != null && ResponseError.ERROR_INVALID_CAPTCHA.equalsIgnoreCase(error.error);
+            return error != null && ResponseError.ERROR_INVALID_CAPTCHA.equalsIgnoreCase(error.getTextCode());
         }
     }
 

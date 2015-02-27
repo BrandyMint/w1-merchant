@@ -1,6 +1,7 @@
 package com.w1.merchant.android;
 
 import android.os.StrictMode;
+import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
@@ -11,6 +12,8 @@ import com.w1.merchant.android.utils.NetworkUtils;
 public class Application extends android.app.Application {
 
     private volatile Tracker mAnalyticsTracker;
+
+    private volatile Session mSession;
 
     @Override
     public void onCreate() {
@@ -31,6 +34,18 @@ public class Application extends android.app.Application {
         NetworkUtils.getInstance().onAppInit(this);
         FontManager.onAppInit(this);
         getTracker();
+        mSession = Session.onAppInit(this);
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "onTrimMemory level: " + level);
+        if (level >= TRIM_MEMORY_UI_HIDDEN) NetworkUtils.onTrimMemory();
+    }
+
+    public Session getSession() {
+        return  mSession;
     }
 
     public synchronized Tracker getTracker() {

@@ -1,6 +1,5 @@
 package com.w1.merchant.android.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -18,8 +17,8 @@ import com.w1.merchant.android.model.PaymentForm;
 import com.w1.merchant.android.model.PaymentState;
 import com.w1.merchant.android.model.SubmitPaymentFormRequest;
 import com.w1.merchant.android.service.ApiPayments;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigInteger;
@@ -34,7 +33,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.subscriptions.Subscriptions;
 
-public class ConfirmOutActivity extends Activity {
+public class ConfirmOutActivity extends ActivityBase {
 
     private String templateId;
     private String paymentId;

@@ -6,6 +6,10 @@ public class Captcha {
 
     public String captchaUrl;
 
+    public Captcha(long id, String url) {
+        this.captchaId = id;
+        this.captchaUrl = captchaUrl;
+    }
 
     public static final class CaptchaRequest {
 

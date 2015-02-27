@@ -1,6 +1,5 @@
 package com.w1.merchant.android.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,8 +25,8 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.model.Invoice;
 import com.w1.merchant.android.model.InvoiceRequest;
 import com.w1.merchant.android.service.ApiInvoices;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.EditTextRouble;
 
 import java.math.BigDecimal;
@@ -43,7 +42,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class AddInvoice extends Activity {
+public class AddInvoice extends ActivityBase {
 
     private static final String PHONE_PATTERN = "[0-9]{11}";
     private static final String APP_PREF = "W1_Pref";

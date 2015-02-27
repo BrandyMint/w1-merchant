@@ -1,6 +1,5 @@
 package com.w1.merchant.android.support;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +11,14 @@ import android.widget.Toast;
 
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.activity.ActivityBase;
 import com.w1.merchant.android.model.SupportTicket;
 
 import static android.app.ActionBar.DISPLAY_HOME_AS_UP;
 import static android.app.ActionBar.DISPLAY_SHOW_HOME;
 import static android.app.ActionBar.DISPLAY_USE_LOGO;
 
-public class TicketListActivity extends Activity implements TicketListFragment.OnFragmentInteractionListener {
+public class TicketListActivity extends ActivityBase implements TicketListFragment.OnFragmentInteractionListener {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = "TicketListActivity";
 

@@ -21,11 +21,12 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.activity.ActivityBase;
 
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class ShowPhotoActivity extends Activity {
+public class ShowPhotoActivity extends ActivityBase {
     public static final String ARG_IMAGE_URL = "com.w1.merchant.android.support.ShowPhotoActivity.ARG_IMAGE_URL";
     public static final String ARG_IMAGE_WIDTH = "com.w1.merchant.android.support.ShowPhotoActivity.ARG_IMAGE_WIDTH";
 
