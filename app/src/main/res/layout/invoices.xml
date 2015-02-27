@@ -6,17 +6,16 @@
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.w1.merchant.android.viewextended.SegmentedRadioGroup
+    <com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup
         android:id="@+id/srgInvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="40dp"
         android:layout_marginTop="40dp"
         android:checkedButton="@+id/button_one"
         android:orientation="horizontal">
 
-        <RadioButton
+        <com.w1.merchant.android.viewextended.CheckboxStyleRadioButton
             android:id="@+id/rbPaid"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -28,7 +27,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/radio_colors" />
 
-        <RadioButton
+        <com.w1.merchant.android.viewextended.CheckboxStyleRadioButton
             android:id="@+id/rbNotPaid"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -40,7 +39,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/radio_colors" />
 
-        <RadioButton
+        <com.w1.merchant.android.viewextended.CheckboxStyleRadioButton
             android:id="@+id/rbPartially"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -51,7 +50,7 @@
             android:text="@string/partially"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/radio_colors" />
-    </com.w1.merchant.android.viewextended.SegmentedRadioGroup>
+    </com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -62,7 +61,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="#FFFFFF"
-            android:dividerHeight="8dp" />
+            android:dividerHeight="8dp"
+            android:paddingTop="40dp"
+            android:clipToPadding="false"
+            android:overScrollHeader="@null"
+            />
 
         <TextView
             android:id="@+id/empty_text"

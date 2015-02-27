@@ -20,7 +20,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +31,7 @@ import com.w1.merchant.android.model.TransactionHistoryEntry;
 import com.w1.merchant.android.service.ApiUserEntry;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
+import com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup;
 
 import java.util.Calendar;
 
@@ -49,7 +48,7 @@ public class UserEntryFragment extends Fragment {
 
     private ListView lvUserEntry;
     private TextView mFooter;
-    private SegmentedRadioGroup mRadioGroup;
+    private CheckboxStyleSegmentedRadioGroup mRadioGroup;
 
     private OnFragmentInteractionListener mListener;
 
@@ -75,12 +74,12 @@ public class UserEntryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.userentry, container, false);
         lvUserEntry = (ListView) parentView.findViewById(R.id.lvStatement);
-        mRadioGroup = (SegmentedRadioGroup) parentView.findViewById(R.id.srgStatement);
+        mRadioGroup = (CheckboxStyleSegmentedRadioGroup) parentView.findViewById(R.id.srgStatement);
         mFooter = (TextView)inflater.inflate(R.layout.footer2, lvUserEntry, false);
 
-        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        mRadioGroup.setOnCheckedChangeListener(new CheckboxStyleSegmentedRadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+            public void onCheckedChanged(CheckboxStyleSegmentedRadioGroup group, int checkedId) {
                 hideFooter();
                 mCurrentPage = 1;
                 refreshList();

@@ -17,7 +17,6 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +29,7 @@ import com.w1.merchant.android.model.Invoices;
 import com.w1.merchant.android.service.ApiInvoices;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
+import com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class InvoiceFragment extends Fragment {
     public static final int ITEMS_PER_PAGE = 25;
     private static final int ACT_ADD = 1;
 
-    SegmentedRadioGroup srgInvoice;
+    private CheckboxStyleSegmentedRadioGroup srgInvoice;
 	private TextView llFooter;
 
     private ApiInvoices mApiInvoices;
@@ -85,17 +84,17 @@ public class InvoiceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.invoices, container, false);
-        srgInvoice = (SegmentedRadioGroup) parentView.findViewById(R.id.srgInvoice);
+        srgInvoice = (CheckboxStyleSegmentedRadioGroup) parentView.findViewById(R.id.srgInvoice);
         ListView lvInvoice = (ListView) parentView.findViewById(R.id.lvAccounts);
         llFooter = (TextView)inflater.inflate(R.layout.footer2, lvInvoice, false);
         
-        srgInvoice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        srgInvoice.setOnCheckedChangeListener(new CheckboxStyleSegmentedRadioGroup.OnCheckedChangeListener() {
     		@Override
-    		public void onCheckedChanged(RadioGroup group, int checkedId) {
-    			hideFooter();
+    		public void onCheckedChanged(CheckboxStyleSegmentedRadioGroup group, int checkedId) {
+                hideFooter();
                 mCurrentPage = 1;
-    			refreshList();
-    		}
+                refreshList();
+            }
     	});
 
         mAdapter = new InvoicesAdapter(getActivity());
