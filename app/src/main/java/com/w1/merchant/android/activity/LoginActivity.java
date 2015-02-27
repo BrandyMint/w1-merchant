@@ -15,6 +15,7 @@ import android.os.Bundle;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DialogNoInet;
 import com.w1.merchant.android.extra.DialogTimeout;
 
@@ -32,6 +33,8 @@ public class LoginActivity extends Activity implements LoginFragment.OnFragmentI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Session.getInstance().clear();
 
         if (!isNetworkConnected()) {
             DialogFragment dlgNoInet = new DialogNoInet();
