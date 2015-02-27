@@ -94,6 +94,7 @@
         <activity
             android:name=".support.TicketListActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_ticket_list" >
         </activity>
         <activity
@@ -102,6 +103,7 @@
             android:theme="@style/ConversationActivityTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:parentActivityName=".support.TicketListActivity"
+            android:screenOrientation="portrait"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -25,6 +25,8 @@ public class ContentTypedOutput  implements TypedOutput {
     private ContentResolver mContentResolver;
     private final String mContentType;
 
+    private int mLength = -1;
+
     public ContentTypedOutput(Context context, Uri uri, String contentType) {
         mUri = uri;
         mContentResolver = context.getContentResolver();
@@ -64,7 +66,26 @@ public class ContentTypedOutput  implements TypedOutput {
 
     @Override
     public long length() {
-        return -1;
+        if (mLength < 0) {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            InputStream in;
+            try {
+                in = mContentResolver.openInputStream(mUri);
+                int length = 0;
+                try {
+                    int read;
+                    while ((read = in.read(buffer)) != -1) {
+                        length += read;
+                    }
+                    mLength = length;
+                } finally {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return mLength;
     }
 
     @Override

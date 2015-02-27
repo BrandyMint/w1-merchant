@@ -119,7 +119,7 @@ public class ConversationActivity extends ActivityBase implements ConversationFr
     }
 
     public void notifyError(CharSequence error, @Nullable Throwable exception) {
-        if (DBG && exception != null) Log.e(TAG, error.toString(), exception);
+        if (exception != null) Log.e(TAG, error.toString(), exception);
         if (DBG) {
             error = error.toString() + " " + (exception == null ? "" : exception.getLocalizedMessage());
         }
