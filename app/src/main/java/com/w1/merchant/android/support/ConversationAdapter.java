@@ -196,12 +196,17 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     }
 
     private void bindMyMessage(ViewHolderMyMessage holder, SupportTicketPost message) {
-        holder.message.setText(TextUtilsW1.removeTrailingWhitespaces(message.getBodyHtml(mImageGetterMyMessage)));
+        CharSequence msg = TextUtilsW1.removeTrailingWhitespaces(message.getBodyHtml(mImageGetterMyMessage));
+        msg = TextUtilsW1.replaceImgUrls(msg, mImageGetterMyMessage);
+        if (DBG) Log.v(TAG, "msg: " + msg);
+        holder.message.setText(msg);
         TextViewImgLoader.bindAndLoadImages(holder.message, SHOW_PHOTO_ON_CLICK_LISTENER);
     }
 
     private void bindTheirMessage(ViewHolderTheirMessage holder, SupportTicketPost message) {
-        holder.message.setText(TextUtilsW1.removeTrailingWhitespaces(message.getBodyHtml(mImageGetterTheirMessage)));
+        CharSequence msg = TextUtilsW1.removeTrailingWhitespaces(message.getBodyHtml(mImageGetterTheirMessage));
+        msg = TextUtilsW1.replaceImgUrls(msg, mImageGetterTheirMessage);
+        holder.message.setText(msg);
         holder.username.setText(message.userTitle);
         bindAvatar(holder, message);
         TextViewImgLoader.bindAndLoadImages(holder.message, SHOW_PHOTO_ON_CLICK_LISTENER);

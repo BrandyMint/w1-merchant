@@ -3,10 +3,13 @@ package com.w1.merchant.android.utils;
 import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.util.Log;
 
 import com.w1.merchant.android.BuildConfig;
@@ -14,15 +17,24 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 
 import java.text.DecimalFormat;
+import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.Deque;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class TextUtilsW1 {
 
     private static final Spanned SPANNED_EMPTY = new SpannedString("");
+
+    private static final Pattern IMAGE_URL_PATTERN = Pattern.compile(
+            "\\bhttp(?:s)?:\\/\\/\\S+?\\.(?:png|jpg|jpeg|gif|bmp|webp)\\b",
+            Pattern.CASE_INSENSITIVE);
 
     private TextUtilsW1() {}
 
@@ -76,6 +88,48 @@ public final class TextUtilsW1 {
             return source;
         } else {
             return source.subSequence(0, length);
+        }
+    }
+
+    /**
+     * Замена ссылок на картинки в строке на Image span'ы.
+     * Выполнять после Html.fromHtml, иначе с тегами возникнут проблемы.
+     * @param source
+     * @param imageGetter
+     * @return
+     */
+    public static CharSequence replaceImgUrls(CharSequence source, Html.ImageGetter imageGetter) {
+        SpannableStringBuilder str;
+        int replacedUrls = 0;
+        Deque<MatchResult> results = new ArrayDeque<>();
+
+        if (source instanceof SpannableStringBuilder) {
+            str = (SpannableStringBuilder)source;
+        } else {
+            str = new SpannableStringBuilder(source);
+        }
+
+        Matcher matcher =  IMAGE_URL_PATTERN.matcher(source);
+        while (matcher.find()) {
+            results.push(matcher.toMatchResult());
+        }
+
+        replacedUrls = results.size();
+        while (!results.isEmpty()) {
+            MatchResult matchResult = results.pop();
+            String src = matchResult.group();
+            if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "image url: " + src);
+            ImageSpan span = new ImageSpan(imageGetter.getDrawable(src), src);
+
+            str.replace(matchResult.start(), matchResult.end(), "\uFFFC");
+            str.setSpan(span, matchResult.start(), matchResult.start() + "\uFFFC".length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        if (replacedUrls == 0) {
+            return source;
+        } else {
+            return str;
         }
     }
 
