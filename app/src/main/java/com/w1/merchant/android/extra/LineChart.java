@@ -3,25 +3,23 @@ package com.w1.merchant.android.extra;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.CornerPathEffect;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.PathEffect;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.LineDataProvider;
 import com.github.mikephil.charting.renderer.LineChartRenderer;
 import com.github.mikephil.charting.renderer.ViewPortHandler;
+import com.github.mikephil.charting.renderer.XAxisRenderer;
+import com.github.mikephil.charting.renderer.YAxisRenderer;
 import com.github.mikephil.charting.utils.Highlight;
+import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -53,6 +51,14 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
         super.init();
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         mRenderer = new MyLineChartRenderer(this, mAnimator, mViewPortHandler);
+
+        mLeftAxisTransformer = new HackyTransformer(mViewPortHandler);
+        mRightAxisTransformer = new HackyTransformer(mViewPortHandler);
+
+        mAxisRendererLeft = new YAxisRenderer(mViewPortHandler, mAxisLeft, mLeftAxisTransformer);
+        mAxisRendererRight = new YAxisRenderer(mViewPortHandler, mAxisRight, mRightAxisTransformer);
+
+        mXAxisRenderer = new XAxisRenderer(mViewPortHandler, mXAxis, mLeftAxisTransformer);
     }
 
     private void onInit() {
@@ -68,15 +74,11 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
         setDragEnabled(false);
         setScaleEnabled(false);
         setDrawGridBackground(false);
-        setDrawLegend(false);
         setPinchZoom(false);
         getXAxis().setEnabled(false);
         getAxisLeft().setEnabled(false);
         getAxisRight().setEnabled(false);
-        //getViewPortHandler().fitScreen();
-
-        Paint paint = createRendererPaint(getPaint(Chart.PAINT_RENDER));
-        setPaint(paint, Chart.PAINT_RENDER);
+        setViewPortOffsets(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.graphic_bottom_offset));
 
         MyMarkerView mv = new MyMarkerView(getContext(), R.layout.custom_marker_view);
         setMarkerView(mv);
@@ -86,57 +88,21 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
         ll.setLineWidth(1.5f);
         ll.enableDashedLine(5f, 10f, 0);
         getAxisLeft().addLimitLine(ll);
-        getAxisLeft().setStartAtZero(false);
-        getAxisRight().setStartAtZero(false);
-
-    }
-
-    private static Paint createRendererPaint(Paint originalPaint) {
-        //Paint paint = new HackyPaint(originalPaint);
-        Paint paint = originalPaint;
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        paint.setDither(true);
-        paint.setAntiAlias(true);
-        return paint;
+        getAxisLeft().setStartAtZero(true);
+        getAxisRight().setStartAtZero(true);
 
     }
 
     @Override
-    protected void calculateOffsets() {
-        super.calculateOffsets();
-        boolean changed = false;
-        RectF rect = mViewPortHandler.getContentRect();
-
-        if ((int) rect.left == (int) Utils.convertDpToPixel(11f)) {
-            changed = true;
-            rect.left = 0;
-        }
-
-        if ((int) (mViewPortHandler.getChartWidth() - rect.right) == (int) Utils.convertDpToPixel(11f)) {
-            changed = true;
-            rect.right = mViewPortHandler.getChartWidth();
-        }
-
-        if (changed) {
-            // Убираем странные константные 11dp по краям
-            prepareOffsetMatrix();
-            mRightAxisTransformer.prepareMatrixValuePx(mXChartMin,
-                    mDeltaX == 0 ? 1 : mDeltaX,
-                    mAxisRight.mAxisRange == 0 ? 1 : mAxisRight.mAxisRange,
-                    mAxisRight.mAxisMinimum);
-            mLeftAxisTransformer.prepareMatrixValuePx(mXChartMin,
-                    mDeltaX == 0 ? 1 : mDeltaX,
-                    mAxisLeft.mAxisRange == 0 ? 1 : mAxisLeft.mAxisRange,
-                    mAxisLeft.mAxisMinimum);
-        }
+    public void setData(LineData data) {
+        super.setData(data);
+        if (getLegend() != null) getLegend().setEnabled(false);
     }
 
     private static class MyLineChartRenderer extends LineChartRenderer {
 
         public MyLineChartRenderer(LineDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
             super(chart, animator, viewPortHandler);
-            mRenderPaint = createRendererPaint(mRenderPaint);
         }
 
         @Override
@@ -186,14 +152,6 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
         }
 
         @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            // define an offset to change the original position of the marker
-            // (optional)
-            //setOffsets(-getMeasuredWidth() / 2, -getMeasuredHeight() / 2);
-        }
-
-        @Override
         public void draw(Canvas canvas, float posx, float posy) {
             if (posx + getXOffset() < 0) {
                 posx = -getXOffset();
@@ -227,29 +185,35 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
         }
     }
 
-    public static class HackyPaint extends Paint {
-        private static final CornerPathEffect sCornerPathEffect = new CornerPathEffect(10);
+    public static class HackyTransformer extends Transformer {
 
-        public HackyPaint() {
-        }
+        private final ViewPortHandler mViewPortHandler;
 
-        public HackyPaint(int flags) {
-            super(flags);
-        }
-
-        public HackyPaint(Paint paint) {
-            super(paint);
+        public HackyTransformer(ViewPortHandler viewPortHandler) {
+            super(viewPortHandler);
+            mViewPortHandler = viewPortHandler;
         }
 
         @Override
-        public PathEffect setPathEffect(PathEffect effect) {
-            if (effect instanceof DashPathEffect) {
-                super.setPathEffect(sCornerPathEffect); // Хуякс
-                return effect;
+        public void prepareMatrixValuePx(float xChartMin, float deltaX, float deltaY, float yChartMin) {
+            if (deltaX == 0f) deltaX = mViewPortHandler.getChartHeight();
+            if (deltaY == 0f) deltaY = mViewPortHandler.getChartWidth();
+            super.prepareMatrixValuePx(xChartMin, deltaX, deltaY, yChartMin);
+        }
+
+        @Override
+        public void prepareMatrixOffset(boolean inverted) {
+            mMatrixOffset.reset();
+
+            if (!inverted) {
+                float bottom = mViewPortHandler.getChartHeight() - mViewPortHandler.offsetBottom();
+                bottom -= Utils.convertDpToPixel(8);
+
+                mMatrixOffset.postTranslate(mViewPortHandler.offsetLeft(),
+                        bottom);
             } else {
-                return super.setPathEffect(effect);
+                super.prepareMatrixOffset(inverted);
             }
         }
     }
-
 }
