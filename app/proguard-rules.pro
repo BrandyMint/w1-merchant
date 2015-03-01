@@ -21,6 +21,9 @@
 
 -keep class com.w1.merchant.android.model.** { *; }
 
+#mpchart
+-keep class com.github.mikephil.charting.animation.** { *; }
+
 # GSON
 -keepattributes Signature
 -keep class sun.misc.Unsafe { *; }
