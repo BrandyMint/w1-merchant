@@ -129,8 +129,8 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
                 // y-position
 
                 float[] pts = new float[]{
-                        xIndex, mChart.getYChartMax(), xIndex, mChart.getYChartMin(), 0, y,
-                        mChart.getXChartMax(), y
+                        xIndex, mChart.getYChartMax(), xIndex, mChart.getYChartMin()
+                        // 0, y, mChart.getXChartMax(), y
                 };
 
                 mChart.getTransformer(set.getAxisDependency()).pointValuesToPixel(pts);
