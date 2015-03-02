@@ -255,6 +255,7 @@
     <string name="text_banner_btn">OK</string>
 
     <string name="support_username_title">Name</string>
+    <string name="support_user_profile_content_description">User profile</string>
 
 </resources>
 
