@@ -251,5 +251,6 @@
     <string name="text_banner_4">Выставление счетов</string>
     <string name="text_banner_btn">OK</string>
 
+    <string name="support_username_title">Имя</string>
 
 </resources>

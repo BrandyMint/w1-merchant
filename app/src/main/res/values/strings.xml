@@ -253,7 +253,12 @@
     <string name="text_banner_3">Payment history</string>
     <string name="text_banner_4">Invoicing</string>
     <string name="text_banner_btn">OK</string>
+    <string name="title_activity_support_profile">SupportProfileActivity</string>
 
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="support_username_title">Name</string>
 
 
 </resources>

@@ -56,6 +56,10 @@
         Просмотр изображения
     </screenName>
 
+    <screenName name="com.w1.merchant.android.support.SupportProfileActivity">
+        Профиль сотрудника
+    </screenName>
+
     <screenName name="com.w1.merchant.android.activity.SessionExpiredDialogActivity">
         Диалог "сессия истекла"
     </screenName>
