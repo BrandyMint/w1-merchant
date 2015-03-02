@@ -95,7 +95,7 @@ public class SupportProfileActivity extends ActivityBase {
                 @Override
                 public void onGlobalLayout() {
                     if (mIconView.getViewTreeObserver().isAlive()) {
-                        mIconView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        mIconView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         setupAvatar();
                     }
                 }
