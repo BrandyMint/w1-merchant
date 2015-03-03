@@ -254,4 +254,6 @@
     <string name="support_username_title">Имя</string>
     <string name="support_user_profile_content_description">Профиль сотрудника</string>
 
+    <string name="activity_show_photo_title">Изображение</string>
+
 </resources>

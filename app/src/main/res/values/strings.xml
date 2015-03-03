@@ -257,5 +257,7 @@
     <string name="support_username_title">Name</string>
     <string name="support_user_profile_content_description">User profile</string>
 
+    <string name="activity_show_photo_title">Picture</string>
+
 </resources>
 

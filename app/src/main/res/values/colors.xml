@@ -16,4 +16,6 @@
     <color name="details_invoice_accepted">#6fd55f</color>
     <color name="details_invoice_processing">#ff541f</color>
 
+    <color name="black_overlay">#66000000</color>
+
 </resources>

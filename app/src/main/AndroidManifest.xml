@@ -123,7 +123,8 @@
         <activity
             android:name=".support.ShowPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/ShowPhotoTheme" />
+            android:theme="@style/ShowPhotoTheme"
+            android:label="@string/activity_show_photo_title" />
 
         <meta-data
             android:name="com.google.android.gms.version"

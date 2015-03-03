@@ -51,14 +51,20 @@
         <item name="android:windowAnimationStyle">@style/IntroAnimation</item>
     </style>
 
-    <style name="ShowPhotoThemeBase" parent="android:Theme.Holo.NoActionBar.Fullscreen">
+    <style name="ShowPhotoThemeBase" parent="android:Theme.Holo">
         <item name="android:windowBackground">@android:color/background_dark</item>
         <item name="android:colorBackground">@android:color/background_dark</item>
         <item name="android:colorBackgroundCacheHint">@android:color/background_dark</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
     <style name="ShowPhotoTheme" parent="ShowPhotoThemeBase">
     </style>
+
+    <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
 
     <style name="ConversationMessageDate">
         <item name="android:visibility">gone</item>
