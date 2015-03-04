@@ -134,7 +134,7 @@ public class RetryWhenCaptchaReady implements
                 }
                 final LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(appContext);
 
-                if (mV4Fragment != null) {
+                if (mV4Fragment == null) {
                     FragmentManager fm = activity.getFragmentManager();
                     if (fm.findFragmentByTag(CAPTCHA_DIALOG_TAG) == null) {
                         CaptchaDialogFragment dialog = CaptchaDialogFragment.newInstance(error.isErrorInvalidCaptcha()); // XXX
