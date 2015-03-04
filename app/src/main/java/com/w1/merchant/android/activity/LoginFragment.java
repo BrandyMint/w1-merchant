@@ -1,13 +1,13 @@
 package com.w1.merchant.android.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -39,8 +39,8 @@ import com.w1.merchant.android.model.AuthPrincipalRequest;
 import com.w1.merchant.android.model.OneTimePassword;
 import com.w1.merchant.android.model.PrincipalUser;
 import com.w1.merchant.android.service.ApiSessions;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
 import java.util.ArrayList;
 import java.util.Collections;

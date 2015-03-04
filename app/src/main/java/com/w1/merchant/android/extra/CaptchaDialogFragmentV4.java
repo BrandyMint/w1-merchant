@@ -36,8 +36,6 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class CaptchaDialogFragmentV4 extends DialogFragment {
 
-    public static final String ACTION_DIALOG_NEW_STATUS = "com.w1.merchant.android.extra.CaptchaDialogFragmentV4.ACTION_DIALOG_NEW_STATUS";
-
     public static final int STATUS_SHOWN = 1;
 
     public static final int STATUS_CANCELLED = 2;
@@ -206,8 +204,8 @@ public class CaptchaDialogFragmentV4 extends DialogFragment {
     }
 
     private void notifyDialogShown() {
-        Intent intent = new Intent(ACTION_DIALOG_NEW_STATUS);
-        intent.putExtra(ACTION_DIALOG_NEW_STATUS, STATUS_SHOWN);
+        Intent intent = new Intent(CaptchaDialogFragment.ACTION_DIALOG_NEW_STATUS);
+        intent.putExtra(CaptchaDialogFragment.ACTION_DIALOG_NEW_STATUS, STATUS_SHOWN);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
 
@@ -217,14 +215,14 @@ public class CaptchaDialogFragmentV4 extends DialogFragment {
             session.captcha = null;
             session.captchaCode = null;
         }
-        Intent intent = new Intent(ACTION_DIALOG_NEW_STATUS);
-        intent.putExtra(ACTION_DIALOG_NEW_STATUS, STATUS_CANCELLED);
+        Intent intent = new Intent(CaptchaDialogFragment.ACTION_DIALOG_NEW_STATUS);
+        intent.putExtra(CaptchaDialogFragment.ACTION_DIALOG_NEW_STATUS, STATUS_CANCELLED);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
 
     private void notifyDialogDone() {
-        Intent intent = new Intent(ACTION_DIALOG_NEW_STATUS);
-        intent.putExtra(ACTION_DIALOG_NEW_STATUS, STATUS_DONE);
+        Intent intent = new Intent(CaptchaDialogFragment.ACTION_DIALOG_NEW_STATUS);
+        intent.putExtra(CaptchaDialogFragment.ACTION_DIALOG_NEW_STATUS, STATUS_DONE);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
 
