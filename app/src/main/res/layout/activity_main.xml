@@ -76,7 +76,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textColor="#757575" />
+                    android:textColor="#757575"
+                    android:singleLine="true"/>
 
                 <TextView
                     android:id="@+id/account_id"

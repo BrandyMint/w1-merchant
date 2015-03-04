@@ -2,12 +2,15 @@ package com.w1.merchant.android.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -421,12 +424,40 @@ public class LoginFragment extends Fragment {
                     public void onNext(List<PrincipalUser> principalUsers) {
                         if (principalUsers == null || principalUsers.isEmpty()) {
                             onAuthDone(authModel);
-                        } else {
+                        } else if (principalUsers.size() == 1) {
                             selectPrincipal(principalUsers.get(0));
+                        } else {
+                            showSelectPrincipalDialog(principalUsers);
                         }
                     }
                 });
         setProgress(true);
+    }
+
+    void showSelectPrincipalDialog(List<PrincipalUser> principalUsers) {
+        SelectPrincipalFragment fragment = new SelectPrincipalFragment() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                super.onDismiss(dialog);
+                PrincipalUser user = getSelectedPrincipalUser();
+                if (user != null) {
+                    selectPrincipal(user);
+                } else {
+                    setProgress(false);
+                }
+            }
+        };
+        Bundle args = new Bundle(1);
+        args.putParcelableArrayList(SelectPrincipalFragment.ARG_PRINCIPAL_USERS, new ArrayList<Parcelable>(principalUsers));
+        fragment.setArguments(args);
+
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        Fragment prev = getChildFragmentManager().findFragmentByTag("SelectPrincipalFragment");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        fragment.show(ft, "SelectPrincipalFragment");
     }
 
     void selectPrincipal(final PrincipalUser user) {

@@ -5,34 +5,35 @@
     tools:context="com.w1.merchant.android.activity.IntroActivity">
 
     <com.thehayro.view.InfiniteViewPager
-        android:id="@+id/pager_banner"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/banner_btn"
-        android:layout_marginBottom="6dp"
-        />
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/banner_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/intro_header_size"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textColor="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:lines="2"
+        android:textSize="28dp"
+        android:text="@string/choose_a_project"
+        android:gravity="center"
+        tools:ignore="SpUsage" />
 
     <com.msh.android.widget.view.NewDotPageIndicator
         android:id="@+id/indicator_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="12dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="72dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="1dp"
         android:paddingBottom="1dp"
-        android:layout_marginTop="@dimen/intro_page_indicator_margin_top"
-         />
-
-    <Button
-        android:id="@+id/banner_btn"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_alignParentBottom="true"
-        android:background="#A0000000"
-        android:text="@string/text_banner_btn"
-        android:textColor="#80ffffff" />
+        />
 
 </RelativeLayout>

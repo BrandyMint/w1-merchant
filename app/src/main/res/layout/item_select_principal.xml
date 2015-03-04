@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/intro_header_size"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.w1.merchant.android.viewextended.ExtendedImageView
+        android:id="@+id/icon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:foreground="@drawable/clickable_item_circle_background"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/choose_a_project"
+        />
+
+    <TextView
+        android:paddingTop="8dp"
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#757575"
+        tools:text="Тестовый бизнес магазин"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/account_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        tools:text="111 404 971 794"
+        android:textColor="#757575" />
+
+    <TextView
+        android:id="@+id/url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:textColor="#757575"
+        android:singleLine="true"
+        tools:text="http://r0.ru" />
+
+</LinearLayout>

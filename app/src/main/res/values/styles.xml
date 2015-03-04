@@ -51,6 +51,14 @@
         <item name="android:windowAnimationStyle">@style/IntroAnimation</item>
     </style>
 
+    <style name="SelectPrincipalDialogTheme" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.96</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/SelectPrincipalAnimation</item>
+    </style>
+
     <style name="ShowPhotoThemeBase" parent="android:Theme.Holo">
         <item name="android:windowBackground">@android:color/background_dark</item>
         <item name="android:colorBackground">@android:color/background_dark</item>
@@ -118,6 +126,11 @@
     <style name="IntroAnimation">
         <item name="android:windowEnterAnimation">@null</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <style name="SelectPrincipalAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@null</item>
     </style>
 
     <style name="DetailsItemTitle">
