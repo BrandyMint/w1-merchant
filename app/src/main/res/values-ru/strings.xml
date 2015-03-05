@@ -257,4 +257,10 @@
     <string name="activity_show_photo_title">Изображение</string>
     <string name="choose_a_project">Выберите проект</string>
 
+    <string name="profile_info_wallet_id">Номер кошелька: %s</string>
+    <string name="profile_info_name">Имя: %s</string>
+    <string name="profile_info_phone">Телефон: %s</string>
+    <string name="profile_info_email">E-mail: %s</string>
+    <string name="profile_info_merchant_url">URL магазина: %s</string>
+
 </resources>

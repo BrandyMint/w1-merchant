@@ -2,7 +2,9 @@ package com.w1.merchant.android.model;
 
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +50,11 @@ public class Profile {
 
         public static final String ATTRIBUTE_TYPE_MERCHANT_LOGO = "MerchantLogo";
 
+        public static final String ATTRIBUTE_TYPE_MIDDLE_NAME = "MiddleName";
+
         public static final String ATTRIBUTE_TYPE_TITLE = "Title";
+
+        public static final String ATTRIBUTE_TYPE_PHONE_NUMBER = "PhoneNumber";
 
 
         public static final String VISIBILITY_TYPE_ALL = "All";
@@ -99,6 +105,18 @@ public class Profile {
     @Nullable
     public Attribute findMerchantLogo() {
         return findAttribute(Attribute.ATTRIBUTE_TYPE_MERCHANT_LOGO);
+    }
+
+    public String getName() {
+        List<String> data = new ArrayList<>(3);
+        Attribute firstName = findAttribute(Attribute.ATTRIBUTE_TYPE_FIRST_NAME);
+        if (firstName != null) data.add(firstName.displayValue);
+        Attribute lastName = findAttribute(Attribute.ATTRIBUTE_TYPE_LAST_NAME);
+        if (lastName != null) data.add(lastName.displayValue);
+        Attribute middleName = findAttribute(Attribute.ATTRIBUTE_TYPE_MIDDLE_NAME);
+        if (middleName != null) data.add(middleName.displayValue);
+
+        return TextUtils.join(" ", data);
     }
 
 }

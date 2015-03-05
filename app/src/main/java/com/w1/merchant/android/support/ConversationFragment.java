@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,14 +32,19 @@ import android.widget.Toast;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.model.Profile;
 import com.w1.merchant.android.model.SupportTicket;
 import com.w1.merchant.android.model.SupportTicketPost;
 import com.w1.merchant.android.model.UploadFileResponse;
+import com.w1.merchant.android.service.ApiProfile;
 import com.w1.merchant.android.service.ApiSupport;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.ContentTypedOutput;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
+import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
+
+import junit.framework.Assert;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,6 +96,7 @@ public class ConversationFragment extends Fragment {
 
     private Subscription mPostMessageSubscription = Subscriptions.unsubscribed();
     private Subscription mRefreshMessagesSubscription = Subscriptions.unsubscribed();
+    private Subscription mProfileSubscription = Subscriptions.unsubscribed();
 
     public static ConversationFragment newInstance(@Nullable SupportTicket ticket) {
         ConversationFragment fragment = new ConversationFragment();
@@ -258,6 +266,7 @@ public class ConversationFragment extends Fragment {
         super.onDestroyView();
         mPostMessageSubscription.unsubscribe();
         mRefreshMessagesSubscription.unsubscribe();
+        mProfileSubscription.unsubscribe();
         mSendMessageText = null;
         mSendMessageButton = null;
         mSendMessageProgress = null;
@@ -354,81 +363,132 @@ public class ConversationFragment extends Fragment {
         sendMessage(comment);
     }
 
+    /**
+     * Отправка сообщения. Создание диалога, если он ещё не создан
+     * @param message
+     */
     private void sendMessage(String message) {
+        if (mTicket == null) {
+            // Перед созданием диалога, загружаем профиль для отправки данных юзера
+            loadProfile(message);
+        } else {
+            sendMessageHasDialog(message);
+        }
+    }
+
+    /**
+     * Отправка сообщения в существующий диалог
+     * @param message
+     */
+    private void sendMessageHasDialog(String message) {
+        ApiSupport apiMessenger = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
+
+        mPostMessageSubscription.unsubscribe();
+
+        setupStatusSending();
+        Assert.assertNotNull(mTicket);
+        Observable<SupportTicketPost> observable = AppObservable.bindFragment(this,
+                apiMessenger.postReply(mTicket.ticketId, new SupportTicket.ReplyRequest(message)));
+        mPostMessageSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        setupStatusReady();
+                    }
+                })
+                .subscribe(new Observer<SupportTicketPost>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (mListener != null)
+                            mListener.notifyError(getText(R.string.load_ticket_error), e);
+                    }
+
+                    @Override
+                    public void onNext(SupportTicketPost supportTicketPost) {
+                        if (mListView == null) return;
+                        addMessageScrollToEnd(supportTicketPost);
+                        mSendMessageText.setText("");
+                    }
+                });
+    }
+
+    void loadProfile(final String originalMessage) {
+        mProfileSubscription.unsubscribe();
+
+        ApiProfile apiProfile = NetworkUtils.getInstance().createRestAdapter().create(ApiProfile.class);
+        Observable<Profile> observable = AppObservable.bindFragment(this, apiProfile.getProfile());
+
+        mProfileSubscription = observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .subscribe(new Observer<Profile>() {
+
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        createDialog(originalMessage, null); // Хрен с ними с данными
+                    }
+
+                    @Override
+                    public void onNext(Profile profile) {
+                        createDialog(originalMessage, profile);
+                    }
+                });
+    }
+
+    private void createDialog(String message, @Nullable Profile profile) {
         ApiSupport apiMessenger = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
 
         mPostMessageSubscription.unsubscribe();
 
         setupStatusSending();
 
-        if (mTicket == null) {
-            // Создаем тикет
-            SupportTicket.CreateRequest req = new SupportTicket.CreateRequest(
-                    getResources().getString(R.string.new_conversation_subject), message, getResources());
-            Observable<SupportTicket> observable = AppObservable.bindFragment(this,
-                    apiMessenger.createTicket(req));
-            mPostMessageSubscription = observable
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .retryWhen(new RetryWhenCaptchaReady(this))
-                    .finallyDo(new Action0() {
-                        @Override
-                        public void call() {
-                            setupStatusReady();
-                        }
-                    })
-                    .subscribe(new Observer<SupportTicket>() {
-                        @Override
-                        public void onCompleted() {
-                        }
+        if (profile != null) message = formatMerchantInfo(profile) + "\n\n" + message;
+        SupportTicket.CreateRequest req = new SupportTicket.CreateRequest(
+                getResources().getString(R.string.new_conversation_subject), message, getResources());
+        Observable<SupportTicket> observable = AppObservable.bindFragment(this,
+                apiMessenger.createTicket(req));
+        mPostMessageSubscription = observable
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWhenCaptchaReady(this))
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        setupStatusReady();
+                    }
+                })
+                .subscribe(new Observer<SupportTicket>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            if (mListener != null) mListener.notifyError(getText(R.string.send_message_error), e);
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (mListener != null)
+                            mListener.notifyError(getText(R.string.send_message_error), e);
+                    }
 
-                        @Override
-                        public void onNext(SupportTicket supportTicket) {
-                            if (mListView == null) return;
-                            if (mListener != null) mListener.onSupportTicketCreated(supportTicket);
-                            mTicket = supportTicket;
-                            mSendMessageText.setText("");
-                            mAdapter.setMessages(supportTicket.posts);
-                            startPeriodicRefresh();
-                        }
-                    });
-        } else {
+                    @Override
+                    public void onNext(SupportTicket supportTicket) {
+                        if (mListView == null) return;
+                        if (mListener != null) mListener.onSupportTicketCreated(supportTicket);
+                        mTicket = supportTicket;
+                        mSendMessageText.setText("");
+                        mAdapter.setMessages(supportTicket.posts);
+                        startPeriodicRefresh();
+                    }
+                });
 
-            Observable<SupportTicketPost> observable = AppObservable.bindFragment(this,
-                    apiMessenger.postReply(mTicket.ticketId, new SupportTicket.ReplyRequest(message)));
-            mPostMessageSubscription = observable
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .retryWhen(new RetryWhenCaptchaReady(this))
-                    .finallyDo(new Action0() {
-                        @Override
-                        public void call() {
-                            setupStatusReady();
-                        }
-                    })
-                    .subscribe(new Observer<SupportTicketPost>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            if (mListener != null)
-                                mListener.notifyError(getText(R.string.load_ticket_error), e);
-                        }
-
-                        @Override
-                        public void onNext(SupportTicketPost supportTicketPost) {
-                            if (mListView == null) return;
-                            addMessageScrollToEnd(supportTicketPost);
-                            mSendMessageText.setText("");
-                        }
-                    });
-        }
     }
 
     private void sendImage(Uri imageUri) {
@@ -465,9 +525,41 @@ public class ConversationFragment extends Fragment {
 
                     @Override
                     public void onNext(UploadFileResponse response) {
-                        sendMessage(mSendMessageText.getText().toString() + "\n" + response.getLinkAImg());
+                        String message = mSendMessageText.getText().toString() + "\n" + response.getLinkAImg();
+                        sendMessage(message);
                     }
                 });
+    }
+
+    String formatMerchantInfo(Profile profile) {
+        Resources resources = getResources();
+        List<String> info = new ArrayList<>(5);
+
+        info.add(resources.getString(R.string.profile_info_wallet_id, TextUtilsW1.formatUserId(profile.userId)));
+
+        String name = profile.getName();
+        if (!TextUtils.isEmpty(name)) {
+            info.add(resources.getString(R.string.profile_info_name, name));
+        }
+
+        Profile.Attribute phone = profile.findAttribute(Profile.Attribute.ATTRIBUTE_TYPE_PHONE_NUMBER);
+        if (phone != null) {
+            info.add(resources.getString(R.string.profile_info_phone, phone.displayValue));
+        }
+
+        Profile.Attribute email = profile.findAttribute(Profile.Attribute.ATTRIBUTE_TYPE_EMAIL);
+        if (email != null) {
+            info.add(resources.getString(R.string.profile_info_email, email.displayValue));
+        }
+
+        Profile.Attribute url = profile.findMerchantUrl();
+        if (url != null) {
+            info.add(resources.getString(R.string.profile_info_merchant_url, url.displayValue));
+        }
+
+        if (DBG) Log.v(TAG, "profile info: " + TextUtils.join("; ", info));
+
+        return TextUtils.join("\n", info);
     }
 
     private void setupStatusSending() {

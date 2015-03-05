@@ -260,5 +260,11 @@
     <string name="activity_show_photo_title">Picture</string>
     <string name="choose_a_project">Choose a project</string>
 
+    <string name="profile_info_wallet_id">Wallet id: %s</string>
+    <string name="profile_info_name">Name: %s</string>
+    <string name="profile_info_phone">Phone: %s</string>
+    <string name="profile_info_email">E-mail: %s</string>
+    <string name="profile_info_merchant_url">Merchant URL: %s</string>
+
 </resources>
 
