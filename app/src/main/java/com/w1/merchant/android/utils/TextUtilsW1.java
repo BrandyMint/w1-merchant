@@ -150,10 +150,13 @@ public final class TextUtilsW1 {
     @Nullable
     public static String getIso4217CodeByNumber(String number) {
         switch (number) {
+            case "156": return "CNY";
             case "398": return "KZT";
+            case "498": return "MDL";
             case "643": return "RUB";
             case "710": return "ZAR";
             case "840": return "USD";
+            case "944": return "AZN";
             case "972": return "TJS";
             case "974": return "BYR";
             case "978": return "EUR";
@@ -178,8 +181,14 @@ public final class TextUtilsW1 {
         }
 
         switch (currencyId) {
+            case "156":
+                result = "¥";
+                break;
             case "398":  //казах
                 result = "₸";//KZTU+20B8&#8376
+                break;
+            case "498":
+                result = "Leu";
                 break;
             case "643":  //рубль
                 result = "RUB";
@@ -189,6 +198,9 @@ public final class TextUtilsW1 {
                 break;
             case "840": //USD
                 result = "$";//USD
+                break;
+            case "944":
+                result = "man.";
                 break;
             case "972": //таджик
                 result = "смн.";//TJSсмн.
@@ -235,35 +247,44 @@ public final class TextUtilsW1 {
         }
 
         switch (currencyId) {
+            case "156":
+                resId = R.string.currency_CNY;
+                break;
             case "398":  //казах
-                resId = R.string.currency_kazakhstani_tenge;
+                resId = R.string.currency_KZT;
+                break;
+            case "498":
+                resId = R.string.currency_MDL;
                 break;
             case "643":  //рубль
-                resId = R.string.currency_russian_rouble;
+                resId = R.string.currency_RUB;
                 break;
             case "710": //южноафр
-                resId = R.string.currency_south_african_rand;
+                resId = R.string.currency_ZAR;
                 break;
             case "840": //USD
-                resId = R.string.currency_united_states_dollar;
+                resId = R.string.currency_USD;
+                break;
+            case "944":
+                resId = R.string.currency_AZN;
                 break;
             case "972": //таджик
-                resId =R.string.currency_tajikistani_somoni;
+                resId =R.string.currency_TJS;
                 break;
             case "974": //белорус
-                resId = R.string.currency_belarusian_rouble;
+                resId = R.string.currency_BYR;
                 break;
             case "978": //EUR
-                resId = R.string.currency_euro;
+                resId = R.string.currency_EUR;
                 break;
             case "980": //укр
-                resId = R.string.currency_ukrainian_hryvnia;
+                resId = R.string.currency_UAH;
                 break;
             case "981": //Груз.
-                resId = R.string.currency_georgian_lari;
+                resId = R.string.currency_GEL;
                 break;
             case "985": //польск
-                resId = R.string.currency_poland_zloty;
+                resId = R.string.currency_PLN;
                 break;
             default: //?
                 if (BuildConfig.DEBUG)

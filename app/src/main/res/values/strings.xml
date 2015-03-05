@@ -266,16 +266,19 @@
     <string name="profile_info_email">E-mail: %s</string>
     <string name="profile_info_merchant_url">Merchant URL: %s</string>
 
-    <string name="currency_russian_rouble">Russian ruble</string>
-    <string name="currency_kazakhstani_tenge">Kazakhstani tenge</string>
-    <string name="currency_south_african_rand">South African rand</string>
-    <string name="currency_united_states_dollar">United States dollar</string>
-    <string name="currency_belarusian_rouble">Belarusian ruble</string>
-    <string name="currency_euro">Euro</string>
-    <string name="currency_ukrainian_hryvnia">Ukrainian hryvnia</string>
-    <string name="currency_georgian_lari">Georgian lari</string>
-    <string name="currency_tajikistani_somoni">Tajikistani somoni</string>
-    <string name="currency_poland_zloty">Poland Zloty</string>
+    <string name="currency_AZN">Azerbaijanian manat</string>
+    <string name="currency_BYR">Belarusian ruble</string>
+    <string name="currency_CNY">Chinese yuan</string>
+    <string name="currency_EUR">Euro</string>
+    <string name="currency_GEL">Georgian lari</string>
+    <string name="currency_KZT">Kazakhstani tenge</string>
+    <string name="currency_MDL">Moldovan leu</string>
+    <string name="currency_PLN">Poland zloty</string>
+    <string name="currency_RUB">Russian Ruble</string>
+    <string name="currency_TJS">Tajikistani somoni</string>
+    <string name="currency_UAH">Ukrainian hryvnia</string>
+    <string name="currency_USD">US Dollar</string>
+    <string name="currency_ZAR">African rand</string>
 
 </resources>
 
