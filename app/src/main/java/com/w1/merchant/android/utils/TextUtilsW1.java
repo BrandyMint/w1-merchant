@@ -1,6 +1,7 @@
 package com.w1.merchant.android.utils;
 
 import android.content.res.Resources;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spannable;
@@ -202,7 +203,7 @@ public final class TextUtilsW1 {
                 result = "₴";//UAHU+20B4&#8372
                 break;
             case "981": //Груз.
-                result = "lari";//GEL U+20BE
+                result = "Lari";//GEL U+20BE
                 break;
             case "985": //польск
                 result = "zł";//PLN
@@ -214,6 +215,62 @@ public final class TextUtilsW1 {
                 break;
         }
         return result;
+    }
+
+    @Nullable
+    public static String getCurrencyName(String currencyId, Resources resources) {
+        String result;
+        int resId;
+        Exception exception = null;
+        if (Build.VERSION.SDK_INT >= 19) {
+            try {
+                String iso4217Code = getIso4217CodeByNumber(currencyId);
+                if (iso4217Code != null && !"RUB".equals(iso4217Code)) {
+                    result = Currency.getInstance(iso4217Code).getDisplayName(Locale.getDefault());
+                    if (!TextUtils.equals(result, iso4217Code)) return result;
+                }
+            } catch (Exception e) {
+                exception = e;
+            }
+        }
+
+        switch (currencyId) {
+            case "398":  //казах
+                resId = R.string.currency_kazakhstani_tenge;
+                break;
+            case "643":  //рубль
+                resId = R.string.currency_russian_rouble;
+                break;
+            case "710": //южноафр
+                resId = R.string.currency_south_african_rand;
+                break;
+            case "840": //USD
+                resId = R.string.currency_united_states_dollar;
+                break;
+            case "972": //таджик
+                resId =R.string.currency_tajikistani_somoni;
+                break;
+            case "974": //белорус
+                resId = R.string.currency_belarusian_rouble;
+                break;
+            case "978": //EUR
+                resId = R.string.currency_euro;
+                break;
+            case "980": //укр
+                resId = R.string.currency_ukrainian_hryvnia;
+                break;
+            case "981": //Груз.
+                resId = R.string.currency_georgian_lari;
+                break;
+            case "985": //польск
+                resId = R.string.currency_poland_zloty;
+                break;
+            default: //?
+                if (BuildConfig.DEBUG)
+                    Log.v(Constants.LOG_TAG, "no currency for code " + currencyId, exception);
+                return null;
+        }
+        return resources.getString(resId);
     }
 
     /**

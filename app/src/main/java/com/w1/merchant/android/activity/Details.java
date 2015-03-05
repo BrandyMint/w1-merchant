@@ -110,7 +110,7 @@ public class Details extends ActivityBase {
         addText(R.string.sender_title, entry.fromUserTitle);
         addNumber(R.string.to_wallet, entry.toUserId);
         addAmount(R.string.commission, entry.commissionAmount.setScale(0, RoundingMode.UP), entry.currencyId);
-        addText(R.string.currency, getCurrencySymbol(entry.currencyId));
+        addText(R.string.currency, getCurrencyDescription(entry.currencyId));
         addText(R.string.description, entry.description);
         addDate(R.string.last_edit_date, entry.updateDate == null ? entry.createDate : entry.updateDate);
 
@@ -148,7 +148,7 @@ public class Details extends ActivityBase {
         addText(R.string.invoice_title_user_title, entry.userTitle);
         addText(R.string.invoice_title_direction, entry.getLocalizedDirection(getResources()));
         addAmount(R.string.invoice_title_amount, entry.amount.setScale(0, RoundingMode.UP), entry.currencyId);
-        addText(R.string.invoice_title_currency, getCurrencySymbol(entry.currencyId));
+        addText(R.string.invoice_title_currency, getCurrencyDescription(entry.currencyId));
         if (!TextUtils.isEmpty(entry.orderId)) addText(R.string.invoice_title_order_id, entry.orderId);
         addText(R.string.invoice_title_description, entry.description);
         addDate(R.string.invoice_title_create_date, entry.createDate);
@@ -163,6 +163,19 @@ public class Details extends ActivityBase {
 
     private CharSequence getCurrencySymbol(String currency) {
         return TextUtilsW1.getCurrencySymbol2(currency, 2);
+    }
+
+    private CharSequence getCurrencyDescription(String currency) {
+        String description = TextUtilsW1.getCurrencyName(currency, getResources());
+        if (description == null) {
+            return getCurrencySymbol(currency);
+        } else {
+            SpannableStringBuilder sb = new SpannableStringBuilder(getCurrencySymbol(currency));
+            sb.append(" (");
+            sb.append(description);
+            sb.append(")");
+            return sb;
+        }
     }
 
     private void setupAmount(BigDecimal amount, String currency, boolean orangeColor) {
