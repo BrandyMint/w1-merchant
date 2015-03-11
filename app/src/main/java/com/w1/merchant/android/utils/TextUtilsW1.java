@@ -1,5 +1,6 @@
 package com.w1.merchant.android.utils;
 
+import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -230,6 +231,7 @@ public final class TextUtilsW1 {
     }
 
     @Nullable
+    @TargetApi(19)
     public static String getCurrencyName(String currencyId, Resources resources) {
         String result;
         int resId;
