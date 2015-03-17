@@ -56,7 +56,7 @@ public class EditTemplate extends ActivityBase {
     private LinearLayout llMain;
     private int totalReq = 0;
     private LinearLayout.LayoutParams lParams4;
-    private String sum = "";
+    private String mSum = "";
 
     private Provider mProvider;
 
@@ -123,7 +123,7 @@ public class EditTemplate extends ActivityBase {
                     @Override
                     public void onError(Throwable e) {
                         if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", e);
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();
@@ -218,7 +218,7 @@ public class EditTemplate extends ActivityBase {
                     tvNew2.setTextSize(22);
                     llMain.addView(tvNew2, lParams2);
                 } else {
-                    sum += field.fieldValue;
+                    mSum += field.fieldValue;
                 }
             }
         }
@@ -389,12 +389,19 @@ public class EditTemplate extends ActivityBase {
 	    llMain.addView(tvComis, lParams4);
 	    tvComis.setGravity(Gravity.CENTER_HORIZONTAL);
 
-	    if (!mIsBusinessAccount) {
-	    	if (!sum.equals("")) {
-                mAmountEditText.setText(sum.substring(0, sum.indexOf(",")));
-			}
-	    }
-	}
+        if (!mIsBusinessAccount) {
+            if (!mSum.equals("")) {
+                int pos = mSum.indexOf(",");
+                String sum;
+                if (pos > 0) {
+                    sum = mSum.substring(0, pos);
+                } else {
+                    sum = mSum;
+                }
+                mAmountEditText.setText(sum);
+            }
+        }
+    }
 	
 	void startPBAnim() {
     	totalReq += 1;
