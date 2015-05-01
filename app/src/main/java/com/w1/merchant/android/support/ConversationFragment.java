@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,8 +68,6 @@ public class ConversationFragment extends Fragment {
     private static final String BUNDLE_KEY_POSTS = "com.w1.merchant.android.support.ConversationFragment.BUNDLE_KEY_POSTS";
     private static final String BUNDLE_KEY_PHOTO_DST_URI = "com.w1.merchant.android.support.ConversationFragment.BUNDLE_KEY_PHOTO_DST_URI";
 
-    private static final int REFRESH_PERIOD = 20;
-
     private static final int REQUEST_PICK_PHOTO = Activity.RESULT_FIRST_USER + 100;
 
     private static final int REQUEST_TAKE_PHOTO = Activity.RESULT_FIRST_USER + 101;
@@ -88,8 +85,6 @@ public class ConversationFragment extends Fragment {
     private View mSendMessageButton;
     private View mSendMessageProgress;
     private View mAttachButton;
-
-    private Handler mRefreshHandler;
 
     @Nullable
     private Uri mMakePhotoDstUri;
@@ -218,7 +213,6 @@ public class ConversationFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mRefreshHandler = new Handler();
         smoothScrollToEnd();
 
         if (mTicket == null && savedInstanceState == null) {
@@ -232,18 +226,6 @@ public class ConversationFragment extends Fragment {
                 }
             }, 50);
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mTicket != null) startPeriodicRefresh();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopPeriodicRefresh();
     }
 
     @Override
@@ -280,12 +262,6 @@ public class ConversationFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mRefreshHandler = null;
     }
 
     public void onImeKeyboardShown() {
@@ -484,9 +460,7 @@ public class ConversationFragment extends Fragment {
                         if (mListener != null) mListener.onSupportTicketCreated(supportTicket);
                         mTicket = supportTicket;
                         mSendMessageText.setText("");
-                        mAdapter.setMessages(supportTicket.posts);
-                        startPeriodicRefresh();
-                    }
+                        mAdapter.setMessages(supportTicket.posts);}
                 });
 
     }
@@ -672,26 +646,6 @@ public class ConversationFragment extends Fragment {
             }
         }
     }
-
-    private void startPeriodicRefresh() {
-        if (mRefreshHandler == null) return;
-        mRefreshHandler.postDelayed(mPeriodicRefreshRunnable, REFRESH_PERIOD * 1000);
-    }
-
-    private void stopPeriodicRefresh() {
-        if (mRefreshHandler == null) return;
-        mRefreshHandler.removeCallbacks(mPeriodicRefreshRunnable);
-    }
-
-    private final Runnable mPeriodicRefreshRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mListView == null || mRefreshHandler == null) return;
-            if (DBG) Log.v(TAG, "periodic refresh");
-            refreshMessages(false);
-            mRefreshHandler.postDelayed(this, REFRESH_PERIOD * 1000);
-        }
-    };
 
     @Nullable
     private ConversationAdapter.ViewHolderMessage findTopVisibleMessageViewHolder() {
