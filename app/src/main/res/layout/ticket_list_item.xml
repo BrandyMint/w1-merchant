@@ -48,10 +48,7 @@
         <com.w1.merchant.android.viewextended.RelativeDateTextSwitcher
             android:id="@+id/notification_date"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:isRelativeDateTimeFormat="false"
-            app:dateFormatFlags="format_show_year|format_show_date|format_show_weekday|format_show_time|format_abbrev_weekday"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="match_parent"
