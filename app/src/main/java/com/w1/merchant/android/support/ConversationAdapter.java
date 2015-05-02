@@ -66,7 +66,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     int parentWidth = getParentWidth(parent);
                     ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)holder.message.getLayoutParams();
                     maxBubbleTextSize = parentWidth - lp.leftMargin - lp.rightMargin
-                            - holder.message.getPaddingRight() - holder.message.getPaddingRight() - 10;
+                            - holder.message.getPaddingLeft() - holder.message.getPaddingRight();
                     mImageGetterMyMessage = new ImageLoadingGetter(maxBubbleTextSize, parent.getContext());
                 }
                 break;
@@ -78,7 +78,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     int parentWidth = getParentWidth(parent);
                     ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)holder.message.getLayoutParams();
                     maxBubbleTextSize = parentWidth - lp.leftMargin - lp.rightMargin
-                            - holder.message.getPaddingRight() - holder.message.getPaddingRight() - 10;
+                            - holder.message.getPaddingLeft() - holder.message.getPaddingRight();
                     mImageGetterTheirMessage = new ImageLoadingGetter(maxBubbleTextSize, parent.getContext());
                 }
                 break;
