@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -26,6 +25,7 @@ import com.w1.merchant.android.utils.TextViewImgLoader;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;
 import com.w1.merchant.android.viewextended.ImageLoadingGetter;
+import com.w1.merchant.android.viewextended.RelativeDateTextSwitcher;
 
 import java.util.Calendar;
 import java.util.List;
@@ -66,7 +66,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     int parentWidth = getParentWidth(parent);
                     ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)holder.message.getLayoutParams();
                     maxBubbleTextSize = parentWidth - lp.leftMargin - lp.rightMargin
-                            - holder.message.getPaddingRight() - holder.message.getPaddingRight() - 10;
+                            - holder.message.getPaddingLeft() - holder.message.getPaddingRight();
                     mImageGetterMyMessage = new ImageLoadingGetter(maxBubbleTextSize, parent.getContext());
                 }
                 break;
@@ -78,7 +78,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     int parentWidth = getParentWidth(parent);
                     ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)holder.message.getLayoutParams();
                     maxBubbleTextSize = parentWidth - lp.leftMargin - lp.rightMargin
-                            - holder.message.getPaddingRight() - holder.message.getPaddingRight() - 10;
+                            - holder.message.getPaddingLeft() - holder.message.getPaddingRight();
                     mImageGetterTheirMessage = new ImageLoadingGetter(maxBubbleTextSize, parent.getContext());
                 }
                 break;
@@ -174,11 +174,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     private void bindDate(ViewHolderMessage holder, SupportTicketPost message, int position) {
         if (dateShouldBeShown(holder, message, position)) {
             holder.date.setVisibility(View.VISIBLE);
-            CharSequence relDate = DateUtils.getRelativeDateTimeString(holder.itemView.getContext(), message.createDate.getTime(),
-                    DateUtils.DAY_IN_MILLIS,
-                    DateUtils.WEEK_IN_MILLIS,
-                    DateUtils.FORMAT_ABBREV_MONTH);
-            holder.date.setText(relDate);
+            holder.date.setRelativeDate(message.createDate.getTime());
         } else {
             holder.date.setVisibility(View.GONE);
         }
@@ -293,7 +289,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     }
 
     public abstract static class ViewHolderMessage extends RecyclerView.ViewHolder {
-        public final TextView date;
+        public final RelativeDateTextSwitcher date;
         public final TextView message;
         public final TextView username;
 
@@ -301,7 +297,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             super(root);
             message = (TextView)root.findViewById(R.id.message);
             username = (TextView)root.findViewById(R.id.username);
-            date = (TextView)root.findViewById(R.id.date);
+            date = (RelativeDateTextSwitcher)root.findViewById(R.id.relative_date);
             message.setMovementMethod(LinkMovementMethodNoSelection.getInstance());
         }
 

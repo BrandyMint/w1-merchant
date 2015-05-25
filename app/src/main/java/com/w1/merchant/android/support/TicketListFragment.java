@@ -3,7 +3,6 @@ package com.w1.merchant.android.support;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +20,8 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.model.SupportTicket;
 import com.w1.merchant.android.model.SupportTickets;
 import com.w1.merchant.android.service.ApiSupport;
-import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.DividerItemDecoration;
 
 import java.util.List;
@@ -59,8 +58,6 @@ public class TicketListFragment extends Fragment {
     private View mProgressView;
 
     private TicketListAdapter mAdapter;
-
-    private Handler mRefreshDatesHandler;
 
     private Subscription mRefreshConversationsSubscription = Subscriptions.unsubscribed();
 
@@ -121,8 +118,6 @@ public class TicketListFragment extends Fragment {
 
         mListView.setAdapter(mAdapter);
 
-        mRefreshDatesHandler = new Handler();
-
         return root;
     }
 
@@ -138,21 +133,9 @@ public class TicketListFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        startRefreshRelativeDates();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         refreshConversationList();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopRefreshRelativeDates();
     }
 
     @Override
@@ -165,8 +148,6 @@ public class TicketListFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mRefreshConversationsSubscription.unsubscribe();
-        stopRefreshRelativeDates();
-        mRefreshDatesHandler = null;
         mListView = null;
         mAdapterEmptyView = null;
         mProgressView = null;
@@ -264,27 +245,6 @@ public class TicketListFragment extends Fragment {
                     }
                 });
     }
-
-
-    private void startRefreshRelativeDates() {
-        mRefreshDatesHandler.removeCallbacks(mRefreshDatesRunnable);
-        mRefreshDatesHandler.postDelayed(mRefreshDatesRunnable, REFRESH_DATES_PERIOD * 1000);
-    }
-
-    private void stopRefreshRelativeDates() {
-        mRefreshDatesHandler.removeCallbacks(mRefreshDatesRunnable);
-    }
-
-    private final Runnable mRefreshDatesRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mListView == null || mAdapter == null || mRefreshDatesHandler == null) return;
-            if (DBG) Log.v(TAG, "refreshRelativeDates");
-            mAdapter.refreshRelativeDates(mListView);
-            mRefreshDatesHandler.postDelayed(mRefreshDatesRunnable, REFRESH_DATES_PERIOD * 1000);
-        }
-    };
-
 
     /**
      * This interface must be implemented by activities that contain this
