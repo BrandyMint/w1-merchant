@@ -8,6 +8,6 @@
         android:title="@string/search"/>
     <item android:id="@+id/ic_menu_add0"
         android:icon="@drawable/ic_menu_add"
-        android:title="@string/add"
+        android:title="@string/bill"
         android:showAsAction="ifRoom|withText" />
 </menu>
