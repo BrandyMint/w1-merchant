@@ -163,20 +163,20 @@ public abstract class SortedList<E> {
     }
 
     public interface OnListChangedListener {
-        public void onDataSetChanged();
+        void onDataSetChanged();
 
-        public void onItemChanged(int location);
+        void onItemChanged(int location);
 
-        public void onItemInserted(int location);
+        void onItemInserted(int location);
 
-        public void onItemRemoved(int location);
+        void onItemRemoved(int location);
 
-        public void onItemMoved(int fromLocation, int toLocation);
+        void onItemMoved(int fromLocation, int toLocation);
 
-        public void onItemRangeChanged(int locationStart, int itemCount);
+        void onItemRangeChanged(int locationStart, int itemCount);
 
-        public void onItemRangeInserted(int locationStart, int itemCount);
+        void onItemRangeInserted(int locationStart, int itemCount);
 
-        public void onItemRangeRemoved(int locationStart, int itemCount);
+        void onItemRangeRemoved(int locationStart, int itemCount);
     }
 }

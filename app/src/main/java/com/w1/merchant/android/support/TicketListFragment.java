@@ -1,9 +1,9 @@
 package com.w1.merchant.android.support;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -257,9 +257,9 @@ public class TicketListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onStartConversationClicked(@Nullable View animateFrom);
-        public void onOpenConversationClicked(View view, SupportTicket ticket);
-        public void notifyError(String error, Throwable e);
+        void onStartConversationClicked(@Nullable View animateFrom);
+        void onOpenConversationClicked(View view, SupportTicket ticket);
+        void notifyError(String error, Throwable e);
     }
 
 }

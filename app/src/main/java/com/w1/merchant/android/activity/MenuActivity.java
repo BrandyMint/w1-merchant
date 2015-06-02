@@ -21,13 +21,14 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,9 +37,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -76,7 +75,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.Subscriptions;
 
-public class MenuActivity extends FragmentActivityBase implements UserEntryFragment.OnFragmentInteractionListener,
+public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFragmentInteractionListener,
     InvoiceFragment.OnFragmentInteractionListener,
     DashFragment.OnFragmentInteractionListener,
     TemplateFragment.OnFragmentInteractionListener,
@@ -113,19 +112,18 @@ public class MenuActivity extends FragmentActivityBase implements UserEntryFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //шапка меню
+        ivAccountIcon = (ImageView) findViewById(R.id.ivAccountIcon);
+
         if (!Session.getInstance().hasToken()) {
             Utils.restartApp(this);
             return;
         }
 
         // create new ProgressBar and style it
-        progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-        progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
-        progressBar.setIndeterminate(true);
-        progressBar.setVisibility(View.INVISIBLE);
-
-        // retrieve the top view of our application
         final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
+        progressBar = (ProgressBar)getLayoutInflater().inflate(R.layout.progress_below_ab, decorView, false);
         decorView.addView(progressBar);
 
         // Here we try TO position the ProgressBar TO the correct position by looking
@@ -135,11 +133,21 @@ public class MenuActivity extends FragmentActivityBase implements UserEntryFragm
         // Also note that doing progressBar.setY(136) will not work, because of different
         // screen densities and different sizes of actionBar
         ViewTreeObserver observer = progressBar.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+        // TODO Переделать всё нахуй
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            private float getRelativeTop(View root, View myView) {
+                if (myView.getParent() == root)
+                    return myView.getY();
+                else
+                    return myView.getY() + getRelativeTop(root, (View) myView.getParent());
+            }
+
             @Override
             public void onGlobalLayout() {
                 View contentView = decorView.findViewById(android.R.id.content);
-                progressBar.setY(contentView.getY() - 10);
+                float y = getRelativeTop(decorView, contentView);
+                progressBar.setY(y - 6f * getResources().getDisplayMetrics().density);
 
                 ViewTreeObserver observer = progressBar.getViewTreeObserver();
                 observer.removeGlobalOnLayoutListener(this);
@@ -149,29 +157,16 @@ public class MenuActivity extends FragmentActivityBase implements UserEntryFragm
         fragmentDash = new DashFragment();
 
         loadProfile();
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, new NavDrawerMenu.OnItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int itemId) {
-                selectItem(itemId);
-            }
-        });
-
-        // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        // set up the drawer's list view with items and click listener
-
-        //шапка меню
-        ivAccountIcon = (ImageView) findViewById(R.id.ivAccountIcon);
+        initNavigationDrawer(savedInstanceState);
 
         // enable ActionBar app icon TO behave as action TO toggle nav drawer
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayOptions(
+                ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM,
+                ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM
+                );
 
         mCurrencyViewPager = (ViewPager)LayoutInflater.from(this).inflate(R.layout.action_bar_rubl2, null, false);
-        mCurrencyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mCurrencyViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int arg0) {
                 //меняем валюту
@@ -192,39 +187,35 @@ public class MenuActivity extends FragmentActivityBase implements UserEntryFragm
         });
         mCurrencyPagerAdapter = new CurrencyViewPagerAdapter();
         mCurrencyViewPager.setAdapter(mCurrencyPagerAdapter);
-        getActionBar().setCustomView(mCurrencyViewPager);
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image TO replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                //getActionBar().setTitle(mTitle);
-//                tvABName.setText(mTitle);
-//                if (currentFragment == FRAGMENT_DASH) {
-//                	tvABRub.setText("B");
-//                }
-                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                //getActionBar().setTitle(mDrawerTitle);
-//                tvABName.setText(mDrawerTitle);
-//                tvABRub.setText("");
-                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setCustomView(mCurrencyViewPager);
 
         if (savedInstanceState == null) {
             mNavDrawerMenu.setActivatedItem(R.id.drawer_menu_dashboard);
             selectItem(R.id.drawer_menu_dashboard);
         }
+    }
+
+    private void initNavigationDrawer(Bundle savedInstanceState) {
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mDrawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.drawer_title));
+
+        mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, new NavDrawerMenu.OnItemClickListener() {
+            @Override
+            public void onItemClicked(View view, int itemId) {
+                selectItem(itemId);
+            }
+        });
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open,
+                R.string.drawer_close) {
+            public void onDrawerClosed(View view) {
+                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     void loadProfile() {
@@ -374,10 +365,12 @@ public class MenuActivity extends FragmentActivityBase implements UserEntryFragm
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 return;
             case R.id.drawer_menu_logout:
-                new DialogExit().show(getFragmentManager(), "dlgExit");
+                new DialogExit().show(getSupportFragmentManager(), "dlgExit");
                 break;
         }
 
+        // TODO Смена фрагмента должна происходить после анимации закрытия бокового меню,
+        // иначе эта анимация тармазит
         mDrawerLayout.closeDrawer(Gravity.LEFT);
 
         new Handler().post(new Runnable() {
@@ -448,7 +441,6 @@ public class MenuActivity extends FragmentActivityBase implements UserEntryFragm
 
     @Override
     public void onBackPressed() {
-        //dlgExit.show(getFragmentManager(), "dlgExit");
         mDrawerLayout.closeDrawer(Gravity.LEFT);
         if (getCurrentFragment() != FRAGMENT_DASH) {
             selectItem(R.id.drawer_menu_dashboard);
@@ -670,7 +662,7 @@ public class MenuActivity extends FragmentActivityBase implements UserEntryFragm
         };
 
         public interface OnItemClickListener {
-            public void onItemClicked(View view, int itemId);
+            void onItemClicked(View view, int itemId);
         }
 
     }

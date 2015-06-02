@@ -20,9 +20,6 @@ public final class Constants {
 
     public static final String SUPPORT_EMAIL_MAIN = "support@w1.ru";
 
-    private static final String URL_MAIN = BuildConfig.API_SERVER_ADDRESS;
-
-
     public static final String URL_WALLETONE = "https://www.walletone.com/wallet/client/";
 
     public static final String URL_PROVIDER_LOGO = "https://www.walletone.com/logo/provider/%s.png";

@@ -9,8 +9,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
@@ -18,7 +18,7 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DialogNoInet;
 
-public class LoginActivity extends FragmentActivity implements LoginFragment.OnFragmentInteractionListener {
+public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener {
     private static final String TAG = Constants.LOG_TAG;
     private static final boolean DBG = BuildConfig.DEBUG;
 

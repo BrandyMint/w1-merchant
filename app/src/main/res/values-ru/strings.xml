@@ -30,8 +30,9 @@
     <string name="title_support">Поддержка</string>
     <string name="title_logout">Выход</string>
 
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="drawer_title">Боковое меню</string>
+    <string name="drawer_open">Открыть боковое меню</string>
+    <string name="drawer_close">Закрыть боковое меню</string>
     <string name="add">Добавить</string>
     <string name="output">Вывод</string>
     <string name="output_cash">Вывод средств</string>
@@ -177,6 +178,7 @@
     <string name="send_message_hint">Отправить сообщение</string>
     <string name="no_transfers">Нет операций</string>
     <string name="no_invoices">Нет счетов</string>
+    <string name="search_hint">Поиск…</string>
 
     <string name="hello_how_can_we_help_you_message">Здравствуйте, чем мы можем вам помочь?</string>
     <string name="new_conversation_subject">Обращение из личного кабинета мерчанта</string>

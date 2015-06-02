@@ -29,7 +29,6 @@ public class RequestSummaryDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog_NoActionBar);
         mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
     }
 

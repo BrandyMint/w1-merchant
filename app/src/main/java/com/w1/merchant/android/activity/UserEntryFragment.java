@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,7 +22,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -144,8 +145,9 @@ public class UserEntryFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        SearchView searchView = (SearchView) menu.findItem(
-                R.id.ic_menu_search0).getActionView();
+        SearchView searchView = (SearchView)MenuItemCompat.getActionView(menu.findItem(
+                R.id.ic_menu_search0));
+        searchView.setQueryHint(getText(R.string.search_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

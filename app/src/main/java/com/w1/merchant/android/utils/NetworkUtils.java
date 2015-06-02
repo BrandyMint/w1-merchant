@@ -112,13 +112,9 @@ public class NetworkUtils {
         if (httpCacheDir != null) {
             long cacheSize = NetworkUtils.calculateDiskCacheSize(httpCacheDir);
             if (DBG) Log.v(TAG, "cache size, mb: " + cacheSize / 1024 / 1024);
-            try {
-                // HttpResponseCache.install(httpCacheDir, cacheSize);
-                Cache cache = new Cache(httpCacheDir, cacheSize);
-                mOkHttpClient.setCache(cache);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // HttpResponseCache.install(httpCacheDir, cacheSize);
+            Cache cache = new Cache(httpCacheDir, cacheSize);
+            mOkHttpClient.setCache(cache);
         }
 
         mRetrofitClient = new OkClient(mOkHttpClient);

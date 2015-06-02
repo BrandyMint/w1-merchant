@@ -262,8 +262,8 @@ public class LoginFragment extends Fragment {
                     int authButtonLoc[] = new int[]{0, 0};
                     mAuthButton.getLocationOnScreen(authButtonLoc);
 
-                    int below = rootHeight - authButtonLoc[1];
-                    bottomView.setMaxHeight(below);
+                    int below = rootHeight - authButtonLoc[1]; // расстояние под кнопкой "авторизоваться"
+                    bottomView.setMaxHeight(below); // не залезаем на кнопку
                     //ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) bottomView.getLayoutParams();
                     //lp.topMargin = authButtonLoc[1];
                     //bottomView.setLayoutParams(lp);
@@ -281,13 +281,14 @@ public class LoginFragment extends Fragment {
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             private boolean imeKeyboardShown;
 
+            private Rect mRect = new Rect();
+
             @Override
             public void onGlobalLayout() {
-                Rect r = new Rect();
                 //r will be populated with the coordinates of your view that area still visible.
-                activityRootView.getWindowVisibleDisplayFrame(r);
-                int heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                activityRootView.getWindowVisibleDisplayFrame(mRect);
+                int heightDiff = activityRootView.getRootView().getHeight() - (mRect.bottom - mRect.top);
+                if (heightDiff > 300) { // if more than 300 pixels, its probably a keyboard...
                     if (!imeKeyboardShown) {
                         imeKeyboardShown = true;
                         final ScrollView scrollView = (ScrollView) root.findViewById(R.id.scroll_view);
@@ -296,7 +297,7 @@ public class LoginFragment extends Fragment {
                             public void run() {
                                 scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight());
                             }
-                        }, 64);
+                        }, 5*16);
                     }
                 } else {
                     if (imeKeyboardShown) {

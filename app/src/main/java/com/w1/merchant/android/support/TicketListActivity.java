@@ -1,9 +1,9 @@
 package com.w1.merchant.android.support;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +29,12 @@ public class TicketListActivity extends ActivityBase implements TicketListFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket_list);
 
-        getActionBar().setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
+        getSupportActionBar().setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
                 DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP|DISPLAY_USE_LOGO);
 
         if (savedInstanceState == null) {
             Fragment fragment = TicketListFragment.newInstance();
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();
         }
@@ -44,7 +44,7 @@ public class TicketListActivity extends ActivityBase implements TicketListFragme
         if (requestCode == CREATE_TICKET_REQUEST) {
             if (resultCode == RESULT_OK) {
                 SupportTicket ticket = data.getParcelableExtra(ConversationActivity.SUPPORT_TICKET_RESULT_KEY);
-                TicketListFragment fragment = (TicketListFragment)getFragmentManager().findFragmentById(R.id.container);
+                TicketListFragment fragment = (TicketListFragment)getSupportFragmentManager().findFragmentById(R.id.container);
                 fragment.onTicketCreated(ticket);
             }
         }
