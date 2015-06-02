@@ -25,9 +25,9 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.model.Captcha;
-import com.w1.merchant.android.service.ApiSessions;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.Captcha;
+import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.service.ApiSessions;
 
 import rx.Observable;
 import rx.Observer;
@@ -252,7 +252,7 @@ public class CaptchaDialogFragment extends DialogFragment {
         if (mInProgress) return;
         setInProgress(true);
 
-        ApiSessions api = NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class);
+        ApiSessions api = RestClient.getApiSessions();
 
         Captcha.CaptchaRequest req = new Captcha.CaptchaRequest(
                 getResources().getDimensionPixelSize(R.dimen.captcha_width),

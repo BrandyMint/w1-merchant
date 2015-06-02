@@ -33,11 +33,11 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.graphs.DayGraphFragment;
 import com.w1.merchant.android.activity.graphs.WeekMonthGraphFragment;
 import com.w1.merchant.android.extra.UserEntryAdapter2;
-import com.w1.merchant.android.model.Balance;
-import com.w1.merchant.android.model.TransactionHistory;
-import com.w1.merchant.android.model.TransactionHistoryEntry;
-import com.w1.merchant.android.service.ApiBalance;
-import com.w1.merchant.android.service.ApiUserEntry;
+import com.w1.merchant.android.rest.model.Balance;
+import com.w1.merchant.android.rest.model.TransactionHistory;
+import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.SegmentedRadioGroup;
@@ -76,8 +76,6 @@ public class DashFragment extends Fragment  implements
     private OnFragmentInteractionListener mListener;
 
     private UserEntryAdapter2 mAdapter;
-    private ApiUserEntry mApiUserEntry;
-    private ApiBalance mApiBalance;
 
     private List<Fragment> mFragments = new ArrayList<>(3);
 
@@ -85,13 +83,6 @@ public class DashFragment extends Fragment  implements
 
     private Subscription mRefreshBalanceSubscription = Subscriptions.empty();
     private Subscription mLoadTransactionsSubscription = Subscriptions.empty();
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
-        mApiBalance = NetworkUtils.getInstance().createRestAdapter().create(ApiBalance.class);
-    }
 
     @SuppressLint("InflateParams")
     @Override
@@ -256,7 +247,7 @@ public class DashFragment extends Fragment  implements
         mLoadTransactionsSubscription.unsubscribe();
 
         Observable<TransactionHistory> observable = AppObservable.bindFragment(this,
-                mApiUserEntry.getEntries(mCurrentPage, TRANSACTION_HISTORY_ITEMS_PER_PAGE,
+                RestClient.getApiUserEntry().getEntries(mCurrentPage, TRANSACTION_HISTORY_ITEMS_PER_PAGE,
                         null, null, null, null,
                         mListener.getCurrency(),
                         null, null));
@@ -275,7 +266,7 @@ public class DashFragment extends Fragment  implements
                     @Override
                     public void onError(Throwable e) {
                         if (getActivity() != null) {
-                            CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                            CharSequence errText = ((ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                             Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.TOP, 0, 50);
                             toast.show();
@@ -367,7 +358,7 @@ public class DashFragment extends Fragment  implements
 
         NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
         Observable<List<Balance>> observer = AppObservable.bindFragment(this,
-                mApiBalance.getBalance());
+                RestClient.getApiBalance().getBalance());
         mRefreshBalanceSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this))
@@ -379,7 +370,7 @@ public class DashFragment extends Fragment  implements
 
                     @Override
                     public void onError(Throwable e) {
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();

@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.SupportTicketPost;
+import com.w1.merchant.android.rest.model.SupportTicketPost;
 import com.w1.merchant.android.utils.LinkMovementMethodNoSelection;
 import com.w1.merchant.android.utils.SortedList;
 import com.w1.merchant.android.utils.TextUtilsW1;

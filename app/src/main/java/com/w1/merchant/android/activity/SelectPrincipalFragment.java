@@ -19,7 +19,7 @@ import com.thehayro.view.InfiniteViewPager;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.extra.InfiniteViewPagerListener;
-import com.w1.merchant.android.model.PrincipalUser;
+import com.w1.merchant.android.rest.model.PrincipalUser;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;

@@ -27,9 +27,10 @@ import android.widget.Toast;
 
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.extra.UserEntryAdapter2;
-import com.w1.merchant.android.model.TransactionHistory;
-import com.w1.merchant.android.model.TransactionHistoryEntry;
-import com.w1.merchant.android.service.ApiUserEntry;
+import com.w1.merchant.android.rest.model.TransactionHistory;
+import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup;
@@ -55,8 +56,6 @@ public class UserEntryFragment extends Fragment {
 
     private String mSearchString;
 
-    private ApiUserEntry mApiUserEntry;
-
     private UserEntryAdapter2 mAdapter;
 
     private int mCurrentPage = 1;
@@ -66,7 +65,6 @@ public class UserEntryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
         setHasOptionsMenu(true);
     }
 
@@ -233,7 +231,7 @@ public class UserEntryFragment extends Fragment {
         }
 
         Observable<TransactionHistory> observable = AppObservable.bindFragment(this,
-                mApiUserEntry.getEntries(mCurrentPage, ITEMS_PER_PAGE,
+                RestClient.getApiUserEntry().getEntries(mCurrentPage, ITEMS_PER_PAGE,
                         null, null, null, null,
                         mListener.getCurrency(),
                         mSearchString, direction));
@@ -252,7 +250,7 @@ public class UserEntryFragment extends Fragment {
                     @Override
                     public void onError(Throwable e) {
                         if (getActivity() != null) {
-                            CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                            CharSequence errText = ((ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                             Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.TOP, 0, 50);
                             toast.show();

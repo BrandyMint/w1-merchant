@@ -53,11 +53,12 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DialogExit;
-import com.w1.merchant.android.model.Balance;
-import com.w1.merchant.android.model.Profile;
-import com.w1.merchant.android.service.ApiProfile;
+import com.w1.merchant.android.rest.model.Balance;
+import com.w1.merchant.android.rest.model.Profile;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.service.ApiProfile;
 import com.w1.merchant.android.support.TicketListActivity;
-import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
@@ -221,7 +222,7 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
     void loadProfile() {
         mProfileSubscription.unsubscribe();
 
-        ApiProfile apiProfile = NetworkUtils.getInstance().createRestAdapter().create(ApiProfile.class);
+        ApiProfile apiProfile = RestClient.getApiProfile();
         Observable<Profile> observable = AppObservable.bindActivity(this, apiProfile.getProfile());
 
         mProfileSubscription = observable
@@ -236,8 +237,8 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
                     @Override
                     public void onError(Throwable e) {
                         CharSequence errText;
-                        if (e instanceof NetworkUtils.ResponseErrorException) {
-                            errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error));
+                        if (e instanceof ResponseErrorException) {
+                            errText = ((ResponseErrorException) e).getErrorDescription(getText(R.string.network_error));
                         } else {
                             errText = getText(R.string.network_error);
                         }

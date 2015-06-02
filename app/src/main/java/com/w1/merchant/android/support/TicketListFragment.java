@@ -17,10 +17,10 @@ import android.view.ViewGroup;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.SupportTicket;
-import com.w1.merchant.android.model.SupportTickets;
-import com.w1.merchant.android.service.ApiSupport;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.SupportTicket;
+import com.w1.merchant.android.rest.model.SupportTickets;
+import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.service.ApiSupport;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.DividerItemDecoration;
 
@@ -78,7 +78,7 @@ public class TicketListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApiSupport = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
+        mApiSupport = RestClient.getApiSupport();
         setHasOptionsMenu(true);
     }
 

@@ -11,13 +11,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.InitPaymentStep;
-import com.w1.merchant.android.model.InitTemplatePaymentRequest;
-import com.w1.merchant.android.model.PaymentForm;
-import com.w1.merchant.android.model.PaymentState;
-import com.w1.merchant.android.model.SubmitPaymentFormRequest;
-import com.w1.merchant.android.service.ApiPayments;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.InitPaymentStep;
+import com.w1.merchant.android.rest.model.InitTemplatePaymentRequest;
+import com.w1.merchant.android.rest.model.PaymentForm;
+import com.w1.merchant.android.rest.model.PaymentState;
+import com.w1.merchant.android.rest.model.SubmitPaymentFormRequest;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -42,8 +42,6 @@ public class ConfirmOutActivity extends ActivityBase {
     private int totalReq = 0;
     private ProgressBar pbTemplate;
 
-    private ApiPayments mApiPayments;
-
     private SubmitPaymentFormRequest mLastRequest;
 
     private Subscription mInitPaymentStepSubscription = Subscriptions.unsubscribed();
@@ -67,8 +65,6 @@ public class ConfirmOutActivity extends ActivityBase {
         tvGo.setOnClickListener(myOnClickListener);
         ImageView ivBack = (ImageView) findViewById(R.id.ivBack);
         ivBack.setOnClickListener(myOnClickListener);
-
-        mApiPayments = NetworkUtils.getInstance().createRestAdapter().create(ApiPayments.class);
     }
 
     @Override
@@ -108,7 +104,7 @@ public class ConfirmOutActivity extends ActivityBase {
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException) throwable).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((ResponseErrorException) throwable).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(ConfirmOutActivity.this, errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();
@@ -122,7 +118,7 @@ public class ConfirmOutActivity extends ActivityBase {
         startPBAnim();
 
         Observable<InitPaymentStep> observable = initObservable(
-                mApiPayments.initTemplatePayment(new InitTemplatePaymentRequest(templateId)));
+                RestClient.getApiPayments().initTemplatePayment(new InitTemplatePaymentRequest(templateId)));
 
         mInitPaymentStepSubscription = observable.subscribe(new Action1<InitPaymentStep>() {
             @Override
@@ -166,7 +162,7 @@ public class ConfirmOutActivity extends ActivityBase {
         startPBAnim();
 
         Observable<InitPaymentStep> observable = initObservable(
-                mApiPayments.submitPaymentForm(paymentId, form));
+                RestClient.getApiPayments().submitPaymentForm(paymentId, form));
 
         mSubmitFormSubscription = observable.subscribe(new Action1<InitPaymentStep>() {
             @Override
@@ -182,7 +178,7 @@ public class ConfirmOutActivity extends ActivityBase {
         startPBAnim();
 
         Observable<PaymentState> observable = initObservable(
-                mApiPayments.getPaymentState(paymentId));
+                RestClient.getApiPayments().getPaymentState(paymentId));
 
         mGetPaymentStateSubscription = observable
                 .subscribe(new Action1<PaymentState>() {
@@ -211,7 +207,7 @@ public class ConfirmOutActivity extends ActivityBase {
 
         final SubmitPaymentFormRequest form = new SubmitPaymentFormRequest("$Final", mLastRequest.params);
         Observable<InitPaymentStep> observable = initObservable(
-                mApiPayments.submitPaymentForm(paymentId, form));
+                RestClient.getApiPayments().submitPaymentForm(paymentId, form));
 
         mSubmitForm2Subscription = observable.subscribe(new Action1<InitPaymentStep>() {
                     @Override

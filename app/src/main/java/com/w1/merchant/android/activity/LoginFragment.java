@@ -36,13 +36,13 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.model.AuthCreateModel;
-import com.w1.merchant.android.model.AuthModel;
-import com.w1.merchant.android.model.AuthPrincipalRequest;
-import com.w1.merchant.android.model.OneTimePassword;
-import com.w1.merchant.android.model.PrincipalUser;
-import com.w1.merchant.android.service.ApiSessions;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.AuthCreateModel;
+import com.w1.merchant.android.rest.model.AuthModel;
+import com.w1.merchant.android.rest.model.AuthPrincipalRequest;
+import com.w1.merchant.android.rest.model.OneTimePassword;
+import com.w1.merchant.android.rest.model.PrincipalUser;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
 import java.util.ArrayList;
@@ -81,8 +81,6 @@ public class LoginFragment extends Fragment {
 
     private ArrayList<String> mLogins = new ArrayList<>();
 
-    private ApiSessions mApiSessions;
-
     private String mLogin;
 
     private OnFragmentInteractionListener mListener;
@@ -115,7 +113,6 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mVibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        mApiSessions = NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class);
     }
 
     @Nullable
@@ -237,7 +234,6 @@ public class LoginFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mVibrator = null;
-        mApiSessions = null;
     }
 
     @Override
@@ -325,7 +321,7 @@ public class LoginFragment extends Fragment {
 
     void actionOnError(Throwable e) {
         if (getActivity() == null) return;
-        NetworkUtils.ResponseErrorException error = (NetworkUtils.ResponseErrorException)e;
+        ResponseErrorException error = (ResponseErrorException)e;
         Toast toast;
         CharSequence errMsg;
 
@@ -356,7 +352,8 @@ public class LoginFragment extends Fragment {
         mLogin = login;
         mLoginSubscription.unsubscribe();
 
-        Observable<AuthModel> observer = AppObservable.bindFragment(this, mApiSessions.auth(new AuthCreateModel(login, password)));
+        Observable<AuthModel> observer = AppObservable.bindFragment(this,
+                RestClient.getApiSessions().auth(new AuthCreateModel(login, password)));
 
         mLoginSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -396,7 +393,8 @@ public class LoginFragment extends Fragment {
     void requestPrincipalUsers(final AuthModel authModel) {
         mRequestPrincipalUsersSubscription.unsubscribe();
 
-        Observable<List<PrincipalUser>> observer = AppObservable.bindFragment(this, mApiSessions.getPrincipalUsers());
+        Observable<List<PrincipalUser>> observer = AppObservable.bindFragment(this,
+                RestClient.getApiSessions().getPrincipalUsers());
         mRequestPrincipalUsersSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this) {
@@ -464,7 +462,7 @@ public class LoginFragment extends Fragment {
     void selectPrincipal(final PrincipalUser user) {
         mAuthPrincipalSubscription.unsubscribe();
         Observable<AuthModel> observer = AppObservable.bindFragment(this,
-                mApiSessions.authPrincipal(new AuthPrincipalRequest(user.principalUserId)));
+                RestClient.getApiSessions().authPrincipal(new AuthPrincipalRequest(user.principalUserId)));
 
         mAuthPrincipalSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -523,7 +521,7 @@ public class LoginFragment extends Fragment {
         mSendOneTimePasswordSubscription.unsubscribe();
 
         Observable<Void> observer = AppObservable.bindFragment(this,
-                mApiSessions.sendOneTimePassword(new OneTimePassword.Request(login)));
+                RestClient.getApiSessions().sendOneTimePassword(new OneTimePassword.Request(login)));
 
         mSendOneTimePasswordSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -552,7 +550,7 @@ public class LoginFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        NetworkUtils.ResponseErrorException error = (NetworkUtils.ResponseErrorException)e;
+                        ResponseErrorException error = (ResponseErrorException)e;
                         if (DBG) Log.v(TAG, "sendOneTimePassword error", error);
                         if (error.getHttpStatus() >= 200 && error.getHttpStatus() < 300) {
                             // Ignore malformed JSON ("")

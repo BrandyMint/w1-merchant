@@ -19,7 +19,8 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.activity.SessionExpiredDialogActivity;
 import com.w1.merchant.android.extra.CaptchaDialogFragment;
-import com.w1.merchant.android.model.Profile;
+import com.w1.merchant.android.rest.model.Profile;
+import com.w1.merchant.android.rest.ResponseErrorException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -64,11 +65,11 @@ public class RetryWhenCaptchaReady implements
 
                     @Override
                     public Observable<?> call(Throwable errorNotification) {
-                        NetworkUtils.ResponseErrorException ex;
-                        if (!(errorNotification instanceof NetworkUtils.ResponseErrorException)) {
+                        ResponseErrorException ex;
+                        if (!(errorNotification instanceof ResponseErrorException)) {
                             return Observable.error(errorNotification);
                         }
-                        ex = (NetworkUtils.ResponseErrorException) errorNotification;
+                        ex = (ResponseErrorException) errorNotification;
 
                         if (ex.isCaptchaError()) {
                             return startRefreshCaptcha(ex);
@@ -103,7 +104,7 @@ public class RetryWhenCaptchaReady implements
         SessionExpiredDialogActivity.show(activity);
     }
 
-    private Observable<Profile> startRefreshCaptcha(final NetworkUtils.ResponseErrorException error) {
+    private Observable<Profile> startRefreshCaptcha(final ResponseErrorException error) {
         return Observable.create(new Observable.OnSubscribe<Profile>() {
             @Override
             public void call(final Subscriber<? super Profile> subscriber) {

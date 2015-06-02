@@ -25,9 +25,10 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.IProgressbarProvider;
 import com.w1.merchant.android.extra.LineChart;
-import com.w1.merchant.android.model.TransactionHistory;
-import com.w1.merchant.android.model.TransactionHistoryEntry;
-import com.w1.merchant.android.service.ApiUserEntry;
+import com.w1.merchant.android.rest.model.TransactionHistory;
+import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -197,7 +198,7 @@ public class DayGraphFragment extends Fragment {
                 stopProgressAction.call();
                 if (mListener != null) {
                     if (getActivity() != null) {
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException) error).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((ResponseErrorException) error).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();
@@ -343,8 +344,6 @@ public class DayGraphFragment extends Fragment {
 
     private static abstract class TransactionStatsDaysDataLoader {
 
-        private final ApiUserEntry mApiUserEntry;
-
         private final String mDateFrom;
 
         private final String mCurrency;
@@ -360,7 +359,6 @@ public class DayGraphFragment extends Fragment {
         private final Fragment mFragment;
 
         public TransactionStatsDaysDataLoader(Fragment fragment, String currency) {
-            mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
             mFragment = fragment;
             mHistory = new ArrayList<>();
             mCurrency = currency;
@@ -379,7 +377,7 @@ public class DayGraphFragment extends Fragment {
             if (mCancelled) return;
 
             Observable<TransactionHistory> observable = AppObservable.bindFragment(mFragment,
-                    mApiUserEntry.getEntries(mPageNo, 1000, mDateFrom, null, null, null,
+                    RestClient.getApiUserEntry().getEntries(mPageNo, 1000, mDateFrom, null, null, null,
                             mCurrency, null, TransactionHistoryEntry.DIRECTION_INCOMING));
 
             mSubscription = observable

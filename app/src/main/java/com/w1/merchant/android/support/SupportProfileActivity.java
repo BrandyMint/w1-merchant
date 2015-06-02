@@ -19,7 +19,7 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.ActivityBase;
-import com.w1.merchant.android.model.SupportTicketPost;
+import com.w1.merchant.android.rest.model.SupportTicketPost;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;
 

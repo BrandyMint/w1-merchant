@@ -10,8 +10,6 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.service.ApiUserEntry;
-import com.w1.merchant.android.utils.NetworkUtils;
 
 import java.util.Calendar;
 
@@ -23,14 +21,6 @@ public class RequestSummaryDialogFragment extends DialogFragment {
     private int current = 0;
     private int day0, month0, year0;
     private int day1, month1, year1;
-
-    private ApiUserEntry mApiUserEntry;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
-    }
 
     @Nullable
     @Override

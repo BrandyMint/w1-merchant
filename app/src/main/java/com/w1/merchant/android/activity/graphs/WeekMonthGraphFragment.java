@@ -23,8 +23,9 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.IProgressbarProvider;
 import com.w1.merchant.android.extra.LineChart;
-import com.w1.merchant.android.model.InvoiceStats;
-import com.w1.merchant.android.service.ApiInvoices;
+import com.w1.merchant.android.rest.model.InvoiceStats;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -61,8 +62,6 @@ public class WeekMonthGraphFragment extends Fragment {
     private TextView mAmountView;
     private TextView mPercentView;
     private LineChart mChartView;
-
-    private ApiInvoices mApiInvoices;
 
     private List<InvoiceStats.Item> mStats;
 
@@ -106,7 +105,6 @@ public class WeekMonthGraphFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApiInvoices = NetworkUtils.getInstance().createRestAdapter().create(ApiInvoices.class);
         mStatsType = getArguments().getInt(ARG_STATS_TYPE, STATS_TYPE_WEEK);
         mStats = new ArrayList<>(mStatsType == STATS_TYPE_WEEK ? 14 : 62);
     }
@@ -181,7 +179,7 @@ public class WeekMonthGraphFragment extends Fragment {
         mLoadDataSubscription.unsubscribe();
 
         Observable<InvoiceStats> observable = AppObservable.bindFragment(this,
-                mApiInvoices.getStats(mListener.getCurrency(),
+                RestClient.getApiInvoices().getStats(mListener.getCurrency(),
                         ISO8601Utils.format(fromDate, false, TimeZone.getTimeZone("UTC")),
                         ISO8601Utils.format(toDate, false, TimeZone.getTimeZone("UTC"))));
 
@@ -200,7 +198,7 @@ public class WeekMonthGraphFragment extends Fragment {
                     @Override
                     public void onError(Throwable error) {
                         if (mListener != null) {
-                            CharSequence errText = ((NetworkUtils.ResponseErrorException)error).getErrorDescription(getText(R.string.network_error));
+                            CharSequence errText = ((ResponseErrorException)error).getErrorDescription(getText(R.string.network_error));
                             Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.TOP, 0, 50);
                             toast.show();
