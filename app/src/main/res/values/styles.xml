@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
+        <item name="android:progressBarStyleLarge">@style/ProgressBarLarge</item>
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -16,6 +17,7 @@
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
+        <item name="android:progressBarStyleLarge">@style/ProgressBarLarge</item>
     </style>
 
     <style name="MenuActivityTheme" parent="AppTheme">
@@ -47,7 +49,16 @@
     <style name="IntroTheme" parent="IntroThemeBase">
     </style>
 
-    <style name="SelectPrincipalDialogTheme" parent="android:Theme.Translucent.NoTitleBar">
+    <style name="SelectPrincipalActivityTheme" parent="AppThemeNoActionBar">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="SelectPrincipalDialogTheme" parent="SelectPrincipalActivityTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.96</item>
@@ -125,7 +136,7 @@
     </style>
 
     <style name="SelectPrincipalAnimation">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowEnterAnimation">@anim/fade_in_fast</item>
         <item name="android:windowExitAnimation">@null</item>
     </style>
 
@@ -149,6 +160,13 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textIsSelectable">true</item>
         <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="ProgressBarLarge" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:minWidth">76dp</item>
+        <item name="android:maxWidth">76dp</item>
+        <item name="android:minHeight">76dp</item>
+        <item name="android:maxHeight">76dp</item>
     </style>
 
 </resources>

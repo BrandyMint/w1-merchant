@@ -70,7 +70,7 @@ public class RequestSummaryDialogFragment extends DialogFragment {
                     /*
                     dashSupport.getDataTotal("" + year0 + "-" + month0 + "-" + day0,
                             "" + year1 + "-" + month1 + "-" + day1, "Inc",
-                            Session.getInstance().getBearer(),
+                            Session.getInstance().getAuthtoken(),
                             mCurrency,
                             getCurrPageUETotal() + "");
                             */

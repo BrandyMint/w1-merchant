@@ -53,15 +53,15 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.DialogExit;
-import com.w1.merchant.android.rest.model.Balance;
-import com.w1.merchant.android.rest.model.Profile;
 import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.model.AuthModel;
+import com.w1.merchant.android.rest.model.Balance;
+import com.w1.merchant.android.rest.model.Profile;
 import com.w1.merchant.android.rest.service.ApiProfile;
 import com.w1.merchant.android.support.TicketListActivity;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
-import com.w1.merchant.android.utils.Utils;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 
 import java.math.BigDecimal;
@@ -83,6 +83,8 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
     IProgressbarProvider {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
+
+    private static final int SELECT_PRINCIPAL_REQUEST_CODE = 1;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -116,11 +118,6 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //шапка меню
         ivAccountIcon = (ImageView) findViewById(R.id.ivAccountIcon);
-
-        if (!Session.getInstance().hasToken()) {
-            Utils.restartApp(this);
-            return;
-        }
 
         // create new ProgressBar and style it
         final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
@@ -189,10 +186,20 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
         mCurrencyPagerAdapter = new CurrencyViewPagerAdapter();
         mCurrencyViewPager.setAdapter(mCurrencyPagerAdapter);
         getSupportActionBar().setCustomView(mCurrencyViewPager);
+    }
 
-        if (savedInstanceState == null) {
-            mNavDrawerMenu.setActivatedItem(R.id.drawer_menu_dashboard);
-            selectItem(R.id.drawer_menu_dashboard);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_PRINCIPAL_REQUEST_CODE && resultCode == RESULT_OK) {
+            AuthModel user = data.getParcelableExtra(SelectPrincipalActivity.RESULT_AUTH_USER);
+            Session.getInstance().setAuth(user);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recreate(); // Закрывать все остальные активности?
+                }
+            }, 5 * 16);
         }
     }
 
@@ -200,7 +207,7 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.drawer_title));
 
-        mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, new NavDrawerMenu.OnItemClickListener() {
+        mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, savedInstanceState, new NavDrawerMenu.OnItemClickListener() {
             @Override
             public void onItemClicked(View view, int itemId) {
                 selectItem(itemId);
@@ -217,6 +224,12 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.findViewById(R.id.change_account_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectItem(v.getId());
+            }
+        });
     }
 
     void loadProfile() {
@@ -271,6 +284,12 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
                         mIsBusinessAccount = "Business".equals(profile.accountTypeId);
                     }
                 });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mNavDrawerMenu.onSaveInstanceState(outState);
     }
 
     @Override
@@ -337,6 +356,11 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
     public void selectItem(int position) {
 
         switch (position) {
+            case R.id.change_account_button:
+                Intent selectPrincipalIntent = new Intent(MenuActivity.this, SelectPrincipalActivity.class);
+                startActivityForResult(selectPrincipalIntent, SELECT_PRINCIPAL_REQUEST_CODE);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                return;
             case R.id.drawer_menu_dashboard:
                 changeFragment(fragmentDash);
                 mNavDrawerMenu.setActivatedItem(position);
@@ -425,12 +449,17 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
+        if (savedInstanceState == null) {
+            mNavDrawerMenu.setActivatedItem(R.id.drawer_menu_dashboard);
+            selectItem(R.id.drawer_menu_dashboard);
+        }
     }
 
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
         refreshProgressBar();
+        refreshCurrencyViewPager();
     }
 
     @Override
@@ -600,6 +629,8 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
 
     private static final class NavDrawerMenu {
 
+        private static final String ARG_ACTIVATED_ITEM = "com.w1.merchant.android.activity.MenuActivity.NavDrawerMenu.ARG_ACTIVATED_ITEM";
+
         private final OnItemClickListener mListener;
 
         private static final int MENU_VIEW_IDS[] = new int[] {
@@ -626,7 +657,7 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
             }
         }
 
-        public NavDrawerMenu(View root, OnItemClickListener listener) {
+        public NavDrawerMenu(View root, Bundle savedInstanceState, OnItemClickListener listener) {
             mListener = listener;
             mMenuItems = new View[MENU_VIEW_IDS.length];
             for (int i = 0; i < MENU_VIEW_IDS.length; ++i) {
@@ -634,6 +665,17 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
                 if (mMenuItems[i] == null) throw new IllegalStateException();
             }
             for (View v: mMenuItems) v.setOnClickListener(mOnClickListener);
+            if (savedInstanceState != null) {
+                if (savedInstanceState.containsKey(ARG_ACTIVATED_ITEM)) {
+                    int itemId = savedInstanceState.getInt(ARG_ACTIVATED_ITEM);
+                    setActivatedItem(itemId);
+                }
+            }
+        }
+
+        public void onSaveInstanceState(Bundle state) {
+            Integer activatedItem = getActivatedItemId();
+            if (activatedItem != null) state.putInt(ARG_ACTIVATED_ITEM, activatedItem);
         }
 
         public void setActivatedItem(int viewId) {
@@ -642,10 +684,14 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
 
         @Nullable
         public Integer getActivatedItemId() {
+            Integer itemId = null;
             for (View v: mMenuItems) {
-                if (v.isActivated()) return v.getId();
+                if (v.isActivated()) {
+                    itemId = v.getId();
+                    break;
+                }
             }
-            return null;
+            return itemId;
         }
 
         public int getCurrentMenuItemTitle() {

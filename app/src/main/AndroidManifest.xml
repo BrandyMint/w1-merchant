@@ -91,6 +91,12 @@
             android:theme="@style/AppThemeNoActionBar" >
         </activity>
         <activity
+            android:name=".activity.SelectPrincipalActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:launchMode="singleTop"
+            android:theme="@style/SelectPrincipalActivityTheme" />
+        <activity
             android:name=".support.TicketListActivity"
             android:label="@string/title_activity_ticket_list"
             android:launchMode="singleTop"

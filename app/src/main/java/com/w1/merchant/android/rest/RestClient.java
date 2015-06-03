@@ -11,6 +11,7 @@ import com.w1.merchant.android.Session;
 import com.w1.merchant.android.rest.model.ResponseError;
 import com.w1.merchant.android.rest.service.ApiBalance;
 import com.w1.merchant.android.rest.service.ApiInvoices;
+import com.w1.merchant.android.rest.service.ApiMasterSessions;
 import com.w1.merchant.android.rest.service.ApiPayments;
 import com.w1.merchant.android.rest.service.ApiProfile;
 import com.w1.merchant.android.rest.service.ApiSessions;
@@ -43,6 +44,8 @@ public class RestClient {
 
     private volatile ApiProfile mApiProfile;
 
+    private volatile ApiMasterSessions mApiMasterSessions;
+
     private volatile ApiSessions mApiSessions;
 
     private volatile ApiSupport mApiSupport;
@@ -50,14 +53,7 @@ public class RestClient {
     private volatile ApiUserEntry mApiUserEntry;
 
     private RestClient() {
-        mRestAdapter = new RestAdapter.Builder()
-                .setLogLevel(Constants.RETROFIT_LOG_LEVEL)
-                .setEndpoint(BuildConfig.API_SERVER_ADDRESS)
-                .setConverter(new W1GsonConverter(NetworkUtils.getGson()))
-                .setRequestInterceptor(new AddHeadersRequestInterceptor())
-                .setErrorHandler(new ResponseErrorExceptionErrorHandler())
-                .setClient(new OkClient(NetworkUtils.getInstance().getOkHttpClient()))
-                .build();
+        mRestAdapter = createRestAdapter(false);
     }
 
     public static RestClient getInstance() {
@@ -69,6 +65,18 @@ public class RestClient {
             }
         }
         return sInstance;
+    }
+
+    public static RestAdapter createRestAdapter(boolean masterAuthkeyAuth) {
+        return new RestAdapter.Builder()
+                .setLogLevel(Constants.RETROFIT_LOG_LEVEL)
+                .setEndpoint(BuildConfig.API_SERVER_ADDRESS)
+                .setConverter(new W1GsonConverter(NetworkUtils.getGson()))
+                .setRequestInterceptor(new AddHeadersRequestInterceptor(masterAuthkeyAuth))
+                .setErrorHandler(new ResponseErrorExceptionErrorHandler())
+                .setClient(new OkClient(NetworkUtils.getInstance().getOkHttpClient()))
+                .build();
+
     }
 
     public static ApiBalance getApiBalance() {
@@ -131,6 +139,18 @@ public class RestClient {
         return instance.mApiSessions;
     }
 
+    public static ApiMasterSessions getApiMasterSessions() {
+        RestClient instance = getInstance();
+        if (instance.mApiMasterSessions == null) {
+            synchronized (RestClient.class) {
+                if (instance.mApiMasterSessions == null) {
+                    instance.mApiMasterSessions = createRestAdapter(true).create(ApiMasterSessions.class);
+                }
+            }
+        }
+        return instance.mApiMasterSessions;
+    }
+
     public static ApiSupport getApiSupport() {
         RestClient instance = getInstance();
         if (instance.mApiSupport == null) {
@@ -170,14 +190,28 @@ public class RestClient {
         }
     }
 
+    /**
+     * @param authkey
+     * @return "Bearer " + authkey
+     */
+    private static String formatBearer(String authkey) {
+        return "Bearer " + authkey;
+    }
+
     private static final class AddHeadersRequestInterceptor implements RequestInterceptor {
+
+        private final boolean mIsMasterAuthkeyAuth;
+
+        public AddHeadersRequestInterceptor(boolean masterAuthkeyAuth) {
+            mIsMasterAuthkeyAuth = masterAuthkeyAuth;
+        }
 
         @Override
         public void intercept(RequestFacade request) {
             Session session = Session.getInstance();
-            String bearer = session.getBearer();
-            request.addHeader("Authorization", "Bearer " + (bearer != null ? bearer : BuildConfig.API_APP_BEARER));
             request.addHeader("Accept", "application/vnd.wallet.openapi.v1+json");
+            String bearer = mIsMasterAuthkeyAuth ? session.getMasterAuthtoken() : session.getAuthtoken();
+            request.addHeader("Authorization", formatBearer(bearer != null ? bearer : BuildConfig.API_APP_BEARER));
 
             synchronized (Session.class) {
                 if (!TextUtils.isEmpty(session.captchaCode) && session.captcha != null) {

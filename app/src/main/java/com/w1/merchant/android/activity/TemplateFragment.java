@@ -131,7 +131,7 @@ public class TemplateFragment extends Fragment {
             } else {
                 Intent intent = new Intent(getActivity(), EditTemplate.class);
                 intent.putExtra("templateId", String.valueOf(template.templateId));
-                intent.putExtra("token", Session.getInstance().getBearer());
+                intent.putExtra("token", Session.getInstance().getAuthtoken());
                 intent.putExtra("mIsBusinessAccount", mListener.isBusinessAccount());
                 startActivity(intent);
             }

@@ -19,6 +19,7 @@ public final class Session {
 
     private static final String PREFS_NAME = "session";
     private static final String PREF_TOKEN = "token";
+    private static final String PREF_MASTER_TOKEN = "master_token";
     private static final String PREF_CAPTCHA = "captcha";
     private static final String PREF_CAPTCHA_CODE = "captcha_code";
     private static final String PREF_AUTH_CREATE_SYS_UPTIME = "auth_create_sysuptime";
@@ -26,6 +27,12 @@ public final class Session {
     private static volatile Session sInstance;
 
     private Context mAppContext;
+
+    /**
+     * Основнйо токен сессии, полученный до выбора пользователя.
+     */
+    @Nullable
+    private String masterToken;
 
     @Nullable
     private AuthModel auth;
@@ -66,6 +73,7 @@ public final class Session {
             Gson gson = NetworkUtils.getGson();
             mAppContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
                     .putString(PREF_TOKEN, gson.toJson(auth))
+                    .putString(PREF_MASTER_TOKEN, masterToken)
                     .putString(PREF_CAPTCHA, gson.toJson(captcha))
                     .putString(PREF_CAPTCHA_CODE, captchaCode)
                     .putLong(PREF_AUTH_CREATE_SYS_UPTIME, authCreateSysUptime)
@@ -77,6 +85,7 @@ public final class Session {
         SharedPreferences prefs = mAppContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         Gson gson = NetworkUtils.getGson();
         auth = gson.fromJson(prefs.getString(PREF_TOKEN, null), AuthModel.class);
+        masterToken = prefs.getString(PREF_MASTER_TOKEN, null);
         captcha = gson.fromJson(prefs.getString(PREF_CAPTCHA, null), Captcha.class);
         captchaCode = prefs.getString(PREF_CAPTCHA_CODE, null);
         authCreateSysUptime = prefs.getLong(PREF_AUTH_CREATE_SYS_UPTIME, 0);
@@ -85,6 +94,7 @@ public final class Session {
     public void clear() {
         auth = null;
         captcha = null;
+        masterToken = null;
         captchaCode = null;
         mExpired = false;
         mAppContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();
@@ -92,6 +102,8 @@ public final class Session {
 
     public void close() {
         if (auth == null) return;
+
+        if (masterToken != null) RestClient.getApiSessions().logout().subscribe();
 
         Observable<Void> observer = RestClient.getApiSessions().logout();
         observer
@@ -105,15 +117,34 @@ public final class Session {
                 .subscribe();
     }
 
+    public void setMasterAuth(@Nullable AuthModel auth) {
+        authCreateSysUptime = System.nanoTime();
+        this.auth = auth;
+        this.masterToken = auth.token;
+        save();
+    }
+
     public void setAuth(@Nullable AuthModel auth) {
         authCreateSysUptime = System.nanoTime();
         this.auth = auth;
         save();
     }
 
+    /**
+     * @return Токен текущего выбранного пользователя
+     */
     @Nullable
-    public String getBearer() {
+    public String getAuthtoken() {
         return  auth == null ? null : auth.token;
+    }
+
+    /**
+     * @return Токен до выбора пользователя. Испрльзуется, в основном, для его выбора
+     */
+
+    @Nullable
+    public String getMasterAuthtoken() {
+        return  masterToken;
     }
 
     public boolean hasToken() {

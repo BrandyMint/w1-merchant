@@ -201,6 +201,7 @@
     <string name="enter_captcha_error">Please enter code from image</string>
     <string name="refresh">Refresh</string>
     <string name="error_captcha_wrong_code">Wrong code. Please try again.</string>
+    <string name="error_auth_principal">Authentification error</string>
 
     <string name="recipient_title">Recipient title</string>
     <string name="from_wallet">From wallet</string>
@@ -281,6 +282,9 @@
     <string name="currency_UAH">Ukrainian hryvnia</string>
     <string name="currency_USD">US Dollar</string>
     <string name="currency_ZAR">African rand</string>
+
+    <string name="change_account_content_description">Change account</string>
+    <string name="error_you_have_only_one_principal">You have only one principal account</string>
 
 </resources>
 

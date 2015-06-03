@@ -300,7 +300,7 @@ public class EditTemplate extends ActivityBase {
 						intent.putExtra("SumCommis",
                                 mCommissionEditText.getText().toString().replaceAll(pattern, ""));
 						intent.putExtra("templateId", templateId);
-						intent.putExtra("token", Session.getInstance().getBearer());
+						intent.putExtra("token", Session.getInstance().getAuthtoken());
 						startActivity(intent);
 						finish();
 					}

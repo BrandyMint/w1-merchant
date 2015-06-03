@@ -190,7 +190,7 @@ public class InvoiceFragment extends Fragment {
             case R.id.ic_menu_add0:
                 //добавления счета
                 Intent intent = new Intent(getActivity(), AddInvoice.class);
-                intent.putExtra("token", Session.getInstance().getBearer());
+                intent.putExtra("token", Session.getInstance().getAuthtoken());
                 startActivityForResult(intent, ACT_ADD);
                 return true;
             default:

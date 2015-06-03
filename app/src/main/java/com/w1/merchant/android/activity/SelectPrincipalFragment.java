@@ -34,7 +34,11 @@ public class SelectPrincipalFragment extends DialogFragment {
 
     private static final String TAG = Constants.LOG_TAG;
 
-    private List<PrincipalUser> mUsers;
+    private NewDotPageIndicator mPagerIndicator;
+
+    private InfiniteViewPager mViewPager;
+
+    private View mProgressView;
 
     @Nullable
     private PrincipalUser mSelectedPrincipalUser = null;
@@ -46,40 +50,57 @@ public class SelectPrincipalFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NO_TITLE, R.style.SelectPrincipalDialogTheme);
-        mUsers = getArguments().getParcelableArrayList(ARG_PRINCIPAL_USERS);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final PrincipalInfinitePagerAdapter adapter;
-        final InfiniteViewPager viewPager;
-        final NewDotPageIndicator pagerIndicator;
-
         View root = inflater.inflate(R.layout.fragment_select_principal_user, container, false);
-        pagerIndicator = (NewDotPageIndicator)root.findViewById(R.id.indicator_banner);
-        viewPager = (InfiniteViewPager)root.findViewById(R.id.pager);
-        adapter = new PrincipalInfinitePagerAdapter(mUsers, 0, viewPager, inflater);
-        viewPager.setAdapter(adapter);
+        mPagerIndicator = (NewDotPageIndicator)root.findViewById(R.id.indicator_banner);
+        mViewPager = (InfiniteViewPager)root.findViewById(R.id.pager);
+        mProgressView = root.findViewById(R.id.progress);
 
-        String pagerViewContent[] = new String[mUsers.size()];
-        Arrays.fill(pagerViewContent, "");
-        pagerIndicator.setViewPager(viewPager, pagerViewContent);
-        pagerIndicator.setChangePoint(0);
-        pagerIndicator.setSnap(true);
-        viewPager.setOnInfinitePageChangeListener(new InfiniteViewPagerListener(mUsers.size()) {
-            @Override
-            public void onPageSwitched(int position) {
-                pagerIndicator.setChangePoint(position);
-            }
-        });
+        if (getArguments() != null && getArguments().containsKey(ARG_PRINCIPAL_USERS)) {
+            List<PrincipalUser> users = getArguments().getParcelableArrayList(ARG_PRINCIPAL_USERS);
+            setPrincipals(users);
+        }
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof SelectPrincipalActivity) {
+            setInProgress(((SelectPrincipalActivity) getActivity()).isInProgress());
+        }
     }
 
     @Nullable
     public PrincipalUser getSelectedPrincipalUser() {
         return mSelectedPrincipalUser;
+    }
+
+    public void setInProgress(boolean inProgress) {
+        if (mProgressView != null) mProgressView.setVisibility(inProgress ? View.VISIBLE : View.GONE);
+    }
+
+    public void setPrincipals(List<PrincipalUser> users) {
+        final PrincipalInfinitePagerAdapter adapter;
+        adapter = new PrincipalInfinitePagerAdapter(users, 0, mViewPager, LayoutInflater.from(mViewPager.getContext()));
+        mViewPager.setAdapter(adapter);
+
+        String pagerViewContent[] = new String[users.size()];
+        Arrays.fill(pagerViewContent, "");
+        mPagerIndicator.setViewPager(mViewPager, pagerViewContent);
+        mPagerIndicator.setChangePoint(0);
+        mPagerIndicator.setSnap(true);
+        mViewPager.setOnInfinitePageChangeListener(new InfiniteViewPagerListener(users.size()) {
+            @Override
+            public void onPageSwitched(int position) {
+                mPagerIndicator.setChangePoint(position);
+            }
+        });
     }
 
     void onPrincipalUserSelected(PrincipalUser user) {

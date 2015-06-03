@@ -199,6 +199,7 @@
     <string name="enter_captcha_error">Введите код с картинки</string>
     <string name="refresh">Обновить</string>
     <string name="error_captcha_wrong_code">Неверный код, попробуйте ещё раз</string>
+    <string name="error_auth_principal">Ошибка переключения аккаунта</string>
 
     <string name="recipient_title">Название получателя</string>
     <string name="from_wallet">От кошелька</string>
@@ -277,5 +278,7 @@
     <string name="currency_UAH">Украинская гривна</string>
     <string name="currency_USD">Доллар США</string>
     <string name="currency_ZAR">Южноафриканский рэнд</string>
+    <string name="change_account_content_description">Сменить аккаунт</string>
+    <string name="error_you_have_only_one_principal">У вас только один счет</string>
 
 </resources>

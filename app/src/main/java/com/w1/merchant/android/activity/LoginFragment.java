@@ -353,7 +353,7 @@ public class LoginFragment extends Fragment {
         mLoginSubscription.unsubscribe();
 
         Observable<AuthModel> observer = AppObservable.bindFragment(this,
-                RestClient.getApiSessions().auth(new AuthCreateModel(login, password)));
+                RestClient.getApiMasterSessions().auth(new AuthCreateModel(login, password)));
 
         mLoginSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -383,7 +383,7 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onNext(AuthModel response) {
                         if (DBG) Log.v(TAG, "auth success ");
-                        Session.getInstance().setAuth(response);
+                        Session.getInstance().setMasterAuth(response);
                         requestPrincipalUsers(response);
                     }
                 });
@@ -394,7 +394,7 @@ public class LoginFragment extends Fragment {
         mRequestPrincipalUsersSubscription.unsubscribe();
 
         Observable<List<PrincipalUser>> observer = AppObservable.bindFragment(this,
-                RestClient.getApiSessions().getPrincipalUsers());
+                RestClient.getApiMasterSessions().getPrincipalUsers());
         mRequestPrincipalUsersSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this) {
@@ -462,7 +462,7 @@ public class LoginFragment extends Fragment {
     void selectPrincipal(final PrincipalUser user) {
         mAuthPrincipalSubscription.unsubscribe();
         Observable<AuthModel> observer = AppObservable.bindFragment(this,
-                RestClient.getApiSessions().authPrincipal(new AuthPrincipalRequest(user.principalUserId)));
+                RestClient.getApiMasterSessions().authPrincipal(new AuthPrincipalRequest(user.principalUserId)));
 
         mAuthPrincipalSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -521,7 +521,7 @@ public class LoginFragment extends Fragment {
         mSendOneTimePasswordSubscription.unsubscribe();
 
         Observable<Void> observer = AppObservable.bindFragment(this,
-                RestClient.getApiSessions().sendOneTimePassword(new OneTimePassword.Request(login)));
+                RestClient.getApiMasterSessions().sendOneTimePassword(new OneTimePassword.Request(login)));
 
         mSendOneTimePasswordSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
