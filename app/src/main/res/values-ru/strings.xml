@@ -277,5 +277,6 @@
     <string name="currency_UAH">Украинская гривна</string>
     <string name="currency_USD">Доллар США</string>
     <string name="currency_ZAR">Южноафриканский рэнд</string>
+    <string name="change_account_content_description">Сменить аккаунт</string>
 
 </resources>

@@ -282,5 +282,7 @@
     <string name="currency_USD">US Dollar</string>
     <string name="currency_ZAR">African rand</string>
 
+    <string name="change_account_content_description">Change account</string>
+
 </resources>
 
