@@ -1,14 +1,14 @@
 package com.w1.merchant.android.extra;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,9 +25,9 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.model.Captcha;
-import com.w1.merchant.android.service.ApiSessions;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.Captcha;
+import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.service.ApiSessions;
 
 import rx.Observable;
 import rx.Observer;
@@ -66,15 +66,10 @@ public class CaptchaDialogFragment extends DialogFragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog_NoActionBar);
-    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Theme_AppCompat_Light_Dialog_Alert);
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -257,7 +252,7 @@ public class CaptchaDialogFragment extends DialogFragment {
         if (mInProgress) return;
         setInProgress(true);
 
-        ApiSessions api = NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class);
+        ApiSessions api = RestClient.getApiSessions();
 
         Captcha.CaptchaRequest req = new Captcha.CaptchaRequest(
                 getResources().getDimensionPixelSize(R.dimen.captcha_width),

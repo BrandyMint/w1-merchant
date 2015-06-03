@@ -64,6 +64,7 @@
             android:dividerHeight="8dp"
             android:paddingTop="40dp"
             android:clipToPadding="false"
+            android:listSelector="?selectableItemBackground"
             android:overScrollHeader="@null"
             />
 

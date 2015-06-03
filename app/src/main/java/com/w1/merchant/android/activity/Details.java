@@ -18,8 +18,8 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.model.Invoice;
-import com.w1.merchant.android.model.TransactionHistoryEntry;
+import com.w1.merchant.android.rest.model.Invoice;
+import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;

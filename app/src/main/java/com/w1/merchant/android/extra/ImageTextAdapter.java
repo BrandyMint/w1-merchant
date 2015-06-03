@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.Template;
+import com.w1.merchant.android.rest.model.Template;
 
 import java.util.ArrayList;
 import java.util.Calendar;

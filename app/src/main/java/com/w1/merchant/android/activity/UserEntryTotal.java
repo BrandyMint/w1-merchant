@@ -14,11 +14,12 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.TransactionHistory;
-import com.w1.merchant.android.model.TransactionHistoryEntry;
-import com.w1.merchant.android.service.ApiUserEntry;
+import com.w1.merchant.android.rest.model.TransactionHistory;
+import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.service.ApiUserEntry;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
@@ -118,7 +119,7 @@ public class UserEntryTotal extends ActivityBase {
                 TransactionHistoryEntry.DIRECTION_INCOMING, mCurrency) {
             @Override
             public void onError(Throwable e) {
-                CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                CharSequence errText = ((ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                 Toast toast = Toast.makeText(UserEntryTotal.this, errText, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP, 0, 50);
                 toast.show();
@@ -141,7 +142,7 @@ public class UserEntryTotal extends ActivityBase {
                 TransactionHistoryEntry.DIRECTION_OUTGOING, mCurrency) {
             @Override
             public void onError(Throwable e) {
-                CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                CharSequence errText = ((ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                 Toast toast = Toast.makeText(UserEntryTotal.this, errText, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP, 0, 50);
                 toast.show();
@@ -204,7 +205,7 @@ public class UserEntryTotal extends ActivityBase {
         private final Activity mActivity;
 
         public SummaryLoader(Activity activity, Date dateFrom, Date dateTo, String direction, String currency) {
-            mApiUserEntry = NetworkUtils.getInstance().createRestAdapter().create(ApiUserEntry.class);
+            mApiUserEntry = RestClient.getApiUserEntry();
             mActivity = activity;
             mDateFrom = dateFrom;
             mDateTo = dateTo;

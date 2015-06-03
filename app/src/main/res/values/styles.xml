@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-    </style>
-
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
-    <style name="AppThemeNoActionBar" parent="android:Theme.Holo.Light.NoActionBar">
+    <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item> -->
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
     <style name="MenuActivityTheme" parent="AppTheme">
@@ -37,18 +31,20 @@
     </style>
 
     <style name="LoginActivityTheme" parent="AppThemeNoActionBar">
-        <item name="android:selectableItemBackground">@drawable/list_selector_holo_light</item>
     </style>
 
-    <style name="SessionExpiredDialogTheme" parent="android:Theme.Holo.Light.Dialog">
+    <style name="SessionExpiredDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
-    <style name="IntroTheme" parent="android:Theme.Holo.Light.NoActionBar">
+    <style name="IntroThemeBase" parent="AppThemeNoActionBar">
         <item name="android:windowBackground">@mipmap/banner_bgr</item>
         <item name="android:colorBackground">#1c2b36</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowAnimationStyle">@style/IntroAnimation</item>
+    </style>
+
+    <style name="IntroTheme" parent="IntroThemeBase">
     </style>
 
     <style name="SelectPrincipalDialogTheme" parent="android:Theme.Translucent.NoTitleBar">
@@ -59,7 +55,7 @@
         <item name="android:windowAnimationStyle">@style/SelectPrincipalAnimation</item>
     </style>
 
-    <style name="ShowPhotoThemeBase" parent="android:Theme.Holo">
+    <style name="ShowPhotoThemeBase" parent="Theme.AppCompat">
         <item name="android:windowBackground">@android:color/background_dark</item>
         <item name="android:colorBackground">@android:color/background_dark</item>
         <item name="android:colorBackgroundCacheHint">@android:color/background_dark</item>
@@ -69,10 +65,12 @@
     <style name="ShowPhotoTheme" parent="ShowPhotoThemeBase">
     </style>
 
-    <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="ListViewStyle" parent="Widget.AppCompat.ListView">
+    </style>
 
     <style name="ConversationMessageDate">
         <item name="android:visibility">gone</item>
@@ -111,7 +109,7 @@
     <style name="DrawerMenuItemStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:background">?selectableItemBackground</item>
         <item name="android:drawablePadding">10dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:minHeight">60dp</item>

@@ -2,14 +2,14 @@ package com.w1.merchant.android.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -19,8 +19,8 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.activity.SessionExpiredDialogActivity;
 import com.w1.merchant.android.extra.CaptchaDialogFragment;
-import com.w1.merchant.android.extra.CaptchaDialogFragmentV4;
-import com.w1.merchant.android.model.Profile;
+import com.w1.merchant.android.rest.model.Profile;
+import com.w1.merchant.android.rest.ResponseErrorException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -47,25 +47,14 @@ public class RetryWhenCaptchaReady implements
     @Nullable
     private final Fragment mFragment;
 
-    @Nullable
-    private final android.support.v4.app.Fragment mV4Fragment;
-
     public RetryWhenCaptchaReady(@NonNull Activity activity) {
         mActivity = activity;
         mFragment = null;
-        mV4Fragment = null;
     }
 
     public RetryWhenCaptchaReady(@NonNull Fragment fragment) {
         mActivity = null;
         mFragment = fragment;
-        mV4Fragment = null;
-    }
-
-    public RetryWhenCaptchaReady(@NonNull android.support.v4.app.Fragment v4fragment) {
-        mActivity = null;
-        mFragment = null;
-        mV4Fragment = v4fragment;
     }
 
     @Override
@@ -76,11 +65,11 @@ public class RetryWhenCaptchaReady implements
 
                     @Override
                     public Observable<?> call(Throwable errorNotification) {
-                        NetworkUtils.ResponseErrorException ex;
-                        if (!(errorNotification instanceof NetworkUtils.ResponseErrorException)) {
+                        ResponseErrorException ex;
+                        if (!(errorNotification instanceof ResponseErrorException)) {
                             return Observable.error(errorNotification);
                         }
-                        ex = (NetworkUtils.ResponseErrorException) errorNotification;
+                        ex = (ResponseErrorException) errorNotification;
 
                         if (ex.isCaptchaError()) {
                             return startRefreshCaptcha(ex);
@@ -98,12 +87,14 @@ public class RetryWhenCaptchaReady implements
         if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "Invalid token. Show session expired dialog");
         Activity activity;
         Session.getInstance().markAsExpired();
+
+
         if (mActivity != null) {
             activity = mActivity;
         } else if (mFragment != null) {
             activity = mFragment.getActivity();
         } else {
-            activity = mV4Fragment.getActivity();
+            throw new IllegalStateException();
         }
 
         if (activity == null) {
@@ -113,7 +104,7 @@ public class RetryWhenCaptchaReady implements
         SessionExpiredDialogActivity.show(activity);
     }
 
-    private Observable<Profile> startRefreshCaptcha(final NetworkUtils.ResponseErrorException error) {
+    private Observable<Profile> startRefreshCaptcha(final ResponseErrorException error) {
         return Observable.create(new Observable.OnSubscribe<Profile>() {
             @Override
             public void call(final Subscriber<? super Profile> subscriber) {
@@ -124,7 +115,7 @@ public class RetryWhenCaptchaReady implements
                 } else if (mFragment != null) {
                     activity = mFragment.getActivity();
                 } else {
-                    activity = mV4Fragment.getActivity();
+                    throw new IllegalStateException();
                 }
                 if (activity == null) {
                     subscriber.onError(error);
@@ -134,25 +125,15 @@ public class RetryWhenCaptchaReady implements
                 }
                 final LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(appContext);
 
-                if (mV4Fragment == null) {
-                    FragmentManager fm = activity.getFragmentManager();
-                    if (fm.findFragmentByTag(CAPTCHA_DIALOG_TAG) == null) {
-                        CaptchaDialogFragment dialog = CaptchaDialogFragment.newInstance(error.isErrorInvalidCaptcha()); // XXX
-                        @SuppressLint("CommitTransaction") android.app.FragmentTransaction ft = fm.beginTransaction()
-                                .addToBackStack(null);
+                android.support.v4.app.FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
+                if (fm.findFragmentByTag(CAPTCHA_DIALOG_TAG) == null) {
+                    CaptchaDialogFragment dialog = CaptchaDialogFragment.newInstance(error.isErrorInvalidCaptcha()); // XXX
+                    @SuppressLint("CommitTransaction") FragmentTransaction ft = fm.beginTransaction()
+                            .addToBackStack(null);
 
-                        dialog.show(ft, CAPTCHA_DIALOG_TAG);
-                    }
-                } else {
-                    android.support.v4.app.FragmentManager fm = mV4Fragment.getActivity().getSupportFragmentManager();
-                    if (fm.findFragmentByTag(CAPTCHA_DIALOG_TAG) == null) {
-                        CaptchaDialogFragmentV4 dialog = CaptchaDialogFragmentV4.newInstance(error.isErrorInvalidCaptcha()); // XXX
-                        @SuppressLint("CommitTransaction") FragmentTransaction ft = fm.beginTransaction()
-                                .addToBackStack(null);
-
-                        dialog.show(ft, CAPTCHA_DIALOG_TAG);
-                    }
+                    dialog.show(ft, CAPTCHA_DIALOG_TAG);
                 }
+
 
                 final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 

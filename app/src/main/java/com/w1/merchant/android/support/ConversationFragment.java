@@ -1,7 +1,6 @@
 package com.w1.merchant.android.support;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -9,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -31,14 +31,14 @@ import android.widget.Toast;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.Profile;
-import com.w1.merchant.android.model.SupportTicket;
-import com.w1.merchant.android.model.SupportTicketPost;
-import com.w1.merchant.android.model.UploadFileResponse;
-import com.w1.merchant.android.service.ApiProfile;
-import com.w1.merchant.android.service.ApiSupport;
+import com.w1.merchant.android.rest.model.Profile;
+import com.w1.merchant.android.rest.model.SupportTicket;
+import com.w1.merchant.android.rest.model.SupportTicketPost;
+import com.w1.merchant.android.rest.model.UploadFileResponse;
+import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.service.ApiProfile;
+import com.w1.merchant.android.rest.service.ApiSupport;
 import com.w1.merchant.android.utils.ContentTypedOutput;
-import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
@@ -357,7 +357,7 @@ public class ConversationFragment extends Fragment {
      * @param message
      */
     private void sendMessageHasDialog(String message) {
-        ApiSupport apiMessenger = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
+        ApiSupport apiMessenger = RestClient.getApiSupport();
 
         mPostMessageSubscription.unsubscribe();
 
@@ -398,7 +398,7 @@ public class ConversationFragment extends Fragment {
     void loadProfile(final String originalMessage) {
         mProfileSubscription.unsubscribe();
 
-        ApiProfile apiProfile = NetworkUtils.getInstance().createRestAdapter().create(ApiProfile.class);
+        ApiProfile apiProfile = RestClient.getApiProfile();
         Observable<Profile> observable = AppObservable.bindFragment(this, apiProfile.getProfile());
 
         mProfileSubscription = observable
@@ -423,7 +423,7 @@ public class ConversationFragment extends Fragment {
     }
 
     private void createDialog(String message, @Nullable Profile profile) {
-        ApiSupport apiMessenger = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
+        ApiSupport apiMessenger = RestClient.getApiSupport();
 
         mPostMessageSubscription.unsubscribe();
 
@@ -467,7 +467,7 @@ public class ConversationFragment extends Fragment {
 
     private void sendImage(Uri imageUri) {
         if (DBG) Log.v(TAG, "sendImage image uri: " + imageUri);
-        ApiSupport apiMessenger = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
+        ApiSupport apiMessenger = RestClient.getApiSupport();
 
         mPostMessageSubscription.unsubscribe();
 
@@ -565,7 +565,7 @@ public class ConversationFragment extends Fragment {
         if (!mRefreshMessagesSubscription.isUnsubscribed()) return;
         if (mTicket == null) return;
 
-        ApiSupport api = NetworkUtils.getInstance().createRestAdapter().create(ApiSupport.class);
+        ApiSupport api = RestClient.getApiSupport();
         if (showSpinner) getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
 
         Observable<SupportTicket> observable = AppObservable.bindFragment(this,
@@ -670,8 +670,8 @@ public class ConversationFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void notifyError(CharSequence text, @Nullable Throwable error);
-        public void onSupportTicketCreated(SupportTicket ticket);
+        void notifyError(CharSequence text, @Nullable Throwable error);
+        void onSupportTicketCreated(SupportTicket ticket);
     }
 
 }

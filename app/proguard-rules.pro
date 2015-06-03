@@ -19,7 +19,7 @@
 -optimizations !code/simplification/cast,!field/*,!class/merging/*,!code/allocation/variable
 -dontobfuscate
 
--keep class com.w1.merchant.android.model.** { *; }
+-keep class com.w1.merchant.android.rest.model.** { *; }
 
 #mpchart
 -keep class com.github.mikephil.charting.animation.** { *; }

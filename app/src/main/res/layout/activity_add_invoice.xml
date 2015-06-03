@@ -149,7 +149,7 @@
             android:layout_marginTop="10dp"
             android:layout_below="@id/etSum"
             android:layout_centerHorizontal="true"
-            android:background="?android:selectableItemBackground"
+            android:background="?selectableItemBackground"
             android:text="@string/bill"
             android:textColor="#f00"
             android:textSize="22sp"

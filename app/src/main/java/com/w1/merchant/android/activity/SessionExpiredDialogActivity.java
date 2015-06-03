@@ -1,9 +1,9 @@
 package com.w1.merchant.android.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -13,7 +13,7 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.utils.Utils;
 
-public class SessionExpiredDialogActivity extends Activity {
+public class SessionExpiredDialogActivity extends AppCompatActivity {
 
     private boolean jobIsDone;
 

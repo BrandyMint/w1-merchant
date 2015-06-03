@@ -36,13 +36,13 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.model.AuthCreateModel;
-import com.w1.merchant.android.model.AuthModel;
-import com.w1.merchant.android.model.AuthPrincipalRequest;
-import com.w1.merchant.android.model.OneTimePassword;
-import com.w1.merchant.android.model.PrincipalUser;
-import com.w1.merchant.android.service.ApiSessions;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.AuthCreateModel;
+import com.w1.merchant.android.rest.model.AuthModel;
+import com.w1.merchant.android.rest.model.AuthPrincipalRequest;
+import com.w1.merchant.android.rest.model.OneTimePassword;
+import com.w1.merchant.android.rest.model.PrincipalUser;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
 import java.util.ArrayList;
@@ -81,8 +81,6 @@ public class LoginFragment extends Fragment {
 
     private ArrayList<String> mLogins = new ArrayList<>();
 
-    private ApiSessions mApiSessions;
-
     private String mLogin;
 
     private OnFragmentInteractionListener mListener;
@@ -115,7 +113,6 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mVibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        mApiSessions = NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class);
     }
 
     @Nullable
@@ -237,7 +234,6 @@ public class LoginFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mVibrator = null;
-        mApiSessions = null;
     }
 
     @Override
@@ -262,8 +258,8 @@ public class LoginFragment extends Fragment {
                     int authButtonLoc[] = new int[]{0, 0};
                     mAuthButton.getLocationOnScreen(authButtonLoc);
 
-                    int below = rootHeight - authButtonLoc[1];
-                    bottomView.setMaxHeight(below);
+                    int below = rootHeight - authButtonLoc[1]; // расстояние под кнопкой "авторизоваться"
+                    bottomView.setMaxHeight(below); // не залезаем на кнопку
                     //ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) bottomView.getLayoutParams();
                     //lp.topMargin = authButtonLoc[1];
                     //bottomView.setLayoutParams(lp);
@@ -281,13 +277,14 @@ public class LoginFragment extends Fragment {
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             private boolean imeKeyboardShown;
 
+            private Rect mRect = new Rect();
+
             @Override
             public void onGlobalLayout() {
-                Rect r = new Rect();
                 //r will be populated with the coordinates of your view that area still visible.
-                activityRootView.getWindowVisibleDisplayFrame(r);
-                int heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                activityRootView.getWindowVisibleDisplayFrame(mRect);
+                int heightDiff = activityRootView.getRootView().getHeight() - (mRect.bottom - mRect.top);
+                if (heightDiff > 300) { // if more than 300 pixels, its probably a keyboard...
                     if (!imeKeyboardShown) {
                         imeKeyboardShown = true;
                         final ScrollView scrollView = (ScrollView) root.findViewById(R.id.scroll_view);
@@ -296,7 +293,7 @@ public class LoginFragment extends Fragment {
                             public void run() {
                                 scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight());
                             }
-                        }, 64);
+                        }, 5*16);
                     }
                 } else {
                     if (imeKeyboardShown) {
@@ -324,7 +321,7 @@ public class LoginFragment extends Fragment {
 
     void actionOnError(Throwable e) {
         if (getActivity() == null) return;
-        NetworkUtils.ResponseErrorException error = (NetworkUtils.ResponseErrorException)e;
+        ResponseErrorException error = (ResponseErrorException)e;
         Toast toast;
         CharSequence errMsg;
 
@@ -355,7 +352,8 @@ public class LoginFragment extends Fragment {
         mLogin = login;
         mLoginSubscription.unsubscribe();
 
-        Observable<AuthModel> observer = AppObservable.bindFragment(this, mApiSessions.auth(new AuthCreateModel(login, password)));
+        Observable<AuthModel> observer = AppObservable.bindFragment(this,
+                RestClient.getApiSessions().auth(new AuthCreateModel(login, password)));
 
         mLoginSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -395,7 +393,8 @@ public class LoginFragment extends Fragment {
     void requestPrincipalUsers(final AuthModel authModel) {
         mRequestPrincipalUsersSubscription.unsubscribe();
 
-        Observable<List<PrincipalUser>> observer = AppObservable.bindFragment(this, mApiSessions.getPrincipalUsers());
+        Observable<List<PrincipalUser>> observer = AppObservable.bindFragment(this,
+                RestClient.getApiSessions().getPrincipalUsers());
         mRequestPrincipalUsersSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenCaptchaReady(this) {
@@ -463,7 +462,7 @@ public class LoginFragment extends Fragment {
     void selectPrincipal(final PrincipalUser user) {
         mAuthPrincipalSubscription.unsubscribe();
         Observable<AuthModel> observer = AppObservable.bindFragment(this,
-                mApiSessions.authPrincipal(new AuthPrincipalRequest(user.principalUserId)));
+                RestClient.getApiSessions().authPrincipal(new AuthPrincipalRequest(user.principalUserId)));
 
         mAuthPrincipalSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -522,7 +521,7 @@ public class LoginFragment extends Fragment {
         mSendOneTimePasswordSubscription.unsubscribe();
 
         Observable<Void> observer = AppObservable.bindFragment(this,
-                mApiSessions.sendOneTimePassword(new OneTimePassword.Request(login)));
+                RestClient.getApiSessions().sendOneTimePassword(new OneTimePassword.Request(login)));
 
         mSendOneTimePasswordSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -551,7 +550,7 @@ public class LoginFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        NetworkUtils.ResponseErrorException error = (NetworkUtils.ResponseErrorException)e;
+                        ResponseErrorException error = (ResponseErrorException)e;
                         if (DBG) Log.v(TAG, "sendOneTimePassword error", error);
                         if (error.getHttpStatus() >= 200 && error.getHttpStatus() < 300) {
                             // Ignore malformed JSON ("")

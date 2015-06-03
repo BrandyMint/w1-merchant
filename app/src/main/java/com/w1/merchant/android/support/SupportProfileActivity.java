@@ -1,6 +1,5 @@
 package com.w1.merchant.android.support;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -19,7 +19,7 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.ActivityBase;
-import com.w1.merchant.android.model.SupportTicketPost;
+import com.w1.merchant.android.rest.model.SupportTicketPost;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;
 
@@ -78,7 +78,7 @@ public class SupportProfileActivity extends ActivityBase {
     }
 
     private void setupActionBar() {
-        ActionBar ab = getActionBar();
+        ActionBar ab = getSupportActionBar();
         if (ab == null) return;
         ab.setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
                 DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP|DISPLAY_USE_LOGO);

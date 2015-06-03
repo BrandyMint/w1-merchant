@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.model.Invoice;
+import com.w1.merchant.android.rest.model.Invoice;
 import com.w1.merchant.android.utils.SortedList;
 import com.w1.merchant.android.utils.TextUtilsW1;
 

@@ -1,6 +1,8 @@
 package com.w1.merchant.android.activity;
 
 import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.w1.merchant.android.BuildConfig;
@@ -11,7 +13,7 @@ import com.w1.merchant.android.utils.Utils;
 /**
  * Created by alexey on 27.02.15.
  */
-public class ActivityBase extends Activity {
+public class ActivityBase extends AppCompatActivity {
 
     public static void doOnResume(Activity activity) {
         if (!Session.getInstance().hasToken()) {

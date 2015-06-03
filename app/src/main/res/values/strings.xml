@@ -30,6 +30,7 @@
     <string name="title_support">Support</string>
     <string name="title_logout">Log out</string>
 
+    <string name="drawer_title">Navigation</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="add">Add</string>
@@ -112,6 +113,7 @@
     <string name="awaiting">Awaiting for crediting</string>
     <string name="canceled">Canceled</string>
     <string name="processing">Processing</string>
+    <string name="search_hint">Search…</string>
 
     <string-array name="month_array">
         <item>January</item>

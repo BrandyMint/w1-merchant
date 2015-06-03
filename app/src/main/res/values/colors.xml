@@ -18,4 +18,14 @@
 
     <color name="black_overlay">#66000000</color>
 
+    <!-- colorPrimary is used for the default action bar background -->
+    <color name="colorPrimary">#212121</color>
+
+    <!-- colorPrimaryDark is used for the status bar -->
+    <color name="colorPrimaryDark">#000000</color>
+
+    <!-- colorAccent is used as the default value for colorControlActivated
+         which is used to tint widgets -->
+    <color name="colorAccent">#009688</color>
+
 </resources>

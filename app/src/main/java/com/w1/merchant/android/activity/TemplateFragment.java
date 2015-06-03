@@ -17,8 +17,9 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.ImageTextAdapter;
-import com.w1.merchant.android.model.Template;
-import com.w1.merchant.android.service.ApiPayments;
+import com.w1.merchant.android.rest.model.Template;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
@@ -31,7 +32,6 @@ import rx.subscriptions.Subscriptions;
 
 public class TemplateFragment extends Fragment {
 
-    private ApiPayments mApiPayments;
     private GridView gridview;
 
     private OnFragmentInteractionListener mListener;
@@ -43,7 +43,6 @@ public class TemplateFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApiPayments = NetworkUtils.getInstance().createRestAdapter().create(ApiPayments.class);
     }
 
     @Override
@@ -92,7 +91,7 @@ public class TemplateFragment extends Fragment {
         mGetTemplatesSubscription.unsubscribe();
 
         Observable<Template.TempateList> observable = AppObservable.bindFragment(this,
-                mApiPayments.getTemplates());
+                RestClient.getApiPayments().getTemplates());
 
         NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
         mGetTemplatesSubscription = observable
@@ -106,7 +105,7 @@ public class TemplateFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();

@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.w1.merchant.android.model.AuthModel;
-import com.w1.merchant.android.model.Captcha;
-import com.w1.merchant.android.service.ApiSessions;
+import com.w1.merchant.android.rest.model.AuthModel;
+import com.w1.merchant.android.rest.model.Captcha;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.NetworkUtils;
 
 import rx.Observable;
@@ -93,8 +93,7 @@ public final class Session {
     public void close() {
         if (auth == null) return;
 
-        Observable<Void> observer =
-                NetworkUtils.getInstance().createRestAdapter().create(ApiSessions.class).logout();
+        Observable<Void> observer = RestClient.getApiSessions().logout();
         observer
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new Action0() {

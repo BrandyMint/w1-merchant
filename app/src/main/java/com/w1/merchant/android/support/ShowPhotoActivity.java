@@ -1,7 +1,6 @@
 package com.w1.merchant.android.support;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -88,9 +87,8 @@ public class ShowPhotoActivity extends ActivityBase {
 
         rq.into(mPicassoTarget);
 
-        if (getActionBar() != null) {
-            ActionBar ab = getActionBar();
-            ab.setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -161,7 +159,7 @@ public class ShowPhotoActivity extends ActivityBase {
             } else {
                 newUiOptions = View.SYSTEM_UI_FLAG_LOW_PROFILE;
             }
-            getActionBar().hide();
+            getSupportActionBar().hide();
             isNavigationHidden = true;
         } else {
             if (Build.VERSION.SDK_INT < 19) {
@@ -170,7 +168,7 @@ public class ShowPhotoActivity extends ActivityBase {
             isNavigationHidden = false;
             userForcedToChangeOverlayMode = false;
             runHideBarTimer();
-            getActionBar().show();
+            getSupportActionBar().show();
         }
         getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
     }

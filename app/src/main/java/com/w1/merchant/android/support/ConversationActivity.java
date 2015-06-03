@@ -1,6 +1,5 @@
 package com.w1.merchant.android.support;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +20,7 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.ActivityBase;
-import com.w1.merchant.android.model.SupportTicket;
+import com.w1.merchant.android.rest.model.SupportTicket;
 
 import static android.app.ActionBar.DISPLAY_HOME_AS_UP;
 import static android.app.ActionBar.DISPLAY_SHOW_HOME;
@@ -70,7 +70,7 @@ public class ConversationActivity extends ActivityBase implements ConversationFr
 
         if (savedInstanceState == null) {
             mTicket = getIntent().getParcelableExtra(ARG_TICKET);
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, ConversationFragment.newInstance(mTicket))
                     .commit();
         } else {
@@ -136,7 +136,7 @@ public class ConversationActivity extends ActivityBase implements ConversationFr
     }
 
     void onImeKeyboardShown() {
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentById(R.id.container);
+        ConversationFragment fragment = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment != null) fragment.onImeKeyboardShown();
     }
 
@@ -145,7 +145,7 @@ public class ConversationActivity extends ActivityBase implements ConversationFr
     }
 
     private void setupActionBar() {
-        ActionBar ab = getActionBar();
+        ActionBar ab = getSupportActionBar();
         if (ab == null) return;
         ab.setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
                 DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP|DISPLAY_USE_LOGO);

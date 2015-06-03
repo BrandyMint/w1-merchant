@@ -22,10 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.model.Invoice;
-import com.w1.merchant.android.model.InvoiceRequest;
-import com.w1.merchant.android.service.ApiInvoices;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.Invoice;
+import com.w1.merchant.android.rest.model.InvoiceRequest;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.EditTextRouble;
 
@@ -59,16 +59,12 @@ public class AddInvoice extends ActivityBase {
     private final ArrayList<String> descrsArray = new ArrayList<>();
     private final ArrayList<String> telEmailArray = new ArrayList<>();
 
-    private ApiInvoices mApiInvoices;
-
     private Subscription mCreateInvoiceSubscription = Subscriptions.unsubscribed();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_invoice);
-
-        mApiInvoices = NetworkUtils.getInstance().createRestAdapter().create(ApiInvoices.class);
 
 		mPref = getSharedPreferences(APP_PREF, MODE_PRIVATE);
 		mDescriptionView = (AutoCompleteTextView) findViewById(R.id.actvDescr);
@@ -221,7 +217,8 @@ public class AddInvoice extends ActivityBase {
 
         mCreateInvoiceSubscription.unsubscribe();
         Observable<Invoice> observer = AppObservable.bindActivity(this,
-                mApiInvoices.createInvoice(new InvoiceRequest(recipient, amount, description, "643")));
+                RestClient.getApiInvoices().createInvoice(new InvoiceRequest(recipient,
+                        amount, description, "643")));
 
         mCreateInvoiceSubscription = observer
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -240,7 +237,7 @@ public class AddInvoice extends ActivityBase {
 
                     @Override
                     public void onError(Throwable e) {
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(AddInvoice.this, errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();

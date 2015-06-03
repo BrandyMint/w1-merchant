@@ -23,10 +23,10 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.model.Provider;
-import com.w1.merchant.android.model.Template;
-import com.w1.merchant.android.service.ApiPayments;
-import com.w1.merchant.android.utils.NetworkUtils;
+import com.w1.merchant.android.rest.model.Provider;
+import com.w1.merchant.android.rest.model.Template;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
@@ -60,8 +60,6 @@ public class EditTemplate extends ActivityBase {
 
     private Provider mProvider;
 
-    private ApiPayments mApiPayments;
-
     private boolean mAmountManualChange;
     private boolean mCommissionManualChange;
 
@@ -72,8 +70,6 @@ public class EditTemplate extends ActivityBase {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_template);
-
-        mApiPayments = NetworkUtils.getInstance().createRestAdapter().create(ApiPayments.class);
 
 		llMain = (LinearLayout) findViewById(R.id.llMain);
         findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
@@ -105,7 +101,7 @@ public class EditTemplate extends ActivityBase {
         startPBAnim();
 
         Observable<Template> observable = AppObservable.bindActivity(this,
-                mApiPayments.getTemplate(templateId));
+                RestClient.getApiPayments().getTemplate(templateId));
 
         mGetTemplateSubscription = observable
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -123,7 +119,7 @@ public class EditTemplate extends ActivityBase {
                     @Override
                     public void onError(Throwable e) {
                         if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", e);
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
+                        CharSequence errText = ((ResponseErrorException) e).getErrorDescription(getText(R.string.network_error), getResources());
                         Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();
@@ -141,7 +137,7 @@ public class EditTemplate extends ActivityBase {
         startPBAnim();
 
         Observable<Provider> observable = AppObservable.bindActivity(this,
-                mApiPayments.getProvider(providerId));
+                RestClient.getApiPayments().getProvider(providerId));
 
         mGetProviderSubscription = observable
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -161,7 +157,7 @@ public class EditTemplate extends ActivityBase {
                     @Override
                     public void onError(Throwable e) {
                         if (BuildConfig.DEBUG) Log.v(Constants.LOG_TAG, "template load error", e);
-                        CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error));
+                        CharSequence errText = ((ResponseErrorException)e).getErrorDescription(getText(R.string.network_error));
                         Toast toast = Toast.makeText(EditTemplate.this, errText, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();

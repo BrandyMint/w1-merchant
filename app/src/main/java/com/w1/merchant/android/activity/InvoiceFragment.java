@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,16 +19,16 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.extra.InvoicesAdapter;
-import com.w1.merchant.android.model.Invoice;
-import com.w1.merchant.android.model.Invoices;
-import com.w1.merchant.android.service.ApiInvoices;
+import com.w1.merchant.android.rest.model.Invoice;
+import com.w1.merchant.android.rest.model.Invoices;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup;
@@ -49,8 +51,6 @@ public class InvoiceFragment extends Fragment {
     private CheckboxStyleSegmentedRadioGroup srgInvoice;
 	private TextView llFooter;
 
-    private ApiInvoices mApiInvoices;
-
     private InvoicesAdapter mAdapter;
 
     private OnFragmentInteractionListener mListener;
@@ -64,7 +64,6 @@ public class InvoiceFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApiInvoices = NetworkUtils.getInstance().createRestAdapter().create(ApiInvoices.class);
         setHasOptionsMenu(true);
     }
 
@@ -153,8 +152,11 @@ public class InvoiceFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        SearchView searchView = (SearchView) menu.findItem(
-                R.id.ic_menu_search0).getActionView();
+
+        // TODO здесь нужны предложения из старых поисков
+        SearchView searchView = (SearchView)MenuItemCompat.getActionView(menu.findItem(
+                R.id.ic_menu_search0));
+        searchView.setQueryHint(getText(R.string.search_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -239,7 +241,7 @@ public class InvoiceFragment extends Fragment {
         }
 
         Observable<Invoices> observable = AppObservable.bindFragment(this,
-                mApiInvoices.getInvoices(mCurrentPage,
+                RestClient.getApiInvoices().getInvoices(mCurrentPage,
                         ITEMS_PER_PAGE, invoiceStateId, null, null, null, mSearchString));
 
         NetworkUtils.StopProgressAction stopProgressAction = new NetworkUtils.StopProgressAction(mListener);
@@ -255,7 +257,7 @@ public class InvoiceFragment extends Fragment {
                     @Override
                     public void onError(Throwable e) {
                         if (mListener != null) {
-                            CharSequence errText = ((NetworkUtils.ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
+                            CharSequence errText = ((ResponseErrorException)e).getErrorDescription(getText(R.string.network_error), getResources());
                             Toast toast = Toast.makeText(getActivity(), errText, Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.TOP, 0, 50);
                             toast.show();
