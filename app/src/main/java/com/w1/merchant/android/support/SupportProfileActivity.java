@@ -23,10 +23,6 @@ import com.w1.merchant.android.rest.model.SupportTicketPost;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;
 
-import static android.app.ActionBar.DISPLAY_HOME_AS_UP;
-import static android.app.ActionBar.DISPLAY_SHOW_HOME;
-import static android.app.ActionBar.DISPLAY_USE_LOGO;
-
 public class SupportProfileActivity extends ActivityBase {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
@@ -80,8 +76,8 @@ public class SupportProfileActivity extends ActivityBase {
     private void setupActionBar() {
         ActionBar ab = getSupportActionBar();
         if (ab == null) return;
-        ab.setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
-                DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP|DISPLAY_USE_LOGO);
+        ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP| ActionBar.DISPLAY_USE_LOGO,
+                ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP|ActionBar.DISPLAY_USE_LOGO);
         ab.setTitle(mPost.userTitle);
         //ab.setIcon(android.R.color.transparent);
     }

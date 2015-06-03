@@ -33,7 +33,6 @@
     <string name="drawer_title">Боковое меню</string>
     <string name="drawer_open">Открыть боковое меню</string>
     <string name="drawer_close">Закрыть боковое меню</string>
-    <string name="add">Добавить</string>
     <string name="output">Вывод</string>
     <string name="output_cash">Вывод средств</string>
     <string name="login">Телефон или емайл</string>

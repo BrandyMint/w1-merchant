@@ -63,7 +63,7 @@ public final class Session {
         if (auth == null || mExpired) {
             mAppContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();
         } else {
-            Gson gson = NetworkUtils.getInstance().getGson();
+            Gson gson = NetworkUtils.getGson();
             mAppContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
                     .putString(PREF_TOKEN, gson.toJson(auth))
                     .putString(PREF_CAPTCHA, gson.toJson(captcha))
@@ -75,7 +75,7 @@ public final class Session {
 
     void restore() {
         SharedPreferences prefs = mAppContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        Gson gson = NetworkUtils.getInstance().getGson();
+        Gson gson = NetworkUtils.getGson();
         auth = gson.fromJson(prefs.getString(PREF_TOKEN, null), AuthModel.class);
         captcha = gson.fromJson(prefs.getString(PREF_CAPTCHA, null), Captcha.class);
         captchaCode = prefs.getString(PREF_CAPTCHA_CODE, null);

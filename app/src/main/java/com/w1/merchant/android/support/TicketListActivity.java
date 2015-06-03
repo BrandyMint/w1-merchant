@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,10 +14,6 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.ActivityBase;
 import com.w1.merchant.android.rest.model.SupportTicket;
-
-import static android.app.ActionBar.DISPLAY_HOME_AS_UP;
-import static android.app.ActionBar.DISPLAY_SHOW_HOME;
-import static android.app.ActionBar.DISPLAY_USE_LOGO;
 
 public class TicketListActivity extends ActivityBase implements TicketListFragment.OnFragmentInteractionListener {
     private static final boolean DBG = BuildConfig.DEBUG;
@@ -29,8 +26,8 @@ public class TicketListActivity extends ActivityBase implements TicketListFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket_list);
 
-        getSupportActionBar().setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
-                DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP|DISPLAY_USE_LOGO);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP| ActionBar.DISPLAY_USE_LOGO,
+                ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP|ActionBar.DISPLAY_USE_LOGO);
 
         if (savedInstanceState == null) {
             Fragment fragment = TicketListFragment.newInstance();

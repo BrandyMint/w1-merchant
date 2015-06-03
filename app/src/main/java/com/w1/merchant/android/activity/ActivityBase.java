@@ -1,7 +1,6 @@
 package com.w1.merchant.android.activity;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 

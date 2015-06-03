@@ -1,7 +1,6 @@
 package com.w1.merchant.android.extra;
 
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import com.thehayro.view.InfiniteViewPager;
 

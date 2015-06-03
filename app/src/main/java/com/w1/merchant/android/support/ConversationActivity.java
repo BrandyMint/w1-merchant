@@ -22,10 +22,6 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.ActivityBase;
 import com.w1.merchant.android.rest.model.SupportTicket;
 
-import static android.app.ActionBar.DISPLAY_HOME_AS_UP;
-import static android.app.ActionBar.DISPLAY_SHOW_HOME;
-import static android.app.ActionBar.DISPLAY_USE_LOGO;
-
 public class ConversationActivity extends ActivityBase implements ConversationFragment.OnFragmentInteractionListener {
     public static final String SUPPORT_TICKET_RESULT_KEY = "com.w1.merchant.android.support.CreateTicketActivity.SUPPORT_TICKET_RESULT_KEY";
     private static final boolean DBG = BuildConfig.DEBUG;
@@ -147,8 +143,8 @@ public class ConversationActivity extends ActivityBase implements ConversationFr
     private void setupActionBar() {
         ActionBar ab = getSupportActionBar();
         if (ab == null) return;
-        ab.setDisplayOptions(DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP| DISPLAY_USE_LOGO,
-                DISPLAY_SHOW_HOME| DISPLAY_HOME_AS_UP|DISPLAY_USE_LOGO);
+        ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP| ActionBar.DISPLAY_USE_LOGO,
+                ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP|ActionBar.DISPLAY_USE_LOGO);
         ab.setTitle(mTicket == null ? "" : mTicket.ticketMask);
     }
 
