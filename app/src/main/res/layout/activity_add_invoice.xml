@@ -27,18 +27,22 @@
 
             <TextView
                 android:id="@+id/tvBill"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/bill"
-                android:textSize="10pt" />
+                android:textSize="10pt"
+                android:layout_weight="1"
+                android:singleLine="true" />
 
-            <ProgressBar
+            <com.w1.merchant.android.viewextended.ProgressBarIndeterminateLoader
                 android:id="@+id/pbInvoice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_margin="10dp"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:layout_gravity="center_vertical|right" />
 
         </LinearLayout>
 

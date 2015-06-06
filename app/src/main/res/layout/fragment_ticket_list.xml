@@ -15,7 +15,7 @@
         android:smoothScrollbar="false"
         tools:listitem="@layout/notifications_item" />
 
-    <ProgressBar
+    <com.w1.merchant.android.viewextended.ProgressBarIndeterminateLoader
         android:id="@+id/progress"
         style="?android:progressBarStyleLarge"
         android:layout_width="wrap_content"

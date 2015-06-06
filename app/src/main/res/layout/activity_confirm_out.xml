@@ -18,13 +18,15 @@
             android:contentDescription="@string/go_back"
             android:src="@drawable/ic_menu_back" />
 
-        <ProgressBar
+        <com.w1.merchant.android.viewextended.ProgressBarIndeterminateLoader
             android:id="@+id/pbTemplate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_margin="10dp"
             android:gravity="right"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:visibility="visible"
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
 
     <com.w1.merchant.android.viewextended.TextViewRobotoLight

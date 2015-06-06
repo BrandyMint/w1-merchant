@@ -35,11 +35,12 @@
             android:src="@drawable/image_loading_drawable"
             tools:ignore="ContentDescription" />
 
-        <ProgressBar
+        <com.w1.merchant.android.viewextended.ProgressBarIndeterminateLoader
             android:id="@+id/progress"
             style="@android:style/Widget.Holo.Light.ProgressBar.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="16dp"
             android:layout_alignBottom="@id/captcha_image"
             android:layout_alignLeft="@id/captcha_image"
             android:layout_alignRight="@id/captcha_image"
