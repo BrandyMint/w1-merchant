@@ -102,7 +102,8 @@
     <string name="saturday">saturdays</string>
     <string name="sunday">sundays</string>
     <string name="payment_not">Payment not found</string>
-    <string name="search">Search</string>
+    <string name="search_invoice">Search invoice</string>
+    <string name="search_transaction">Search transaction</string>
     <string name="warning">Warning</string>
     <string name="exit_message">Are you sure you want to log out?</string>
     <string name="sure_withdraw">Are you sure \n you want to withdraw</string>
@@ -113,7 +114,8 @@
     <string name="awaiting">Awaiting for crediting</string>
     <string name="canceled">Canceled</string>
     <string name="processing">Processing</string>
-    <string name="search_hint">Search…</string>
+    <string name="search_invoice_hint">Search invoice…</string>
+    <string name="search_transaction_hint">Search transaction…</string>
 
     <string-array name="month_array">
         <item>January</item>

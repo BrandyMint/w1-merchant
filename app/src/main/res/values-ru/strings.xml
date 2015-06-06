@@ -102,7 +102,8 @@
 	<string name="saturday">субботам</string>
 	<string name="sunday">воскресеньям</string>
 	<string name="payment_not">Платеж не найден</string>
-	<string name="search">Поиск</string>
+	<string name="search_invoice">Поиск счета</string>
+    <string name="search_transaction">Поиск операции</string>
 	<string name="warning">Предупреждение</string>
 	<string name="exit_message">Вы действительно хотите выйти?</string>
 	<string name="sure_withdraw">Вы уверены, \n что хотите вывести</string>
@@ -177,7 +178,8 @@
     <string name="send_message_hint">Отправить сообщение</string>
     <string name="no_transfers">Нет операций</string>
     <string name="no_invoices">Нет счетов</string>
-    <string name="search_hint">Поиск…</string>
+    <string name="search_invoice_hint">Поиск счета…</string>
+    <string name="search_transaction_hint">Поиск операции…</string>
 
     <string name="hello_how_can_we_help_you_message">Здравствуйте, чем мы можем вам помочь?</string>
     <string name="new_conversation_subject">Обращение из личного кабинета мерчанта</string>

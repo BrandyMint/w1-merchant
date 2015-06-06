@@ -156,7 +156,7 @@ public class InvoiceFragment extends Fragment {
         // TODO здесь нужны предложения из старых поисков
         SearchView searchView = (SearchView)MenuItemCompat.getActionView(menu.findItem(
                 R.id.ic_menu_search0));
-        searchView.setQueryHint(getText(R.string.search_hint));
+        searchView.setQueryHint(getText(R.string.search_invoice_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

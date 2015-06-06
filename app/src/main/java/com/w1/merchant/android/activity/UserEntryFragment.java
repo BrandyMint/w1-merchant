@@ -145,7 +145,8 @@ public class UserEntryFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
         SearchView searchView = (SearchView)MenuItemCompat.getActionView(menu.findItem(
                 R.id.ic_menu_search0));
-        searchView.setQueryHint(getText(R.string.search_hint));
+        searchView.setQueryHint(getText(R.string.search_transaction_hint));
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
