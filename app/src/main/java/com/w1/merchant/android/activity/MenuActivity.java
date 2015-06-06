@@ -16,6 +16,7 @@
 
 package com.w1.merchant.android.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,10 +39,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,13 +102,14 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
     private DashFragment fragmentDash;
 
     private WeakHashMap<Object, Void> mProgressConsumers = new WeakHashMap<>();
-    private ProgressBar progressBar;
+    private View mProgressBar;
     private boolean mIsBusinessAccount = false;
 
     private NavDrawerMenu mNavDrawerMenu;
 
     private Subscription mProfileSubscription = Subscriptions.unsubscribed();
 
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,51 +118,40 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //шапка меню
         ivAccountIcon = (ImageView) findViewById(R.id.ivAccountIcon);
-
-        // create new ProgressBar and style it
-        final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
-        progressBar = (ProgressBar)getLayoutInflater().inflate(R.layout.progress_below_ab, decorView, false);
-        decorView.addView(progressBar);
-
-        // Here we try TO position the ProgressBar TO the correct position by looking
-        // at the position where content area starts. But during creating time, sizes 
-        // of the components are not set yet, so we have TO wait until the components
-        // has been laid out
-        // Also note that doing progressBar.setY(136) will not work, because of different
-        // screen densities and different sizes of actionBar
-        ViewTreeObserver observer = progressBar.getViewTreeObserver();
-        // TODO Переделать всё нахуй
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-            private float getRelativeTop(View root, View myView) {
-                if (myView.getParent() == root)
-                    return myView.getY();
-                else
-                    return myView.getY() + getRelativeTop(root, (View) myView.getParent());
-            }
-
-            @Override
-            public void onGlobalLayout() {
-                View contentView = decorView.findViewById(android.R.id.content);
-                float y = getRelativeTop(decorView, contentView);
-                progressBar.setY(y - 6f * getResources().getDisplayMetrics().density);
-
-                ViewTreeObserver observer = progressBar.getViewTreeObserver();
-                observer.removeGlobalOnLayoutListener(this);
-            }
-        });
-
+        mProgressBar = findViewById(R.id.progress);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         fragmentDash = new DashFragment();
 
-        loadProfile();
+        setSupportActionBar(toolbar);
         initNavigationDrawer(savedInstanceState);
 
-        // enable ActionBar app icon TO behave as action TO toggle nav drawer
+        setupCurrencyViewpagerCustomView();
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayOptions(
                 ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM,
                 ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM
                 );
 
+        loadProfile();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_PRINCIPAL_REQUEST_CODE && resultCode == RESULT_OK) {
+            AuthModel user = data.getParcelableExtra(SelectPrincipalActivity.RESULT_AUTH_USER);
+            Session.getInstance().setAuth(user);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recreate(); // Закрывать все остальные активности?
+                }
+            }, 5 * 16);
+        }
+    }
+
+    @SuppressLint("InflateParams")
+    private void setupCurrencyViewpagerCustomView() {
         mCurrencyViewPager = (ViewPager)LayoutInflater.from(this).inflate(R.layout.action_bar_rubl2, null, false);
         mCurrencyViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -185,51 +174,11 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
         });
         mCurrencyPagerAdapter = new CurrencyViewPagerAdapter();
         mCurrencyViewPager.setAdapter(mCurrencyPagerAdapter);
+        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.LEFT;
+        //noinspection ConstantConditions
         getSupportActionBar().setCustomView(mCurrencyViewPager);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_PRINCIPAL_REQUEST_CODE && resultCode == RESULT_OK) {
-            AuthModel user = data.getParcelableExtra(SelectPrincipalActivity.RESULT_AUTH_USER);
-            Session.getInstance().setAuth(user);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    recreate(); // Закрывать все остальные активности?
-                }
-            }, 5 * 16);
-        }
-    }
-
-    private void initNavigationDrawer(Bundle savedInstanceState) {
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.drawer_title));
-
-        mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, savedInstanceState, new NavDrawerMenu.OnItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int itemId) {
-                selectItem(itemId);
-            }
-        });
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open,
-                R.string.drawer_close) {
-            public void onDrawerClosed(View view) {
-                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerLayout.findViewById(R.id.change_account_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectItem(v.getId());
-            }
-        });
     }
 
     void loadProfile() {
@@ -350,7 +299,7 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
 
     @Override
     public View getPopupAnchorView() {
-        return progressBar;
+        return mProgressBar;
     }
 
     public void selectItem(int position) {
@@ -499,7 +448,7 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
 
     public void refreshProgressBar() {
         if (!isFinishing()) {
-            progressBar.setVisibility(mProgressConsumers.isEmpty() ? View.INVISIBLE : View.VISIBLE);
+            mProgressBar.setVisibility(mProgressConsumers.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
@@ -526,6 +475,35 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
             return FRAGMENT_USERENTRY;
         }
         return 0;
+    }
+
+    private void initNavigationDrawer(Bundle savedInstanceState) {
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mDrawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.drawer_title));
+
+        mNavDrawerMenu = new NavDrawerMenu(mDrawerLayout, savedInstanceState, new NavDrawerMenu.OnItemClickListener() {
+            @Override
+            public void onItemClicked(View view, int itemId) {
+                selectItem(itemId);
+            }
+        });
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open,
+                R.string.drawer_close) {
+            public void onDrawerClosed(View view) {
+                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                invalidateOptionsMenu(); // creates call TO onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.findViewById(R.id.change_account_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectItem(v.getId());
+            }
+        });
     }
 
     private final class CurrencyViewPagerAdapter extends PagerAdapter {

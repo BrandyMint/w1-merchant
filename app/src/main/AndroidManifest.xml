@@ -50,45 +50,37 @@
         <activity
             android:name=".activity.MenuActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/MenuActivityTheme" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.AddInvoice"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".activity.ConfirmActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.ConfirmPayment"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.ConfirmOutActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.EditTemplate"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".activity.Details"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.UserEntryTotal"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.SelectPrincipalActivity"
@@ -100,7 +92,8 @@
             android:name=".support.TicketListActivity"
             android:label="@string/title_activity_ticket_list"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
+            android:theme="@style/AppThemeWithActionBar"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".support.ConversationActivity"

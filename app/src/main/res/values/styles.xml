@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:listViewStyle">@style/ListViewStyle</item>
-        <item name="android:progressBarStyleLarge">@style/ProgressBarLarge</item>
-    </style>
 
-    <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item> -->
@@ -20,26 +13,25 @@
         <item name="android:progressBarStyleLarge">@style/ProgressBarLarge</item>
     </style>
 
-    <style name="MenuActivityTheme" parent="AppTheme">
-        <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:colorBackground">@android:color/white</item>
-        <item name="android:colorBackgroundCacheHint">@android:color/white</item>
+    <style name="AppTheme" parent="AppThemeWithActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="ConversationActivityTheme" parent="AppTheme">
+    <style name="ConversationActivityTheme" parent="AppThemeWithActionBar">
         <item name="android:windowBackground">@color/conversation_background_color</item>
         <item name="android:colorBackground">@color/conversation_background_color</item>
         <item name="android:colorBackgroundCacheHint">@color/conversation_background_color</item>
     </style>
 
-    <style name="LoginActivityTheme" parent="AppThemeNoActionBar">
+    <style name="LoginActivityTheme" parent="AppTheme">
     </style>
 
     <style name="SessionExpiredDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
-    <style name="IntroThemeBase" parent="AppThemeNoActionBar">
+    <style name="IntroThemeBase" parent="AppTheme">
         <item name="android:windowBackground">@mipmap/banner_bgr</item>
         <item name="android:colorBackground">#1c2b36</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
@@ -49,7 +41,7 @@
     <style name="IntroTheme" parent="IntroThemeBase">
     </style>
 
-    <style name="SelectPrincipalActivityTheme" parent="AppThemeNoActionBar">
+    <style name="SelectPrincipalActivityTheme" parent="AppTheme">
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -81,6 +73,18 @@
     </style>
 
     <style name="ListViewStyle" parent="Widget.AppCompat.ListView">
+    </style>
+
+    <style name="ActionBarToolbarStyleBase">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">?actionBarSize</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="ActionBarToolbarStyle" parent="ActionBarToolbarStyleBase">
+
     </style>
 
     <style name="ConversationMessageDate">

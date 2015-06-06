@@ -10,7 +10,7 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="LoginActivityTheme" parent="AppThemeNoActionBar">
+    <style name="LoginActivityTheme" parent="AppTheme">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
