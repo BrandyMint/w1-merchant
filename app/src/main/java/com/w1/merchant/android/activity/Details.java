@@ -97,10 +97,10 @@ public class Details extends ActivityBase {
 
         boolean isFromMe = Session.getInstance().getUserId().equals(entry.fromUserId.toString());
         if (isFromMe) {
-            setupAmount(entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.HALF_UP),
+            setupAmount(entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.UP),
                     entry.currencyId, orangeColor);
         } else {
-            setupAmount(entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.HALF_UP),
+            setupAmount(entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.UP),
                     entry.currencyId, orangeColor);
         }
 
@@ -139,7 +139,7 @@ public class Details extends ActivityBase {
             mStatusIcon.setImageResource(R.drawable.ic_invoices_output);
         }
 
-        setupAmount(entry.amount.setScale(0, BigDecimal.ROUND_HALF_UP), entry.currencyId, orangeColor);
+        setupAmount(entry.amount.setScale(0, RoundingMode.UP), entry.currencyId, orangeColor);
 
         addNumber(R.string.invoice_title_invoice_id, entry.invoiceId);
         addNumber(R.string.invoice_title_from_user_id, entry.fromUserId);
@@ -155,7 +155,7 @@ public class Details extends ActivityBase {
         addDate(R.string.invoice_title_update_date, entry.updateDate);
         addDate(R.string.invoice_title_expire_date, entry.expireDate);
         addText(R.string.invoice_title_invoice_state_id, entry.getLocalizedInvoiceState(getResources()));
-        addAmount(R.string.invoice_title_paid_amount, entry.paidAmount.setScale(0, RoundingMode.HALF_UP), entry.currencyId);
+        addAmount(R.string.invoice_title_paid_amount, entry.paidAmount.setScale(0, RoundingMode.UP), entry.currencyId);
         addText(R.string.invoice_title_comment, entry.comment);
         //addText(R.string.invoice_title_success_url, entry.successUrl);
         addText(R.string.invoice_title_tags, entry.tags);

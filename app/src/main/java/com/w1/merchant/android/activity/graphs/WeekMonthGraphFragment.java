@@ -23,9 +23,9 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.activity.IProgressbarProvider;
 import com.w1.merchant.android.extra.LineChart;
-import com.w1.merchant.android.rest.model.InvoiceStats;
 import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.model.InvoiceStats;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -225,7 +225,7 @@ public class WeekMonthGraphFragment extends Fragment {
 
         Spanned currencySymbol =  TextUtilsW1.getCurrencySymbol2(mListener.getCurrency(), 1);
         SpannableStringBuilder sumDay = new SpannableStringBuilder(TextUtilsW1.formatNumber(
-                sumCurrentPeriod.setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+                sumCurrentPeriod.setScale(0, RoundingMode.UP)));
         sumDay.append('\u00a0');
         sumDay.append(currencySymbol);
         mAmountView.setText(sumDay);
@@ -237,7 +237,7 @@ public class WeekMonthGraphFragment extends Fragment {
                     .subtract(sumPriorPeriod)
                     .divide(sumPriorPeriod, BigDecimal.ROUND_HALF_EVEN)
                     .multiply(BigDecimal.valueOf(100))
-                    .setScale(0, RoundingMode.HALF_EVEN)
+                    .setScale(0, RoundingMode.UP)
                     .toString() + "\u00a0%";
         } else {
             percent = "";
@@ -391,7 +391,7 @@ public class WeekMonthGraphFragment extends Fragment {
         // add data
         ArrayList<Entry> yVals = new ArrayList<>(dataPlotY.length);
         for (int i = 0; i < dataPlotY.length; i++) {
-            float value = dataPlotY[i].setScale(0, BigDecimal.ROUND_HALF_EVEN).floatValue();
+            float value = dataPlotY[i].setScale(0, RoundingMode.UP).floatValue();
             yVals.add(new Entry(value, i, dataPlotX[i]));
         }
 

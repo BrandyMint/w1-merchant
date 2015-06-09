@@ -63,7 +63,7 @@ import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.viewextended.CircleTransformation;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -456,7 +456,7 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
         if (mBalances.isEmpty()) return "";
         List<String> amounts = new ArrayList<>(mBalances.size());
         for (Balance balance: mBalances) {
-            Number amount = balance.holdAmount.setScale(0, BigDecimal.ROUND_UP);
+            Number amount = balance.holdAmount.setScale(0, RoundingMode.UP);
             if (amount.longValue() > 0) amounts.add(TextUtilsW1.formatNumber(amount) + " " + TextUtilsW1.getCurrencySymbol(balance.currencyId));
         }
         if (amounts.isEmpty()) return "";
@@ -589,7 +589,7 @@ public class MenuActivity extends ActivityBase implements UserEntryFragment.OnFr
 
         private CharSequence getCurrencyTitle(int position) {
             Balance balance = mBalances.get(position);
-            long amount = balance.amount.setScale(0, BigDecimal.ROUND_HALF_UP).longValue();
+            long amount = balance.amount.setScale(0, RoundingMode.DOWN).longValue();
 
             SpannableStringBuilder sb = new SpannableStringBuilder(getText(R.string.balance));
             sb.append(" ");

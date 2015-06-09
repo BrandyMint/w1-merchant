@@ -174,7 +174,7 @@ public class UserEntryTotal extends ActivityBase {
     private Spanned buildValue(int nameRes, BigDecimal value) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(getText(nameRes));
         ssb.append('\u00a0');
-        ssb.append(TextUtilsW1.formatNumber(value.setScale(0, RoundingMode.HALF_UP)));
+        ssb.append(TextUtilsW1.formatNumber(value.setScale(0, RoundingMode.UP)));
         ssb.append('\u00a0');
         ssb.append(TextUtilsW1.getCurrencySymbol2(mCurrency, 2));
         return ssb;

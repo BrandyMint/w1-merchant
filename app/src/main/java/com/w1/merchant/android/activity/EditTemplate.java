@@ -33,6 +33,7 @@ import com.w1.merchant.android.utils.Utils;
 import com.w1.merchant.android.viewextended.EditTextRouble;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import rx.Observable;
 import rx.Observer;
@@ -436,7 +437,7 @@ public class EditTemplate extends ActivityBase {
 		if (!inSum.isEmpty()) {
             BigDecimal origInputSum =  new BigDecimal(inSum);
             BigDecimal inputSum = Utils.clamp(origInputSum, mProvider.minAmount, mProvider.maxAmount)
-                    .setScale(0, BigDecimal.ROUND_UP);
+                    .setScale(0, RoundingMode.UP);
 
             if (origInputSum.compareTo(inputSum) != 0) {
                 // Сумма за пределами разрешенных значений
@@ -445,7 +446,7 @@ public class EditTemplate extends ActivityBase {
                     mCommissionEditText.setHint(origInputSum.compareTo(inputSum) < 0 ? R.string.amount_too_small : R.string.amount_too_large);
                 }
             } else {
-                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, BigDecimal.ROUND_UP) + " C");
+                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, RoundingMode.UP) + " C");
                 if (!TextUtils.isEmpty(mCommissionEditText.getHint())) mCommissionEditText.setHint("");
             }
 
@@ -463,9 +464,10 @@ public class EditTemplate extends ActivityBase {
 		String commissionTextNum = commissionTextOrig.replaceAll(pattern, "");
 		if (!commissionTextNum.isEmpty()) {
             BigDecimal commissionVal = new BigDecimal(commissionTextNum);
+            // TODO Здесь нужны тесты. Возможны ошибки на пограничных значениях
             BigDecimal inputSum = Utils.clamp(commissionVal,
                     mProvider.getMinAmountWithComission(), mProvider.getMaxAmountWithComission())
-                    .setScale(0, BigDecimal.ROUND_UP);
+                    .setScale(0, RoundingMode.UP);
 
             if (commissionVal.compareTo(inputSum) != 0) {
                 // Комиссия за пределами разрешенных значений
@@ -475,8 +477,8 @@ public class EditTemplate extends ActivityBase {
                 }
             } else {
                 inputSum = inputSum.subtract(mProvider.commission.cost);
-                BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP);
-                BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, BigDecimal.ROUND_HALF_UP);
+                BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_EVEN);
+                BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, RoundingMode.DOWN);
                 setAmountText(sumWOComis + " C");
                 if (!TextUtils.isEmpty(mAmountEditText.getHint())) mAmountEditText.setHint("");
             }

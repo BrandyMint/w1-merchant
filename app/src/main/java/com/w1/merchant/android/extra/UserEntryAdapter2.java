@@ -160,9 +160,9 @@ public class UserEntryAdapter2 extends BaseAdapter {
 
         boolean isFromMe = Session.getInstance().getUserId().equals(entry.fromUserId.toString());
         if (isFromMe) {
-            amount0 = entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.HALF_UP);
+            amount0 = entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.UP);
         } else {
-            amount0 = entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.HALF_UP);
+            amount0 = entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.UP);
         }
 
         amount = TextUtilsW1.formatNumber(amount0);

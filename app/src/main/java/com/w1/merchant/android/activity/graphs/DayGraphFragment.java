@@ -236,7 +236,7 @@ public class DayGraphFragment extends Fragment {
 
         Spanned currencySumbol =  TextUtilsW1.getCurrencySymbol2(mListener.getCurrency(), 1);
         SpannableStringBuilder sumDay = new SpannableStringBuilder(TextUtilsW1.formatNumber(
-                sumCurrentDay.setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+                sumCurrentDay.setScale(0, RoundingMode.UP)));
         sumDay.append('\u00a0');
         sumDay.append(currencySumbol);
         mAmountView.setText(sumDay);
@@ -308,7 +308,7 @@ public class DayGraphFragment extends Fragment {
         // add data
         ArrayList<Entry> yVals = new ArrayList<>(dataPlotY.length);
         for (int i = 0; i < dataPlotY.length; i++) {
-            float value = dataPlotY[i].setScale(0, BigDecimal.ROUND_HALF_EVEN).floatValue();
+            float value = dataPlotY[i].setScale(0, RoundingMode.UP).floatValue();
             yVals.add(new Entry(value, i, dataPlotX[i]));
         }
 

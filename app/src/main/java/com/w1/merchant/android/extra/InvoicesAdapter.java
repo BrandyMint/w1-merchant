@@ -148,7 +148,7 @@ public class InvoicesAdapter extends BaseAdapter {
         BigDecimal amount0;
 
         boolean isFromMe = Session.getInstance().getUserId().equals(entry.fromUserId.toString());
-        amount0 = entry.amount.setScale(0, RoundingMode.HALF_UP);
+        amount0 = entry.amount.setScale(0, RoundingMode.UP);
 
         amount = TextUtilsW1.formatNumber(amount0);
 

@@ -1,6 +1,7 @@
 package com.w1.merchant.android.rest.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Provider {
 
@@ -102,12 +103,14 @@ public class Provider {
     }
 
     public BigDecimal getCommisson(BigDecimal sum) {
-        BigDecimal commission = this.commission.cost.add(sum.multiply(this.commission.rate).divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP));
+        //  commission.cost + (sum * commission.rate / 100)
+        BigDecimal amount1 = sum.multiply(this.commission.rate).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_EVEN);
+        BigDecimal commission = this.commission.cost.add(amount1).setScale(2, RoundingMode.HALF_UP);
 
         if (this.commission.hasMin()) commission = commission.max(this.commission.min);
         if (this.commission.hasMax()) commission = commission.min(this.commission.max);
 
-        return commission.setScale(2, BigDecimal.ROUND_UP);
+        return commission;
     }
 
     public BigDecimal getSumWithCommission(BigDecimal sum) {
