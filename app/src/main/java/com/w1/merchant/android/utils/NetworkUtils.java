@@ -15,7 +15,7 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
-import com.w1.merchant.android.activity.IProgressbarProvider;
+import com.w1.merchant.android.ui.IProgressbarProvider;
 
 import java.io.File;
 import java.io.IOException;

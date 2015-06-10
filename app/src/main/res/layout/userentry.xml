@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-        <com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup
+        <com.w1.merchant.android.ui.widget.CheckboxStyleSegmentedRadioGroup
             android:id="@+id/srgStatement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal">
 
-            <com.w1.merchant.android.viewextended.CheckboxStyleRadioButton
+            <com.w1.merchant.android.ui.widget.CheckboxStyleRadioButton
                 android:id="@+id/rbEntrance"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -26,7 +26,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/radio_colors" />
 
-            <com.w1.merchant.android.viewextended.CheckboxStyleRadioButton
+            <com.w1.merchant.android.ui.widget.CheckboxStyleRadioButton
                 android:id="@+id/rbOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -37,7 +37,7 @@
                 android:text="@string/output"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/radio_colors" />
-        </com.w1.merchant.android.viewextended.CheckboxStyleSegmentedRadioGroup>
+        </com.w1.merchant.android.ui.widget.CheckboxStyleSegmentedRadioGroup>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.activity.LoginActivity;
+import com.w1.merchant.android.ui.LoginActivity;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

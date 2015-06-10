@@ -6,7 +6,7 @@
     android:layout_marginBottom="6dp"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.w1.merchant.android.viewextended.TextViewRobotoLight
+    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
         android:id="@+id/title"
         tools:text="Название получателя"
         style="@style/DetailsItemTitle" />

@@ -17,8 +17,8 @@ import android.util.Log;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.Session;
-import com.w1.merchant.android.activity.SessionExpiredDialogActivity;
-import com.w1.merchant.android.extra.CaptchaDialogFragment;
+import com.w1.merchant.android.ui.SessionExpiredDialogActivity;
+import com.w1.merchant.android.ui.CaptchaDialogFragment;
 import com.w1.merchant.android.rest.model.Profile;
 import com.w1.merchant.android.rest.ResponseErrorException;
 

@@ -2,7 +2,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.w1.merchant.android.activity.LoginFragment"
+    tools:context="com.w1.merchant.android.ui.LoginFragment"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -27,7 +27,7 @@
         tools:ignore="ContentDescription"
         tools:visibility="visible" />
 
-    <com.w1.merchant.android.viewextended.ProgressBarIndeterminateLoader
+    <com.w1.merchant.android.ui.widget.ProgressBarIndeterminateLoader
         android:id="@+id/pbLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 android:src="@mipmap/logo_black"
                 tools:ignore="ContentDescription" />
 
-            <com.w1.merchant.android.viewextended.TextViewRobotoLight
+            <com.w1.merchant.android.ui.widget.TextViewRobotoLight
                 android:id="@+id/tvLogoText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

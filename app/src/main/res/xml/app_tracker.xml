@@ -8,39 +8,39 @@
     <bool name="ga_autoActivityTracking">true</bool>
     <string name="ga_trackingId">UA-55389353-2</string>
 
-    <screenName name="com.w1.merchant.android.activity.LoginActivity">
+    <screenName name="com.w1.merchant.android.ui.LoginActivity">
         Логин
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.MenuActivity">
+    <screenName name="com.w1.merchant.android.ui.MenuActivity">
         Главная
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.AddInvoice">
+    <screenName name="com.w1.merchant.android.ui.AddInvoiceActivity">
         Выставление счета
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.ConfirmActivity">
+    <screenName name="com.w1.merchant.android.ui.ConfirmInvoiceActivity">
         Сообщение "cчет выставлен"
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.ConfirmPayment">
+    <screenName name="com.w1.merchant.android.ui.ConfirmPaymentActivity">
         Сообщение "платеж принят к исполнению"
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.ConfirmOutActivity">
+    <screenName name="com.w1.merchant.android.ui.ConfirmWithdrawalActivity">
         Подтверждение платежа
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.EditTemplate">
+    <screenName name="com.w1.merchant.android.ui.WithdrawByTemplateActivity">
         Заполнение вывода по шаблону
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.Details">
+    <screenName name="com.w1.merchant.android.ui.DetailsActivity">
         Детали транзакции
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.UserEntryTotal">
+    <screenName name="com.w1.merchant.android.ui.TranscationSummaryReportActivity">
         Сводка по выписке
     </screenName>
 
@@ -60,7 +60,7 @@
         Профиль сотрудника
     </screenName>
 
-    <screenName name="com.w1.merchant.android.activity.SessionExpiredDialogActivity">
+    <screenName name="com.w1.merchant.android.ui.SessionExpiredDialogActivity">
         Диалог "сессия истекла"
     </screenName>
 

@@ -34,7 +34,7 @@
         android:paddingBottom="8dp"
         android:paddingTop="8dp">
 
-        <com.w1.merchant.android.viewextended.EllipsizingTextView
+        <com.w1.merchant.android.ui.widget.EllipsizingTextView
             android:id="@+id/last_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             tools:text="Запрос на отключение доставки\nФИО: Лосинский Владимир Сергеевич\nКонтакнтый телефон: 79036648093...Контактный e-mail: business@citycycle.ru"
             android:paddingRight="8dp" />
 
-        <com.w1.merchant.android.viewextended.RelativeDateTextSwitcher
+        <com.w1.merchant.android.ui.widget.RelativeDateTextSwitcher
             android:id="@+id/notification_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -68,11 +68,11 @@
                 android:textSize="15sp"
                 tools:text="1 час назад" />
 
-        </com.w1.merchant.android.viewextended.RelativeDateTextSwitcher>
+        </com.w1.merchant.android.ui.widget.RelativeDateTextSwitcher>
 
     </LinearLayout>
 
-    <com.w1.merchant.android.viewextended.SquareTextView
+    <com.w1.merchant.android.ui.widget.SquareTextView
         android:id="@+id/replies_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

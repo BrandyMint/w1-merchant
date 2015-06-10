@@ -22,7 +22,7 @@ import com.w1.merchant.android.rest.model.SupportTickets;
 import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.service.ApiSupport;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.viewextended.DividerItemDecoration;
+import com.w1.merchant.android.ui.widget.DividerItemDecoration;
 
 import java.util.List;
 

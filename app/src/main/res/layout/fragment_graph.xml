@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.w1.merchant.android.activity.graphs.DayGraphFragment">
+    tools:context="com.w1.merchant.android.ui.chart.DayStatsLineChartFragment">
 
-    <com.w1.merchant.android.viewextended.TextViewRobotoLight
+    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/amount"
@@ -25,7 +25,7 @@
         android:paddingRight="10dp"
         tools:text="43" />
 
-    <com.w1.merchant.android.extra.LineChart
+    <com.w1.merchant.android.ui.widget.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="150dp"

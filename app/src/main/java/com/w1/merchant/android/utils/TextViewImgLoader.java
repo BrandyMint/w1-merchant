@@ -21,7 +21,7 @@ import com.squareup.picasso.Target;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.viewextended.ResizeImageSpan;
+import com.w1.merchant.android.ui.widget.ResizeImageSpan;
 
 import java.util.HashSet;
 import java.util.Set;

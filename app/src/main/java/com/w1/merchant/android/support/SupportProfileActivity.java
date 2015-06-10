@@ -18,10 +18,10 @@ import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.activity.ActivityBase;
+import com.w1.merchant.android.ui.ActivityBase;
 import com.w1.merchant.android.rest.model.SupportTicketPost;
-import com.w1.merchant.android.viewextended.CircleTransformation;
-import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;
+import com.w1.merchant.android.utils.CircleTransformation;
+import com.w1.merchant.android.ui.widget.DefaultUserpicDrawable;
 
 public class SupportProfileActivity extends ActivityBase {
     private static final boolean DBG = BuildConfig.DEBUG;

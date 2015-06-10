@@ -35,7 +35,7 @@
                 android:layout_weight="1"
                 android:singleLine="true" />
 
-            <com.w1.merchant.android.viewextended.ProgressBarIndeterminateLoader
+            <com.w1.merchant.android.ui.widget.ProgressBarIndeterminateLoader
                 android:id="@+id/pbInvoice"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -132,7 +132,7 @@
             android:text="@string/sum"
             android:textColor="#757575" />
 
-        <com.w1.merchant.android.viewextended.EditTextRouble
+        <com.w1.merchant.android.ui.widget.EditTextRouble
             android:id="@+id/etSum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

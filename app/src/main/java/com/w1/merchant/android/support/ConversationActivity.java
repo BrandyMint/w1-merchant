@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.activity.ActivityBase;
+import com.w1.merchant.android.ui.ActivityBase;
 import com.w1.merchant.android.rest.model.SupportTicket;
 
 public class ConversationActivity extends ActivityBase implements ConversationFragment.OnFragmentInteractionListener {

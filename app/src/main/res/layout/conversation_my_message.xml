@@ -8,7 +8,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <com.w1.merchant.android.viewextended.RelativeDateTextSwitcher
+    <com.w1.merchant.android.ui.widget.RelativeDateTextSwitcher
         android:id="@+id/relative_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             tools:text="Вчера, 17:53"
             style="@style/ConversationMessageDate" />
 
-    </com.w1.merchant.android.viewextended.RelativeDateTextSwitcher>
+    </com.w1.merchant.android.ui.widget.RelativeDateTextSwitcher>
 
     <TextView
         android:id="@+id/message"

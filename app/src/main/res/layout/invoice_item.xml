@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:visibility="invisible" />
 
-    <com.w1.merchant.android.viewextended.TextViewRobotoThin
+    <com.w1.merchant.android.ui.widget.TextViewRobotoThin
         android:id="@+id/tvAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
         android:textColor="#ADFF2F"
         android:textSize="16pt" />
 
-    <com.w1.merchant.android.viewextended.TextViewRouble
+    <com.w1.merchant.android.ui.widget.TextViewRouble
         android:id="@+id/tvRubl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

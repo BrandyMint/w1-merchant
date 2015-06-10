@@ -17,9 +17,9 @@ import com.w1.merchant.android.rest.model.SupportTicket;
 import com.w1.merchant.android.rest.model.SupportTicketPost;
 import com.w1.merchant.android.utils.SortedList;
 import com.w1.merchant.android.utils.TextUtilsW1;
-import com.w1.merchant.android.viewextended.CircleTransformation;
-import com.w1.merchant.android.viewextended.DefaultUserpicDrawable;
-import com.w1.merchant.android.viewextended.RelativeDateTextSwitcher;
+import com.w1.merchant.android.utils.CircleTransformation;
+import com.w1.merchant.android.ui.widget.DefaultUserpicDrawable;
+import com.w1.merchant.android.ui.widget.RelativeDateTextSwitcher;
 
 import java.util.ArrayList;
 import java.util.List;

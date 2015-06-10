@@ -36,7 +36,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".ui.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/LoginActivityTheme"
@@ -48,42 +48,42 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.MenuActivity"
+            android:name=".ui.MenuActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activity.AddInvoice"
+            android:name=".ui.AddInvoiceActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
-            android:name=".activity.ConfirmActivity"
+            android:name=".ui.ConfirmInvoiceActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activity.ConfirmPayment"
+            android:name=".ui.ConfirmPaymentActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activity.ConfirmOutActivity"
+            android:name=".ui.ConfirmWithdrawalActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activity.EditTemplate"
+            android:name=".ui.WithdrawByTemplateActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
-            android:name=".activity.Details"
+            android:name=".ui.DetailsActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activity.UserEntryTotal"
+            android:name=".ui.TranscationSummaryReportActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".activity.SelectPrincipalActivity"
+            android:name=".ui.SelectPrincipalActivity"
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:launchMode="singleTop"
@@ -115,7 +115,7 @@
                 android:value="com.w1.merchant.android.support.ConversationActivity" />
         </activity>
         <activity
-            android:name=".activity.SessionExpiredDialogActivity"
+            android:name=".ui.SessionExpiredDialogActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
             android:theme="@style/SessionExpiredDialogTheme" />

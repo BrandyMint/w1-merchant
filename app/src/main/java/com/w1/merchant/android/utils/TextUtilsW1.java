@@ -17,6 +17,7 @@ import android.util.Log;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.ui.widget.TypefaceSpan2;
 
 import java.text.DecimalFormat;
 import java.util.ArrayDeque;

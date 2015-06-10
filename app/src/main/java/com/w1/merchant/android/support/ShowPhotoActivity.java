@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.activity.ActivityBase;
+import com.w1.merchant.android.ui.ActivityBase;
 
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;

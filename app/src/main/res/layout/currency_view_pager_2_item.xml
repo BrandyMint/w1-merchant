@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.w1.merchant.android.viewextended.TextViewRobotoLight
+<com.w1.merchant.android.ui.widget.TextViewRobotoLight
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tvName"
