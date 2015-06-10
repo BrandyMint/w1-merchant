@@ -87,7 +87,7 @@ public class DashboardFragment extends Fragment  implements
     @SuppressLint("InflateParams")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.dashboard, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         //llPlot = (LinearLayout) llHeader.findViewById(R.id.llPlot);
         lvDash = (ListView) parentView.findViewById(R.id.lvDash);
 

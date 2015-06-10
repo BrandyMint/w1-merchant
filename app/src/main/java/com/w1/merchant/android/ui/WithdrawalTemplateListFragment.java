@@ -47,7 +47,7 @@ public class WithdrawalTemplateListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.templates, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_withdrawal_template_list, container, false);
         gridview = (GridView) parentView.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(gridviewOnItemClickListener);
         mAdapter = new WithdrawalTemplateListAdapter(getActivity());

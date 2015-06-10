@@ -74,7 +74,7 @@ public class StatementFragment extends Fragment {
     @SuppressLint("InflateParams")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.userentry, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_statement, container, false);
         lvUserEntry = (ListView) parentView.findViewById(R.id.lvStatement);
         mRadioGroup = (CheckboxStyleSegmentedRadioGroup) parentView.findViewById(R.id.srgStatement);
         mFooter = (TextView)inflater.inflate(R.layout.footer2, lvUserEntry, false);

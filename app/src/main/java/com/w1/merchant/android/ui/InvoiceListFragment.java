@@ -82,7 +82,7 @@ public class InvoiceListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.invoices, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_invoice_list, container, false);
         srgInvoice = (CheckboxStyleSegmentedRadioGroup) parentView.findViewById(R.id.srgInvoice);
         ListView lvInvoice = (ListView) parentView.findViewById(R.id.lvAccounts);
         llFooter = (TextView)inflater.inflate(R.layout.footer2, lvInvoice, false);
