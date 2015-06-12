@@ -12,7 +12,7 @@
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:background="@drawable/template_cell_background"
+        android:background="@drawable/withdrawal_list_logo_border"
         android:padding="12dp"
         android:scaleType="fitCenter"
         tools:ignore="ContentDescription" />
@@ -28,41 +28,8 @@
         android:background="@drawable/rectangle"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        tools:text="3 сен." />
-
-    <LinearLayout
-        android:id="@+id/open_web_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imagepart"
-        android:layout_alignLeft="@+id/imagepart"
-        android:layout_alignTop="@+id/imagepart"
-        android:layout_centerHorizontal="true"
-        android:layout_toRightOf="@+id/imagepart"
-        android:orientation="vertical"
-        android:paddingRight="4dp"
-        android:visibility="invisible"
-        tools:visibility="gone"
-        android:gravity="center"
-        android:layout_alignRight="@+id/imagepart"
-        android:paddingTop="8dp"
-        android:paddingLeft="2dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/web_vers"
-            android:textColor="#757575"
-            android:textSize="12sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/move_on"
-            android:textColor="#9ACD32" />
-    </LinearLayout>
+        tools:text="3 сен."
+        tools:ignore="RelativeOverlap" />
 
     <TextView
         android:id="@+id/textpart"

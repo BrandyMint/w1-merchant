@@ -8,18 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Template;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.TimeZone;
 
 //список шаблонов вывода средств
@@ -39,49 +40,34 @@ public class WithdrawalTemplateListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-	public int getCount() {
-		return mTemplates.size() + 1;
-	}
-
-    public int getItemViewType(int position) {
-        if (position == getDummyTemplatePosition()) {
-            return 1;
+    public void deleteTemplate(BigInteger templateId) {
+        ListIterator<Template> iterator = mTemplates.listIterator();
+        while (iterator.hasNext()) {
+            Template t = iterator.next();
+            if (t.templateId.equals(templateId)) {
+                iterator.remove();
+                notifyDataSetChanged();
+                break;
+            }
         }
-        return 0;
     }
 
-    @Override
-    public int getViewTypeCount() {
-        return 2;
-    }
+	public int getCount() {
+		return mTemplates.size();
+	}
 
     @Nullable
 	public Template getItem(int position) {
-        if (position == getDummyTemplatePosition()) return null;
 		return mTemplates.get(position);
 	}
 
 	public long getItemId(int position) {
-        if (position == getDummyTemplatePosition()) return ListView.NO_ID;
-		return getItem(position).templateId.longValue();
+		return mTemplates.get(position).templateId.longValue();
 	}
-
-    private int getDummyTemplatePosition() {
-        return mTemplates.size();
-    }
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-
-        if (position == getDummyTemplatePosition()) {
-            if (convertView != null) return convertView;
-            View root = mInflater.inflate(R.layout.template_cell, parent,false);
-            root.findViewById(R.id.open_web_message).setVisibility(View.VISIBLE);
-            root.findViewById(R.id.tvDate).setVisibility(View.GONE);
-            return root;
-        }
-
-        Template template = getItem(position);
+        Template template = mTemplates.get(position);
 
         ViewHolder holder;
 		View grid;

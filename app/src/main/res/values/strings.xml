@@ -33,7 +33,6 @@
     <string name="drawer_title">Navigation</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="add">Add</string>
     <string name="output">Withdrawal</string>
     <string name="output_cash">Withdrawal</string>
     <string name="login">Telephone or e-mail</string>
@@ -67,7 +66,6 @@
     <string name="user_not_found">Invalid e-mail or telephone</string>
     <string name="bad_password">Invalid password</string>
     <string name="forgot">Send</string>
-    <string name="web_vers">You may create\nwithdrawal templates\nusing web-version\nof Checkout</string>
     <string name="move_on">Proceed</string>
     <string name="data_load">Data will be load</string>
     <string name="loading">Loading…</string>
@@ -81,8 +79,22 @@
     <string name="end_date">End date</string>
     <string name="cancel">Cancel</string>
     <string name="clear_field">Clear</string>
-    <string name="comis_sum">Commission is $commission, amount starting from $from to $to</string>
-    <string name="wo_comis">Commission-free amount from $from to $to</string>
+
+    <string name="commission_free">Commission-free</string>
+    <string name="commission_cost">Commission: $cost.</string>
+    <string name="commission_rate_xx">Commission: $rate.</string>
+    <string name="commission_rate_xx_max_yy">Commission: $rate, but not more than $to.</string>
+    <string name="commission_rate_xx_min_yy">Commission: $rate, but not less than $from.</string>
+    <string name="commission_rate_xx_from_yy_to_zz">Commission: $rate, from $from to $to.</string>
+    <string name="commission_rate_xx_cost_nn">Commission: $rate plus $cost.</string>
+    <string name="commission_rate_xx_cost_nn_max_zz">Commission: $rate plus $cost, but not more than $to.</string>
+    <string name="commission_rate_xx_cost_nn_min_yy">Commission: $rate plus $cost, but not less than $from.</string>
+    <string name="commission_rate_xx_cost_nn_min_yy_max_zz">Commission: $rate plus $cost, from $from to $to.</string>
+
+    <string name="amount_from_xx">Amount from $from.</string>
+    <string name="amount_to_yy">Amount is up to $to.</string>
+    <string name="amount_from_xx_to_yy">Amount from $from to $to.</string>
+
     <string name="payment_one">The payment will be made once %1$s at %2$s</string>
     <string name="payment_begin">Payment will be made %1$s at %2$s, starting from %3$s</string>
     <string name="payment_begin_end">The payment will be made on %1$s at %2$s, starting from %3$s, till %4$s at %5$s</string>
@@ -287,6 +299,34 @@
 
     <string name="change_account_content_description">Change account</string>
     <string name="error_you_have_only_one_principal">You have only one principal account</string>
+
+    <string name="no_withdrawal_methods_available">No withdrawal methods available</string>
+    <string name="title_activity_withdraw">Fill form</string>
+    <string name="touch_to_choose_field_value">Touch to choose</string>
+    <string name="next_step">Next</string>
+    <string name="next_step_n_from_m">Next (%1$d/%2$d)</string>
+    <string name="template_created_successfully">Template created successfully</string>
+    <string name="template_edited_successfully">Template edited successfully</string>
+    <string name="enter_template_name_title">Enter template name</string>
+    <string name="template_list_item_edit">Edit</string>
+    <string name="template_list_item_delete">Delete</string>
+    <string name="title_activity_provider_list">Choose provider</string>
+    <string name="no_withdrawal_templates">No withdrawal templates</string>
+    <string name="to_withdraw_funds_you_need_to_sign_a_contract">To withdraw funds you need to sign a contract</string>
+    <string name="to_withdraw_funds_you_need_to_undergo_identification">To withdraw funds you need to undergo identification</string>
+
+    <string name="validate_error_required_field">The field is required and must have a value</string>
+    <string name="validate_error_value_has_wrong_format">The value has wrong format</string>
+
+    <plurals name="validate_error_value_must_be_longer_than_symbols">
+        <item quantity="one">The value must be longer than %d symbol</item>
+        <item quantity="other">The value must be longer than %d symbols</item>
+    </plurals>
+
+    <plurals name="validate_error_value_must_be_shorter_than_symbols">
+        <item quantity="one">The value must be shorter than %d symbol</item>
+        <item quantity="other">The value must be shorter than %d symbols</item>
+    </plurals>
 
 </resources>
 

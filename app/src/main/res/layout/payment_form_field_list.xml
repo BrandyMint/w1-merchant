@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.w1.merchant.android.ui.widget.HintedLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/payment_form_field_vertical_padding"
+    android:paddingBottom="@dimen/payment_form_field_vertical_padding"
+    android:background="?selectableItemBackground"
+    >
+
+    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+        android:id="@+id/list_field_title"
+        tools:text="Название получателя"
+        android:textIsSelectable="false"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:saveEnabled="false"
+        style="@style/DetailsItemTitle" />
+
+    <TextView
+        android:id="@+id/list_field_value"
+        tools:text="Сбербанк"
+        android:paddingTop="6dp"
+        android:textIsSelectable="false"
+        android:saveEnabled="false"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        style="@style/DetailsItemValue" />
+
+    <TextView
+        android:id="@+id/list_field_error_indicator"
+        tools:text="Значение не указано"
+        tools:visibility="visible"
+        android:saveEnabled="false"
+        style="@style/ErrorView" />
+
+</com.w1.merchant.android.ui.widget.HintedLinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.w1.merchant.android.ui.widget.HintedRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?selectableItemBackgroundBorderless"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:longClickable="true"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/withdrawal_list_logo_border"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/commission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/logo"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/rectangle"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:singleLine="true"
+        tools:text="3 сен."
+        tools:ignore="RelativeOverlap" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:textColor="#BDBDBD"
+        tools:text="Перевод на расчетный счет"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="14dp" />
+
+</com.w1.merchant.android.ui.widget.HintedRelativeLayout>

@@ -50,7 +50,7 @@
         <activity
             android:name=".ui.MenuActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.AddInvoiceActivity"
@@ -59,41 +59,60 @@
         </activity>
         <activity
             android:name=".ui.ConfirmInvoiceActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.ConfirmPaymentActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.ConfirmWithdrawalActivity"
-            android:screenOrientation="portrait">
+            android:name=".ui.withdraw.ConfirmWithdrawalActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.WithdrawByTemplateActivity"
+            android:name=".ui.withdraw.WithdrawActivity"
+            android:configChanges="orientation|locale|fontScale"
+            android:label="@string/title_activity_withdraw"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.MenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.w1.merchant.android.ui.MenuActivity" />
+        </activity>
+        <activity
+            android:name=".ui.withdraw.WithdrawByTemplateActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".ui.DetailsActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.TranscationSummaryReportActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.SelectPrincipalActivity"
             android:excludeFromRecents="true"
-            android:noHistory="true"
             android:launchMode="singleTop"
+            android:noHistory="true"
             android:theme="@style/SelectPrincipalActivityTheme" />
+        <activity
+            android:name=".ui.withdraw.ProviderListActivity"
+            android:label="@string/title_activity_provider_list"
+            android:parentActivityName=".ui.MenuActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.w1.merchant.android.ui.MenuActivity" />
+        </activity>
         <activity
             android:name=".support.TicketListActivity"
             android:label="@string/title_activity_ticket_list"
             android:launchMode="singleTop"
-            android:theme="@style/AppThemeWithActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithActionBar" >
         </activity>
         <activity
             android:name=".support.ConversationActivity"
@@ -122,8 +141,8 @@
         <activity
             android:name=".support.ShowPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/ShowPhotoTheme"
-            android:label="@string/activity_show_photo_title" />
+            android:label="@string/activity_show_photo_title"
+            android:theme="@style/ShowPhotoTheme" />
 
         <meta-data
             android:name="com.google.android.gms.version"

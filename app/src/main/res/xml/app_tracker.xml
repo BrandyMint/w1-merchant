@@ -28,11 +28,11 @@
         Сообщение "платеж принят к исполнению"
     </screenName>
 
-    <screenName name="com.w1.merchant.android.ui.ConfirmWithdrawalActivity">
+    <screenName name="com.w1.merchant.android.ui.withdraw.ConfirmWithdrawalActivity">
         Подтверждение платежа
     </screenName>
 
-    <screenName name="com.w1.merchant.android.ui.WithdrawByTemplateActivity">
+    <screenName name="com.w1.merchant.android.ui.withdraw.WithdrawByTemplateActivity">
         Заполнение вывода по шаблону
     </screenName>
 

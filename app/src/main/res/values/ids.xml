@@ -6,4 +6,9 @@
     <item type="id" name="tag_transaction_history_view_holder"/>
     <item type="id" name="tag_invoice_view_holder"/>
     <item type="id" name="tag_template_view_holder"/>
+    <item type="id" name="view_type_loading_indicator" />
+    <item type="id" name="view_type_list_item" />
+    <item type="id" name="list_field_tag_selected_value" />
+    <item type="id" name="tag_image_view_image_url"/>
+    <item type="id" name="tag_inflater_holder"/>
 </resources>

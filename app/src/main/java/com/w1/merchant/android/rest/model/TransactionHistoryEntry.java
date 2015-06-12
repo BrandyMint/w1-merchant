@@ -27,7 +27,7 @@ public class TransactionHistoryEntry implements Parcelable {
     public static Comparator<TransactionHistoryEntry> SORT_BY_DATE_DESC_DESC_ID_COMPARATOR = new Comparator<TransactionHistoryEntry>() {
         @Override
         public int compare(TransactionHistoryEntry lhs, TransactionHistoryEntry rhs) {
-            if (lhs == null && rhs == null) {
+            if (lhs == rhs) {
                 return 0;
             } else if (lhs == null) {
                 return -1;

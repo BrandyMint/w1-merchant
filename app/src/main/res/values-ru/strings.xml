@@ -68,7 +68,6 @@
 	<string name="bad_password">Пароль пользователя не соответствует</string>
     <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
-	<string name="web_vers">Шаблоны\nвывода\nсоздаются на\nвеб-версии</string>
 	<string name="move_on">Перейти</string>
 	<string name="data_load">Данные будут загружены</string>
 	<string name="loading">Загрузка…</string>
@@ -81,8 +80,21 @@
 	<string name="go_back">Назад</string>
 	<string name="end_date">Конечная дата</string>
 	<string name="cancel">Отмена</string>
-	<string name="comis_sum">Комиссия $commission, сумма от $from до $to</string>
-	<string name="wo_comis">Без комиссии, сумма от $from до $to</string>
+
+    <string name="commission_free">Без комиссии.</string>
+    <string name="commission_cost">Комиссия $cost.</string>
+    <string name="commission_rate_xx">Комиссия $rate.</string>
+    <string name="commission_rate_xx_max_yy">Комиссия $rate, не более $to.</string>
+    <string name="commission_rate_xx_min_yy">Комиссия $rate, не менее $from.</string>
+    <string name="commission_rate_xx_from_yy_to_zz">Комиссия $rate, от $plainfrom до $to.</string>
+    <string name="commission_rate_xx_cost_nn">Комиссия $rate + $cost.</string>
+    <string name="commission_rate_xx_cost_nn_max_zz">Комиссия $rate + $cost, не более $to.</string>
+    <string name="commission_rate_xx_cost_nn_min_yy">Комиссия $rate + $cost, не менее $from.</string>
+    <string name="commission_rate_xx_cost_nn_min_yy_max_zz">Комиссия $rate + $cost, от $plainfrom до $to.</string>
+    <string name="amount_from_xx">Сумма от $from.</string>
+    <string name="amount_to_yy">Сумма до $to.</string>
+    <string name="amount_from_xx_to_yy">Сумма от $plainfrom до $to.</string>
+
 	<string name="payment_one">Платеж будет исполнен однократно, %1$s в %2$s</string>
 	<string name="payment_begin">Платеж будет производиться %1$s в %2$s, начиная с %3$s</string>
 	<string name="payment_begin_end">Платеж будет производиться %1$s в %2$s, начиная с %3$s, заканчивая %4$s в %5$s</string>
@@ -282,5 +294,39 @@
     <string name="currency_ZAR">Южноафриканский рэнд</string>
     <string name="change_account_content_description">Сменить аккаунт</string>
     <string name="error_you_have_only_one_principal">У вас только один счет</string>
+
+    <string name="no_withdrawal_methods_available">Нет доступных способов вывода</string>
+
+    <string name="touch_to_choose_field_value">Нажмите чтобы выбрать</string>
+    <string name="next_step">Next</string>
+    <string name="next_step_n_from_m">Далее (%1$d/%2$d)</string>
+    <string name="template_created_successfully">Шаблон создан</string>
+    <string name="template_edited_successfully">Шаблон отредактирован</string>
+    <string name="enter_template_name_title">Введите название шаблона</string>
+    <string name="title_activity_provider_list">Выберите провайдера</string>
+    <string name="no_withdrawal_templates">Нет шаблонов вывода</string>
+    <string name="to_withdraw_funds_you_need_to_sign_a_contract">Подпишите договор, чтобы получить возможность выводить средства</string>
+    <string name="to_withdraw_funds_you_need_to_undergo_identification">Пройдите идентификацию, чтобы получить возможность выводить средства</string>
+
+    <string name="validate_error_required_field">Поле не должно оставаться пустым</string>
+    <string name="validate_error_value_has_wrong_format">Неверный формат поля</string>
+    <string name="template_list_item_delete">Удалить</string>
+    <string name="template_list_item_edit">Редактировать</string>
+    <string name="title_activity_withdraw">Заполните форму</string>
+
+    <plurals name="validate_error_value_must_be_longer_than_symbols">
+        <item quantity="one">Значение не должно быть короче %d символа</item>
+        <item quantity="few">Значение не должно быть короче %d символов</item>
+        <item quantity="many">Значение не должно быть короче %d символов</item>
+        <item quantity="other">Значение не должно быть короче %d символов</item>
+    </plurals>
+
+    <plurals name="validate_error_value_must_be_shorter_than_symbols">
+        <item quantity="one">В значении не должно быть больше %d символа</item>
+        <item quantity="few">В значении не должно быть больше %d символов</item>
+        <item quantity="many">В значении не должно быть больше %d символов</item>
+        <item quantity="other">В значении не должно быть больше %d символов</item>
+    </plurals>
+
 
 </resources>

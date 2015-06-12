@@ -63,6 +63,27 @@ public class ResponseErrorException extends RuntimeException {
         return response.getStatus();
     }
 
+    /**
+     * @return HTTP код - ошибка клиента
+     */
+    public boolean isErrorHttp4xx() {
+        return getRetrofitError().getKind() == RetrofitError.Kind.HTTP
+                && getHttpStatus() >= 400
+                && getHttpStatus() < 500;
+    }
+
+    /**
+     * @return HTTP код - ошибка на сервере
+     */
+    public boolean isErrorHttp5xx() {
+        return getRetrofitError().getKind() == RetrofitError.Kind.HTTP
+                && getHttpStatus() >= 500
+                && getHttpStatus() < 600;
+    }
+
+    /**
+     * @return Сетевая ошибка (HTTP ответ обычно не получен)
+     */
     public boolean isNetworkError() {
         return getRetrofitError().getKind() == RetrofitError.Kind.NETWORK;
     }

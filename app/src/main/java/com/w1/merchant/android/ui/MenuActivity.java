@@ -17,6 +17,7 @@
 package com.w1.merchant.android.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,9 +25,11 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -60,11 +63,15 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.AuthModel;
 import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.rest.model.Profile;
+import com.w1.merchant.android.rest.model.Template;
 import com.w1.merchant.android.rest.service.ApiProfile;
 import com.w1.merchant.android.support.TicketListActivity;
+import com.w1.merchant.android.ui.withdraw.ProviderListActivity;
+import com.w1.merchant.android.ui.withdraw.WithdrawActivity;
+import com.w1.merchant.android.ui.withdraw.TemplateListFragment;
+import com.w1.merchant.android.utils.CircleTransformation;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
-import com.w1.merchant.android.utils.CircleTransformation;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -81,21 +88,22 @@ import rx.subscriptions.Subscriptions;
 public class MenuActivity extends ActivityBase implements StatementFragment.OnFragmentInteractionListener,
         InvoiceListFragment.OnFragmentInteractionListener,
         DashboardFragment.OnFragmentInteractionListener,
-    WithdrawalTemplateListFragment.OnFragmentInteractionListener,
-        IProgressbarProvider {
+    TemplateListFragment.OnFragmentInteractionListener,
+    IProgressbarProvider {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
 
-    private static final int SELECT_PRINCIPAL_REQUEST_CODE = 1;
+    private static final int SELECT_PRINCIPAL_REQUEST_CODE = Activity.RESULT_FIRST_USER;
+    private static final int EDIT_TEMPLATE_REQUEST_CODE = Activity.RESULT_FIRST_USER + 1;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ViewPager mCurrencyViewPager;
     private CurrencyViewPagerAdapter mCurrencyPagerAdapter;
 
-    private static final int FRAGMENT_USERENTRY = 1;
+    private static final int FRAGMENT_STATEMENT = 1;
     private static final int FRAGMENT_INVOICE = 2;
-    public static final int FRAGMENT_DASH = 3;
+    public static final int FRAGMENT_DASHBOARD = 3;
 
     private ImageView ivAccountIcon;
 
@@ -106,9 +114,11 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
 
     private WeakHashMap<Object, Void> mProgressConsumers = new WeakHashMap<>();
     private View mProgressBar;
-    private boolean mIsBusinessAccount = false;
 
     private NavDrawerMenu mNavDrawerMenu;
+
+    @Nullable
+    private Profile mProfile;
 
     private Subscription mProfileSubscription = Subscriptions.unsubscribed();
 
@@ -150,6 +160,9 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                     recreate(); // Закрывать все остальные активности?
                 }
             }, 5 * 16);
+        } else if (data != null && data.hasExtra(WithdrawActivity.RESULT_RESULT_TEXT)) {
+            String text = data.getStringExtra(WithdrawActivity.RESULT_RESULT_TEXT);
+            Snackbar.make(mDrawerLayout, text, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -214,28 +227,32 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
 
                     @Override
                     public void onNext(Profile profile) {
-                        Profile.Attribute title = profile.findTitle();
-                        Profile.Attribute url = profile.findMerchantUrl();
-                        Profile.Attribute logo = profile.findMerchantLogo();
-
-                        if (logo == null || TextUtils.isEmpty(logo.displayValue)) {
-                            Picasso.with(MenuActivity.this)
-                                    .load(R.drawable.no_avatar)
-                                    .transform(CircleTransformation.getInstance())
-                                    .into(ivAccountIcon);
-                        } else {
-                            Picasso.with(MenuActivity.this)
-                                    .load(logo.displayValue)
-                                    .transform(CircleTransformation.getInstance())
-                                    .into(ivAccountIcon);
-                        }
-
-                        ((TextView) findViewById(R.id.tvName)).setText(title == null ? "" : title.displayValue);
-                        ((TextView) findViewById(R.id.account_id)).setText(TextUtilsW1.formatUserId(profile.userId));
-                        ((TextView) findViewById(R.id.tvUrl)).setText(url == null ? "" : url.displayValue);
-                        mIsBusinessAccount = "Business".equals(profile.accountTypeId);
+                        mProfile = profile;
+                        setupProfile(profile);
                     }
                 });
+    }
+
+    private void setupProfile(Profile profile) {
+        Profile.Attribute title = profile.findTitle();
+        Profile.Attribute url = profile.findMerchantUrl();
+        Profile.Attribute logo = profile.findMerchantLogo();
+
+        if (logo == null || TextUtils.isEmpty(logo.displayValue)) {
+            Picasso.with(MenuActivity.this)
+                    .load(R.drawable.no_avatar)
+                    .transform(CircleTransformation.getInstance())
+                    .into(ivAccountIcon);
+        } else {
+            Picasso.with(MenuActivity.this)
+                    .load(logo.displayValue)
+                    .transform(CircleTransformation.getInstance())
+                    .into(ivAccountIcon);
+        }
+
+        ((TextView) findViewById(R.id.tvName)).setText(title == null ? "" : title.displayValue);
+        ((TextView) findViewById(R.id.account_id)).setText(TextUtilsW1.formatUserId(profile.userId));
+        ((TextView) findViewById(R.id.tvUrl)).setText(url == null ? "" : url.displayValue);
     }
 
     @Override
@@ -267,7 +284,29 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
 
     @Override
     public boolean isBusinessAccount() {
-        return mIsBusinessAccount;
+        return mProfile == null || mProfile.isBusinessAccount();
+    }
+
+    @Override
+    public boolean isMerchantVerified() {
+        return mProfile != null && mProfile.isVerified();
+    }
+
+    @Override
+    public void onCreateTemplateClicked(View animateFrom) {
+        Intent intent = new Intent(this, ProviderListActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(
+                animateFrom, 0, 0, animateFrom.getWidth(), animateFrom.getHeight());
+        ActivityCompat.startActivityForResult(this, intent, EDIT_TEMPLATE_REQUEST_CODE, options.toBundle());
+    }
+
+    @Override
+    public void onEditTemplateClicked(View view, Template template, View titleViewFrom, View imageViewForm) {
+        WithdrawActivity.startEditTemplate(this, template.providerId,
+                template.templateId.toString(),
+                template.title,
+                EDIT_TEMPLATE_REQUEST_CODE,
+                view, titleViewFrom, imageViewForm);
     }
 
     @Override
@@ -284,7 +323,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     public void onBalanceLoaded(List<Balance> balances) {
         boolean nativeCurrencyInitialized = !mBalances.isEmpty();
         mBalances.clear();
-        for (Balance b: balances) if (!"Undefined".equalsIgnoreCase(b.visibilityType)) mBalances.add(b);
+        for (Balance b: balances) if (b.isVisible()) mBalances.add(b);
 
         if (!mBalances.isEmpty()) {
             String nativeCurrency = balances.isEmpty() ? "643" : balances.get(0).currencyId;
@@ -330,7 +369,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                 sendScreenName(position);
                 break;
             case R.id.drawer_menu_withdrawal:
-                Fragment fragmentTemplate = new WithdrawalTemplateListFragment();
+                Fragment fragmentTemplate = new TemplateListFragment();
                 changeFragment(fragmentTemplate);
                 mNavDrawerMenu.setActivatedItem(position);
                 sendScreenName(position);
@@ -378,7 +417,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     }
 
     private void refreshCurrencyViewPager() {
-        if (mBalances.size() == 0 || getCurrentFragment() != FRAGMENT_DASH) {
+        if (mBalances.size() == 0 || getCurrentFragment() != FRAGMENT_DASHBOARD) {
             mCurrencyPagerAdapter.setShowTitle(getCurrentItemTitle());
         } else {
             mCurrencyPagerAdapter.setBalances(mBalances);
@@ -390,8 +429,8 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     private void changeFragment(Fragment targetFragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content_frame, targetFragment, "fragment")
-                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.content_frame, targetFragment)
+                //.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }
 
@@ -423,7 +462,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     @Override
     public void onBackPressed() {
         mDrawerLayout.closeDrawer(Gravity.LEFT);
-        if (getCurrentFragment() != FRAGMENT_DASH) {
+        if (getCurrentFragment() != FRAGMENT_DASHBOARD) {
             selectItem(R.id.drawer_menu_dashboard);
             invalidateOptionsMenu();
         }
@@ -470,11 +509,11 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         if (f == null) {
             return 0;
         } else  if (f instanceof DashboardFragment) {
-            return FRAGMENT_DASH;
+            return FRAGMENT_DASHBOARD;
         } else if (f instanceof InvoiceListFragment) {
             return FRAGMENT_INVOICE;
         } else if (f instanceof StatementFragment) {
-            return FRAGMENT_USERENTRY;
+            return FRAGMENT_STATEMENT;
         }
         return 0;
     }
@@ -574,7 +613,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if ((getCurrentFragment() == FRAGMENT_DASH) && !getWaitSum().isEmpty()) {
+                    if ((getCurrentFragment() == FRAGMENT_DASHBOARD) && !getWaitSum().isEmpty()) {
                         Toast toast = Toast.makeText(MenuActivity.this,
                                 getString(R.string.awaiting) + " " + getWaitSum(),
                                 Toast.LENGTH_LONG);

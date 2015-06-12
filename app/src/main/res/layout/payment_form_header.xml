@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/payment_form_header_title"
+        android:textIsSelectable="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="6dp"
+        tools:text="Проверьте введенные данные" />
+
+    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+        android:id="@+id/payment_form_header_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#646464"
+        android:textIsSelectable="false"
+        tools:text="Сделайте там что-нибудь"
+        android:layout_marginBottom="6dp"/>
+
+</LinearLayout>

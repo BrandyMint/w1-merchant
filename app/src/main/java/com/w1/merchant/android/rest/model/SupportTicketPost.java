@@ -20,7 +20,7 @@ public class SupportTicketPost implements Parcelable {
     public static Comparator<SupportTicketPost> SORT_BY_DATE_ID_COMPARATOR = new Comparator<SupportTicketPost>() {
         @Override
         public int compare(SupportTicketPost lhs, SupportTicketPost rhs) {
-            if (lhs == null && rhs == null) {
+            if (lhs == rhs) {
                 return 0;
             } else if (lhs == null) {
                 return -1;

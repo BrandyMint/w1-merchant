@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -17,9 +18,13 @@ import android.util.Log;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.rest.model.Provider;
 import com.w1.merchant.android.ui.widget.TypefaceSpan2;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Currency;
@@ -30,6 +35,8 @@ import java.util.TimeZone;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static junit.framework.Assert.assertTrue;
 
 public final class TextUtilsW1 {
 
@@ -315,6 +322,21 @@ public final class TextUtilsW1 {
     }
 
     /**
+     *
+     * @return "100 $"
+     */
+    // XXX переделать всё на хуй. Должно быть не "100 $", а "$ 100". Использовать формат из системы,
+    // а не свои велосипеды. Но при этом рубль должен быть новым символом, а не поддерживаемые
+    // системой валюты - в нормальном виде. И всё в nowrap.
+    public static CharSequence formatAmount(Number amount, String currencyId) {
+        Spanned currencySymbol = getCurrencySymbol2(currencyId, 2);
+        SpannableStringBuilder sb = new SpannableStringBuilder(formatNumber(amount));
+        sb.append('\u00a0');
+        sb.append(currencySymbol);
+        return sb;
+    }
+
+    /**
      * Какое-то мега ёбнутое форматирование
      */
     public static String formatNumber(Number in) {
@@ -404,4 +426,107 @@ public final class TextUtilsW1 {
         }
         return dateOut;
     }
+
+    public static CharSequence noWrap(CharSequence src) {
+        if (TextUtils.indexOf(" ", src) < 0) return src;
+        return TextUtils.replace(src, new String[]{" "}, new CharSequence[]{"\u00a0"});
+    }
+
+    // TODO Тесты
+    @VisibleForTesting
+    static int getCommissionTemplateResId(Provider.Commission commission) {
+        if (commission.isZero()) {
+            return R.string.commission_free;
+        }
+
+        if (!commission.hasPctRate()) {
+            assertTrue(commission.hasAdditionalCost());
+            return R.string.commission_cost;
+        }
+
+        boolean hasCost = commission.hasAdditionalCost();
+        boolean hasMin = commission.hasMin();
+        boolean hasMax = commission.hasMax();
+
+        if (!hasCost) {
+            if (hasMin) {
+                return hasMax ? R.string.commission_rate_xx_from_yy_to_zz : R.string.commission_rate_xx_min_yy;
+            } else {
+                return hasMax ?  R.string.commission_rate_xx_max_yy : R.string.commission_rate_xx;
+            }
+        } else {
+            if (hasMin) {
+                return hasMax ? R.string.commission_rate_xx_cost_nn_min_yy_max_zz : R.string.commission_rate_xx_cost_nn_min_yy;
+            } else {
+                return hasMax ? R.string.commission_rate_xx_cost_nn_max_zz : R.string.commission_rate_xx_cost_nn;
+            }
+        }
+    }
+
+    public static CharSequence formatCommission(Provider.Commission commission, String currencyId, Resources resources) {
+        CharSequence template = resources.getText(getCommissionTemplateResId(commission));
+
+        String replaceSources[] = new String[] {
+                "$rate", "$cost", "$from", "$plainfrom", "$to"
+        };
+
+        CharSequence replaceDestinations[] = new CharSequence[] {"", "", "", "", ""};
+        if (commission.hasPctRate()) {
+            NumberFormat pctFormat = DecimalFormat.getPercentInstance(Locale.getDefault());
+            pctFormat.setMaximumFractionDigits(2);
+            CharSequence rate = pctFormat.format(commission.rate.divide(BigDecimal.valueOf(100),
+                    4, RoundingMode.UP));
+            replaceDestinations[0] = noWrap(rate);
+        }
+
+        if (commission.hasAdditionalCost()) {
+            replaceDestinations[1] = formatAmount(commission.cost, currencyId);
+        }
+
+        if (commission.hasMin()) {
+            CharSequence plainFrom = formatNumber(commission.min);
+            CharSequence from = formatAmount(commission.min, currencyId);
+            replaceDestinations[2] = from;
+            replaceDestinations[3] = plainFrom;
+        }
+
+        if (commission.hasMax()) {
+            replaceDestinations[4] = formatAmount(commission.max, currencyId);
+        }
+
+        return TextUtils.replace(template, replaceSources, replaceDestinations);
+    }
+
+    public static CharSequence formatAmountRange(@Nullable Number from,
+                                                 @Nullable Number to,
+                                                 String currencyId,
+                                                 Resources resources) {
+        int templateId;
+
+        if (from == null && to == null) return "";
+
+        if (from != null && to != null) {
+            templateId = R.string.amount_from_xx_to_yy;
+        } else if (from != null) {
+            templateId = R.string.amount_from_xx;
+        } else {
+            templateId = R.string.amount_to_yy;
+        }
+
+        String replaceSources[] = new String[] { "$from", "$plainfrom", "$to" };
+
+        CharSequence replaceDestinations[] = new CharSequence[] {"", "", ""};
+        if (from != null) {
+            CharSequence plainFrom = formatNumber(from);
+            CharSequence fromText = formatAmount(from, currencyId);
+            replaceDestinations[0] = fromText;
+            replaceDestinations[1] = plainFrom;
+        }
+
+        if (to != null) replaceDestinations[2] = formatAmount(to, currencyId);
+
+        return TextUtils.replace(resources.getText(templateId), replaceSources, replaceDestinations);
+    }
+
+
 }

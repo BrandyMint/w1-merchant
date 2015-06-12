@@ -1,9 +1,12 @@
 package com.w1.merchant.android.rest.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
 * Created by alexey on 14.02.15.
 */
-public class PaymentState {
+public class PaymentState implements Parcelable {
 
     /**
      * платеж создан (идентификатор зарезервирован)
@@ -81,4 +84,33 @@ public class PaymentState {
         }
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.stateId);
+        dest.writeString(this.description);
+    }
+
+    public PaymentState() {
+    }
+
+    protected PaymentState(Parcel in) {
+        this.stateId = in.readString();
+        this.description = in.readString();
+    }
+
+    public static final Parcelable.Creator<PaymentState> CREATOR = new Parcelable.Creator<PaymentState>() {
+        public PaymentState createFromParcel(Parcel source) {
+            return new PaymentState(source);
+        }
+
+        public PaymentState[] newArray(int size) {
+            return new PaymentState[size];
+        }
+    };
 }

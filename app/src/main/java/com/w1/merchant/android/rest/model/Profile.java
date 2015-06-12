@@ -10,13 +10,40 @@ import java.util.List;
 
 public class Profile {
 
+    public static final String ACCOUNT_TYPE_ID_PERSONAL = "Personal";
+
+    public static final String ACCOUNT_TYPE_ID_BUSINESS = "Business";
+
+    public static final String MERCHANT_STATE_ACTIVE = "Active";
+
+    public static final String MERCHANT_STATE_BLOCKED = "Blocked";
+
+    public static final String MERCHANT_STATE_CREATED = "Created";
+
     public String userId;
 
     public boolean isOnline;
 
+    /**
+     * Тип пользователя.
+     * {@linkplain #ACCOUNT_TYPE_ID_BUSINESS}, либо {@linkplain #ACCOUNT_TYPE_ID_PERSONAL}.
+     */
     public String accountTypeId;
 
+    /**
+     * Состояние единой кассы. бывает
+     * {@linkplain #MERCHANT_STATE_ACTIVE},
+     * {@linkplain #MERCHANT_STATE_BLOCKED},
+     * {@linkplain #MERCHANT_STATE_CREATED} ещё какие-то.
+     */
     public String merchantStateId;
+
+    public boolean hasContract;
+
+    /**
+     * "None", "Blocked", "Contract", "OurOffice"
+     */
+    public String identificationTypeId;
 
     public List<Attribute> userAttributes = Collections.emptyList();
 
@@ -83,7 +110,6 @@ public class Profile {
         public String displayValue;
 
         public String rawValue;
-
     }
 
     @Nullable
@@ -105,6 +131,21 @@ public class Profile {
     @Nullable
     public Attribute findMerchantLogo() {
         return findAttribute(Attribute.ATTRIBUTE_TYPE_MERCHANT_LOGO);
+    }
+
+    @Nullable
+    public Attribute findLocation() {
+        return findAttribute(Attribute.ATTRIBUTE_TYPE_LOCATION);
+    }
+
+    public boolean isBusinessAccount() {
+        return ACCOUNT_TYPE_ID_BUSINESS.equals(accountTypeId);
+    }
+
+    public boolean isVerified() {
+        // XXX Скорее всего, не верно
+        return "None".equals(identificationTypeId)
+                || "Blocked".equals(identificationTypeId);
     }
 
     public String getName() {

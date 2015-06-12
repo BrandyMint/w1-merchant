@@ -18,7 +18,7 @@ public class Invoice implements Parcelable {
     public static Comparator<Invoice> SORT_BY_DATE_DESC_DESC_ID_COMPARATOR = new Comparator<Invoice>() {
         @Override
         public int compare(Invoice lhs, Invoice rhs) {
-            if (lhs == null && rhs == null) {
+            if (lhs == rhs) {
                 return 0;
             } else if (lhs == null) {
                 return -1;

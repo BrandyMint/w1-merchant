@@ -4,6 +4,6 @@
     android:shape="oval">
     <solid android:color="@android:color/transparent"/>
     <stroke
-        android:color="#d0d0d0"
+        android:color="@color/logo_border_color"
         android:width="0.5dp" />
 </shape>

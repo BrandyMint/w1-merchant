@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="AppThemeWithActionBar" parent="AppThemeWithActionBarBase">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">false</item>
+
+        <item name="android:windowSharedElementReenterTransition">@null</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/grid_detail_transition</item>
+        <item name="android:windowSharedElementExitTransition">@transition/grid_detail_transition</item>
+
+
+    </style>
+
     <style name="ActionBarToolbarStyle" parent="ActionBarToolbarStyleBase">
         <item name="android:elevation">4dp</item>
     </style>

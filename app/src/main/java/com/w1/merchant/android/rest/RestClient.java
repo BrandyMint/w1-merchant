@@ -10,7 +10,10 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.rest.model.ResponseError;
 import com.w1.merchant.android.rest.service.ApiBalance;
+import com.w1.merchant.android.rest.service.ApiExchanges;
+import com.w1.merchant.android.rest.service.ApiExternalAccounts;
 import com.w1.merchant.android.rest.service.ApiInvoices;
+import com.w1.merchant.android.rest.service.ApiLimits;
 import com.w1.merchant.android.rest.service.ApiMasterSessions;
 import com.w1.merchant.android.rest.service.ApiPayments;
 import com.w1.merchant.android.rest.service.ApiProfile;
@@ -38,7 +41,13 @@ public class RestClient {
 
     private volatile ApiBalance mApiBalance;
 
+    private volatile ApiExchanges mApiExchanges;
+
+    private volatile ApiExternalAccounts mApiExternalAccounts;
+
     private volatile ApiInvoices mApiInvoices;
+
+    private volatile ApiLimits mApiLimits;
 
     private volatile ApiPayments mApiPayments;
 
@@ -51,6 +60,7 @@ public class RestClient {
     private volatile ApiSupport mApiSupport;
 
     private volatile ApiUserEntry mApiUserEntry;
+
 
     private RestClient() {
         mRestAdapter = createRestAdapter(false);
@@ -91,6 +101,30 @@ public class RestClient {
         return instance.mApiBalance;
     }
 
+    public static ApiExchanges getApiExchanges() {
+        RestClient instance = getInstance();
+        if (instance.mApiExchanges == null) {
+            synchronized (RestClient.class) {
+                if (instance.mApiExchanges == null) {
+                    instance.mApiExchanges = instance.mRestAdapter.create(ApiExchanges.class);
+                }
+            }
+        }
+        return instance.mApiExchanges;
+    }
+
+    public static ApiExternalAccounts getApiExternalAccounts() {
+        RestClient instance = getInstance();
+        if (instance.mApiExternalAccounts == null) {
+            synchronized (RestClient.class) {
+                if (instance.mApiExternalAccounts == null) {
+                    instance.mApiExternalAccounts = instance.mRestAdapter.create(ApiExternalAccounts.class);
+                }
+            }
+        }
+        return instance.mApiExternalAccounts;
+    }
+
     public static ApiInvoices getApiInvoices() {
         RestClient instance = getInstance();
         if (instance.mApiInvoices == null) {
@@ -101,6 +135,18 @@ public class RestClient {
             }
         }
         return instance.mApiInvoices;
+    }
+
+    public static ApiLimits getApiLimits() {
+        RestClient instance = getInstance();
+        if (instance.mApiLimits == null) {
+            synchronized (RestClient.class) {
+                if (instance.mApiLimits == null) {
+                    instance.mApiLimits = instance.mRestAdapter.create(ApiLimits.class);
+                }
+            }
+        }
+        return instance.mApiLimits;
     }
 
     public static ApiPayments getApiPayments() {

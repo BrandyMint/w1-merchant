@@ -1,9 +1,13 @@
 package com.w1.merchant.android.rest.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PaymentForm {
+public class PaymentForm implements Parcelable {
 
     /**
      * Идентификатор формы платежа
@@ -17,138 +21,58 @@ public class PaymentForm {
 
     public String description = "";
 
-    public List<Field> fields = Collections.emptyList();
+    public List<PaymentFormField> fields = new ArrayList<>(0);
 
-
-    // XXX RuntimeTypeAdapterFactory?
-    public static class Field {
-
-        /**
-         * Скалярные. поля, значения которых можно описать одним числом
-         * или строкой (номер договора, номер счета, телефона, примечание, ФИО и т.п.);
-         */
-        public static final String FIELD_TYPE_SCALAR = "Scalar";
-
-        /**
-         *  Списковые. поля, значения которых необходимо выбрать из предопределённого
-         *  списка. В качестве компонента пользовательского интерфейса рекомендуется
-         *  использовать выпадающий список ListBox;
-         */
-        public static final String FIELD_TYPE_LIST = "List";
-
-        /**
-         *  Нередактируемые.  поля, значение которых задано сервисом и не заполняется
-         *  пользователем. В качестве компонента пользователького интерфейса
-         *  рекомендуется использовать Label.
-         */
-        public static final String FIELD_TYPE_LABEL = "Label";
-
-        /**
-         * Тип поля
-         */
-        public String fieldType = FIELD_TYPE_SCALAR;
-
-
-        /**
-         * Идентификатор поля
-         */
-        public String fieldId = "";
-
-        /**
-         * Название поля
-         */
-        public String title = "";
-
-        /**
-         * Описание поля
-         */
-        public String description = "";
-
-        /**
-         * Позиция поля в форме
-         */
-        public int tabOrder;
-
-        /**
-         * Флаг, указывающий, является ли поле обязательным.
-         */
-        public boolean isRequired = false;
-
-
-
-        /*********
-         *
-         *  Scalar
-         *
-         */
-
-        /**
-         * Значение поля по умолчанию
-         */
-        public String defaultValue;
-
-        /**
-         * Пример значения поля
-         */
-        public String example;
-
-        /**
-         * Регулярное выражение, которому должно удовлетворять значение поля
-         */
-        public String regex;
-
-        /**
-         * Минимальная длина значения
-         */
-        public int minLength;
-
-        /**
-         * Максимальная длина значения
-         */
-        public int maxLength;
-
-
-        /*******
-         *
-         * List
-         *
-         */
-
-        /**
-         * Минимальное число выбранных элементов.
-         */
-        // minLength
-
-        /**
-         * Максимальное число выбранных элементов.
-         */
-        // maxLength
-
-        /**
-         * Элементы списка
-         */
-        public List<ListPaymentFormFieldItem> items;
-
-
-        /********
-         *
-         * Value
-         *
-         */
-
-        public String value;
-
-
+    /**
+     * @return Споиск полей, отсортированный по {linkplain Field#tabOrder}.
+     */
+    public List<PaymentFormField> getSortedFieldList() {
+        List<PaymentFormField> fields = new ArrayList<>(this.fields);
+        Collections.sort(fields, PaymentFormField.SORT_BY_TAB_ORDER_COMPARATOR);
+        return fields;
     }
 
-    public static class ListPaymentFormFieldItem {
-
-        public String title;
-
-        public String value;
-
-        public boolean isSelected;
-
+    /**
+     *
+     * @return Это - финальная форма платежа (обычно - "проверьте введенные данные").
+     * Получение данной формы означает, что все платежные поля заполнены и валидны с точки зрения
+     * формата полей (но ещё не проверены у провайдера).
+     */
+    public boolean isFinalStep() {
+        return "$Final".equalsIgnoreCase(formId);
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.formId);
+        dest.writeString(this.title);
+        dest.writeString(this.description);
+        dest.writeTypedList(fields);
+    }
+
+    public PaymentForm() {
+    }
+
+    protected PaymentForm(Parcel in) {
+        this.formId = in.readString();
+        this.title = in.readString();
+        this.description = in.readString();
+        this.fields = in.createTypedArrayList(PaymentFormField.CREATOR);
+    }
+
+    public static final Parcelable.Creator<PaymentForm> CREATOR = new Parcelable.Creator<PaymentForm>() {
+        public PaymentForm createFromParcel(Parcel source) {
+            return new PaymentForm(source);
+        }
+
+        public PaymentForm[] newArray(int size) {
+            return new PaymentForm[size];
+        }
+    };
 }

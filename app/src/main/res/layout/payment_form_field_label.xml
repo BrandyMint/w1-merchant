@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/payment_form_field_vertical_padding"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/payment_form_field_vertical_padding">
+
+    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+        android:id="@+id/label_field_title"
+        style="@style/DetailsItemTitle"
+        android:saveEnabled="false"
+        tools:text="Название получателя" />
+
+    <TextView
+        android:id="@+id/label_field_value"
+        style="@style/DetailsItemValue"
+        android:saveEnabled="false"
+        tools:text="Сбербанк" />
+
+</LinearLayout>

@@ -2,7 +2,7 @@
 <resources>
     <!-- Application theme. -->
 
-    <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeWithActionBarBase" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item> -->
@@ -11,6 +11,9 @@
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
         <item name="android:progressBarStyleLarge">@style/ProgressBarLarge</item>
+    </style>
+
+    <style name="AppThemeWithActionBar" parent="AppThemeWithActionBarBase">
     </style>
 
     <style name="AppTheme" parent="AppThemeWithActionBar">
@@ -84,7 +87,15 @@
     </style>
 
     <style name="ActionBarToolbarStyle" parent="ActionBarToolbarStyleBase">
+    </style>
 
+    <style name="ToolbarSecondActivityStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">?actionBarSize</item>
+        <item name="android:minHeight">?actionBarSize</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="navigationIcon">@drawable/ic_menu_back_small</item>
     </style>
 
     <style name="ConversationMessageDate">
@@ -116,9 +127,18 @@
         <item name="android:layout_centerInParent">true</item>
     </style>
 
+    <style name="ToolbarSecondTitleTextAppearance">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
     <style name="TicketListSubjectTextAppearance">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ErrorTextAppearance" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">#dd2c00</item>
     </style>
 
     <style name="DrawerMenuItemStyle">
@@ -171,6 +191,15 @@
         <item name="android:maxWidth">76dp</item>
         <item name="android:minHeight">76dp</item>
         <item name="android:maxHeight">76dp</item>
+    </style>
+
+    <style name="ErrorView">
+        <item name="android:textAppearance">@style/ErrorTextAppearance</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:visibility">invisible</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
 </resources>

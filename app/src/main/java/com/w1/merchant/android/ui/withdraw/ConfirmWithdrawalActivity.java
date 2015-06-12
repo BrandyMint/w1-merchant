@@ -1,4 +1,4 @@
-package com.w1.merchant.android.ui;
+package com.w1.merchant.android.ui.withdraw;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +18,12 @@ import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.InitPaymentStep;
 import com.w1.merchant.android.rest.model.InitTemplatePaymentRequest;
-import com.w1.merchant.android.rest.model.PaymentForm;
+import com.w1.merchant.android.rest.model.PaymentFormField;
+import com.w1.merchant.android.rest.model.PaymentFormListFieldItem;
 import com.w1.merchant.android.rest.model.PaymentState;
 import com.w1.merchant.android.rest.model.SubmitPaymentFormRequest;
+import com.w1.merchant.android.ui.ActivityBase;
+import com.w1.merchant.android.ui.ConfirmPaymentActivity;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -151,15 +154,15 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         //Заполнение формы платежа
         List<SubmitPaymentFormRequest.Param> params = new ArrayList<>(result.form.fields.size());
 
-        for (PaymentForm.Field field: result.form.fields) {
-            if (PaymentForm.Field.FIELD_TYPE_SCALAR.equals(field.fieldType)) {
+        for (PaymentFormField field: result.form.fields) {
+            if (PaymentFormField.FIELD_TYPE_SCALAR.equals(field.fieldType)) {
                 if ("Amount".equalsIgnoreCase(field.fieldId)) {
                     params.add(new SubmitPaymentFormRequest.Param("Amount", String.valueOf(sum)));
                 } else {
                     params.add(new SubmitPaymentFormRequest.Param(field.fieldId, field.defaultValue));
                 }
-            } else if (PaymentForm.Field.FIELD_TYPE_LIST.equals(field.fieldType)) {
-                for (PaymentForm.ListPaymentFormFieldItem listItem: field.items) {
+            } else if (PaymentFormField.FIELD_TYPE_LIST.equals(field.fieldType)) {
+                for (PaymentFormListFieldItem listItem: field.items) {
                     if (listItem.isSelected) {
                         params.add(new SubmitPaymentFormRequest.Param(field.fieldId, listItem.value));
                     }

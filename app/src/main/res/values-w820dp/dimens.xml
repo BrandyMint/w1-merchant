@@ -5,4 +5,5 @@
     <dimen name="activity_horizontal_margin">64dp</dimen>
     <dimen name="activity_horizontal_padding_scrollbar">60dp</dimen>
     <dimen name="activity_horizontal_margin_scrollbar">4dp</dimen>
+
 </resources>

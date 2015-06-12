@@ -29,6 +29,22 @@ public final class Utils {
 
     private Utils() {}
 
+    public static int compare(int lhs, int rhs) {
+        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    }
+
+    public static int compare(String lhs, String rhs) {
+        if (lhs == rhs) {
+            return 0;
+        } else if (lhs == null) {
+            return -1;
+        } else if (rhs == null) {
+            return 1;
+        } else {
+            return lhs.compareTo(rhs);
+        }
+    }
+
     public static int compare(long lhs, long rhs) {
         return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
     }
@@ -38,6 +54,11 @@ public final class Utils {
         if (lhs == null) return -1;
         if (rhs == null) return 1;
         return lhs.compareTo(rhs);
+    }
+
+
+    public static boolean equals(Number o1, Number o2) {
+        return o1 == null ? (o2 == null) : o1.equals(o2);
     }
 
     public static String hex(byte[] array) {

@@ -10,8 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import java.util.Random;
-
 /**
  * Created by alexey on 31.07.14.
  */
@@ -38,7 +36,6 @@ public class DefaultUserpicDrawable extends Drawable {
 
     public DefaultUserpicDrawable() {
         this("", 0, 0);
-        Random rnd = new Random();
         setUser(null, Color.rgb(0x24, 0xb1, 0x66), Color.WHITE);
     }
 
