@@ -2,6 +2,7 @@ package com.w1.merchant.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,14 +11,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thehayro.internal.Constants;
+import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.R;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.InitPaymentStep;
 import com.w1.merchant.android.rest.model.InitTemplatePaymentRequest;
 import com.w1.merchant.android.rest.model.PaymentForm;
 import com.w1.merchant.android.rest.model.PaymentState;
 import com.w1.merchant.android.rest.model.SubmitPaymentFormRequest;
-import com.w1.merchant.android.rest.ResponseErrorException;
-import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -26,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,6 +39,8 @@ import rx.functions.Action1;
 import rx.subscriptions.Subscriptions;
 
 public class ConfirmWithdrawalActivity extends ActivityBase {
+    private static final boolean DBG = BuildConfig.DEBUG;
+    private static final String TAG = Constants.LOG_TAG;
 
     private String templateId;
     private String paymentId;
@@ -120,12 +127,23 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         Observable<InitPaymentStep> observable = initObservable(
                 RestClient.getApiPayments().initTemplatePayment(new InitTemplatePaymentRequest(templateId)));
 
-        mInitPaymentStepSubscription = observable.subscribe(new Action1<InitPaymentStep>() {
-            @Override
-            public void call(InitPaymentStep initPaymentStep) {
-                onNextStep(initPaymentStep);
-            }
-        });
+        mInitPaymentStepSubscription = observable
+                .subscribe(new Observer<InitPaymentStep>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (DBG) Log.v(TAG, "initPayment error", e);
+                    }
+
+                    @Override
+                    public void onNext(InitPaymentStep initPaymentStep) {
+                        onNextStep(initPaymentStep);
+                    }
+                });
     }
 
     //ответ на запрос Инициализация платежа с помощью шаблона
@@ -164,12 +182,23 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         Observable<InitPaymentStep> observable = initObservable(
                 RestClient.getApiPayments().submitPaymentForm(paymentId, form));
 
-        mSubmitFormSubscription = observable.subscribe(new Action1<InitPaymentStep>() {
-            @Override
-            public void call(InitPaymentStep initPaymentStep) {
-                getPaymentState(String.valueOf(initPaymentStep.paymentId));
-            }
-        });
+        mSubmitFormSubscription = observable
+                .subscribe(new Observer<InitPaymentStep>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (DBG) Log.v(TAG, "submitForm error", e);
+                    }
+
+                    @Override
+                    public void onNext(InitPaymentStep initPaymentStep) {
+                        getPaymentState(String.valueOf(initPaymentStep.paymentId));
+                    }
+                });
     }
 
     //ответ на запрос Получение состояния платежа
@@ -181,9 +210,19 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
                 RestClient.getApiPayments().getPaymentState(paymentId));
 
         mGetPaymentStateSubscription = observable
-                .subscribe(new Action1<PaymentState>() {
+                .subscribe(new Subscriber<PaymentState>() {
                     @Override
-                    public void call(PaymentState paymentState) {
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (DBG) Log.v(TAG, "getPaymentState error", e);
+                    }
+
+                    @Override
+                    public void onNext(PaymentState paymentState) {
                         if (PaymentState.PAYMENT_STATE_UPDATED.equals(paymentState.stateId)
                                 || PaymentState.PAYMENT_STATE_PROCESSING.equals(paymentState.stateId)
                                 || PaymentState.PAYMENT_STATE_CHECKING.equals(paymentState.stateId)
@@ -209,9 +248,20 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         Observable<InitPaymentStep> observable = initObservable(
                 RestClient.getApiPayments().submitPaymentForm(paymentId, form));
 
-        mSubmitForm2Subscription = observable.subscribe(new Action1<InitPaymentStep>() {
+        mSubmitForm2Subscription = observable
+                .subscribe(new Observer<InitPaymentStep>() {
                     @Override
-                    public void call(InitPaymentStep initPaymentStep) {
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (DBG) Log.v(TAG, "submitForm2 error", e);
+                    }
+
+                    @Override
+                    public void onNext(InitPaymentStep initPaymentStep) {
                         Intent intent = new Intent(ConfirmWithdrawalActivity.this, ConfirmPaymentActivity.class);
                         intent.putExtra("sum", sumComis);
                         startActivity(intent);

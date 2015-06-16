@@ -171,14 +171,22 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 });
     }
 
+    private String readAmountWithComissionEditText() {
+        return mCommissionEditText.getText().toString().replaceAll(pattern, "");
+    }
+
+    private String readAmountEditText() {
+        return mAmountEditText.getText().toString().replaceAll(pattern, "");
+    }
+
 	boolean checkFields() {
 		boolean result;
 		
-		if (TextUtils.isEmpty(mCommissionEditText.getText().toString())) {
+		if (TextUtils.isEmpty(readAmountWithComissionEditText())) {
 			mCommissionEditText.setError(getString(R.string.error_field));
 			result = false;
 		} else result = true;
-		if (TextUtils.isEmpty(mAmountEditText.getText().toString())) {
+		if (TextUtils.isEmpty(readAmountEditText())) {
 			if (result)	mAmountEditText.setError(getString(R.string.error_field));
 			result = false;
 		} else result = true;
@@ -228,6 +236,7 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 			llMain.addView(tvSumCommis, lParams);
 			mCommissionEditText = new EditTextRouble(this);
 			mCommissionEditText.setTextSize(22);
+            mCommissionEditText.setMinEms(6);
 			DigitsKeyListener digkl2 = DigitsKeyListener.getInstance();
 			mCommissionEditText.setKeyListener(digkl2);
             mCommissionEditText.addTextChangedListener(new TextWatcher() {
@@ -259,6 +268,7 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 			llMain.addView(tvSum, lParams);
 			mAmountEditText = new EditTextRouble(this);
 			mAmountEditText.setTextSize(22);
+            mAmountEditText.setMinEms(6);
 			mAmountEditText.setKeyListener(digkl2);
             mAmountEditText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -296,10 +306,8 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 				public void onClick(View v) {
 					if (checkFields()) {
 						Intent intent = new Intent(WithdrawByTemplateActivity.this, ConfirmWithdrawalActivity.class);
-						intent.putExtra("SumOutput",
-                                mAmountEditText.getText().toString().replaceAll(pattern, ""));
-						intent.putExtra("SumCommis",
-                                mCommissionEditText.getText().toString().replaceAll(pattern, ""));
+						intent.putExtra("SumOutput", readAmountEditText());
+						intent.putExtra("SumCommis", readAmountWithComissionEditText());
 						intent.putExtra("templateId", templateId);
 						intent.putExtra("token", Session.getInstance().getAuthtoken());
 						startActivity(intent);
