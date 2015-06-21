@@ -68,7 +68,6 @@
 	<string name="bad_password">Пароль пользователя не соответствует</string>
     <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
-	<string name="move_on">Перейти</string>
 	<string name="data_load">Данные будут загружены</string>
 	<string name="loading">Загрузка…</string>
 	<string name="inputs">Входящие</string>
@@ -113,9 +112,7 @@
 	<string name="friday">пятницам</string>
 	<string name="saturday">субботам</string>
 	<string name="sunday">воскресеньям</string>
-	<string name="payment_not">Платеж не найден</string>
 	<string name="search_invoice">Поиск счета</string>
-    <string name="search_transaction">Поиск операции</string>
 	<string name="warning">Предупреждение</string>
 	<string name="exit_message">Вы действительно хотите выйти?</string>
 	<string name="sure_withdraw">Вы уверены, \n что хотите вывести</string>

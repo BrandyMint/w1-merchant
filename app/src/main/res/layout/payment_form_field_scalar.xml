@@ -8,7 +8,6 @@
     android:paddingBottom="@dimen/payment_form_field_vertical_padding"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:background="?selectableItemBackground"
     >
 
     <com.w1.merchant.android.ui.widget.TextViewRobotoLight

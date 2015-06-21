@@ -7,6 +7,7 @@
     android:paddingTop="@dimen/payment_form_field_vertical_padding"
     android:paddingBottom="@dimen/payment_form_field_vertical_padding"
     android:background="?selectableItemBackground"
+    tools:ignore="Overdraw"
     >
 
     <com.w1.merchant.android.ui.widget.TextViewRobotoLight

@@ -74,6 +74,7 @@
             android:configChanges="orientation|locale|fontScale"
             android:label="@string/title_activity_withdraw"
             android:screenOrientation="portrait"
+            tools:ignore="UnusedAttribute"
             android:parentActivityName=".ui.MenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -102,7 +103,8 @@
             android:name=".ui.withdraw.ProviderListActivity"
             android:label="@string/title_activity_provider_list"
             android:parentActivityName=".ui.MenuActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.w1.merchant.android.ui.MenuActivity" />
@@ -128,6 +130,7 @@
         </activity>
         <activity
             android:name=".support.SupportProfileActivity"
+            tools:ignore="UnusedAttribute"
             android:parentActivityName=".support.ConversationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

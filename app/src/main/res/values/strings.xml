@@ -66,7 +66,6 @@
     <string name="user_not_found">Invalid e-mail or telephone</string>
     <string name="bad_password">Invalid password</string>
     <string name="forgot">Send</string>
-    <string name="move_on">Proceed</string>
     <string name="data_load">Data will be load</string>
     <string name="loading">Loading…</string>
     <string name="inputs">Incoming funds</string>
@@ -113,9 +112,7 @@
     <string name="friday">fridays</string>
     <string name="saturday">saturdays</string>
     <string name="sunday">sundays</string>
-    <string name="payment_not">Payment not found</string>
     <string name="search_invoice">Search invoice</string>
-    <string name="search_transaction">Search transaction</string>
     <string name="warning">Warning</string>
     <string name="exit_message">Are you sure you want to log out?</string>
     <string name="sure_withdraw">Are you sure \n you want to withdraw</string>
