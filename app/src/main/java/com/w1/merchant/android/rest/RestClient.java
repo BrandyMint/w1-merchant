@@ -1,7 +1,5 @@
 package com.w1.merchant.android.rest;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -21,8 +19,6 @@ import com.w1.merchant.android.rest.service.ApiSessions;
 import com.w1.merchant.android.rest.service.ApiSupport;
 import com.w1.merchant.android.rest.service.ApiUserEntry;
 import com.w1.merchant.android.utils.NetworkUtils;
-
-import java.util.Locale;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
@@ -266,18 +262,9 @@ public class RestClient {
                 }
             }
 
-            String langTag = getLangTag();
+            String langTag = NetworkUtils.getLangTag();
             if (!TextUtils.isEmpty(langTag)) {
                 request.addHeader("Accept-Language", langTag);
-            }
-        }
-
-        @TargetApi(21)
-        private static String getLangTag() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                return Locale.getDefault().toLanguageTag();
-            } else {
-                return Locale.getDefault().toString().replace("_","-");
             }
         }
     }

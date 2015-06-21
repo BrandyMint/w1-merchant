@@ -1,8 +1,12 @@
 package com.w1.merchant.android.utils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.StatFs;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.FieldNamingPolicy;
@@ -20,6 +24,8 @@ import com.w1.merchant.android.ui.IProgressbarProvider;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action0;
@@ -61,6 +67,15 @@ public class NetworkUtils {
     }
 
     private NetworkUtils() {
+    }
+
+    @TargetApi(21)
+    public static String getLangTag() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return Locale.getDefault().toLanguageTag();
+        } else {
+            return Locale.getDefault().toString().replace("_","-");
+        }
     }
 
     public OkHttpClient getOkHttpClient() {
@@ -143,4 +158,17 @@ public class NetworkUtils {
         }
     }
 
+    public static String getUniqId(Context context) {
+        String id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (TextUtils.isEmpty(id)
+                || "9774d56d682e549c".equalsIgnoreCase(id)
+                || "9d1d1f0dfa440886".equalsIgnoreCase(id)
+                || "fc067667235b8f19".equalsIgnoreCase(id)
+                || "0123456789ABCDEF".equalsIgnoreCase(id)
+                ) {
+            id = UUID.randomUUID().toString();
+        }
+
+        return id;
+    }
 }

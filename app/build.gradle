@@ -50,6 +50,9 @@ android {
         buildConfigField "String", "API_TEST_PASS",
                 project.ext.private.getProperty("ApiTestPass",
                         "\"\"")
+        buildConfigField "String", "GOOGLE_APP_ID",
+                project.ext.private.getProperty("GoogleAppId", "\"845611145852\"")
+
     }
 
     signingConfigs {
