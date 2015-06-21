@@ -13,11 +13,11 @@
     <com.w1.merchant.android.ui.widget.TextViewRobotoLight
         android:id="@+id/scalar_field_title"
         tools:text="Название получателя"
-        android:layout_marginBottom="0dp"
         android:paddingBottom="0dp"
         android:textIsSelectable="false"
         android:saveEnabled="false"
-        style="@style/DetailsItemTitle" />
+        style="@style/DetailsItemTitle"
+        android:layout_marginBottom="6dp" />
 
     <EditText
         android:id="@+id/scalar_field_value"

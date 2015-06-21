@@ -17,6 +17,6 @@
     <dimen name="intro_header_size">86dp</dimen>
 
     <dimen name="graphic_bottom_offset">16dp</dimen>
-    <dimen name="payment_form_field_vertical_padding">8dp</dimen>
+    <dimen name="payment_form_field_vertical_padding">18dp</dimen>
 
 </resources>

@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/payment_form_field_vertical_padding"
     android:paddingBottom="@dimen/payment_form_field_vertical_padding"
-    android:background="?selectableItemBackground"
     tools:ignore="Overdraw"
     >
 
@@ -16,18 +15,27 @@
         android:textIsSelectable="false"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="6dp"
         android:saveEnabled="false"
         style="@style/DetailsItemTitle" />
 
     <TextView
         android:id="@+id/list_field_value"
-        tools:text="Сбербанк"
-        android:paddingTop="6dp"
-        android:textIsSelectable="false"
-        android:saveEnabled="false"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        style="@style/DetailsItemValue" />
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:minHeight="42dp"
+        android:textIsSelectable="false"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:saveEnabled="false"
+        android:singleLine="true"
+        style="@style/DetailsItemValue"
+        tools:text="Сбербанк"
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/list_field_error_indicator"

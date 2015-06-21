@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingTop="@dimen/payment_form_field_vertical_padding"
+    android:paddingBottom="@dimen/payment_form_field_vertical_padding"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin">
 
@@ -25,6 +27,7 @@
         android:textColor="#646464"
         android:textIsSelectable="false"
         tools:text="Сделайте там что-нибудь"
-        android:layout_marginBottom="6dp"/>
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp" />
 
 </LinearLayout>
