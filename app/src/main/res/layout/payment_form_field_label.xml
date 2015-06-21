@@ -11,14 +11,12 @@
 
     <com.w1.merchant.android.ui.widget.TextViewRobotoLight
         android:id="@+id/label_field_title"
-        style="@style/DetailsItemTitle"
-        android:saveEnabled="false"
+        style="@style/PaymentFormFieldTitle"
         tools:text="Название получателя" />
 
     <TextView
         android:id="@+id/label_field_value"
-        style="@style/DetailsItemValue"
-        android:saveEnabled="false"
+        style="@style/PaymentFormFieldValue"
         tools:text="Сбербанк" />
 
 </LinearLayout>

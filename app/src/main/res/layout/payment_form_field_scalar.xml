@@ -13,24 +13,18 @@
     <com.w1.merchant.android.ui.widget.TextViewRobotoLight
         android:id="@+id/scalar_field_title"
         tools:text="Название получателя"
-        android:paddingBottom="0dp"
-        android:textIsSelectable="false"
-        android:saveEnabled="false"
-        style="@style/DetailsItemTitle"
-        android:layout_marginBottom="6dp" />
+        style="@style/PaymentFormFieldTitle"
+        android:layout_marginBottom="0dp" />
 
     <EditText
         android:id="@+id/scalar_field_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
+        style="@style/PaymentFormFieldValue"
         android:singleLine="true"
-        android:textSize="18sp"
         android:imeOptions="actionNext|flagNavigateNext"
         android:inputType="text|textCapSentences"
-        tools:text="Сбербанк"
-        android:saveEnabled="false"
-        android:paddingTop="8dp" />
+        tools:text="Сбербанк" />
 
     <TextView
         android:id="@+id/scalar_field_error_indicator"
