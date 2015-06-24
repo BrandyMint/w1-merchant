@@ -121,6 +121,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:0.24.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile "org.robolectric:robolectric:3.0"
     testCompile 'junit:junit:4.12'
 }
 

@@ -116,6 +116,12 @@
                     android:text="@string/drawer_menu_withdrawal" />
 
                 <TextView
+                    android:id="@+id/drawer_menu_exchange"
+                    style="@style/DrawerMenuItemStyle"
+                    android:drawableLeft="@drawable/menu_exchange"
+                    android:text="@string/drawer_menu_exchange" />
+
+                <TextView
                     android:id="@+id/drawer_menu_support"
                     style="@style/DrawerMenuItemStyle"
                     android:drawableLeft="@drawable/menu_support"

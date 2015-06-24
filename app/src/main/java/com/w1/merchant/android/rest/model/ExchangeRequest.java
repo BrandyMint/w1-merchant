@@ -37,7 +37,7 @@ public class ExchangeRequest {
     public ExchangeRequest() {
     }
 
-    public ExchangeRequest newInstance(String srcCurrencyId, String dstCurrencyId, BigDecimal dstAmount) {
+    public static ExchangeRequest newInstance(String srcCurrencyId, String dstCurrencyId, BigDecimal dstAmount) {
         ExchangeRequest req = new ExchangeRequest();
         req.srcCurrencyId = srcCurrencyId;
         req.dstCurrencyId = dstCurrencyId;
@@ -45,7 +45,7 @@ public class ExchangeRequest {
         return req;
     }
 
-    public ExchangeRequest newInstanceSrcAmount(String srcCurrencyId, String dstCurrencyId, BigDecimal srcAmount) {
+    public static ExchangeRequest newInstanceSrcAmount(String srcCurrencyId, String dstCurrencyId, BigDecimal srcAmount) {
         ExchangeRequest req = new ExchangeRequest();
         req.srcCurrencyId = srcCurrencyId;
         req.dstCurrencyId = dstCurrencyId;

@@ -31,7 +31,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -45,7 +44,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,9 +64,11 @@ import com.w1.merchant.android.rest.model.Profile;
 import com.w1.merchant.android.rest.model.Template;
 import com.w1.merchant.android.rest.service.ApiProfile;
 import com.w1.merchant.android.support.TicketListActivity;
+import com.w1.merchant.android.ui.exchange.ExchangeFragment;
+import com.w1.merchant.android.ui.widget.ViewPagerAdapter;
 import com.w1.merchant.android.ui.withdraw.ProviderListActivity;
-import com.w1.merchant.android.ui.withdraw.WithdrawActivity;
 import com.w1.merchant.android.ui.withdraw.TemplateListFragment;
+import com.w1.merchant.android.ui.withdraw.WithdrawActivity;
 import com.w1.merchant.android.utils.CircleTransformation;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -88,7 +88,7 @@ import rx.subscriptions.Subscriptions;
 public class MenuActivity extends ActivityBase implements StatementFragment.OnFragmentInteractionListener,
         InvoiceListFragment.OnFragmentInteractionListener,
         DashboardFragment.OnFragmentInteractionListener,
-    TemplateListFragment.OnFragmentInteractionListener,
+        TemplateListFragment.OnFragmentInteractionListener,
     IProgressbarProvider {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
@@ -374,6 +374,12 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                 mNavDrawerMenu.setActivatedItem(position);
                 sendScreenName(position);
                 break;
+            case R.id.drawer_menu_exchange:
+                Fragment fragmentExchange = new ExchangeFragment();
+                changeFragment(fragmentExchange);
+                mNavDrawerMenu.setActivatedItem(position);
+                sendScreenName(position);
+                break;
             case R.id.drawer_menu_support:
                 Intent intent = new Intent(this, TicketListActivity.class);
                 startActivity(intent);
@@ -547,7 +553,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         });
     }
 
-    private final class CurrencyViewPagerAdapter extends PagerAdapter {
+    private final class CurrencyViewPagerAdapter extends ViewPagerAdapter {
 
         private List<Balance> mBalances = new ArrayList<>();
 
@@ -581,28 +587,18 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             notifyDataSetChanged();
         }
 
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
         @Override
         public int getCount() {
             return mShowTitle ? 1 : mBalances.size();
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-
+        public View getView(int position, ViewPager pager) {
             if (DBG) Log.v(TAG, "instantiateItem pos: " + position);
 
-            LayoutInflater inflater = LayoutInflater.from(container.getContext());
+            LayoutInflater inflater = LayoutInflater.from(pager.getContext());
 
-            TextView tv = (TextView)inflater.inflate(R.layout.currency_viewpager_item, container, false);
+            TextView tv = (TextView)inflater.inflate(R.layout.currency_viewpager_item, pager, false);
 
             if (mShowTitle) {
                 tv.setText(mTitle);
@@ -622,9 +618,6 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                     }
                 }
             });
-
-            container.addView(tv);
-
             return tv;
         }
 
@@ -639,11 +632,6 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             sb.append(TextUtilsW1.getCurrencySymbol2(balance.currencyId, 1));
             return sb;
         }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View)object);
-        }
     }
 
     private static final class NavDrawerMenu {
@@ -657,6 +645,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                 R.id.drawer_menu_statement,
                 R.id.drawer_menu_invoices,
                 R.id.drawer_menu_withdrawal,
+                R.id.drawer_menu_exchange,
                 R.id.drawer_menu_support,
                 R.id.drawer_menu_logout
         };
@@ -669,6 +658,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                 case R.id.drawer_menu_statement: return R.string.title_statement;
                 case R.id.drawer_menu_invoices: return  R.string.title_invoices;
                 case R.id.drawer_menu_withdrawal: return R.string.title_withdrawal;
+                case R.id.drawer_menu_exchange: return R.string.title_exchange;
                 case R.id.drawer_menu_support: return R.string.title_support;
                 case R.id.drawer_menu_logout: return R.string.title_logout;
                 default:

@@ -529,4 +529,24 @@ public final class TextUtilsW1 {
     }
 
 
+    @Nullable
+    public static BigDecimal parseAmount(@Nullable CharSequence input) {
+        if (TextUtils.isEmpty(input)) return null;
+        StringBuilder stringBuilder = new StringBuilder(input.length());
+        for (int i = 0, size = input.length(); i < size; i++) {
+            char ch = input.charAt(i);
+            if (Character.isDigit(ch)) {
+                stringBuilder.append(ch);
+            } else if(ch == ',' || ch == '.') {
+                stringBuilder.append('.');
+            }
+        }
+
+        try {
+            return new BigDecimal(stringBuilder.toString());
+        } catch (NumberFormatException ne) {
+            // Ignore
+        }
+        return null;
+    }
 }

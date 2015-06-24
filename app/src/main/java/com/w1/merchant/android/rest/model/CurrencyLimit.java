@@ -9,6 +9,18 @@ import java.util.List;
  */
 public class CurrencyLimit  implements Serializable {
 
+    public static final String TYPE_BALANCE = "Balance";
+
+    public static final String TYPE_CREDIT = "Credit";
+
+    public static final String TYPE_DEBIT = "Debit";
+
+    public static final String CONSTRAINT_MAX_AMOUNT = "MaxAmount";
+
+    public static final String CONSTRAINT_MAX_DAY_AMOUNT = "MaxDayAmount";
+
+    public static final String CONSTRAINT_MAX_MONTH_AMOUNT = "MaxMonthAmount";
+
     public String currencyId;
 
     public String type;

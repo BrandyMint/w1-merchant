@@ -20,6 +20,7 @@
     <string name="drawer_menu_statement">Statement</string>
     <string name="drawer_menu_invoices">Invoices</string>
     <string name="drawer_menu_withdrawal">Withdrawal</string>
+    <string name="drawer_menu_exchange">Exchange</string>
     <string name="drawer_menu_support">Support</string>
     <string name="drawer_menu_logout">Log out</string>
 
@@ -27,6 +28,7 @@
     <string name="title_statement">Statement</string>
     <string name="title_invoices">Invoices</string>
     <string name="title_withdrawal">Funds withdrawal</string>
+    <string name="title_exchange">Currency exchange</string>
     <string name="title_support">Support</string>
     <string name="title_logout">Log out</string>
 
@@ -324,6 +326,19 @@
         <item quantity="one">The value must be shorter than %d symbol</item>
         <item quantity="other">The value must be shorter than %d symbols</item>
     </plurals>
+
+    <string name="exchange_content_description">Exchange</string>
+    <string name="exchange_russian_rubles_hint">Russian rubles (12 300).</string>
+    <string name="error_no_amount">The amount for transfer isn\'t specified</string>
+    <string name="error_not_enough_money">Insufficient funds</string>
+    <string name="error_no_currency_selected">Currency not selected</string>
+    <string name="enter_the_amount">Enter the amount</string>
+
+    <string name="exchange_currency_card_title">$currencyName (balance: $balance)</string>
+    <string name="no_currency_for_exchange">No currency to exchange</string>
+    <string name="exchange_rate_description">ExchangeRate — $srcCurrency to $dstCurrency\commission: $commission</string>
+    <string name="exchange_xx_to_yy">Exchange\n$amountFrom to $amountTo</string>
+    <string name="exchanged_xx_to_yy">\n$amountFrom exchanged to $amountTo</string>
 
 </resources>
 

@@ -1,10 +1,21 @@
 package com.w1.merchant.android.utils;
 
+import com.w1.merchant.android.BuildConfig;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+
+import java.math.BigDecimal;
 
 import static com.w1.merchant.android.utils.TextUtilsW1.formatUserId;
+import static com.w1.merchant.android.utils.TextUtilsW1.parseAmount;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk=21)
 public class TextUtilsW1Test {
 
     @Test
@@ -24,5 +35,20 @@ public class TextUtilsW1Test {
         assertEquals("123blabla", formatUserId("123blabla"));
         assertEquals("123 ", formatUserId("123 "));
         assertEquals("1234 blabla", formatUserId("1234 blabla"));
+    }
+
+
+    @Test
+    public void testParseAmount() throws Exception {
+        assertNull(parseAmount(null));
+        assertNull(parseAmount(""));
+        assertNull(parseAmount("."));
+        assertNull(parseAmount("dsf"));
+        assertEquals(BigDecimal.ZERO, parseAmount("0"));
+        assertEquals(BigDecimal.ZERO.compareTo(parseAmount("0,0")), 0);
+        assertEquals(BigDecimal.ZERO.compareTo(parseAmount("000.00 ")), 0);
+        assertEquals(0, BigDecimal.ONE.compareTo(parseAmount(" 001.00 ")));
+        assertEquals(0, BigDecimal.ONE.compareTo(parseAmount("1")));
+        assertEquals(BigDecimal.valueOf(1.23), parseAmount("1,23"));
     }
 }

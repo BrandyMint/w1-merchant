@@ -50,7 +50,8 @@
         <activity
             android:name=".ui.MenuActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".ui.AddInvoiceActivity"

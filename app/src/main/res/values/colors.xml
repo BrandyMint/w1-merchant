@@ -28,4 +28,20 @@
          which is used to tint widgets -->
     <color name="colorAccent">#009688</color>
 
+    <color name="scheme_green">#99D067</color>
+    <color name="scheme_purple">#9A83C9</color>
+    <color name="scheme_blue">#80C9DD</color>
+    <color name="scheme_orange">#F89A6D</color>
+    <color name="scheme_pink">#DB8496</color>
+    <color name="scheme_dove_colored">#6CBEB1</color>
+
+    <color name="scheme_green2">#87b85b</color>
+    <color name="scheme_purple2">#8773b0</color>
+    <color name="scheme_blue2">#72b3c4</color>
+    <color name="scheme_orange2">#de8a62</color>
+    <color name="scheme_pink2">#c27585</color>
+    <color name="scheme_dove_colored2">#5ea69a</color>
+
+    <color name="text_color_invalid_amount">#ea912323</color>
+
 </resources>

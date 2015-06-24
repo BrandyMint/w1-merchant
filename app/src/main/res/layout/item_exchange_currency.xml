@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/exchange_card_height"
+    android:focusableInTouchMode="false"
+    android:focusable="false"
+    tools:background="@color/scheme_green"
+    >
+
+    <TextView
+        android:id="@+id/exchange_title_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="26dp"
+        tools:text="@string/exchange_russian_rubles_hint"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:scrollHorizontally="false"
+        android:focusableInTouchMode="false"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="#80ffffff"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/exchange_edit_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="52dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        tools:hint="@string/enter_the_amount"
+        android:inputType="numberDecimal"
+        android:scrollHorizontally="false"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:textCursorDrawable="@drawable/shape_cursor_white"
+        android:textSize="36sp" />
+
+</FrameLayout>

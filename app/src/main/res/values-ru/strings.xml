@@ -20,6 +20,7 @@
     <string name="drawer_menu_statement">Выписка</string>
     <string name="drawer_menu_invoices">Счета</string>
     <string name="drawer_menu_withdrawal">Вывод</string>
+    <string name="drawer_menu_exchange">Обмен</string>
     <string name="drawer_menu_support">Поддержка</string>
     <string name="drawer_menu_logout">Выход</string>
 
@@ -27,6 +28,7 @@
     <string name="title_statement">Выписка</string>
     <string name="title_invoices">Счета</string>
     <string name="title_withdrawal">Вывод средств</string>
+    <string name="title_exchange">Обмен валюты</string>
     <string name="title_support">Поддержка</string>
     <string name="title_logout">Выход</string>
 
@@ -325,5 +327,16 @@
         <item quantity="other">В значении не должно быть больше %d символов</item>
     </plurals>
 
+    <string name="exchange_content_description">Обменять</string>
+    <string name="exchange_russian_rubles_hint">Российские рубли (12 300).</string>
+    <string name="error_no_amount">Не указана сумма перевода</string>
+    <string name="error_not_enough_money">Недостаточно средств</string>
+    <string name="error_no_currency_selected">Валюта не выбрана</string>
+    <string name="enter_the_amount">Введите сумму</string>
+    <string name="exchange_currency_card_title">$currencyName (остаток: $balance)</string>
+    <string name="no_currency_for_exchange">Нет валют для обмена</string>
+    <string name="exchange_rate_description">Курс — $srcCurrency за $dstCurrency\nКомиссия: $comission</string>
+    <string name="exchange_xx_to_yy">Меняем\n$amountFrom на $amountTo</string>
+    <string name="exchanged_xx_to_yy">$amountFrom обменяны на $amountTo</string>
 
 </resources>
