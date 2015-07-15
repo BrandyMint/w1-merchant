@@ -262,7 +262,7 @@
     <string name="commission_too_small">The commission is too small</string>
     <string name="commission_too_large">The commission is too large</string>
 
-    <string name="new_conversation_subject">Request from merchant private office</string>
+    <string name="new_conversation_subject">Request from Wallet One private office</string>
 
     <string name="text_banner_1">Sales analytics</string>
     <string name="text_banner_2">Templates&#160;for money&#160;withdrawal</string>
