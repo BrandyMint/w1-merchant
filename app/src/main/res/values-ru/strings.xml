@@ -40,7 +40,7 @@
     <string name="login">Телефон или емайл</string>
 	<string name="password">Пароль</string>
 	<string name="logo_text">Для бизнеса</string>
-	<string name="authorization">Авторизоваться</string>
+	<string name="login_button">Войти</string>
 	<string name="paid">Оплачен</string>
 	<string name="not_paid">Не оплачен</string>
 	<string name="partially">Частично</string>

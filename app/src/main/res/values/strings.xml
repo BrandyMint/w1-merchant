@@ -40,7 +40,7 @@
     <string name="login">Telephone or e-mail</string>
     <string name="password">Password</string>
     <string name="logo_text">For business</string>
-    <string name="authorization">Authorization</string>
+    <string name="login_button">Log in</string>
     <string name="paid">Paid</string>
     <string name="not_paid">Not paid</string>
     <string name="partially">Partially paid</string>
