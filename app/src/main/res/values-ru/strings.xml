@@ -37,7 +37,7 @@
     <string name="drawer_close">Закрыть боковое меню</string>
     <string name="output">Вывод</string>
     <string name="output_cash">Вывод средств</string>
-    <string name="login">Телефон или емайл</string>
+    <string name="login">Телефон или e-mail</string>
 	<string name="password">Пароль</string>
 	<string name="logo_text">Для бизнеса</string>
 	<string name="login_button">Войти</string>
@@ -49,7 +49,7 @@
 	<string name="rus_rubl">Российский рубль</string>
 	<string name="descr">Описание</string>
 	<string name="exampl_pizza">Например, доставка пиццы</string>
-	<string name="tel_recipient">Телефон или емайл получателя</string>
+	<string name="tel_recipient">Телефон или e-mail получателя</string>
 	<string name="mail_or_tel">my@mail.ru или 89031234567</string>
 	<string name="sum">Сумма</string>
 	<string name="enter_amount">Введите сумму</string>
@@ -66,7 +66,7 @@
 	<string name="week">неделя</string>
 	<string name="month">месяц</string>
     <string name="clear_field">очистить</string>
-	<string name="user_not_found">Не корректный емайл или телефон</string>
+	<string name="user_not_found">Не корректный e-mail или телефон</string>
 	<string name="bad_password">Пароль пользователя не соответствует</string>
     <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
