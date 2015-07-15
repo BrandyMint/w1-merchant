@@ -69,3 +69,11 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
+
+#Android support v4
+-keep class android.support.v7.widget.SearchView { *; }
+
+#Android design library
+-keep public class * extends android.support.design.widget.CoordinatorLayout.Behavior { *; }
+-keep public class * extends android.support.design.widget.ViewOffsetBehavior { *; }
+-keepclassmembers class android.support.design.widget.FloatingActionButton$Behavior { public <init>(); }

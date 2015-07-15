@@ -297,7 +297,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
 
             @Override
             public void onPageSelected(int position) {
-                Log.d(TAG, "currency from view pager onPageSelected() called with " + "position = [" + position + "]");
+                if (DBG) Log.d(TAG, "currency from view pager onPageSelected() called with " + "position = [" + position + "]");
                 mFromAdapter.onPageSelected(mFromViewPager, position);
                 refreshCurrencyToList();
                 refreshAmount();
@@ -336,7 +336,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
 
             @Override
             public void onPageSelected(int position) {
-                Log.d(TAG, "currency to view pager onPageSelected() called with " + "position = [" + position + "]");
+                if (DBG) Log.d(TAG, "currency to view pager onPageSelected() called with " + "position = [" + position + "]");
                 mToAdapter.onPageSelected(mToViewPager, position);
                 refreshAmount();
                 refreshCurrencyRateDescription();
@@ -384,7 +384,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
     }
 
     private void refreshCurrencyFromList() {
-        Log.d(TAG, "refreshCurrencyFromList()");
+        if (DBG) Log.d(TAG, "refreshCurrencyFromList()");
         List<String> newList = new ArrayList<>(mFromAdapter.getCount());
 
         for (Balance balance: mBalances) {
@@ -398,7 +398,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
     }
 
     private void refreshCurrencyToList() {
-        Log.d(TAG, "refreshCurrencyToList()");
+        if (DBG) Log.d(TAG, "refreshCurrencyToList()");
         List<String> newList;
         String selectedCurrencyFrom = getSelectedCurrencyFrom();
 

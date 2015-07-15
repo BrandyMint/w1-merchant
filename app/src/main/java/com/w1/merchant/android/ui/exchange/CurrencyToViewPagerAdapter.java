@@ -74,7 +74,7 @@ final class CurrencyToViewPagerAdapter extends PagerAdapter {
 
         holder = findViewHolder(container, currency);
         if (holder != null) {
-            Log.d(TAG, "instantiateItem: found old viewHolder");
+            if (DBG) Log.d(TAG, "instantiateItem: found old viewHolder");
             bindViewHolder(holder);
             return holder;
         }
@@ -122,7 +122,7 @@ final class CurrencyToViewPagerAdapter extends PagerAdapter {
     }
 
     public void onPageSelected(ViewGroup container, int position) {
-        Log.d(TAG, "onPageSelected() called with " + "position = [" + position + "]");
+        if (DBG) Log.d(TAG, "onPageSelected() called with " + "position = [" + position + "]");
         refreshAmount(container, position);
         String currency = getCurrency(position);
         ViewHolder holder = findViewHolder(container, currency);
@@ -137,7 +137,7 @@ final class CurrencyToViewPagerAdapter extends PagerAdapter {
     }
 
     void bindViewHolder(ViewHolder holder) {
-        Log.d(TAG, "bindViewHolder() called with " + "holder = [" + holder + "]");
+        if (DBG) Log.d(TAG, "bindViewHolder() called with " + "holder = [" + holder + "]");
         holder.title.setText(ExchangesHelper.getBalanceCardTitle(mCallbacks.getBalanceList(),
                 holder.currency, holder.root.getResources()));
         bindAmount(holder);
