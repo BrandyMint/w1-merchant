@@ -8,6 +8,8 @@ public class ResponseError {
 
     public static final String ERROR_NOT_FOUND = "NOT_FOUND";
 
+    public static final String ERROR_USER_PASSWORD_NOT_MATCH = "USER_PASSWORD_NOT_MATCH";
+
     public static final String ERROR_INVALID_TOKEN = "invalid_token";
 
     public static final String ERROR_INSUFFICIENT_SCOPE = "insufficient_scope";

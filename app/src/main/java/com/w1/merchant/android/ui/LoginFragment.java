@@ -44,6 +44,7 @@ import com.w1.merchant.android.rest.model.AuthModel;
 import com.w1.merchant.android.rest.model.AuthPrincipalRequest;
 import com.w1.merchant.android.rest.model.OneTimePassword;
 import com.w1.merchant.android.rest.model.PrincipalUser;
+import com.w1.merchant.android.rest.model.ResponseError;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -305,7 +306,7 @@ public class LoginFragment extends Fragment {
                             public void run() {
                                 scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight());
                             }
-                        }, 5*16);
+                        }, 5 * 16);
                     }
                 } else {
                     if (imeKeyboardShown) {
@@ -340,19 +341,21 @@ public class LoginFragment extends Fragment {
         Session.getInstance().clear();
 
         if (error.isErrorCaptchaRequired() || error.isErrorInvalidCaptcha()) return;
-        errMsg = error.getErrorDescription(getResources());
-        if (TextUtils.isEmpty(errMsg)) {
-            switch (error.getHttpStatus()) {
-                case 400:
-                    errMsg = getText(R.string.bad_password);
-                    break;
-                case 404:
-                    errMsg = getText(R.string.user_not_found);
-                    break;
-                default:
-                    errMsg = getText(R.string.network_error);
-                    break;
-            }
+        switch (error.getHttpStatus()) {
+            case 400:
+                if (error.error != null && ResponseError.ERROR_USER_PASSWORD_NOT_MATCH.equalsIgnoreCase(error.error.getTextCode())) {
+                    // Показываем "Введён неверный пароль" вместо пришедшего с сервера "пароль пользователя не соответствует"
+                    errMsg = getText(R.string.entered_password_incorrect);
+                } else {
+                    errMsg = error.getErrorDescription(getText(R.string.network_error), getResources());
+                }
+                break;
+            case 404:
+                errMsg = getText(R.string.user_not_found);
+                break;
+            default:
+                errMsg = error.getErrorDescription(getText(R.string.network_error), getResources());
+                break;
         }
 
         toast = Toast.makeText(getActivity(), errMsg, Toast.LENGTH_LONG);

@@ -67,7 +67,7 @@
 	<string name="month">месяц</string>
     <string name="clear_field">очистить</string>
 	<string name="user_not_found">Не корректный e-mail или телефон</string>
-	<string name="bad_password">Пароль пользователя не соответствует</string>
+	<string name="entered_password_incorrect">Введён неверный пароль</string>
     <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
 	<string name="data_load">Данные будут загружены</string>

@@ -66,7 +66,7 @@
     <string name="week">week</string>
     <string name="month">month</string>
     <string name="user_not_found">Invalid e-mail or telephone</string>
-    <string name="bad_password">Invalid password</string>
+    <string name="entered_password_incorrect">Entered password is incorrect</string>
     <string name="forgot">Send</string>
     <string name="data_load">Data will be load</string>
     <string name="loading">Loading…</string>
