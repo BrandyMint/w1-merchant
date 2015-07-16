@@ -14,6 +14,7 @@ import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.Log;
+import android.util.Patterns;
 
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
@@ -45,6 +46,8 @@ public final class TextUtilsW1 {
     private static final Pattern IMAGE_URL_PATTERN = Pattern.compile(
             "\\bhttp(?:s)?:\\/\\/\\S+?\\.(?:png|jpg|jpeg|gif|bmp|webp)\\b",
             Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^\\+?[0-9\\s()-]{7,}$");
 
     private TextUtilsW1() {}
 
@@ -99,6 +102,19 @@ public final class TextUtilsW1 {
         } else {
             return source.subSequence(0, length);
         }
+    }
+
+    public static boolean isPossibleEmail(CharSequence text) {
+        if (TextUtils.isEmpty(text)) return false;
+        return Patterns.EMAIL_ADDRESS.matcher(text).matches();
+    }
+
+    /**
+     * Проверка на валидность номер телефона. Упрощенная (быстрая), не точная
+     */
+    public static boolean isPossiblePhoneNumber(CharSequence text) {
+        if (text.length() <= 7) return false;
+        return PHONE_NUMBER_PATTERN.matcher(text).matches();
     }
 
     /**

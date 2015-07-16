@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -36,14 +37,15 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
+import com.w1.merchant.android.rest.ResponseErrorException;
+import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.AuthCreateModel;
 import com.w1.merchant.android.rest.model.AuthModel;
 import com.w1.merchant.android.rest.model.AuthPrincipalRequest;
 import com.w1.merchant.android.rest.model.OneTimePassword;
 import com.w1.merchant.android.rest.model.PrincipalUser;
-import com.w1.merchant.android.rest.ResponseErrorException;
-import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
+import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +79,7 @@ public class LoginFragment extends Fragment {
     private Vibrator mVibrator;
     private ProgressBar mProgress;
 
+    // TODO переделать
     private final Matcher mLooksLikePhoneMatcher = Pattern.compile("[0-9]{11}").matcher("");
 
     private ArrayList<String> mLogins = new ArrayList<>();
@@ -240,6 +243,15 @@ public class LoginFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private static CharSequence getMsgOneTimePasswordIsSend(CharSequence dest, Resources resources) {
+        if (!TextUtilsW1.isPossibleEmail(dest) && TextUtilsW1.isPossiblePhoneNumber(dest)) {
+            // TODO: 16.07.15 Форматировать телефонный номер?
+            return resources.getString(R.string.sent_new_password_on_phone, dest);
+        } else {
+            return resources.getString(R.string.sent_new_password, dest);
+        }
     }
 
     private void adjustBackgroundImageSizes(final View root) {
@@ -443,6 +455,7 @@ public class LoginFragment extends Fragment {
                     selectPrincipal(user);
                 } else {
                     setProgress(false);
+                    Session.getInstance().clear();
                 }
             }
         };
@@ -520,6 +533,7 @@ public class LoginFragment extends Fragment {
 
         mSendOneTimePasswordSubscription.unsubscribe();
 
+        Session.getInstance().clear();
         Observable<Void> observer = AppObservable.bindFragment(this,
                 RestClient.getApiMasterSessions().sendOneTimePassword(new OneTimePassword.Request(login)));
 
@@ -541,8 +555,9 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onCompleted() {
                         if (LoginFragment.this.getActivity() == null) return;
-                        Toast toast = Toast.makeText(LoginFragment.this.getActivity(), getString(R.string.pass_sent,
-                                mLoginTextView.getText().toString()), Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(LoginFragment.this.getActivity(),
+                                getMsgOneTimePasswordIsSend(mLoginTextView.getText(), getResources()),
+                                Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();
                         setProgress(false);
@@ -557,7 +572,7 @@ public class LoginFragment extends Fragment {
                             onCompleted();
                         } else {
                             if (LoginFragment.this.getActivity() == null) return;
-                            CharSequence errText = error.getErrorDescription(getText(R.string.failed_to_send_one_time_password));
+                            CharSequence errText = error.getErrorDescription(getText(R.string.failed_to_send_one_time_password), getResources());
                             Toast toast = Toast.makeText(LoginFragment.this.getActivity(), errText, Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.TOP, 0, 50);
                             toast.show();

@@ -11,6 +11,7 @@ import java.util.List;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import rx.Observable;
@@ -23,6 +24,7 @@ public interface ApiMasterSessions {
     @POST("/sessions")
     Observable<AuthModel> auth(@Body AuthCreateModel req);
 
+    // XXX sendOneTimePassword() не работает с master-токенами, сессия должна быть чистой
     @POST("/password/otp")
     Observable<Void> sendOneTimePassword(@Body OneTimePassword.Request request);
 
@@ -32,10 +34,10 @@ public interface ApiMasterSessions {
     @DELETE("/sessions/current")
     Observable<Void> logout();
 
-
     @GET("/principalusers")
     Observable<List<PrincipalUser>> getPrincipalUsers();
 
+    @Headers("Content-Length: 0")
     @POST("/password")
     Observable<Void> restorePassword(@Path("sendto") String login);
 

@@ -174,7 +174,8 @@
     <string name="hour_ago1">hours ago</string>
     <string name="hour_ago2">hours ago</string>
     <string name="hour_ago3">hour ago</string>
-    <string name="pass_sent">Temporary password sent to your e-mail</string>
+    <string name="sent_new_password">One-time password has been sent to %s.</string>
+    <string name="sent_new_password_on_phone">One-time password has been sent to phone number %s.</string>
     <string name="failed_to_send_one_time_password">Failed to send one-time password. Please try again later</string>
     <string name="balance">Balance</string>
     <string name="no_inet">Check your internet connection</string>

@@ -170,7 +170,8 @@
     <string name="hour_ago1">часа назад</string>
     <string name="hour_ago2">часов назад</string>
     <string name="hour_ago3">час назад</string>
-    <string name="pass_sent">Временный пароль отправлен, проверьте почту</string>
+    <string name="sent_new_password">Вам отправлен временный пароль на %s.</string>
+    <string name="sent_new_password_on_phone">Вам отправлен одноразовый пароль на номер %s.</string>
     <string name="balance">Баланс</string>
     <string name="no_inet">Приложение не может работать без доступа в Интернет и будет закрыто</string>
     <string name="hour_cut">ч.</string>

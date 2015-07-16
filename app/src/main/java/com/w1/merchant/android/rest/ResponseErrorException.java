@@ -42,7 +42,7 @@ public class ResponseErrorException extends RuntimeException {
     }
 
     public CharSequence getErrorDescription(CharSequence fallbackText, @Nullable Resources resources) {
-        String desc = getErrorDescription((Resources) resources);
+        String desc = getErrorDescription(resources);
         return !TextUtils.isEmpty(desc) ? desc : fallbackText;
     }
 
