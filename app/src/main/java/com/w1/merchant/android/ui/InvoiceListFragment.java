@@ -49,7 +49,7 @@ public class InvoiceListFragment extends Fragment {
     private static final int ACT_ADD = 1;
 
     private CheckboxStyleSegmentedRadioGroup srgInvoice;
-	private TextView llFooter;
+    private TextView llFooter;
 
     private InvoiceListAdapter mAdapter;
 
@@ -88,13 +88,13 @@ public class InvoiceListFragment extends Fragment {
         llFooter = (TextView)inflater.inflate(R.layout.footer2, lvInvoice, false);
         
         srgInvoice.setOnCheckedChangeListener(new CheckboxStyleSegmentedRadioGroup.OnCheckedChangeListener() {
-    		@Override
-    		public void onCheckedChanged(CheckboxStyleSegmentedRadioGroup group, int checkedId) {
+            @Override
+            public void onCheckedChanged(CheckboxStyleSegmentedRadioGroup group, int checkedId) {
                 hideFooter();
                 mCurrentPage = 1;
                 refreshList();
             }
-    	});
+        });
 
         mAdapter = new InvoiceListAdapter(getActivity());
         llFooter.setVisibility(View.GONE);
@@ -313,7 +313,7 @@ public class InvoiceListFragment extends Fragment {
 
     public void showFooter() {
         if (llFooter != null) llFooter.setVisibility(View.VISIBLE);
-	}
+    }
 
     public void hideFooter() {
         if (llFooter != null) llFooter.setVisibility(View.GONE);

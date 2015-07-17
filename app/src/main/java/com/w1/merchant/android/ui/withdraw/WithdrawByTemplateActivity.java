@@ -51,11 +51,11 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 
     private static final String pattern = "[^0-9]";
 
-	private EditTextRouble mAmountEditText;
+    private EditTextRouble mAmountEditText;
     private EditTextRouble mCommissionEditText;
     private TextView tvOutputName;
     private ImageView ivOutputIcon;
-	private ProgressBar pbTemplates;
+    private ProgressBar pbTemplates;
     private String templateId;
     private boolean mIsBusinessAccount;
     private LinearLayout llMain;
@@ -71,28 +71,28 @@ public class WithdrawByTemplateActivity extends ActivityBase {
     private Subscription mGetProviderSubscription = Subscriptions.empty();
     private Subscription mGetTemplateSubscription = Subscriptions.empty();
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_withdraw_by_template);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_withdraw_by_template);
 
-		llMain = (LinearLayout) findViewById(R.id.llMain);
+        llMain = (LinearLayout) findViewById(R.id.llMain);
         findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-		
-		ivOutputIcon = (ImageView) findViewById(R.id.ivOutputIcon);
-		tvOutputName = (TextView) findViewById(R.id.tvOutputName);
-		
-		pbTemplates = (ProgressBar) findViewById(R.id.pbTemplates);
-		templateId = getIntent().getStringExtra("templateId");
-		mIsBusinessAccount =  getIntent().getBooleanExtra("mIsBusinessAccount", false);
+
+        ivOutputIcon = (ImageView) findViewById(R.id.ivOutputIcon);
+        tvOutputName = (TextView) findViewById(R.id.tvOutputName);
+
+        pbTemplates = (ProgressBar) findViewById(R.id.pbTemplates);
+        templateId = getIntent().getStringExtra("templateId");
+        mIsBusinessAccount =  getIntent().getBooleanExtra("mIsBusinessAccount", false);
 
         loadTemplate();
-	}
+    }
 
     @Override
     protected void onDestroy() {
@@ -183,37 +183,37 @@ public class WithdrawByTemplateActivity extends ActivityBase {
         return mAmountEditText.getText().toString().replaceAll(pattern, "");
     }
 
-	boolean checkFields() {
-		boolean result;
-		
-		if (TextUtils.isEmpty(readAmountWithComissionEditText())) {
-			mCommissionEditText.setError(getString(R.string.error_field));
-			result = false;
-		} else result = true;
-		if (TextUtils.isEmpty(readAmountEditText())) {
-			if (result)	mAmountEditText.setError(getString(R.string.error_field));
-			result = false;
-		} else result = true;
-		
-		return result;
-	}
+    boolean checkFields() {
+        boolean result;
 
-	//ответ на запрос Template
-	private void onTemplateLoaded(Template template) {
+        if (TextUtils.isEmpty(readAmountWithComissionEditText())) {
+            mCommissionEditText.setError(getString(R.string.error_field));
+            result = false;
+        } else result = true;
+        if (TextUtils.isEmpty(readAmountEditText())) {
+            if (result)	mAmountEditText.setError(getString(R.string.error_field));
+            result = false;
+        } else result = true;
+
+        return result;
+    }
+
+    //ответ на запрос Template
+    private void onTemplateLoaded(Template template) {
         loadProvider(template.providerId);
-		
-		LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(
+
+        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		lParams.gravity = Gravity.LEFT;
-		lParams.topMargin = 40;
-		lParams.leftMargin = 30;
-		lParams.rightMargin = 30;
-		      
-		LinearLayout.LayoutParams lParams2 = new LinearLayout.LayoutParams(
+        lParams.gravity = Gravity.LEFT;
+        lParams.topMargin = 40;
+        lParams.leftMargin = 30;
+        lParams.rightMargin = 30;
+
+        LinearLayout.LayoutParams lParams2 = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		lParams2.gravity = Gravity.LEFT;
-		lParams2.leftMargin = 30;
-		lParams2.rightMargin = 30;
+        lParams2.gravity = Gravity.LEFT;
+        lParams2.leftMargin = 30;
+        lParams2.rightMargin = 30;
 
         if (template.fields != null) {
             for (Template.Field field : template.fields) {
@@ -232,17 +232,17 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             }
         }
 
-		if (!mIsBusinessAccount) {
-			//сумма с комиссией
-			TextView tvSumCommis = new TextView(this);
-			tvSumCommis.setText(R.string.sum_commis);
-			tvSumCommis.setTextColor(Color.parseColor("#BDBDBD"));
-			llMain.addView(tvSumCommis, lParams);
-			mCommissionEditText = new EditTextRouble(this);
-			mCommissionEditText.setTextSize(22);
+        if (!mIsBusinessAccount) {
+            //сумма с комиссией
+            TextView tvSumCommis = new TextView(this);
+            tvSumCommis.setText(R.string.sum_commis);
+            tvSumCommis.setTextColor(Color.parseColor("#BDBDBD"));
+            llMain.addView(tvSumCommis, lParams);
+            mCommissionEditText = new EditTextRouble(this);
+            mCommissionEditText.setTextSize(22);
             mCommissionEditText.setMinEms(6);
-			DigitsKeyListener digkl2 = DigitsKeyListener.getInstance();
-			mCommissionEditText.setKeyListener(digkl2);
+            DigitsKeyListener digkl2 = DigitsKeyListener.getInstance();
+            mCommissionEditText.setKeyListener(digkl2);
             mCommissionEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -264,16 +264,16 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 }
             });
             llMain.addView(mCommissionEditText, lParams2);
-			
-			//сумма к выводу
-			TextView tvSum = new TextView(this);
-			tvSum.setText(R.string.sum_output);
-			tvSum.setTextColor(Color.parseColor("#BDBDBD"));
-			llMain.addView(tvSum, lParams);
-			mAmountEditText = new EditTextRouble(this);
-			mAmountEditText.setTextSize(22);
+
+            //сумма к выводу
+            TextView tvSum = new TextView(this);
+            tvSum.setText(R.string.sum_output);
+            tvSum.setTextColor(Color.parseColor("#BDBDBD"));
+            llMain.addView(tvSum, lParams);
+            mAmountEditText = new EditTextRouble(this);
+            mAmountEditText.setTextSize(22);
             mAmountEditText.setMinEms(6);
-			mAmountEditText.setKeyListener(digkl2);
+            mAmountEditText.setKeyListener(digkl2);
             mAmountEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -295,63 +295,63 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 }
             });
             llMain.addView(mAmountEditText, lParams2);
-			
-			//Вывести
-			LinearLayout.LayoutParams lParams3 = new LinearLayout.LayoutParams(
+
+            //Вывести
+            LinearLayout.LayoutParams lParams3 = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-			lParams3.gravity = Gravity.CENTER_HORIZONTAL;
-		    lParams3.topMargin = 20;
-			TextView tvRemove = new TextView(this);
-		    tvRemove.setText(getString(R.string.remove));
-		    tvRemove.setTextSize(24);
-		    tvRemove.setTextColor(Color.RED);
-		    tvRemove.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (checkFields()) {
-						Intent intent = new Intent(WithdrawByTemplateActivity.this, ConfirmWithdrawalActivity.class);
-						intent.putExtra("SumOutput", readAmountEditText());
-						intent.putExtra("SumCommis", readAmountWithComissionEditText());
-						intent.putExtra("templateId", templateId);
-						intent.putExtra("token", Session.getInstance().getAuthtoken());
-						startActivity(intent);
-						finish();
-					}
-				}
-			});
-		    llMain.addView(tvRemove, lParams3);
-		}
-		
-		Picasso.with(this)
-				.load(template.getLogoUrl())
-				.into(ivOutputIcon);
+            lParams3.gravity = Gravity.CENTER_HORIZONTAL;
+            lParams3.topMargin = 20;
+            TextView tvRemove = new TextView(this);
+            tvRemove.setText(getString(R.string.remove));
+            tvRemove.setTextSize(24);
+            tvRemove.setTextColor(Color.RED);
+            tvRemove.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (checkFields()) {
+                        Intent intent = new Intent(WithdrawByTemplateActivity.this, ConfirmWithdrawalActivity.class);
+                        intent.putExtra("SumOutput", readAmountEditText());
+                        intent.putExtra("SumCommis", readAmountWithComissionEditText());
+                        intent.putExtra("templateId", templateId);
+                        intent.putExtra("token", Session.getInstance().getAuthtoken());
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            });
+            llMain.addView(tvRemove, lParams3);
+        }
+
+        Picasso.with(this)
+                .load(template.getLogoUrl())
+                .into(ivOutputIcon);
 
 
         tvOutputName.setText(template.title);
-		
-		//Расписание
-		lParams4 = new LinearLayout.LayoutParams(
+
+        //Расписание
+        lParams4 = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		//lParams4.gravity = Gravity.CENTER_HORIZONTAL;
-		lParams4.topMargin = 20;
-		lParams4.leftMargin = 30;
-		lParams4.rightMargin = 30;
-		lParams4.bottomMargin = 20;
-		TextView tvSchedule = new TextView(this);
-	    tvSchedule.setText(template.schedule == null ? "" :
+        //lParams4.gravity = Gravity.CENTER_HORIZONTAL;
+        lParams4.topMargin = 20;
+        lParams4.leftMargin = 30;
+        lParams4.rightMargin = 30;
+        lParams4.bottomMargin = 20;
+        TextView tvSchedule = new TextView(this);
+        tvSchedule.setText(template.schedule == null ? "" :
                 template.schedule.getDescription(getResources()));
-	    tvSchedule.setTextColor(Color.parseColor("#BDBDBD"));
-	    llMain.addView(tvSchedule, lParams4);
-	    tvSchedule.setGravity(Gravity.CENTER_HORIZONTAL);
-	    
-	}
-	
-	//ответ на запрос Provider
-	public void onProviderLoaded(Provider provider) {
+        tvSchedule.setTextColor(Color.parseColor("#BDBDBD"));
+        llMain.addView(tvSchedule, lParams4);
+        tvSchedule.setGravity(Gravity.CENTER_HORIZONTAL);
+
+    }
+
+    //ответ на запрос Provider
+    public void onProviderLoaded(Provider provider) {
         mProvider = provider;
 
         // XXX inflate в коде. Переделать.
-		TextView tvComis = new TextView(this);
+        TextView tvComis = new TextView(this);
         tvComis.setTextColor(Color.parseColor("#BDBDBD"));
         llMain.addView(tvComis, lParams4);
         tvComis.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -380,19 +380,19 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             }
         }
     }
-	
-	void startPBAnim() {
-    	totalReq += 1;
-    	if (totalReq == 1) {
-    		pbTemplates.setVisibility(View.VISIBLE);
-    	}
+
+    void startPBAnim() {
+        totalReq += 1;
+        if (totalReq == 1) {
+            pbTemplates.setVisibility(View.VISIBLE);
+        }
     }
     
     public void stopPBAnim() {
-    	totalReq -= 1;
-    	if (totalReq == 0) {
-    		pbTemplates.setVisibility(View.INVISIBLE);
-    	}
+        totalReq -= 1;
+        if (totalReq == 0) {
+            pbTemplates.setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -413,9 +413,9 @@ public class WithdrawByTemplateActivity extends ActivityBase {
     }
 
     void afterSumChange() {
-    	String inSumStringOrig = mAmountEditText.getText().toString();
-		String inSum = inSumStringOrig.replaceAll(pattern, "");
-		if (!inSum.isEmpty()) {
+        String inSumStringOrig = mAmountEditText.getText().toString();
+        String inSum = inSumStringOrig.replaceAll(pattern, "");
+        if (!inSum.isEmpty()) {
             BigDecimal origInputSum =  new BigDecimal(inSum);
             BigDecimal inputSum = Utils.clamp(origInputSum, mProvider.minAmount, mProvider.maxAmount)
                     .setScale(0, RoundingMode.UP);
@@ -434,16 +434,16 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             if (inSumStringOrig.indexOf("C") != inSumStringOrig.length() - 1) {
                 setAmountText(origInputSum + " C");
             }
-		} else {
+        } else {
             setCommissionText("");
             if (!TextUtils.isEmpty(mCommissionEditText.getHint())) mCommissionEditText.setHint("");
-		}
-	}
+        }
+    }
     
     void afterComisChange() {
-    	String commissionTextOrig = mCommissionEditText.getText().toString();
-		String commissionTextNum = commissionTextOrig.replaceAll(pattern, "");
-		if (!commissionTextNum.isEmpty()) {
+        String commissionTextOrig = mCommissionEditText.getText().toString();
+        String commissionTextNum = commissionTextOrig.replaceAll(pattern, "");
+        if (!commissionTextNum.isEmpty()) {
             BigDecimal commissionVal = new BigDecimal(commissionTextNum);
             // TODO Здесь нужны тесты. Возможны ошибки на пограничных значениях
             BigDecimal inputSum = Utils.clamp(commissionVal,
@@ -468,10 +468,10 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 setCommissionText(commissionVal + " C");
             }
 
-		} else {
+        } else {
             setAmountText("");
             if (!TextUtils.isEmpty(mAmountEditText.getHint())) mAmountEditText.setHint("");
-		}
+        }
     }
 }
 

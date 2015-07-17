@@ -68,21 +68,21 @@ public class TranscationSummaryReportActivity extends ActivityBase {
     }
 
     @Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_userentry_total);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_userentry_total);
 
         mCurrency = getIntent().getStringExtra(ARG_CURRENCY);
         mDateFrom = new Date(getIntent().getLongExtra(ARG_DATE_FROM, System.currentTimeMillis()));
         mDateTo = new Date(getIntent().getLongExtra(ARG_DATE_TO, System.currentTimeMillis()));
 
-		findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
+        findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-	}
+    }
 
     @Override
     protected void onStart() {

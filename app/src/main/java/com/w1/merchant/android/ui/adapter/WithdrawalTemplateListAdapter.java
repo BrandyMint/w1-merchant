@@ -30,9 +30,9 @@ public class WithdrawalTemplateListAdapter extends BaseAdapter {
 
     private List<Template> mTemplates = new ArrayList<>();
 
-	public WithdrawalTemplateListAdapter(Context c) {
+    public WithdrawalTemplateListAdapter(Context c) {
         mInflater = LayoutInflater.from(c);
-	}
+    }
 
     public void setTemplates(List<Template> templates) {
         mTemplates.clear();
@@ -52,35 +52,35 @@ public class WithdrawalTemplateListAdapter extends BaseAdapter {
         }
     }
 
-	public int getCount() {
-		return mTemplates.size();
-	}
+    public int getCount() {
+        return mTemplates.size();
+    }
 
     @Nullable
-	public Template getItem(int position) {
-		return mTemplates.get(position);
-	}
+    public Template getItem(int position) {
+        return mTemplates.get(position);
+    }
 
-	public long getItemId(int position) {
-		return mTemplates.get(position).templateId.longValue();
-	}
+    public long getItemId(int position) {
+        return mTemplates.get(position).templateId.longValue();
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
         Template template = mTemplates.get(position);
 
         ViewHolder holder;
-		View grid;
-		if (convertView == null) {
-			grid = mInflater.inflate(R.layout.template_cell, parent, false);
+        View grid;
+        if (convertView == null) {
+            grid = mInflater.inflate(R.layout.template_cell, parent, false);
             holder = new ViewHolder(grid);
             grid.setTag(R.id.tag_template_view_holder, holder);
-		} else {
-			grid = convertView;
+        } else {
+            grid = convertView;
             holder = (ViewHolder)grid.getTag(R.id.tag_template_view_holder);
-		}
+        }
 
-		Picasso.with(grid.getContext())
+        Picasso.with(grid.getContext())
                 .load(template.getLogoUrl())
                 .into(holder.imagePart);
 
@@ -91,10 +91,10 @@ public class WithdrawalTemplateListAdapter extends BaseAdapter {
             holder.date.setVisibility(View.INVISIBLE);
         }
 
-		holder.textPart.setText(template.title);
+        holder.textPart.setText(template.title);
 
-		return grid;
-	}
+        return grid;
+    }
 
     //форматирование дат для списка шаблонов
     private static String dateFormatTempl(Date date, Resources resources) {
