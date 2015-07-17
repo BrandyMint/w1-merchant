@@ -144,17 +144,17 @@ public class AddInvoiceActivity extends ActivityBase {
     boolean checkFields() {
 		int err = 0;
 		if (TextUtils.isEmpty(mPhoneView.getText().toString())) {
-			if (err == 0) mPhoneView.setError(getString(R.string.error_field));
+			if (err == 0) mPhoneView.setError(getText(R.string.error_field));
 			err += 1;
-		}
-		if ((mPhoneView.getText().toString().indexOf("@") > 0) |
-				(mPhoneView.getText().toString().matches(PHONE_PATTERN))) {
 		} else {
-			if (err == 0) etSum.setError(getString(R.string.mail_or_tel));
-			err += 1;
-		}
+            if ((mPhoneView.getText().toString().indexOf("@") <= 0) &&
+                    (!mPhoneView.getText().toString().matches(PHONE_PATTERN))) {
+                mPhoneView.setError(getText(R.string.mail_or_tel));
+                err += 1;
+            }
+        }
 		if (TextUtils.isEmpty(etSum.getText().toString())) {
-			if (err == 0) etSum.setError(getString(R.string.error_field));
+			if (err == 0) etSum.setError(getText(R.string.error_field));
 			err += 1;
 		} 
 		return (err == 0);
