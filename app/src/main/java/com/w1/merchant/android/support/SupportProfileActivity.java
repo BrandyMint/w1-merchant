@@ -78,13 +78,13 @@ public class SupportProfileActivity extends ActivityBase {
         if (ab == null) return;
         ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP| ActionBar.DISPLAY_USE_LOGO,
                 ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_HOME_AS_UP|ActionBar.DISPLAY_USE_LOGO);
-        ab.setTitle(mPost.userTitle);
+        ab.setTitle(mPost.getUserName());
         //ab.setIcon(android.R.color.transparent);
     }
 
 
     private void setupProfile() {
-        mNameView.setText(mPost.userTitle);
+        mNameView.setText(mPost.getUserName());
 
         if (mIconView.getWidth() == 0) {
             mIconView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

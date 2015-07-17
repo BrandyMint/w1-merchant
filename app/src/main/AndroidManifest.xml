@@ -132,7 +132,8 @@
         <activity
             android:name=".support.SupportProfileActivity"
             tools:ignore="UnusedAttribute"
-            android:parentActivityName=".support.ConversationActivity" >
+            android:parentActivityName=".support.ConversationActivity"
+            android:theme="@style/ConversationActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.w1.merchant.android.support.ConversationActivity" />

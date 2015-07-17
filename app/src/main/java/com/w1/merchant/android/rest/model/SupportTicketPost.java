@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.TextUtils;
 
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
@@ -88,6 +89,18 @@ public class SupportTicketPost implements Parcelable {
 
     public CharSequence getBodyHtml(Html.ImageGetter imageGetter) {
         return TextUtilsW1.safeFromHtmlPreLine(body, imageGetter);
+    }
+
+    /**
+     * @return Имя пользователя.
+     *
+     */
+    public CharSequence getUserName() {
+        if (TextUtils.isEmpty(userTitle)) return "";
+        String usernameSplit[] = userTitle.split("\\s+");
+        if (usernameSplit.length < 1) return userTitle;
+        // Имя. Или фамилия. Или ещё что-нибудь, как получится.
+        return usernameSplit[0];
     }
 
     public SupportTicketPost() {

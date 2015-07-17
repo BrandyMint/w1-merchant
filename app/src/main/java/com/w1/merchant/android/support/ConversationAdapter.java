@@ -203,7 +203,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         CharSequence msg = TextUtilsW1.removeTrailingWhitespaces(message.getBodyHtml(mImageGetterTheirMessage));
         msg = TextUtilsW1.replaceImgUrls(msg, mImageGetterTheirMessage);
         holder.message.setText(msg);
-        holder.username.setText(message.userTitle);
+        holder.username.setText(message.getUserName());
         bindAvatar(holder, message);
         TextViewImgLoader.bindAndLoadImages(holder.message, SHOW_PHOTO_ON_CLICK_LISTENER);
     }
