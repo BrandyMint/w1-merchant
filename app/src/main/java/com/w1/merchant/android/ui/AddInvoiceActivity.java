@@ -49,12 +49,12 @@ public class AddInvoiceActivity extends ActivityBase {
     private static final String APP_PREF = "W1_Pref";
 
     private EditText etSum;
-	private ProgressBar pbInvoice;
+    private ProgressBar pbInvoice;
 
-	private Vibrator mVibrator;
+    private Vibrator mVibrator;
 
-	private SharedPreferences mPref;
-	private AutoCompleteTextView mDescriptionView;
+    private SharedPreferences mPref;
+    private AutoCompleteTextView mDescriptionView;
     private AutoCompleteTextView mPhoneView;
 
     private final ArrayList<String> descrsArray = new ArrayList<>();
@@ -62,18 +62,18 @@ public class AddInvoiceActivity extends ActivityBase {
 
     private Subscription mCreateInvoiceSubscription = Subscriptions.unsubscribed();
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_add_invoice);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_invoice);
 
-		mPref = getSharedPreferences(APP_PREF, MODE_PRIVATE);
-		mDescriptionView = (AutoCompleteTextView) findViewById(R.id.actvDescr);
+        mPref = getSharedPreferences(APP_PREF, MODE_PRIVATE);
+        mDescriptionView = (AutoCompleteTextView) findViewById(R.id.actvDescr);
         Set<String> descrs = mPref.getStringSet("descrs", new HashSet<String>());
-		for(String r : descrs) {
-			descrsArray.add(r);
-		}
-		mDescriptionView.setAdapter(new ArrayAdapter(this,
+        for(String r : descrs) {
+            descrsArray.add(r);
+        }
+        mDescriptionView.setAdapter(new ArrayAdapter(this,
                 android.R.layout.simple_dropdown_item_1line, descrsArray));
         mDescriptionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -81,13 +81,13 @@ public class AddInvoiceActivity extends ActivityBase {
                 mPhoneView.requestFocus();
             }
         });
-		
-		mPhoneView = (AutoCompleteTextView) findViewById(R.id.actvTelEmail);
+
+        mPhoneView = (AutoCompleteTextView) findViewById(R.id.actvTelEmail);
         Set<String> telEmail = mPref.getStringSet("telEmail", new HashSet<String>());
-		for(String r : telEmail) {
-			telEmailArray.add(r);
-		}
-		mPhoneView.setAdapter(new ArrayAdapter(this,
+        for(String r : telEmail) {
+            telEmailArray.add(r);
+        }
+        mPhoneView.setAdapter(new ArrayAdapter(this,
                 android.R.layout.simple_dropdown_item_1line, telEmailArray));
         mPhoneView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -96,7 +96,7 @@ public class AddInvoiceActivity extends ActivityBase {
             }
         });
 
-		etSum = (EditText) findViewById(R.id.etSum);
+        etSum = (EditText) findViewById(R.id.etSum);
         etSum.addTextChangedListener(new TextWatcher() {
             boolean mEditing = false;
 
@@ -129,11 +129,11 @@ public class AddInvoiceActivity extends ActivityBase {
             }
         });
         TextView tvBillButton = (TextView) findViewById(R.id.tvBillButton);
-		tvBillButton.setOnClickListener(myOnClickListener);
-		findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);
-		pbInvoice = (ProgressBar) findViewById(R.id.pbInvoice);
-		mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-	}
+        tvBillButton.setOnClickListener(myOnClickListener);
+        findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);
+        pbInvoice = (ProgressBar) findViewById(R.id.pbInvoice);
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    }
 
     @Override
     protected void onDestroy() {
@@ -142,37 +142,37 @@ public class AddInvoiceActivity extends ActivityBase {
     }
 
     boolean checkFields() {
-		int err = 0;
-		if (TextUtils.isEmpty(mPhoneView.getText().toString())) {
-			if (err == 0) mPhoneView.setError(getText(R.string.error_field));
-			err += 1;
-		} else {
+        int err = 0;
+        if (TextUtils.isEmpty(mPhoneView.getText().toString())) {
+            if (err == 0) mPhoneView.setError(getText(R.string.error_field));
+            err += 1;
+        } else {
             if ((mPhoneView.getText().toString().indexOf("@") <= 0) &&
                     (!mPhoneView.getText().toString().matches(PHONE_PATTERN))) {
                 mPhoneView.setError(getText(R.string.mail_or_tel));
                 err += 1;
             }
         }
-		if (TextUtils.isEmpty(etSum.getText().toString())) {
-			if (err == 0) etSum.setError(getText(R.string.error_field));
-			err += 1;
-		} 
-		return (err == 0);
-	}
-	
-	private final OnClickListener myOnClickListener = new View.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			switch (v.getId()) {
-			case (R.id.tvBillButton):
-				bill();
-				break;
-			case (R.id.ivBack):
-				finish();
-				break;
-			}
-		}
-	};
+        if (TextUtils.isEmpty(etSum.getText().toString())) {
+            if (err == 0) etSum.setError(getText(R.string.error_field));
+            err += 1;
+        }
+        return (err == 0);
+    }
+
+    private final OnClickListener myOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+            case (R.id.tvBillButton):
+                bill();
+                break;
+            case (R.id.ivBack):
+                finish();
+                break;
+            }
+        }
+    };
 
     private void bill() {
         if (checkFields()) {
