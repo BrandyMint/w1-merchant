@@ -161,15 +161,10 @@
                 android:layout_below="@+id/etPassword"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="24dp"
+                style="@style/PositiveRedButton"
                 android:text="@string/login_button"
-                android:textColor="@color/auth_button_text_color"
-                android:enabled="false"
-                android:background="?selectableItemBackground"
-                android:textSize="12pt"
-                android:minHeight="48dp"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp" />
+                android:textColor="@color/positive_red_button_text_color"
+                android:enabled="false" />
         </RelativeLayout>
     </ScrollView>
 </FrameLayout>
