@@ -340,7 +340,7 @@ public class LoginFragment extends Fragment {
 
         Session.getInstance().clear();
 
-        if (error.isErrorCaptchaRequired() || error.isErrorInvalidCaptcha()) return;
+        if (error instanceof ResponseErrorException.CaptchaCancelledException) return;
         switch (error.getHttpStatus()) {
             case 400:
                 if (error.error != null && ResponseError.ERROR_USER_PASSWORD_NOT_MATCH.equalsIgnoreCase(error.error.getTextCode())) {
@@ -575,6 +575,7 @@ public class LoginFragment extends Fragment {
                             onCompleted();
                         } else {
                             if (LoginFragment.this.getActivity() == null) return;
+                            if (error instanceof ResponseErrorException.CaptchaCancelledException) return;
                             CharSequence errText = error.getErrorDescription(getText(R.string.failed_to_send_one_time_password), getResources());
                             Toast toast = Toast.makeText(LoginFragment.this.getActivity(), errText, Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.TOP, 0, 50);

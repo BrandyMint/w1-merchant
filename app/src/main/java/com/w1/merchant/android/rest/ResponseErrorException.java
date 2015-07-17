@@ -108,4 +108,11 @@ public class ResponseErrorException extends RuntimeException {
     public boolean isErrorInvalidCaptcha() {
         return error != null && ResponseError.ERROR_INVALID_CAPTCHA.equalsIgnoreCase(error.getTextCode());
     }
+
+    public static class CaptchaCancelledException extends ResponseErrorException {
+
+        public CaptchaCancelledException(ResponseErrorException ex) {
+            super(ex.getRetrofitError(), ex.error);
+        }
+    }
 }

@@ -144,7 +144,7 @@ public class RetryWhenCaptchaReady implements
                         switch (newDialogStatus) {
                             case CaptchaDialogFragment.STATUS_CANCELLED:
                                 LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
-                                subscriber.onError(error);// TODO
+                                subscriber.onError(new ResponseErrorException.CaptchaCancelledException(error));
                                 //onCancelled();
                                 break;
                             case CaptchaDialogFragment.STATUS_DONE:
