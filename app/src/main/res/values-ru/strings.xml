@@ -16,7 +16,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="drawer_menu_dashboard">Дэшборд</string>
+    <string name="drawer_menu_dashboard">Центр управления</string>
     <string name="drawer_menu_statement">Выписка</string>
     <string name="drawer_menu_invoices">Счета</string>
     <string name="drawer_menu_withdrawal">Вывод</string>
@@ -24,7 +24,7 @@
     <string name="drawer_menu_support">Поддержка</string>
     <string name="drawer_menu_logout">Выход</string>
 
-    <string name="title_dashboard">Дэшборд</string>
+    <string name="title_dashboard">Центр управления</string>
     <string name="title_statement">Выписка</string>
     <string name="title_invoices">Счета</string>
     <string name="title_withdrawal">Вывод средств</string>
