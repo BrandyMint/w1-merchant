@@ -31,12 +31,15 @@
 
     <com.w1.merchant.android.ui.widget.TextViewRouble
         android:id="@+id/tvConfirmText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center_horizontal"
+        android:layout_marginTop="14dp"
+        android:padding="6dp"
+        android:includeFontPadding="false"
+        tools:text="Счет на сумму 1 ры успешно выставлен"
+        android:gravity="center"
         android:textSize="10pt" />
 
     <TextView
@@ -44,9 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:text="@string/back"
-        android:textColor="#f00"
-        android:textSize="12pt" />
+        android:layout_marginTop="4dp"
+        style="@style/PositiveRedButton"
+        android:text="@string/back" />
 
 </LinearLayout>
