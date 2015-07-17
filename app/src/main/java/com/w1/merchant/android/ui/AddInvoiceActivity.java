@@ -142,10 +142,6 @@ public class AddInvoiceActivity extends ActivityBase {
 
     boolean checkFields() {
 		int err = 0;
-		if (TextUtils.isEmpty(mDescriptionView.getText().toString())) {
-			mDescriptionView.setError(getString(R.string.error_field));
-			err = 1;
-		}
 		if (TextUtils.isEmpty(mPhoneView.getText().toString())) {
 			if (err == 0) mPhoneView.setError(getString(R.string.error_field));
 			err += 1;
