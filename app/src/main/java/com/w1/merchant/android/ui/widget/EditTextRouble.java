@@ -1,12 +1,13 @@
 package com.w1.merchant.android.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
 import com.w1.merchant.android.utils.FontManager;
 
-public class EditTextRouble extends EditText{
+public class EditTextRouble extends AppCompatEditText {
 
     private boolean initialized;
 

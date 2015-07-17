@@ -141,9 +141,9 @@
             android:inputType="number"
             android:imeOptions="actionDone"
             android:hint="@string/enter_amount"
+            android:includeFontPadding="false"
             android:textSize="19sp"
-            android:singleLine="true"
-            android:minHeight="40dp" />
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/tvBillButton"
@@ -153,14 +153,8 @@
             android:layout_marginTop="10dp"
             android:layout_below="@id/etSum"
             android:layout_centerHorizontal="true"
-            android:background="?selectableItemBackground"
+            style="@style/PositiveRedButton"
             android:text="@string/bill"
-            android:textColor="#f00"
-            android:textSize="22sp"
-            android:layout_marginBottom="20dp"
-            android:minHeight="48dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp" />
+            android:layout_marginBottom="20dp" />
     </RelativeLayout>
 </ScrollView>

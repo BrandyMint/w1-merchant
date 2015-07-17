@@ -1,13 +1,14 @@
 package com.w1.merchant.android.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.w1.merchant.android.utils.FontManager;
 
-//Расширение TextView для отображения шрифта со знаком рубля 
-public class TextViewRobotoLight extends TextView {
+
+public class TextViewRobotoLight extends AppCompatTextView {
 
     private boolean initialized;
 

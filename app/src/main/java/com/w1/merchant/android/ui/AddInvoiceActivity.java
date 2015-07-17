@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +48,7 @@ public class AddInvoiceActivity extends ActivityBase {
     private static final String PHONE_PATTERN = "[0-9]{11}";
     private static final String APP_PREF = "W1_Pref";
 
-    private EditTextRouble etSum;
+    private EditText etSum;
 	private ProgressBar pbInvoice;
 
 	private Vibrator mVibrator;
@@ -95,7 +96,7 @@ public class AddInvoiceActivity extends ActivityBase {
             }
         });
 
-		etSum = (EditTextRouble) findViewById(R.id.etSum);
+		etSum = (EditText) findViewById(R.id.etSum);
         etSum.addTextChangedListener(new TextWatcher() {
             boolean mEditing = false;
 
