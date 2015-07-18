@@ -228,7 +228,7 @@ public final class TextUtilsW1 {
                 result = "man.";
                 break;
             case "972": //таджик
-                result = "смн.";//TJSсмн.
+                result = "C";//TJSсмн.
                 break;
             case "974": //белорус
                 result = "Br";//BrBYR
@@ -240,7 +240,7 @@ public final class TextUtilsW1 {
                 result = "₴";//UAHU+20B4&#8372
                 break;
             case "981": //Груз.
-                result = "Lari";//GEL U+20BE
+                result = "\u20BE";//GEL U+20BE
                 break;
             case "985": //польск
                 result = "zł";//PLN
