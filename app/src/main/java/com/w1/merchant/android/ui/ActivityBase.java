@@ -1,6 +1,7 @@
 package com.w1.merchant.android.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -9,10 +10,17 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.utils.Utils;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 /**
  * Created by alexey on 27.02.15.
  */
 public class ActivityBase extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     public static void doOnResume(Activity activity) {
         if (!Session.getInstance().hasToken()) {

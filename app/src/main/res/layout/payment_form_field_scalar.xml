@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     >
 
-    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+    <TextView
         android:id="@+id/scalar_field_title"
         tools:text="Название получателя"
         style="@style/PaymentFormFieldTitle"

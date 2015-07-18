@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -20,13 +21,14 @@
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
 
-        <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+        <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="24sp"
+            fontPath="fonts/Roboto-Light.ttf"
             tools:text="Меняем\n1.00 Р. на $ 0.01"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"/>
@@ -56,7 +58,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp">
 
-            <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+            <TextView
                 android:id="@+id/confirm"
                 style="@style/PositiveRedButton"
                 android:layout_width="wrap_content"

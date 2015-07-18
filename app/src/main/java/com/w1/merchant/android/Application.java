@@ -9,6 +9,8 @@ import com.google.android.gms.analytics.Tracker;
 import com.w1.merchant.android.utils.FontManager;
 import com.w1.merchant.android.utils.NetworkUtils;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 public class Application extends android.app.Application {
 
     private volatile Tracker mAnalyticsTracker;
@@ -33,6 +35,9 @@ public class Application extends android.app.Application {
         super.onCreate();
         NetworkUtils.getInstance().onAppInit(this);
         FontManager.onAppInit(this);
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                .build());
         getTracker();
         mSession = Session.onAppInit(this);
     }

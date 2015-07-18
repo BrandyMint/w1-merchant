@@ -216,7 +216,7 @@ public final class TextUtilsW1 {
                 result = "Leu";
                 break;
             case "643":  //рубль
-                result = "RUB";
+                result = "\u20BD";
                 break;
             case "710": //южноафр
                 result = "R";//ZARR
@@ -225,7 +225,7 @@ public final class TextUtilsW1 {
                 result = "$";//USD
                 break;
             case "944":
-                result = "man.";
+                result = "man";
                 break;
             case "972": //таджик
                 result = "C";//TJSсмн.

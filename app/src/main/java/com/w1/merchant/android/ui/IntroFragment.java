@@ -15,7 +15,6 @@ import com.thehayro.view.InfinitePagerAdapter;
 import com.thehayro.view.InfiniteViewPager;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.utils.FontManager;
 
 
 public class IntroFragment extends DialogFragment {
@@ -97,7 +96,6 @@ public class IntroFragment extends DialogFragment {
             ViewGroup root = (ViewGroup) mLayoutInflater.inflate(R.layout.banner1_layout, mRoot, false);
             ImageView img = (ImageView) root.findViewById(R.id.banner_img);
             TextView textTop = (TextView) root.findViewById(R.id.banner_text);
-            textTop.setTypeface(FontManager.getInstance().getLightFont());
 
             int imgRes = 0;
             switch (position) {

@@ -60,7 +60,7 @@
                 android:src="@mipmap/logo_black"
                 tools:ignore="ContentDescription" />
 
-            <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+            <TextView
                 android:id="@+id/tvLogoText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,7 +68,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:text="@string/logo_text"
-                android:textSize="16pt" />
+                fontPath="fonts/Roboto-Light.ttf"
+                android:textSize="16pt"
+                tools:ignore="MissingPrefix"/>
 
             <!-- Логин -->
             <ImageView

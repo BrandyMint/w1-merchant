@@ -9,7 +9,7 @@
     tools:ignore="Overdraw"
     >
 
-    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+    <TextView
         android:id="@+id/list_field_title"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"

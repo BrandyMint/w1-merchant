@@ -20,14 +20,16 @@
         android:layout_marginBottom="6dp"
         tools:text="Проверьте введенные данные" />
 
-    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+    <TextView
         android:id="@+id/payment_form_header_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#646464"
         android:textIsSelectable="false"
         tools:text="Сделайте там что-нибудь"
+        fontPath="fonts/Roboto-Light.ttf"
         android:layout_marginBottom="6dp"
-        android:layout_marginTop="6dp" />
+        android:layout_marginTop="6dp"
+        tools:ignore="MissingPrefix"/>
 
 </LinearLayout>

@@ -9,17 +9,11 @@ public class FontManager {
     private static volatile FontManager sFontManager;
 
     private final Typeface mW1RoubleFont;
-    private final Typeface mRobotoLight;
-    private final Typeface mRobotoThin;
 
     private FontManager(Context context) {
         AssetManager assetManager =  context.getApplicationContext().getAssets();
         mW1RoubleFont = Typeface.createFromAsset(assetManager,
                 "fonts/W1Rouble-Regular.otf");
-        mRobotoLight = Typeface.createFromAsset(assetManager,
-                "fonts/Roboto-Light.ttf");
-        mRobotoThin = Typeface.createFromAsset(assetManager,
-                "fonts/Roboto-Thin.ttf");
     }
 
     public static FontManager getInstance() {
@@ -32,14 +26,6 @@ public class FontManager {
 
     public Typeface getRoubleFont() {
         return mW1RoubleFont;
-    }
-
-    public Typeface getLightFont() {
-        return mRobotoLight;
-    }
-
-    public Typeface getThinFont() {
-        return mRobotoThin;
     }
 
 }

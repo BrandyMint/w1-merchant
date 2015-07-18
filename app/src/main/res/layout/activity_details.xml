@@ -36,7 +36,7 @@
             android:src="@drawable/ic_invoices_output"
             tools:ignore="ContentDescription" />
 
-        <com.w1.merchant.android.ui.widget.TextViewRobotoThin
+        <TextView
             android:id="@+id/amount"
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
@@ -51,6 +51,7 @@
             android:layout_marginBottom="12dp"
             android:scrollHorizontally="true"
             android:ellipsize="marquee"
+            fontPath="fonts/Roboto-Thin.ttf"
             android:gravity="center_horizontal" />
 
 

@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/payment_form_field_vertical_padding"
     android:paddingBottom="@dimen/payment_form_field_vertical_padding">
 
-    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+    <TextView
         android:id="@+id/label_field_title"
         style="@style/PaymentFormFieldTitle"
         tools:text="Название получателя" />

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +30,7 @@
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 
-    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+    <TextView
         android:id="@+id/tvQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,7 +38,9 @@
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:text="@string/sure_withdraw"
-        android:textSize="12pt" />
+        android:textSize="12pt"
+        fontPath="fonts/Roboto-Light.ttf"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,12 +51,13 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp">
 
-        <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+        <TextView
             android:id="@+id/tvSum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="28pt"
-            tools:text="1234" />
+            tools:text="1234"
+            fontPath="fonts/Roboto-Light.ttf"/>
 
         <com.w1.merchant.android.ui.widget.TextViewRouble
             android:layout_width="wrap_content"
@@ -63,7 +67,7 @@
             tools:text="B" />
     </LinearLayout>
 
-    <com.w1.merchant.android.ui.widget.TextViewRobotoLight
+    <TextView
         android:id="@+id/tvGo"
         style="@style/PositiveRedButton"
         android:layout_width="wrap_content"

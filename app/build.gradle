@@ -106,11 +106,11 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-annotations:22.2.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:design:22.2.0'
-    compile 'com.android.support:support-v4:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:support-annotations:22.2.1'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:design:22.2.1'
+    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
     compile 'com.google.android.gms:play-services-analytics:7.5.0'
     compile 'com.google.code.gson:gson:2.3.1'
@@ -119,6 +119,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile "org.robolectric:robolectric:3.0"

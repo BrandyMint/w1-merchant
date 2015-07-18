@@ -19,6 +19,8 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener {
     private static final String TAG = Constants.LOG_TAG;
     private static final boolean DBG = BuildConfig.DEBUG;
@@ -28,6 +30,11 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     public static final int ACT_MENU = 1;
     public static final String TAG_INTRO_DIALOG = "introDialog";
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

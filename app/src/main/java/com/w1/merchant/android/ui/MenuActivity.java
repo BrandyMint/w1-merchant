@@ -504,7 +504,8 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         List<String> amounts = new ArrayList<>(mBalances.size());
         for (Balance balance: mBalances) {
             Number amount = balance.holdAmount.setScale(0, RoundingMode.UP);
-            if (amount.longValue() > 0) amounts.add(TextUtilsW1.formatNumber(amount) + " " + TextUtilsW1.getCurrencySymbol(balance.currencyId));
+            if (amount.longValue() > 0) amounts.add(TextUtilsW1.formatNumber(amount) + " " +
+                    TextUtilsW1.getCurrencySymbol(balance.currencyId));
         }
         if (amounts.isEmpty()) return "";
         return TextUtils.join(", ", amounts);

@@ -46,7 +46,7 @@
 
     </LinearLayout>
 
-    <com.w1.merchant.android.ui.widget.TextViewRobotoThin
+    <TextView
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,6 +61,8 @@
         android:paddingLeft="5dp"
         android:paddingRight="15dp"
         android:gravity="center_vertical|right"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginBottom="2dp"
+        fontPath="fonts/Roboto-Thin.ttf"
+        tools:ignore="MissingPrefix"/>
 
 </LinearLayout>

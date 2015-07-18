@@ -37,7 +37,8 @@
         android:layout_alignParentTop="true"
         android:lines="2"
         android:textSize="28dp"
+        fontPath="fonts/Roboto-Light.ttf"
         android:gravity="center"
-        tools:ignore="SpUsage" />
+        tools:ignore="MissingPrefix,SpUsage" />
 
 </RelativeLayout>
