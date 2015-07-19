@@ -37,7 +37,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -73,6 +72,7 @@ import com.w1.merchant.android.utils.CircleTransformation;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -622,16 +622,10 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             return tv;
         }
 
-        private CharSequence getCurrencyTitle(int position) {
+        private String getCurrencyTitle(int position) {
             Balance balance = mBalances.get(position);
-            long amount = balance.amount.setScale(0, RoundingMode.DOWN).longValue();
-
-            SpannableStringBuilder sb = new SpannableStringBuilder(getText(R.string.balance));
-            sb.append(" ");
-            sb.append(TextUtilsW1.formatNumber(amount));
-            sb.append(" ");
-            sb.append(TextUtilsW1.getCurrencySymbol2(balance.currencyId, 1));
-            return sb;
+            BigDecimal amount = balance.amount.setScale(0, RoundingMode.DOWN);
+            return getString(R.string.balance, TextUtilsW1.formatAmount(amount, balance.currencyId));
         }
     }
 

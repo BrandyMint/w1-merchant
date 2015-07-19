@@ -42,30 +42,16 @@
         fontPath="fonts/Roboto-Light.ttf"
         />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvSum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
-
-        <TextView
-            android:id="@+id/tvSum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="28pt"
-            tools:text="1234"
-            fontPath="fonts/Roboto-Light.ttf"/>
-
-        <com.w1.merchant.android.ui.widget.TextViewRouble
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="28pt"
-            tools:text="B" />
-    </LinearLayout>
+        android:layout_marginBottom="20dp"
+        android:textSize="28pt"
+        tools:text="1234"
+        fontPath="fonts/Roboto-Light.ttf"/>
 
     <TextView
         android:id="@+id/tvGo"

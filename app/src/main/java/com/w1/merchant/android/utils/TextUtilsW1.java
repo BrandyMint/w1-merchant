@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.text.Html;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
@@ -20,7 +19,6 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Provider;
-import com.w1.merchant.android.ui.widget.TypefaceSpan2;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -40,6 +38,8 @@ import java.util.regex.Pattern;
 import static junit.framework.Assert.assertTrue;
 
 public final class TextUtilsW1 {
+
+    public static final String ROUBLE_SYMBOL = "\u20BD";
 
     private static final Spanned SPANNED_EMPTY = new SpannedString("");
 
@@ -159,19 +159,6 @@ public final class TextUtilsW1 {
         }
     }
 
-    /**
-     * @param currencyId
-     * @param weight Толщина для символа рубля от 0 до 2
-     * @return
-     */
-    public static Spanned getCurrencySymbol2(String currencyId, int weight) {
-        if (currencyId.equals("643")) {
-            return getRoubleSymbol(weight);
-        } else {
-            return new SpannedString(getCurrencySymbol(currencyId));
-        }
-    }
-
     @Nullable
     public static String getIso4217CodeByNumber(String number) {
         switch (number) {
@@ -207,8 +194,7 @@ public final class TextUtilsW1 {
 
         switch (currencyId) {
             case "156":
-                result = "¥";
-                break;
+                result = "¥"; break;
             case "398":  //казах
                 result = "₸";//KZTU+20B8&#8376
                 break;
@@ -246,7 +232,7 @@ public final class TextUtilsW1 {
                 result = "zł";//PLN
                 break;
             default: //?
-                result = "?";
+                result = currencyId;
                 if (BuildConfig.DEBUG)
                     Log.v(Constants.LOG_TAG, "no currency for code " + currencyId, exception);
                 break;
@@ -322,34 +308,13 @@ public final class TextUtilsW1 {
 
     /**
      *
-     * @param weight 0, 1 или 2
-     * @return
-     */
-    public static Spanned getRoubleSymbol(int weight) {
-        String s;
-        switch (weight) {
-            case 0: s = "A"; break;
-            case 1: s = "B"; break;
-            default: s = "C"; break;
-        }
-        SpannableString string = new SpannableString(s);
-        string.setSpan(new TypefaceSpan2(FontManager.getInstance().getRoubleFont()), 0, string.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return string;
-    }
-
-    /**
-     *
      * @return "100 $"
      */
     // XXX переделать всё на хуй. Должно быть не "100 $", а "$ 100". Использовать формат из системы,
     // а не свои велосипеды. Но при этом рубль должен быть новым символом, а не поддерживаемые
     // системой валюты - в нормальном виде. И всё в nowrap.
-    public static CharSequence formatAmount(Number amount, String currencyId) {
-        Spanned currencySymbol = getCurrencySymbol2(currencyId, 2);
-        SpannableStringBuilder sb = new SpannableStringBuilder(formatNumber(amount));
-        sb.append('\u00a0');
-        sb.append(currencySymbol);
-        return sb;
+    public static String formatAmount(Number amount, String currencyId) {
+        return formatNumber(amount) + '\u00a0' + getCurrencySymbol(currencyId);
     }
 
     /**

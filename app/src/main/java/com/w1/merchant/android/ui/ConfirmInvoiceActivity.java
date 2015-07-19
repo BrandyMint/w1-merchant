@@ -23,8 +23,8 @@ public class ConfirmInvoiceActivity extends ActivityBase {
 
         intent = getIntent();
         tvConfirmText = (TextView) findViewById(R.id.tvConfirmText);
-        tvConfirmText.setText(getString(R.string.account_sum) + " " +
-                intent.getStringExtra("sum") + " " + getString(R.string.bill_success));
+        tvConfirmText.setText(
+                getString(R.string.invoice_issued_successfully, intent.getStringExtra("sum")));
 
         tvBack = (TextView) findViewById(R.id.tvBack);
         tvBack.setOnClickListener(myOnClickListener);

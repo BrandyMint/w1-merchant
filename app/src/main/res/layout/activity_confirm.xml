@@ -29,7 +29,7 @@
         android:src="@drawable/invoices_ok"
         tools:ignore="ContentDescription" />
 
-    <com.w1.merchant.android.ui.widget.TextViewRouble
+    <TextView
         android:id="@+id/tvConfirmText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

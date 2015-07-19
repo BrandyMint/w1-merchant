@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,10 +12,10 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.rest.model.TransactionHistory;
-import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
 import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.model.TransactionHistory;
+import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
 import com.w1.merchant.android.rest.service.ApiUserEntry;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -161,27 +159,29 @@ public class TranscationSummaryReportActivity extends ActivityBase {
     }
 
     void onIncomingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
-        ((TextView)findViewById(R.id.summ_inc)).setText(buildValue(R.string.sum_period, amount));
-        ((TextView)findViewById(R.id.comis_inc)).setText(buildValue(R.string.comis_period, commission));
+        String amountText = getString(R.string.sum_period,
+                TextUtilsW1.formatAmount(amount.setScale(0, RoundingMode.UP), mCurrency));
+        String commissionText = getString(R.string.comis_period,
+                TextUtilsW1.formatAmount(commission.setScale(0, RoundingMode.UP), mCurrency));
+
+        ((TextView)findViewById(R.id.summ_inc)).setText(amountText);
+        ((TextView)findViewById(R.id.comis_inc)).setText(commissionText);
         mProgressCount -= 1;
         if (mProgressCount <= 0) findViewById(R.id.progress).setVisibility(View.GONE);
     }
 
     void onOutgoingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
-        ((TextView)findViewById(R.id.summ_out)).setText(buildValue(R.string.sum_period, amount));
-        ((TextView)findViewById(R.id.comis_out)).setText(buildValue(R.string.comis_period, commission));
+        String amountText = getString(R.string.sum_period,
+                TextUtilsW1.formatAmount(amount.setScale(0, RoundingMode.UP), mCurrency));
+        String commissionText = getString(R.string.comis_period,
+                TextUtilsW1.formatAmount(commission.setScale(0, RoundingMode.UP), mCurrency));
+
+        ((TextView)findViewById(R.id.summ_out)).setText(amountText);
+        ((TextView)findViewById(R.id.comis_out)).setText(commissionText);
         mProgressCount -= 1;
         if (mProgressCount <= 0) findViewById(R.id.progress).setVisibility(View.GONE);
     }
 
-    private Spanned buildValue(int nameRes, BigDecimal value) {
-        SpannableStringBuilder ssb = new SpannableStringBuilder(getText(nameRes));
-        ssb.append('\u00a0');
-        ssb.append(TextUtilsW1.formatNumber(value.setScale(0, RoundingMode.UP)));
-        ssb.append('\u00a0');
-        ssb.append(TextUtilsW1.getCurrencySymbol2(mCurrency, 2));
-        return ssb;
-    }
 
     public static abstract class SummaryLoader {
 

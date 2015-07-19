@@ -1,7 +1,6 @@
 package com.w1.merchant.android.ui.adapter;
 
 import android.content.Context;
-import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,8 +156,7 @@ public class TransactionHistoryAdapter extends BaseAdapter {
     }
 
     private void bindAmountCurrency(TransactionHistoryEntry entry, ViewHolder holder) {
-        String amount;
-        SpannableStringBuilder res;
+        String res;
         BigDecimal amount0;
 
         boolean isFromMe = Session.getInstance().getUserId().equals(entry.fromUserId.toString());
@@ -167,12 +165,6 @@ public class TransactionHistoryAdapter extends BaseAdapter {
         } else {
             amount0 = entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.UP);
         }
-
-        amount = TextUtilsW1.formatNumber(amount0);
-
-        res = new SpannableStringBuilder(amount);
-        res.append('\u00a0');
-        res.append(TextUtilsW1.getCurrencySymbol2(entry.currencyId, 0));
 
         int textColor;
         if (isFromMe) {
@@ -184,7 +176,7 @@ public class TransactionHistoryAdapter extends BaseAdapter {
         }
 
         holder.amount.setTextColor(textColor);
-        holder.amount.setText(res);
+        holder.amount.setText(TextUtilsW1.formatAmount(amount0, entry.currencyId));
     }
 
     private void bindIcon(TransactionHistoryEntry entry, ViewHolder holder) {

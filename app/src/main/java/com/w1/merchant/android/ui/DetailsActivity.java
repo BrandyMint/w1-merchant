@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -164,28 +163,17 @@ public class DetailsActivity extends ActivityBase {
         addText(R.string.invoice_title_tags, entry.tags);
     }
 
-    private CharSequence getCurrencySymbol(String currency) {
-        return TextUtilsW1.getCurrencySymbol2(currency, 2);
-    }
-
     private CharSequence getCurrencyDescription(String currency) {
-        String description = TextUtilsW1.getCurrencyName(currency, getResources());
-        if (description == null) {
-            return getCurrencySymbol(currency);
+        String fullName = TextUtilsW1.getCurrencyName(currency, getResources());
+        if (fullName == null) {
+            return TextUtilsW1.getCurrencySymbol(currency);
         } else {
-            SpannableStringBuilder sb = new SpannableStringBuilder(getCurrencySymbol(currency));
-            sb.append(" (");
-            sb.append(description);
-            sb.append(")");
-            return sb;
+            return TextUtilsW1.getCurrencySymbol(currency) + " (" + fullName + ")";
         }
     }
 
     private void setupAmount(BigDecimal amount, String currency, boolean orangeColor) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(TextUtilsW1.formatNumber(amount));
-        builder.append('\u00a0');
-        builder.append(TextUtilsW1.getCurrencySymbol2(currency, 0));
-        mAmountView.setText(builder);
+        mAmountView.setText(TextUtilsW1.formatAmount(amount, currency));
         mAmountView.setTextColor(getResources(). getColorStateList(
                 orangeColor ? R.color.details_invoice_processing : R.color.details_invoice_accepted));
     }
@@ -205,10 +193,7 @@ public class DetailsActivity extends ActivityBase {
 
     private void addAmount(int titleResId, BigDecimal value, String currency) {
         if (value == null) return;
-        SpannableStringBuilder builder = new SpannableStringBuilder(String.valueOf(value));
-        builder.append('\u00a0');
-        builder.append(getCurrencySymbol(currency));
-        addText(titleResId, builder);
+        addText(titleResId, TextUtilsW1.formatAmount(value, currency));
     }
 
     private void addDate(int titleResId, Date date){

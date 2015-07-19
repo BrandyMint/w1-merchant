@@ -16,7 +16,7 @@ public class ConfirmPaymentActivity extends ActivityBase {
 
         TextView tvConfirmText = (TextView) findViewById(R.id.tvConfirmText);
         tvConfirmText.setText(getString(R.string.transact_proces,
-                getIntent().getStringExtra("sum") + " C"));
+                getIntent().getStringExtra("sum")));
 
         findViewById(R.id.tvBack).setOnClickListener(myOnClickListener);
         findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);

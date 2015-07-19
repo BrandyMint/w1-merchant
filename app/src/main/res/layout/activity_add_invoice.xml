@@ -132,7 +132,7 @@
             android:text="@string/sum"
             android:textColor="#757575" />
 
-        <com.w1.merchant.android.ui.widget.EditTextRouble
+        <EditText
             android:id="@+id/etSum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

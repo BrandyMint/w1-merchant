@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -42,6 +41,7 @@ import com.w1.merchant.android.rest.model.PaymentFormField;
 import com.w1.merchant.android.rest.model.Provider;
 import com.w1.merchant.android.rest.model.SubmitPaymentFormRequest;
 import com.w1.merchant.android.rest.service.ApiPayments;
+import com.w1.merchant.android.ui.ActivityBase;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -59,7 +59,7 @@ import rx.functions.Action0;
 import rx.functions.Func5;
 import rx.subscriptions.Subscriptions;
 
-public class WithdrawActivity extends AppCompatActivity implements PaymentFormInflater.FormSelectActionListener {
+public class WithdrawActivity extends ActivityBase implements PaymentFormInflater.FormSelectActionListener {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
 

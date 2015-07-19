@@ -23,12 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.rest.model.Invoice;
-import com.w1.merchant.android.rest.model.InvoiceRequest;
 import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.model.Invoice;
+import com.w1.merchant.android.rest.model.InvoiceRequest;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.ui.widget.EditTextRouble;
+import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -102,10 +102,10 @@ public class AddInvoiceActivity extends ActivityBase {
 
             public synchronized void afterTextChanged(Editable s) {
                 if (!mEditing) {
-                    if (!s.toString().endsWith(" C")) {
+                    if (!s.toString().endsWith(" " + TextUtilsW1.ROUBLE_SYMBOL)) {
                         mEditing = true;
-                        etSum.setText(s.toString().replaceAll("[^0-9]+", "") + " C");
-                        etSum.setSelection(etSum.getText().length() - 2);
+                        etSum.setText(s.toString().replaceAll("[^0-9]+", "") + " " + TextUtilsW1.ROUBLE_SYMBOL);
+                                etSum.setSelection(etSum.getText().length() - 2);
                         mEditing = false;
                     }
                 }
@@ -200,7 +200,7 @@ public class AddInvoiceActivity extends ActivityBase {
             BigDecimal amount;
 
             try {
-                amount = new BigDecimal(etSum.getText().toString().replaceAll("[ C]+", ""));
+                amount = new BigDecimal(etSum.getText().toString().replaceAll("[ \\u20bd]+", ""));
             } catch (NumberFormatException ne) {
                 etSum.setError(getString(R.string.error_field));
                 return;

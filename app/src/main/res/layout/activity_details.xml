@@ -52,7 +52,8 @@
             android:scrollHorizontally="true"
             android:ellipsize="marquee"
             fontPath="fonts/Roboto-Thin.ttf"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            tools:ignore="MissingPrefix"/>
 
 
     </LinearLayout>

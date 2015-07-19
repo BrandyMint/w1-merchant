@@ -167,7 +167,7 @@ public class LineChart extends com.github.mikephil.charting.charts.LineChart {
         public void refreshContent(Entry e, int dataSetIndex) {
             if (e instanceof CandleEntry) {
                 CandleEntry ce = (CandleEntry) e;
-                tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
+                tvContent.setText(Utils.formatNumber(ce.getHigh(), 0, true));
             } else {
                 tvDate.setText((CharSequence) e.getData());
                 tvContent.setText(TextUtilsW1.formatNumber(Math.round(e.getVal())));

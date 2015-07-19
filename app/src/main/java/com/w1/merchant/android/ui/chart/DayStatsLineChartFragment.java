@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,12 +21,12 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.ui.IProgressbarProvider;
-import com.w1.merchant.android.ui.widget.LineChart;
-import com.w1.merchant.android.rest.model.TransactionHistory;
-import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
 import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
+import com.w1.merchant.android.rest.model.TransactionHistory;
+import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
+import com.w1.merchant.android.ui.IProgressbarProvider;
+import com.w1.merchant.android.ui.widget.LineChart;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
@@ -234,12 +232,9 @@ public class DayStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentDay = getSumCurrentDay(currentDate);
         BigDecimal sumLastDay = getSumLastDay(currentDate);
 
-        Spanned currencySumbol =  TextUtilsW1.getCurrencySymbol2(mListener.getCurrency(), 1);
-        SpannableStringBuilder sumDay = new SpannableStringBuilder(TextUtilsW1.formatNumber(
-                sumCurrentDay.setScale(0, RoundingMode.UP)));
-        sumDay.append('\u00a0');
-        sumDay.append(currencySumbol);
-        mAmountView.setText(sumDay);
+        String amount = TextUtilsW1.formatAmount(sumCurrentDay.setScale(0, RoundingMode.UP),
+                mListener.getCurrency());
+        mAmountView.setText(amount);
 
         String percentDay;
         if (sumLastDay.compareTo(BigDecimal.ZERO) > 0) {

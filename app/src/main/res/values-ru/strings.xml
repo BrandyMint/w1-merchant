@@ -56,8 +56,7 @@
 	<string name="error_field">Поле ввода не должно быть пустым!</string>
 	<string name="entrance">Поступление</string>
 	<string name="back">Вернуться</string>
-	<string name="account_sum">Счет на сумму</string>
-	<string name="bill_success"> успешно выставлен</string>
+	<string name="invoice_issued_successfully">Счет на сумму %1s успешно выставлен</string>
 	<string name="sum_commis">Сумма с комиссией</string>
 	<string name="sum_output">Сумма к выводу</string>
 	<string name="remove">Вывести</string>
@@ -74,8 +73,8 @@
 	<string name="loading">Загрузка…</string>
 	<string name="inputs">Входящие</string>
 	<string name="outputs">Исходящие</string>
-	<string name="sum_period">сумма за период</string>
-	<string name="comis_period">комиссия за период</string>
+	<string name="sum_period">сумма за период %s</string>
+	<string name="comis_period">комиссия за период %s</string>
 	<string name="begin_date">Начальная дата</string>
 	<string name="next">Далее</string>
 	<string name="go_back">Назад</string>
@@ -172,7 +171,7 @@
     <string name="hour_ago3">час назад</string>
     <string name="sent_new_password">Вам отправлен временный пароль на %s.</string>
     <string name="sent_new_password_on_phone">Вам отправлен одноразовый пароль на номер %s.</string>
-    <string name="balance">Баланс</string>
+    <string name="balance">Баланс %s</string>
     <string name="no_inet">Приложение не может работать без доступа в Интернет и будет закрыто</string>
     <string name="hour_cut">ч.</string>
     <string name="session_timeout">Ваша сессия истекла</string>

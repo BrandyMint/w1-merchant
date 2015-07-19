@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -28,7 +29,6 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.Provider;
 import com.w1.merchant.android.rest.model.Template;
 import com.w1.merchant.android.ui.ActivityBase;
-import com.w1.merchant.android.ui.widget.EditTextRouble;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
@@ -43,6 +43,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
+import uk.co.chrisjenx.calligraphy.CalligraphyUtils;
 
 /**
  * Вывод по шаблону
@@ -51,8 +52,8 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 
     private static final String pattern = "[^0-9]";
 
-    private EditTextRouble mAmountEditText;
-    private EditTextRouble mCommissionEditText;
+    private EditText mAmountEditText;
+    private EditText mCommissionEditText;
     private TextView tvOutputName;
     private ImageView ivOutputIcon;
     private ProgressBar pbTemplates;
@@ -221,10 +222,12 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                     TextView tvNew = new TextView(this);
                     tvNew.setText(field.fieldTitle);
                     tvNew.setTextColor(Color.parseColor("#BDBDBD"));
+                    CalligraphyUtils.applyFontToTextView(this, tvNew, Constants.FONT_REGULAR);
                     llMain.addView(tvNew, lParams);
                     TextView tvNew2 = new TextView(this);
                     tvNew2.setText(field.fieldValue);
                     tvNew2.setTextSize(22);
+                    CalligraphyUtils.applyFontToTextView(this, tvNew2, Constants.FONT_REGULAR);
                     llMain.addView(tvNew2, lParams2);
                 } else {
                     mSum += field.fieldValue;
@@ -237,10 +240,13 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             TextView tvSumCommis = new TextView(this);
             tvSumCommis.setText(R.string.sum_commis);
             tvSumCommis.setTextColor(Color.parseColor("#BDBDBD"));
+            CalligraphyUtils.applyFontToTextView(this, tvSumCommis, Constants.FONT_REGULAR);
             llMain.addView(tvSumCommis, lParams);
-            mCommissionEditText = new EditTextRouble(this);
+            // TODO inflater
+            mCommissionEditText = new EditText(this);
             mCommissionEditText.setTextSize(22);
             mCommissionEditText.setMinEms(6);
+            CalligraphyUtils.applyFontToTextView(this, mCommissionEditText, Constants.FONT_REGULAR);
             DigitsKeyListener digkl2 = DigitsKeyListener.getInstance();
             mCommissionEditText.setKeyListener(digkl2);
             mCommissionEditText.addTextChangedListener(new TextWatcher() {
@@ -269,11 +275,14 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             TextView tvSum = new TextView(this);
             tvSum.setText(R.string.sum_output);
             tvSum.setTextColor(Color.parseColor("#BDBDBD"));
+            CalligraphyUtils.applyFontToTextView(this, tvSum, Constants.FONT_REGULAR);
             llMain.addView(tvSum, lParams);
-            mAmountEditText = new EditTextRouble(this);
+            // TODO inflater
+            mAmountEditText = new EditText(this);
             mAmountEditText.setTextSize(22);
             mAmountEditText.setMinEms(6);
             mAmountEditText.setKeyListener(digkl2);
+            CalligraphyUtils.applyFontToTextView(this, mAmountEditText, Constants.FONT_REGULAR);
             mAmountEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -305,6 +314,7 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             tvRemove.setText(getString(R.string.remove));
             tvRemove.setTextSize(24);
             tvRemove.setTextColor(Color.RED);
+            CalligraphyUtils.applyFontToTextView(this, tvRemove, Constants.FONT_REGULAR);
             tvRemove.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -341,6 +351,7 @@ public class WithdrawByTemplateActivity extends ActivityBase {
         tvSchedule.setText(template.schedule == null ? "" :
                 template.schedule.getDescription(getResources()));
         tvSchedule.setTextColor(Color.parseColor("#BDBDBD"));
+        CalligraphyUtils.applyFontToTextView(this, tvSchedule, Constants.FONT_REGULAR);
         llMain.addView(tvSchedule, lParams4);
         tvSchedule.setGravity(Gravity.CENTER_HORIZONTAL);
 
@@ -353,6 +364,7 @@ public class WithdrawByTemplateActivity extends ActivityBase {
         // XXX inflate в коде. Переделать.
         TextView tvComis = new TextView(this);
         tvComis.setTextColor(Color.parseColor("#BDBDBD"));
+        CalligraphyUtils.applyFontToTextView(this, tvComis, Constants.FONT_REGULAR);
         llMain.addView(tvComis, lParams4);
         tvComis.setGravity(Gravity.CENTER_HORIZONTAL);
 
@@ -427,12 +439,12 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                     mCommissionEditText.setHint(origInputSum.compareTo(inputSum) < 0 ? R.string.amount_too_small : R.string.amount_too_large);
                 }
             } else {
-                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, RoundingMode.UP) + " C");
+                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, RoundingMode.UP) + " " + TextUtilsW1.ROUBLE_SYMBOL);
                 if (!TextUtils.isEmpty(mCommissionEditText.getHint())) mCommissionEditText.setHint("");
             }
 
-            if (inSumStringOrig.indexOf("C") != inSumStringOrig.length() - 1) {
-                setAmountText(origInputSum + " C");
+            if (inSumStringOrig.indexOf(TextUtilsW1.ROUBLE_SYMBOL) != inSumStringOrig.length() - 1) {
+                setAmountText(origInputSum + " " + TextUtilsW1.ROUBLE_SYMBOL);
             }
         } else {
             setCommissionText("");
@@ -460,12 +472,12 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 inputSum = inputSum.subtract(mProvider.commission.cost);
                 BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_EVEN);
                 BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, RoundingMode.DOWN);
-                setAmountText(sumWOComis + " C");
+                setAmountText(sumWOComis + " " + TextUtilsW1.ROUBLE_SYMBOL);
                 if (!TextUtils.isEmpty(mAmountEditText.getHint())) mAmountEditText.setHint("");
             }
 
-            if (commissionTextOrig.indexOf("C") != commissionTextOrig.length() - 1) {
-                setCommissionText(commissionVal + " C");
+            if (commissionTextOrig.indexOf(TextUtilsW1.ROUBLE_SYMBOL) != commissionTextOrig.length() - 1) {
+                setCommissionText(commissionVal + " " + TextUtilsW1.ROUBLE_SYMBOL);
             }
 
         } else {

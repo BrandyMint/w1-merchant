@@ -27,6 +27,8 @@ public final class Constants {
     public static final String HEADER_CAPTCHA_ID = "X-Wallet-CaptchaId";
     public static final String HEADER_CAPTCHA_CODE = "X-Wallet-CaptchaCode";
 
+    public static final String FONT_REGULAR = "fonts/Roboto-Regular.ttf";
+
     private Constants() {}
 
 }

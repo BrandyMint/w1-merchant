@@ -70,7 +70,7 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         sum = getIntent().getStringExtra("SumOutput");
 
         TextView tvSum = (TextView) findViewById(R.id.tvSum);
-        tvSum.setText(TextUtilsW1.formatNumber(new BigInteger(sumComis)));
+        tvSum.setText(TextUtilsW1.formatAmount(new BigInteger(sumComis), "643"));
         TextView tvGo = (TextView) findViewById(R.id.tvGo);
         tvGo.setOnClickListener(myOnClickListener);
         ImageView ivBack = (ImageView) findViewById(R.id.ivBack);
@@ -266,7 +266,7 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
                     @Override
                     public void onNext(InitPaymentStep initPaymentStep) {
                         Intent intent = new Intent(ConfirmWithdrawalActivity.this, ConfirmPaymentActivity.class);
-                        intent.putExtra("sum", sumComis);
+                        intent.putExtra("sum", sumComis + ' ' + TextUtilsW1.ROUBLE_SYMBOL);
                         startActivity(intent);
                         ConfirmWithdrawalActivity.this.finish();
                     }

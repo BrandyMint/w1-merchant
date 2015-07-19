@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -223,12 +221,9 @@ public class WeekMonthStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentPeriod = getSumCurrentPeriod(currentDate);
         BigDecimal sumPriorPeriod = getSumPriorPeriod(currentDate);
 
-        Spanned currencySymbol =  TextUtilsW1.getCurrencySymbol2(mListener.getCurrency(), 1);
-        SpannableStringBuilder sumDay = new SpannableStringBuilder(TextUtilsW1.formatNumber(
-                sumCurrentPeriod.setScale(0, RoundingMode.UP)));
-        sumDay.append('\u00a0');
-        sumDay.append(currencySymbol);
-        mAmountView.setText(sumDay);
+        String amount = TextUtilsW1.formatAmount(sumCurrentPeriod.setScale(0, RoundingMode.UP),
+                mListener.getCurrency());
+        mAmountView.setText(amount);
 
         String percent;
         if (sumPriorPeriod.compareTo(BigDecimal.ZERO) > 0) {

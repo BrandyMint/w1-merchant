@@ -12,18 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="2dp"
-        android:textSize="12sp" />
-
-    <com.w1.merchant.android.ui.widget.TextViewRouble
-        android:id="@+id/tvRubl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="4dp"
-        android:layout_toRightOf="@+id/tvContent"
-        android:textSize="6pt"
-        tools:text="C" />
+        android:textSize="12sp"
+        tools:text="15 C"
+        />
 
     <TextView
         android:id="@+id/tvDate"
@@ -31,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvContent"
         android:layout_centerHorizontal="true"
+        tools:text="27.01.2015"
         android:textSize="12sp" />
 
 </RelativeLayout>

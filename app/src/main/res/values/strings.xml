@@ -56,8 +56,7 @@
     <string name="error_field">The input field must not be empty!</string>
     <string name="entrance">Inpayment</string>
     <string name="back">Back</string>
-    <string name="account_sum">Invoice in amount of</string>
-    <string name="bill_success"> issued successfully</string>
+    <string name="invoice_issued_successfully">Invoice in amount of %1s issued successfully</string>
     <string name="sum_commis">Amount including commission</string>
     <string name="sum_output">Amount to withdraw</string>
     <string name="remove">Withdraw</string>
@@ -72,8 +71,8 @@
     <string name="loading">Loading…</string>
     <string name="inputs">Incoming funds</string>
     <string name="outputs">Outgoing funds</string>
-    <string name="sum_period">Amount for a period</string>
-    <string name="comis_period">commission for a period</string>
+    <string name="sum_period">Amount for a period %s</string>
+    <string name="comis_period">commission for a period %s</string>
     <string name="begin_date">Start date</string>
     <string name="next">Next</string>
     <string name="go_back">Back</string>
@@ -177,7 +176,7 @@
     <string name="sent_new_password">One-time password has been sent to %s.</string>
     <string name="sent_new_password_on_phone">One-time password has been sent to phone number %s.</string>
     <string name="failed_to_send_one_time_password">Failed to send one-time password. Please try again later</string>
-    <string name="balance">Balance</string>
+    <string name="balance">Balance %s</string>
     <string name="no_inet">Check your internet connection</string>
     <string name="hour_cut">h.</string>
     <string name="session_timeout">Session is expired</string>

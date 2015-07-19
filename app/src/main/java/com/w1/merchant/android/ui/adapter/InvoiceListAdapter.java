@@ -1,7 +1,6 @@
 package com.w1.merchant.android.ui.adapter;
 
 import android.content.Context;
-import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.Session;
 import com.w1.merchant.android.rest.model.Invoice;
 import com.w1.merchant.android.utils.SortedList;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -143,19 +140,6 @@ public class InvoiceListAdapter extends BaseAdapter {
     }
 
     private void bindAmountCurrency(Invoice entry, ViewHolder holder) {
-        String amount;
-        SpannableStringBuilder res;
-        BigDecimal amount0;
-
-        boolean isFromMe = Session.getInstance().getUserId().equals(entry.fromUserId.toString());
-        amount0 = entry.amount.setScale(0, RoundingMode.UP);
-
-        amount = TextUtilsW1.formatNumber(amount0);
-
-        res = new SpannableStringBuilder(amount);
-        res.append('\u00a0');
-        res.append(TextUtilsW1.getCurrencySymbol2(entry.currencyId, 0));
-
         int textColor;
         if (Invoice.STATE_ACCEPTED.equals(entry.invoiceStateId)) {
             textColor = holder.amount.getResources().getColor(R.color.amount_color_plus);
@@ -168,7 +152,8 @@ public class InvoiceListAdapter extends BaseAdapter {
         }
 
         holder.amount.setTextColor(textColor);
-        holder.amount.setText(res);
+        holder.amount.setText(TextUtilsW1.formatAmount(entry.amount.setScale(0, RoundingMode.UP),
+                entry.currencyId));
     }
 
     private void bindIcon(Invoice entry, ViewHolder holder) {
