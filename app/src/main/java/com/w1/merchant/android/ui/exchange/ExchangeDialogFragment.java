@@ -20,8 +20,8 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.ExchangeRate;
 import com.w1.merchant.android.rest.model.ExchangeRateStatus;
 import com.w1.merchant.android.rest.model.ExchangeRequest;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
 
@@ -154,7 +154,7 @@ public class ExchangeDialogFragment extends DialogFragment {
         mExchangeSubscription.unsubscribe();
         final ExchangeRequest request;
         Observable<ExchangeRateStatus> observable;
-        BigDecimal amount = TextUtilsW1.parseAmount(mAmount);
+        BigDecimal amount = CurrencyHelper.parseAmount(mAmount);
         if (mAmountIsTarget) {
             request = ExchangeRequest.newInstance(mSrcCurrency, mDstCurrency, amount);
         } else {
@@ -200,7 +200,7 @@ public class ExchangeDialogFragment extends DialogFragment {
 
     private CharSequence getDescription() {
         BigDecimal amountFrom, amountTo, amountUserInput;
-        amountUserInput = TextUtilsW1.parseAmount(mAmount);
+        amountUserInput = CurrencyHelper.parseAmount(mAmount);
         assert amountUserInput != null;
         if (mAmountIsTarget) {
             amountTo = amountUserInput;
@@ -212,8 +212,8 @@ public class ExchangeDialogFragment extends DialogFragment {
         CharSequence template = getResources().getText(R.string.exchange_xx_to_yy);
         return TextUtils.replace(template, new String[] {"$amountFrom", "$amountTo"},
                 new CharSequence[] {
-                        TextUtilsW1.formatAmount(amountFrom, mSrcCurrency),
-                        TextUtilsW1.formatAmount(amountTo, mDstCurrency),
+                        CurrencyHelper.formatAmount(amountFrom, mSrcCurrency),
+                        CurrencyHelper.formatAmount(amountTo, mDstCurrency),
                 });
     }
 

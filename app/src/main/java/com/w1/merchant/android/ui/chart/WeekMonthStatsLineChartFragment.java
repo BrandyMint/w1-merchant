@@ -24,9 +24,9 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.InvoiceStats;
 import com.w1.merchant.android.ui.IProgressbarProvider;
 import com.w1.merchant.android.ui.widget.LineChart;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -221,7 +221,7 @@ public class WeekMonthStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentPeriod = getSumCurrentPeriod(currentDate);
         BigDecimal sumPriorPeriod = getSumPriorPeriod(currentDate);
 
-        String amount = TextUtilsW1.formatAmount(sumCurrentPeriod.setScale(0, RoundingMode.UP),
+        String amount = CurrencyHelper.formatAmount(sumCurrentPeriod.setScale(0, RoundingMode.UP),
                 mListener.getCurrency());
         mAmountView.setText(amount);
 

@@ -10,7 +10,7 @@ import org.robolectric.annotation.Config;
 import java.math.BigDecimal;
 
 import static com.w1.merchant.android.utils.TextUtilsW1.formatUserId;
-import static com.w1.merchant.android.utils.TextUtilsW1.parseAmount;
+import static com.w1.merchant.android.utils.CurrencyHelper.parseAmount;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 

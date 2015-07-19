@@ -27,9 +27,9 @@ import com.w1.merchant.android.rest.model.TransactionHistory;
 import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
 import com.w1.merchant.android.ui.IProgressbarProvider;
 import com.w1.merchant.android.ui.widget.LineChart;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -232,7 +232,7 @@ public class DayStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentDay = getSumCurrentDay(currentDate);
         BigDecimal sumLastDay = getSumLastDay(currentDate);
 
-        String amount = TextUtilsW1.formatAmount(sumCurrentDay.setScale(0, RoundingMode.UP),
+        String amount = CurrencyHelper.formatAmount(sumCurrentDay.setScale(0, RoundingMode.UP),
                 mListener.getCurrency());
         mAmountView.setText(amount);
 

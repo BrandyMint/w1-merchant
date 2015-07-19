@@ -69,6 +69,7 @@ import com.w1.merchant.android.ui.withdraw.ProviderListActivity;
 import com.w1.merchant.android.ui.withdraw.TemplateListFragment;
 import com.w1.merchant.android.ui.withdraw.WithdrawActivity;
 import com.w1.merchant.android.utils.CircleTransformation;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -505,7 +506,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         for (Balance balance: mBalances) {
             Number amount = balance.holdAmount.setScale(0, RoundingMode.UP);
             if (amount.longValue() > 0) amounts.add(TextUtilsW1.formatNumber(amount) + " " +
-                    TextUtilsW1.getCurrencySymbol(balance.currencyId));
+                    CurrencyHelper.getCurrencySymbol(balance.currencyId));
         }
         if (amounts.isEmpty()) return "";
         return TextUtils.join(", ", amounts);
@@ -625,7 +626,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         private String getCurrencyTitle(int position) {
             Balance balance = mBalances.get(position);
             BigDecimal amount = balance.amount.setScale(0, RoundingMode.DOWN);
-            return getString(R.string.balance, TextUtilsW1.formatAmount(amount, balance.currencyId));
+            return getString(R.string.balance, CurrencyHelper.formatAmount(amount, balance.currencyId));
         }
     }
 

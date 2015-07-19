@@ -24,8 +24,8 @@ import com.w1.merchant.android.rest.model.PaymentState;
 import com.w1.merchant.android.rest.model.SubmitPaymentFormRequest;
 import com.w1.merchant.android.ui.ActivityBase;
 import com.w1.merchant.android.ui.ConfirmPaymentActivity;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         sum = getIntent().getStringExtra("SumOutput");
 
         TextView tvSum = (TextView) findViewById(R.id.tvSum);
-        tvSum.setText(TextUtilsW1.formatAmount(new BigInteger(sumComis), "643"));
+        tvSum.setText(CurrencyHelper.formatAmount(new BigInteger(sumComis), "643"));
         TextView tvGo = (TextView) findViewById(R.id.tvGo);
         tvGo.setOnClickListener(myOnClickListener);
         ImageView ivBack = (ImageView) findViewById(R.id.ivBack);
@@ -266,7 +266,7 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
                     @Override
                     public void onNext(InitPaymentStep initPaymentStep) {
                         Intent intent = new Intent(ConfirmWithdrawalActivity.this, ConfirmPaymentActivity.class);
-                        intent.putExtra("sum", sumComis + ' ' + TextUtilsW1.ROUBLE_SYMBOL);
+                        intent.putExtra("sum", sumComis + ' ' + CurrencyHelper.ROUBLE_SYMBOL);
                         startActivity(intent);
                         ConfirmWithdrawalActivity.this.finish();
                     }

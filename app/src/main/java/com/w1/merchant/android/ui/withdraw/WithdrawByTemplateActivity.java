@@ -29,6 +29,7 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.Provider;
 import com.w1.merchant.android.rest.model.Template;
 import com.w1.merchant.android.ui.ActivityBase;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 import com.w1.merchant.android.utils.Utils;
@@ -439,12 +440,12 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                     mCommissionEditText.setHint(origInputSum.compareTo(inputSum) < 0 ? R.string.amount_too_small : R.string.amount_too_large);
                 }
             } else {
-                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, RoundingMode.UP) + " " + TextUtilsW1.ROUBLE_SYMBOL);
+                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, RoundingMode.UP) + " " + CurrencyHelper.ROUBLE_SYMBOL);
                 if (!TextUtils.isEmpty(mCommissionEditText.getHint())) mCommissionEditText.setHint("");
             }
 
-            if (inSumStringOrig.indexOf(TextUtilsW1.ROUBLE_SYMBOL) != inSumStringOrig.length() - 1) {
-                setAmountText(origInputSum + " " + TextUtilsW1.ROUBLE_SYMBOL);
+            if (inSumStringOrig.indexOf(CurrencyHelper.ROUBLE_SYMBOL) != inSumStringOrig.length() - 1) {
+                setAmountText(origInputSum + " " + CurrencyHelper.ROUBLE_SYMBOL);
             }
         } else {
             setCommissionText("");
@@ -472,12 +473,12 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 inputSum = inputSum.subtract(mProvider.commission.cost);
                 BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_EVEN);
                 BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, RoundingMode.DOWN);
-                setAmountText(sumWOComis + " " + TextUtilsW1.ROUBLE_SYMBOL);
+                setAmountText(sumWOComis + " " + CurrencyHelper.ROUBLE_SYMBOL);
                 if (!TextUtils.isEmpty(mAmountEditText.getHint())) mAmountEditText.setHint("");
             }
 
-            if (commissionTextOrig.indexOf(TextUtilsW1.ROUBLE_SYMBOL) != commissionTextOrig.length() - 1) {
-                setCommissionText(commissionVal + " " + TextUtilsW1.ROUBLE_SYMBOL);
+            if (commissionTextOrig.indexOf(CurrencyHelper.ROUBLE_SYMBOL) != commissionTextOrig.length() - 1) {
+                setCommissionText(commissionVal + " " + CurrencyHelper.ROUBLE_SYMBOL);
             }
 
         } else {

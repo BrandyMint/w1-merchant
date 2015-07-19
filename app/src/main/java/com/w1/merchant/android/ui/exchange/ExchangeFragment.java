@@ -2,7 +2,6 @@ package com.w1.merchant.android.ui.exchange;
 
 import android.animation.ArgbEvaluator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,8 +28,8 @@ import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.rest.model.CurrencyLimit;
 import com.w1.merchant.android.rest.model.ExchangeRate;
 import com.w1.merchant.android.rest.model.ExchangeRateStatus;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -227,7 +226,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
             return false;
         }
 
-        amountUserInput = TextUtilsW1.parseAmount(mUserInputAmount);
+        amountUserInput = CurrencyHelper.parseAmount(mUserInputAmount);
         if (amountUserInput == null) {
             showError(R.string.error_no_amount, null); // TODO: incorrect error text
             return false;
@@ -530,7 +529,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
         @Override
         public CharSequence getUserAmountFrom(String currencyFrom) {
             if (mIsUserInputCurrencyTo) {
-                BigDecimal currencyToValue = TextUtilsW1.parseAmount(mUserInputAmount);
+                BigDecimal currencyToValue = CurrencyHelper.parseAmount(mUserInputAmount);
                 String currencyTo = getSelectedCurrencyTo();
                 ExchangeRate rate = mExchangeRates.getRate(currencyFrom, currencyTo);
                 if (rate == null || currencyToValue == null) return null;
@@ -563,7 +562,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
         @Override
         public CharSequence getUserAmountTo(String currencyTo) {
             if (!mIsUserInputCurrencyTo) {
-                BigDecimal currencyFromValue = TextUtilsW1.parseAmount(mUserInputAmount);
+                BigDecimal currencyFromValue = CurrencyHelper.parseAmount(mUserInputAmount);
                 String currencyFrom = getSelectedCurrencyFrom();
                 ExchangeRate rate = mExchangeRates.getRate(currencyFrom, currencyTo);
                 if (rate == null || currencyFromValue == null) return null;

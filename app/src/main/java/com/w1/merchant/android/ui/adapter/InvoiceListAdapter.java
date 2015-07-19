@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Invoice;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.SortedList;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -152,7 +153,7 @@ public class InvoiceListAdapter extends BaseAdapter {
         }
 
         holder.amount.setTextColor(textColor);
-        holder.amount.setText(TextUtilsW1.formatAmount(entry.amount.setScale(0, RoundingMode.UP),
+        holder.amount.setText(CurrencyHelper.formatAmount(entry.amount.setScale(0, RoundingMode.UP),
                 entry.currencyId));
     }
 

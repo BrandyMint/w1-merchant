@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.SortedList;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -176,7 +177,7 @@ public class TransactionHistoryAdapter extends BaseAdapter {
         }
 
         holder.amount.setTextColor(textColor);
-        holder.amount.setText(TextUtilsW1.formatAmount(amount0, entry.currencyId));
+        holder.amount.setText(CurrencyHelper.formatAmount(amount0, entry.currencyId));
     }
 
     private void bindIcon(TransactionHistoryEntry entry, ViewHolder holder) {

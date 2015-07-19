@@ -17,8 +17,8 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.TransactionHistory;
 import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
 import com.w1.merchant.android.rest.service.ApiUserEntry;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -160,9 +160,9 @@ public class TranscationSummaryReportActivity extends ActivityBase {
 
     void onIncomingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
         String amountText = getString(R.string.sum_period,
-                TextUtilsW1.formatAmount(amount.setScale(0, RoundingMode.UP), mCurrency));
+                CurrencyHelper.formatAmount(amount.setScale(0, RoundingMode.UP), mCurrency));
         String commissionText = getString(R.string.comis_period,
-                TextUtilsW1.formatAmount(commission.setScale(0, RoundingMode.UP), mCurrency));
+                CurrencyHelper.formatAmount(commission.setScale(0, RoundingMode.UP), mCurrency));
 
         ((TextView)findViewById(R.id.summ_inc)).setText(amountText);
         ((TextView)findViewById(R.id.comis_inc)).setText(commissionText);
@@ -172,9 +172,9 @@ public class TranscationSummaryReportActivity extends ActivityBase {
 
     void onOutgoingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
         String amountText = getString(R.string.sum_period,
-                TextUtilsW1.formatAmount(amount.setScale(0, RoundingMode.UP), mCurrency));
+                CurrencyHelper.formatAmount(amount.setScale(0, RoundingMode.UP), mCurrency));
         String commissionText = getString(R.string.comis_period,
-                TextUtilsW1.formatAmount(commission.setScale(0, RoundingMode.UP), mCurrency));
+                CurrencyHelper.formatAmount(commission.setScale(0, RoundingMode.UP), mCurrency));
 
         ((TextView)findViewById(R.id.summ_out)).setText(amountText);
         ((TextView)findViewById(R.id.comis_out)).setText(commissionText);

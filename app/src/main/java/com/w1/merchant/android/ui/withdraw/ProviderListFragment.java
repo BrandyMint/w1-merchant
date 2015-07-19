@@ -32,8 +32,8 @@ import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.rest.model.Provider;
 import com.w1.merchant.android.rest.model.ProviderList;
 import com.w1.merchant.android.ui.adapter.WithdrawalGridAdapter;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -478,7 +478,7 @@ public class ProviderListFragment extends Fragment {
                 root = convertView;
             }
             TextView textView = (TextView) root.findViewById(android.R.id.text1);
-            textView.setText(TextUtilsW1.getCurrencyName(getItem(position).currencyId, root.getResources()));
+            textView.setText(CurrencyHelper.getCurrencyName(getItem(position).currencyId, root.getResources()));
 
             return root;
         }
@@ -492,7 +492,7 @@ public class ProviderListFragment extends Fragment {
                 root = convertView;
             }
             TextView textView = (TextView) root.findViewById(android.R.id.text1);
-            textView.setText(TextUtilsW1.getCurrencyName(getItem(position).currencyId, root.getResources()));
+            textView.setText(CurrencyHelper.getCurrencyName(getItem(position).currencyId, root.getResources()));
 
             return root;
         }

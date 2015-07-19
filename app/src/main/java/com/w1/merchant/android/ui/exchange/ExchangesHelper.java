@@ -13,7 +13,7 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.rest.model.ExchangeRate;
 import com.w1.merchant.android.rest.model.ExchangeRateStatus;
-import com.w1.merchant.android.utils.TextUtilsW1;
+import com.w1.merchant.android.utils.CurrencyHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,10 +45,10 @@ public final class ExchangesHelper {
         commissionFormat.setMaximumFractionDigits(2);
         commissionRate = commissionFormat.format(rate.commissionRate.divide(BigDecimal.valueOf(100), RoundingMode.DOWN));
 
-        CharSequence amountFrom = TextUtilsW1.formatAmount(
+        CharSequence amountFrom = CurrencyHelper.formatAmount(
                 rate.rate.setScale(2, RoundingMode.UP),
                 rate.srcCurrencyId);
-        CharSequence amountTo = TextUtilsW1.formatAmount(BigDecimal.ONE, rate.dstCurrencyId);
+        CharSequence amountTo = CurrencyHelper.formatAmount(BigDecimal.ONE, rate.dstCurrencyId);
 
         return TextUtils.replace(template,
                 new String[]{"$srcCurrency", "$dstCurrency", "$comission"},
@@ -77,8 +77,8 @@ public final class ExchangesHelper {
 
     static CharSequence getBalanceCardTitle(Collection<Balance> balances, String currencyId, Resources resources) {
         BigDecimal amount = getBalanceAmount(balances, currencyId).setScale(2, RoundingMode.DOWN);
-        CharSequence currencyName = TextUtilsW1.getCurrencyName(currencyId, resources);
-        CharSequence balanceText = TextUtilsW1.formatAmount(amount, currencyId);
+        CharSequence currencyName = CurrencyHelper.getCurrencyName(currencyId, resources);
+        CharSequence balanceText = CurrencyHelper.formatAmount(amount, currencyId);
         CharSequence template = resources.getText(R.string.exchange_currency_card_title);
         return TextUtils.replace(template, new String[] {"$currencyName", "$balance"},
                 new CharSequence[] {currencyName, balanceText});
@@ -93,8 +93,8 @@ public final class ExchangesHelper {
         CharSequence template = resources.getText(R.string.exchanged_xx_to_yy);
         return TextUtils.replace(template, new String[] {"$amountFrom", "$amountTo"},
                 new CharSequence[] {
-                        TextUtilsW1.formatAmount(status.srcAmount, status.srcCurrencyId),
-                        TextUtilsW1.formatAmount(status.dstAmount, status.dstCurrencyId),
+                        CurrencyHelper.formatAmount(status.srcAmount, status.srcCurrencyId),
+                        CurrencyHelper.formatAmount(status.dstAmount, status.dstCurrencyId),
                 });
     }
 

@@ -19,7 +19,7 @@ import com.w1.merchant.android.R;
 import com.w1.merchant.android.Session;
 import com.w1.merchant.android.rest.model.Invoice;
 import com.w1.merchant.android.rest.model.TransactionHistoryEntry;
-import com.w1.merchant.android.utils.TextUtilsW1;
+import com.w1.merchant.android.utils.CurrencyHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -164,16 +164,16 @@ public class DetailsActivity extends ActivityBase {
     }
 
     private CharSequence getCurrencyDescription(String currency) {
-        String fullName = TextUtilsW1.getCurrencyName(currency, getResources());
+        String fullName = CurrencyHelper.getCurrencyName(currency, getResources());
         if (fullName == null) {
-            return TextUtilsW1.getCurrencySymbol(currency);
+            return CurrencyHelper.getCurrencySymbol(currency);
         } else {
-            return TextUtilsW1.getCurrencySymbol(currency) + " (" + fullName + ")";
+            return CurrencyHelper.getCurrencySymbol(currency) + " (" + fullName + ")";
         }
     }
 
     private void setupAmount(BigDecimal amount, String currency, boolean orangeColor) {
-        mAmountView.setText(TextUtilsW1.formatAmount(amount, currency));
+        mAmountView.setText(CurrencyHelper.formatAmount(amount, currency));
         mAmountView.setTextColor(getResources(). getColorStateList(
                 orangeColor ? R.color.details_invoice_processing : R.color.details_invoice_accepted));
     }
@@ -193,7 +193,7 @@ public class DetailsActivity extends ActivityBase {
 
     private void addAmount(int titleResId, BigDecimal value, String currency) {
         if (value == null) return;
-        addText(titleResId, TextUtilsW1.formatAmount(value, currency));
+        addText(titleResId, CurrencyHelper.formatAmount(value, currency));
     }
 
     private void addDate(int titleResId, Date date){

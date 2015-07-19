@@ -27,8 +27,8 @@ import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.Invoice;
 import com.w1.merchant.android.rest.model.InvoiceRequest;
+import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.utils.TextUtilsW1;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -102,9 +102,9 @@ public class AddInvoiceActivity extends ActivityBase {
 
             public synchronized void afterTextChanged(Editable s) {
                 if (!mEditing) {
-                    if (!s.toString().endsWith(" " + TextUtilsW1.ROUBLE_SYMBOL)) {
+                    if (!s.toString().endsWith(" " + CurrencyHelper.ROUBLE_SYMBOL)) {
                         mEditing = true;
-                        etSum.setText(s.toString().replaceAll("[^0-9]+", "") + " " + TextUtilsW1.ROUBLE_SYMBOL);
+                        etSum.setText(s.toString().replaceAll("[^0-9]+", "") + " " + CurrencyHelper.ROUBLE_SYMBOL);
                                 etSum.setSelection(etSum.getText().length() - 2);
                         mEditing = false;
                     }

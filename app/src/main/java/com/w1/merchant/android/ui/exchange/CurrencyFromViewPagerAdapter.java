@@ -19,7 +19,7 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.ui.widget.ViewPagerAdapter;
-import com.w1.merchant.android.utils.TextUtilsW1;
+import com.w1.merchant.android.utils.CurrencyHelper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -194,7 +194,7 @@ final class CurrencyFromViewPagerAdapter extends PagerAdapter {
         if (TextUtils.isEmpty(amount)) return true;
         Balance balance = ExchangesHelper.findBalance(balances, currencyId);
         if (balance == null) return true;
-        BigDecimal amountDecimal = TextUtilsW1.parseAmount(amount);
+        BigDecimal amountDecimal = CurrencyHelper.parseAmount(amount);
         return amountDecimal == null || balance.amount.compareTo(amountDecimal) >= 0;
     }
 
