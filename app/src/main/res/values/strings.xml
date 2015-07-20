@@ -329,7 +329,7 @@
 
     <string name="exchange_content_description">Exchange</string>
     <string name="exchange_russian_rubles_hint">Russian rubles (12 300).</string>
-    <string name="error_no_amount">The amount for transfer isn\'t specified</string>
+    <string name="error_amount_for_exchange_not_specified">The amount for exchange is not specified</string>
     <string name="error_not_enough_money">Insufficient funds</string>
     <string name="error_no_currency_selected">Currency not selected</string>
     <string name="enter_the_amount">Enter the amount</string>

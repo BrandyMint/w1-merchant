@@ -329,7 +329,7 @@
 
     <string name="exchange_content_description">Обменять</string>
     <string name="exchange_russian_rubles_hint">Российские рубли (12 300).</string>
-    <string name="error_no_amount">Не указана сумма перевода</string>
+    <string name="error_amount_for_exchange_not_specified">Не указана сумма обмена</string>
     <string name="error_not_enough_money">Недостаточно средств</string>
     <string name="error_no_currency_selected">Валюта не выбрана</string>
     <string name="enter_the_amount">Введите сумму</string>

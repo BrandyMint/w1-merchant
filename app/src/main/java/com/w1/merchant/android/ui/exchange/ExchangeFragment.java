@@ -222,13 +222,13 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
             return false;
         }
         if (TextUtils.isEmpty(mUserInputAmount)) {
-            showError(R.string.error_no_amount, null);
+            showError(R.string.error_amount_for_exchange_not_specified, null);
             return false;
         }
 
         amountUserInput = CurrencyHelper.parseAmount(mUserInputAmount);
         if (amountUserInput == null) {
-            showError(R.string.error_no_amount, null); // TODO: incorrect error text
+            showError(R.string.error_amount_for_exchange_not_specified, null); // TODO: incorrect error text
             return false;
         }
 
@@ -245,7 +245,7 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
         }
 
         if (amountFrom.compareTo(BigDecimal.ZERO) <= 0) {
-            showError(R.string.error_no_amount, null);
+            showError(R.string.error_amount_for_exchange_not_specified, null);
             return false;
         }
 
