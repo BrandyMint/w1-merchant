@@ -13,6 +13,9 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 import android.util.Patterns;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
@@ -42,7 +45,7 @@ public final class TextUtilsW1 {
             "\\bhttp(?:s)?:\\/\\/\\S+?\\.(?:png|jpg|jpeg|gif|bmp|webp)\\b",
             Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^\\+?[0-9\\s()-]{7,}$");
+    private static final Pattern CLEANUP_NUMBER_PATTERN = Pattern.compile("(?:^\\s+)|(?:[ \\(\\)\\-]+)|(?:\\s+$)");
 
     private TextUtilsW1() {}
 
@@ -105,11 +108,87 @@ public final class TextUtilsW1 {
     }
 
     /**
-     * Проверка на валидность номер телефона. Упрощенная (быстрая), не точная
+     * Очистка строки от символов форматирования телефонного номера.
+     * Удаляются пробелы и символы <code>[-+()]</code>
+     * @param possibleNumber
+     * @return
      */
-    public static boolean isPossiblePhoneNumber(CharSequence text) {
-        if (text.length() <= 7) return false;
-        return PHONE_NUMBER_PATTERN.matcher(text).matches();
+    @VisibleForTesting
+    static String cleanupPhoneNumber(CharSequence possibleNumber) {
+        return CLEANUP_NUMBER_PATTERN.matcher(possibleNumber).replaceAll("");
+    }
+
+    /**
+     * Мы принимаем номера только в международном формате. Но делаем исключение для российского
+     * междугороднего формата, мобильных телефонов (89-). Считаем, что + в начале ставить не обязательно.
+     *
+     * @param input Строка из формы ввода
+     * @return input с 89 в начале замененым на +7, все остальнео - если пюса нет, то с дего добавлением
+     */
+    public static String preparePhoneInternationalFormat(String input) {
+        String maybePhone = null;
+        if (TextUtils.isEmpty(input)) return input;
+
+        if (input.length() <= 3) return input;
+
+        if (input.startsWith("+")) {
+            maybePhone = input;
+        } else if (input.startsWith("89")) {
+            maybePhone = "+7" + input.substring(1);
+        } else {
+            maybePhone = "+" + input;
+        }
+        return maybePhone;
+    }
+
+    /**
+     * Проверка на валидность номер телефона.
+     */
+    public static boolean isValidPhoneNumber(CharSequence text) {
+        String maybePhone;
+        if (TextUtils.isEmpty(text)) return false;
+
+        String textCleaned = cleanupPhoneNumber(text);
+        maybePhone = preparePhoneInternationalFormat(textCleaned);
+
+        try {
+            PhoneNumberUtil util = PhoneNumberUtil.getInstance();
+            Phonenumber.PhoneNumber number = util.parse(maybePhone, null);
+            if (BuildConfig.DEBUG) Log.v("TextUtilsW1", "number: " + number.toString());
+            return util.isValidNumber(number);
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+        //return PHONE_NUMBER_PATTERN.matcher(text).matches();
+    }
+
+    /**
+     * Упрощенная проверка на валидность номера
+     */
+    public static boolean isPossiblePhoneNumber(CharSequence input) {
+        if (TextUtils.isEmpty(input)) return false;
+        String textCleaned = cleanupPhoneNumber(input);
+        String maybePhone = preparePhoneInternationalFormat(textCleaned);
+        return PhoneNumberUtil.getInstance().isPossibleNumber(maybePhone, null);
+    }
+
+    /**
+     * Парсинг телефонного номера с учетом того, что мы принимаем номера только в международном
+     * формате, но делаем исключение для российских мобильных в междугороднем формате
+     * @param input
+     * @return
+     */
+    @Nullable
+    public static Phonenumber.PhoneNumber parsePhoneNumber(CharSequence input) {
+        if (TextUtils.isEmpty(input)) return null;
+        String phoneInternationalFormat = preparePhoneInternationalFormat(cleanupPhoneNumber(input));
+        try {
+            return PhoneNumberUtil.getInstance().parse(phoneInternationalFormat, null);
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

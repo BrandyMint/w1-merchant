@@ -144,7 +144,7 @@ public class AddInvoiceActivity extends ActivityBase {
     boolean checkFields() {
         int err = 0;
         if (TextUtils.isEmpty(mPhoneView.getText().toString())) {
-            if (err == 0) mPhoneView.setError(getText(R.string.error_field));
+            if (err == 0) mPhoneView.setError(getText(R.string.error_input_field_must_no_be_empty));
             err += 1;
         } else {
             if ((mPhoneView.getText().toString().indexOf("@") <= 0) &&
@@ -154,7 +154,7 @@ public class AddInvoiceActivity extends ActivityBase {
             }
         }
         if (TextUtils.isEmpty(etSum.getText().toString())) {
-            if (err == 0) etSum.setError(getText(R.string.error_field));
+            if (err == 0) etSum.setError(getText(R.string.error_input_field_must_no_be_empty));
             err += 1;
         }
         return (err == 0);
@@ -202,7 +202,7 @@ public class AddInvoiceActivity extends ActivityBase {
             try {
                 amount = new BigDecimal(etSum.getText().toString().replaceAll("[ \\u20bd]+", ""));
             } catch (NumberFormatException ne) {
-                etSum.setError(getString(R.string.error_field));
+                etSum.setError(getString(R.string.error_input_field_must_no_be_empty));
                 return;
             }
             createInvoice(recipient, amount, description);

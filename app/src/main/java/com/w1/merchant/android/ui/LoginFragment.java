@@ -33,6 +33,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
@@ -45,6 +47,7 @@ import com.w1.merchant.android.rest.model.AuthPrincipalRequest;
 import com.w1.merchant.android.rest.model.OneTimePassword;
 import com.w1.merchant.android.rest.model.PrincipalUser;
 import com.w1.merchant.android.rest.model.ResponseError;
+import com.w1.merchant.android.ui.widget.PhoneEmailFormattingTextWatcher;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 
@@ -53,8 +56,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import rx.Observable;
 import rx.Observer;
@@ -79,9 +80,6 @@ public class LoginFragment extends Fragment {
     private EditText mPasswordView;
     private Vibrator mVibrator;
     private ProgressBar mProgress;
-
-    // TODO переделать
-    private final Matcher mLooksLikePhoneMatcher = Pattern.compile("[0-9]{11}").matcher("");
 
     private ArrayList<String> mLogins = new ArrayList<>();
 
@@ -162,6 +160,7 @@ public class LoginFragment extends Fragment {
 
         mLoginTextView.setAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, mLogins));
+        mLoginTextView.addTextChangedListener(new PhoneEmailFormattingTextWatcher());
         mLoginTextView.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -247,9 +246,11 @@ public class LoginFragment extends Fragment {
     }
 
     private static CharSequence getMsgOneTimePasswordIsSend(CharSequence dest, Resources resources) {
-        if (!TextUtilsW1.isPossibleEmail(dest) && TextUtilsW1.isPossiblePhoneNumber(dest)) {
-            // TODO: 16.07.15 Форматировать телефонный номер?
-            return resources.getString(R.string.sent_new_password_on_phone, dest);
+        Phonenumber.PhoneNumber number = TextUtilsW1.parsePhoneNumber(dest);
+
+        if (number != null && PhoneNumberUtil.getInstance().isValidNumber(number)) {
+            return resources.getString(R.string.sent_new_password_on_phone,
+                    TextUtilsW1.noWrap(PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)));
         } else {
             return resources.getString(R.string.sent_new_password, dest);
         }
@@ -329,7 +330,16 @@ public class LoginFragment extends Fragment {
     private void attemptLogin() {
         if (!validateForm()) return;
         mVibrator.vibrate(VIBRATE_TIME_MS);
-        attemptLogin(mLoginTextView.getText().toString(), mPasswordView.getText().toString());
+
+        String login;
+        Phonenumber.PhoneNumber number = TextUtilsW1.parsePhoneNumber(mLoginTextView.getText());
+        if (number != null && PhoneNumberUtil.getInstance().isValidNumber(number)) {
+            login = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+        } else {
+            login = mLoginTextView.getText().toString();
+        }
+
+        attemptLogin(login, mPasswordView.getText().toString());
     }
 
     void actionOnError(Throwable e) {
@@ -351,7 +361,7 @@ public class LoginFragment extends Fragment {
                 }
                 break;
             case 404:
-                errMsg = getText(R.string.user_not_found);
+                errMsg = getText(R.string.error_invalid_email_or_phone);
                 break;
             default:
                 errMsg = error.getErrorDescription(getText(R.string.network_error), getResources());
@@ -532,6 +542,13 @@ public class LoginFragment extends Fragment {
     private void sendOneTimePassword() {
         if (TextUtils.isEmpty(mLoginTextView.getText())) return;
         final String login = mLoginTextView.getText().toString();
+        if (!TextUtilsW1.isPossibleEmail(login)
+                && !TextUtilsW1.isPossiblePhoneNumber(login)) {
+            mLoginTextView.setError(getText(R.string.error_invalid_email_or_phone));
+            mLoginTextView.requestFocus();
+            return;
+        }
+
         mVibrator.vibrate(VIBRATE_TIME_MS);
 
         mSendOneTimePasswordSubscription.unsubscribe();
@@ -559,7 +576,7 @@ public class LoginFragment extends Fragment {
                     public void onCompleted() {
                         if (LoginFragment.this.getActivity() == null) return;
                         Toast toast = Toast.makeText(LoginFragment.this.getActivity(),
-                                getMsgOneTimePasswordIsSend(mLoginTextView.getText(), getResources()),
+                                getMsgOneTimePasswordIsSend(login, getResources()),
                                 Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP, 0, 50);
                         toast.show();
@@ -590,25 +607,33 @@ public class LoginFragment extends Fragment {
         setProgress(true);
     }
 
-    //Проверка логина и пароля на пустоту
     public boolean validateForm() {
-        boolean result;
+        boolean isValid;
 
-        if (TextUtils.isEmpty(mLoginTextView.getText())) {
-            mLoginTextView.setError(getText(R.string.error_field));
-            result = false;
-        } else result = true;
+        isValid = validateLogin();
         if (TextUtils.isEmpty(mPasswordView.getText())) {
-            if (result) mPasswordView.setError(getText(R.string.error_field));
-            result = false;
-        } else result = true;
+            if (isValid) mPasswordView.setError(getText(R.string.error_input_field_must_no_be_empty));
+            isValid = false;
+        };
 
-        return result;
+        return isValid;
+    }
+
+    private boolean validateLogin() {
+        CharSequence login = mLoginTextView.getText();
+        if (TextUtils.isEmpty(mLoginTextView.getText())) {
+            mLoginTextView.setError(getText(R.string.error_enter_email_or_phone));
+            return false;
+        }
+        if (!TextUtilsW1.isPossibleEmail(login) && !TextUtilsW1.isPossiblePhoneNumber(login)) {
+            mLoginTextView.setError(getText(R.string.error_invalid_email_or_phone));
+            return false;
+        }
+        return true;
     }
 
     private boolean isFormReadyToSend() {
-        String s = mLoginTextView.getText().toString();
-        return s.contains("@") || mLooksLikePhoneMatcher.reset(s).matches();
+        return !TextUtils.isEmpty(mLoginTextView.getText());
     }
 
     private void persistLogins() {
@@ -627,7 +652,7 @@ public class LoginFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public void onAuthDone();
+        void onAuthDone();
     }
 
 }

@@ -189,11 +189,11 @@ public class WithdrawByTemplateActivity extends ActivityBase {
         boolean result;
 
         if (TextUtils.isEmpty(readAmountWithComissionEditText())) {
-            mCommissionEditText.setError(getString(R.string.error_field));
+            mCommissionEditText.setError(getString(R.string.error_input_field_must_no_be_empty));
             result = false;
         } else result = true;
         if (TextUtils.isEmpty(readAmountEditText())) {
-            if (result)	mAmountEditText.setError(getString(R.string.error_field));
+            if (result)	mAmountEditText.setError(getString(R.string.error_input_field_must_no_be_empty));
             result = false;
         } else result = true;
 

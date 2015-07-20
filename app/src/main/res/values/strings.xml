@@ -53,7 +53,8 @@
     <string name="mail_or_tel">my@mail.ru or 89031234567</string>
     <string name="sum">Amount</string>
     <string name="enter_amount">Input amount</string>
-    <string name="error_field">The input field must not be empty!</string>
+    <string name="error_input_field_must_no_be_empty">The input field must not be empty!</string>
+    <string name="error_enter_email_or_phone">Enter an email or phone</string>
     <string name="entrance">Inpayment</string>
     <string name="back">Back</string>
     <string name="invoice_issued_successfully">Invoice in amount of %1s issued successfully</string>
@@ -64,7 +65,7 @@
     <string name="hour_24">24 hours</string>
     <string name="week">week</string>
     <string name="month">month</string>
-    <string name="user_not_found">Invalid e-mail or telephone</string>
+    <string name="error_invalid_email_or_phone">Invalid e-mail or telephone</string>
     <string name="entered_password_incorrect">Entered password is incorrect</string>
     <string name="forgot">Send</string>
     <string name="data_load">Data will be load</string>

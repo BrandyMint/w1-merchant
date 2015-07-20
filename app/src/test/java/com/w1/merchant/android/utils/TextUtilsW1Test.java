@@ -9,8 +9,10 @@ import org.robolectric.annotation.Config;
 
 import java.math.BigDecimal;
 
+import static com.w1.merchant.android.utils.TextUtilsW1.cleanupPhoneNumber;
 import static com.w1.merchant.android.utils.TextUtilsW1.formatUserId;
 import static com.w1.merchant.android.utils.CurrencyHelper.parseAmount;
+import static com.w1.merchant.android.utils.TextUtilsW1.preparePhoneInternationalFormat;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
@@ -37,6 +39,19 @@ public class TextUtilsW1Test {
         assertEquals("1234 blabla", formatUserId("1234 blabla"));
     }
 
+    @Test
+    public void testCleanupNumber() throws Exception {
+        assertEquals("", cleanupPhoneNumber("   "));
+        assertEquals("user@localhost", cleanupPhoneNumber("   user@localhost    "));
+        assertEquals("89053735703", cleanupPhoneNumber("   8  ( 905 ) 373 - 57 - 03 "));
+    }
+
+    @Test
+    public void testPreparePhoneInternationalFormat() throws Exception {
+        assertEquals("+79053735703", preparePhoneInternationalFormat("89053735703"));
+        assertEquals("+79053735703", preparePhoneInternationalFormat("79053735703"));
+        assertEquals("+79053735703", preparePhoneInternationalFormat("+79053735703"));
+    }
 
     @Test
     public void testParseAmount() throws Exception {

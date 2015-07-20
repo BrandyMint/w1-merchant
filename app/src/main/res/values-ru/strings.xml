@@ -53,7 +53,7 @@
 	<string name="mail_or_tel">my@mail.ru или 89031234567</string>
 	<string name="sum">Сумма</string>
 	<string name="enter_amount">Введите сумму</string>
-	<string name="error_field">Поле ввода не должно быть пустым!</string>
+	<string name="error_input_field_must_no_be_empty">Поле ввода не должно быть пустым!</string>
 	<string name="entrance">Поступление</string>
 	<string name="back">Вернуться</string>
 	<string name="invoice_issued_successfully">Счет на сумму %1s успешно выставлен</string>
@@ -65,8 +65,9 @@
 	<string name="week">неделя</string>
 	<string name="month">месяц</string>
     <string name="clear_field">очистить</string>
-	<string name="user_not_found">Не корректный e-mail или телефон</string>
+	<string name="error_invalid_email_or_phone">Не корректный e-mail или телефон</string>
 	<string name="entered_password_incorrect">Введён неверный пароль</string>
+    <string name="error_enter_email_or_phone">Введите e-mail или телефон</string>
     <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
 	<string name="data_load">Данные будут загружены</string>
