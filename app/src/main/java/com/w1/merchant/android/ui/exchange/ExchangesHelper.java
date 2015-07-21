@@ -2,12 +2,7 @@ package com.w1.merchant.android.ui.exchange;
 
 import android.content.res.Resources;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Balance;
@@ -21,8 +16,6 @@ import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by alexey on 10.07.15.
@@ -120,82 +113,4 @@ public final class ExchangesHelper {
         }
         return resources.getColor(colorResId);
     }
-
-    static class TextWatcherWrapper implements TextWatcher {
-
-        private boolean mEditing;
-
-        private boolean mEnable = true;
-
-        private final OnTextChangedListener mListener;
-
-        public TextWatcherWrapper(OnTextChangedListener listener) {
-            this.mListener = listener;
-            mEnable = true;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            // Ignore
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            // Ignore
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (mEditing || !mEnable) return;
-            mEditing = true;
-            try {
-                mListener.onTextChanged(s);
-            } finally {
-                mEditing = false;
-            }
-        }
-
-        public void disable() {
-            mEnable = false;
-        }
-
-        public void enable() {
-            mEnable = true;
-        }
-
-        public interface OnTextChangedListener {
-            void onTextChanged(Editable s);
-        }
-    }
-
-    public static class CurrencyFormatInputFilter implements InputFilter {
-
-        private static Pattern sPattern = Pattern.compile("(?:0|[1-9]+[0-9]*)(?:\\.[0-9]{0,2})?");
-
-        private Matcher mMatcher = sPattern.matcher("");
-
-        private StringBuilder mStringBuilder = new StringBuilder();
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            if (start == end) return null;
-            String source2 = source.toString().substring(start, end);
-            if (".".equals(source2) && dstart == 0 && dest.length() == 0) {
-                if (source instanceof  Spanned) {
-                    SpannableString sp = new SpannableString("0" + source2);
-                    TextUtils.copySpansFrom((Spanned)source, start, end, null, sp, 1);
-                    return sp;
-                } else {
-                    return "0.";
-                }
-            }
-            mStringBuilder.append(dest);
-            mStringBuilder.replace(dstart, dend, source2);
-            mMatcher.reset(mStringBuilder);
-            boolean matches = mMatcher.matches();
-            mStringBuilder.setLength(0);
-            return matches ? null : dest.subSequence(dstart, dend);
-        }
-    }
-
 }

@@ -108,6 +108,15 @@ public final class TextUtilsW1 {
     }
 
     /**
+     * То же самое, что и {@link Character#isDigit(char)}, но только для ASCII цифр от 0 до 9.
+     * @param codePoint
+     * @return
+     */
+    public static boolean isAsciiDigit(char codePoint) {
+        return '0' <= codePoint && codePoint <= '9';
+    }
+
+    /**
      * Очистка строки от символов форматирования телефонного номера.
      * Удаляются пробелы и символы <code>[-+()]</code>
      * @param possibleNumber

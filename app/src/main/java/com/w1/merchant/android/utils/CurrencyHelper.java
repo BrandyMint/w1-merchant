@@ -107,6 +107,16 @@ public final class CurrencyHelper {
         return result;
     }
 
+    public static boolean isSignToLeft(String currencyId) {
+        switch (currencyId) {
+            case "710": //  South African rand
+            case "840": // US Dollar
+                return true;
+            default:
+                return false;
+        }
+    }
+
     @Nullable
     @TargetApi(19)
     public static String getCurrencyName(String currencyId, Resources resources) {
@@ -190,7 +200,7 @@ public final class CurrencyHelper {
         StringBuilder stringBuilder = new StringBuilder(input.length());
         for (int i = 0, size = input.length(); i < size; i++) {
             char ch = input.charAt(i);
-            if (Character.isDigit(ch)) {
+            if (TextUtilsW1.isAsciiDigit(ch)) {
                 stringBuilder.append(ch);
             } else if(ch == ',' || ch == '.') {
                 stringBuilder.append('.');

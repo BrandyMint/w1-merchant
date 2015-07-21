@@ -47,7 +47,7 @@ import com.w1.merchant.android.rest.model.AuthPrincipalRequest;
 import com.w1.merchant.android.rest.model.OneTimePassword;
 import com.w1.merchant.android.rest.model.PrincipalUser;
 import com.w1.merchant.android.rest.model.ResponseError;
-import com.w1.merchant.android.ui.widget.PhoneEmailFormattingTextWatcher;
+import com.w1.merchant.android.utils.text.PhoneEmailFormattingTextWatcher;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
 

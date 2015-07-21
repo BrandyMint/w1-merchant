@@ -1,4 +1,4 @@
-package com.w1.merchant.android.ui.widget;
+package com.w1.merchant.android.utils.text;
 
 import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
@@ -191,7 +191,7 @@ public class PhoneEmailFormattingTextWatcher implements TextWatcher {
                 case '-':
                 case '(':
                 case ')':
-                    if (cursor >= i) cursor -= 1;
+                    if (cursor > i) cursor -= 1;
                     break;
                 default:
                     cleaned.append(s.charAt(i));

@@ -548,7 +548,8 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
         public void onAmountFromTextChanged(Editable s) {
             mIsUserInputCurrencyTo = false;
             mUserInputAmount = s;
-            refreshAmount();
+            mHandler.removeCallbacks(mRefreshAmountRunnable);
+            mHandler.post(mRefreshAmountRunnable);
         }
     };
 
@@ -581,6 +582,14 @@ public class ExchangeFragment extends Fragment implements  ExchangeDialogFragmen
         public void onAmountToTextChanged(Editable s) {
             mIsUserInputCurrencyTo = true;
             mUserInputAmount = s;
+            mHandler.removeCallbacks(mRefreshAmountRunnable);
+            mHandler.post(mRefreshAmountRunnable);
+        }
+    };
+
+    private Runnable mRefreshAmountRunnable = new Runnable() {
+        @Override
+        public void run() {
             refreshAmount();
         }
     };

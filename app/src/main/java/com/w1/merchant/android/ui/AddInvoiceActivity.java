@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,6 +25,8 @@ import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.Invoice;
 import com.w1.merchant.android.rest.model.InvoiceRequest;
+import com.w1.merchant.android.utils.text.CurrencyFormattingTextWatcher;
+import com.w1.merchant.android.utils.text.CurrencyKeyListener;
 import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
@@ -97,27 +97,8 @@ public class AddInvoiceActivity extends ActivityBase {
         });
 
         etSum = (EditText) findViewById(R.id.etSum);
-        etSum.addTextChangedListener(new TextWatcher() {
-            boolean mEditing = false;
-
-            public synchronized void afterTextChanged(Editable s) {
-                if (!mEditing) {
-                    if (!s.toString().endsWith(" " + CurrencyHelper.ROUBLE_SYMBOL)) {
-                        mEditing = true;
-                        etSum.setText(s.toString().replaceAll("[^0-9]+", "") + " " + CurrencyHelper.ROUBLE_SYMBOL);
-                                etSum.setSelection(etSum.getText().length() - 2);
-                        mEditing = false;
-                    }
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
+        etSum.setKeyListener(new CurrencyKeyListener(CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
+        etSum.addTextChangedListener(new CurrencyFormattingTextWatcher(CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
         etSum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

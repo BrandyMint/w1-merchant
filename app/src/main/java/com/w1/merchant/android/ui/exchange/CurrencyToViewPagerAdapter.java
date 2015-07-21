@@ -19,6 +19,9 @@ import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.ui.widget.ViewPagerAdapter;
+import com.w1.merchant.android.utils.text.CurrencyFormattingTextWatcher;
+import com.w1.merchant.android.utils.text.CurrencyKeyListener;
+import com.w1.merchant.android.utils.text.TextWatcherWrapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,11 +91,12 @@ final class CurrencyToViewPagerAdapter extends PagerAdapter {
 
         SpannableString hint = new SpannableString(container.getResources().getText(R.string.enter_the_amount));
         hint.setSpan(new RelativeSizeSpan(0.6f), 0, hint.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        holder.amount.setHint(hint);
-        holder.amount.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(9),
-                new ExchangesHelper.CurrencyFormatInputFilter()});
 
+        holder.amount.setHint(hint);
+        holder.amount.setKeyListener(new CurrencyKeyListener(currency, true));
+        holder.amount.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
+
+        holder.amount.addTextChangedListener(new CurrencyFormattingTextWatcher(currency, true));
         holder.amount.addTextChangedListener(mTextWatcher);
         holder.amount.setHorizontallyScrolling(false);
 
@@ -166,7 +170,7 @@ final class CurrencyToViewPagerAdapter extends PagerAdapter {
         return null;
     }
 
-    private final ExchangesHelper.TextWatcherWrapper mTextWatcher = new ExchangesHelper.TextWatcherWrapper(new ExchangesHelper.TextWatcherWrapper.OnTextChangedListener() {
+    private final TextWatcherWrapper mTextWatcher = new TextWatcherWrapper(new TextWatcherWrapper.OnTextChangedListener() {
         @Override
         public void onTextChanged(Editable s) {
             mCallbacks.onAmountToTextChanged(s);
