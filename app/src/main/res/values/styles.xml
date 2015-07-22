@@ -219,6 +219,7 @@
         <item name="android:paddingRight">16dp</item>
         <item name="android:textAppearance">@style/PositiveRedButtonTextAppearance</item>
         <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:textColor">@color/positive_red_button_text_color</item>
         <item name="fontPath">fonts/Roboto-Light.ttf</item>
     </style>
 

@@ -165,8 +165,8 @@
                 android:layout_marginTop="24dp"
                 style="@style/PositiveRedButton"
                 android:text="@string/login_button"
-                android:textColor="@color/positive_red_button_text_color"
-                android:enabled="false" />
+                android:enabled="false"
+                tools:enabled="true" />
         </RelativeLayout>
     </ScrollView>
 </FrameLayout>
