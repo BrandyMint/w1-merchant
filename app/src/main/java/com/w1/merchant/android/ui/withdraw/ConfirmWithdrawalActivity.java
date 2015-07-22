@@ -1,7 +1,8 @@
 package com.w1.merchant.android.ui.withdraw;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -23,7 +24,7 @@ import com.w1.merchant.android.rest.model.PaymentFormListFieldItem;
 import com.w1.merchant.android.rest.model.PaymentState;
 import com.w1.merchant.android.rest.model.SubmitPaymentFormRequest;
 import com.w1.merchant.android.ui.ActivityBase;
-import com.w1.merchant.android.ui.ConfirmPaymentActivity;
+import com.w1.merchant.android.ui.ConfirmDialogFragment;
 import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
@@ -41,7 +42,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.subscriptions.Subscriptions;
 
-public class ConfirmWithdrawalActivity extends ActivityBase {
+public class ConfirmWithdrawalActivity extends ActivityBase implements ConfirmDialogFragment.InteractionListener {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
 
@@ -70,7 +71,7 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         sum = getIntent().getStringExtra("SumOutput");
 
         TextView tvSum = (TextView) findViewById(R.id.tvSum);
-        tvSum.setText(CurrencyHelper.formatAmount(new BigInteger(sumComis), "643"));
+        tvSum.setText(CurrencyHelper.formatAmount(new BigInteger(sumComis), CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
         TextView tvGo = (TextView) findViewById(R.id.tvGo);
         tvGo.setOnClickListener(myOnClickListener);
         ImageView ivBack = (ImageView) findViewById(R.id.ivBack);
@@ -265,10 +266,13 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
 
                     @Override
                     public void onNext(InitPaymentStep initPaymentStep) {
-                        Intent intent = new Intent(ConfirmWithdrawalActivity.this, ConfirmPaymentActivity.class);
-                        intent.putExtra("sum", sumComis + ' ' + CurrencyHelper.ROUBLE_SYMBOL);
-                        startActivity(intent);
-                        ConfirmWithdrawalActivity.this.finish();
+                        String amount = sumComis + '\u00a0' + CurrencyHelper.ROUBLE_SYMBOL;
+                        String description = getString(R.string.transact_proces, amount);
+                        ConfirmDialogFragment dialog = ConfirmDialogFragment.newInstance(description);
+                        FragmentManager fm = getSupportFragmentManager();
+                        Fragment old = fm.findFragmentByTag("CONFIRM_DIALOG_FRAGMENT");
+                        if (old != null) return;
+                        dialog.show(fm, "CONFIRM_DIALOG_FRAGMENT");
                     }
                 });
     }
@@ -285,6 +289,12 @@ public class ConfirmWithdrawalActivity extends ActivityBase {
         if (totalReq == 0) {
             pbTemplate.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onConfirmDialogDismissed() {
+        finish();
+        overridePendingTransition(0, 0);
     }
 }
 

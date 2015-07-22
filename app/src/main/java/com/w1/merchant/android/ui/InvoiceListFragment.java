@@ -23,15 +23,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.w1.merchant.android.R;
-import com.w1.merchant.android.Session;
 import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.Invoice;
 import com.w1.merchant.android.rest.model.Invoices;
 import com.w1.merchant.android.ui.adapter.InvoiceListAdapter;
+import com.w1.merchant.android.ui.widget.CheckboxStyleSegmentedRadioGroup;
 import com.w1.merchant.android.utils.NetworkUtils;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
-import com.w1.merchant.android.ui.widget.CheckboxStyleSegmentedRadioGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,6 @@ import rx.subscriptions.Subscriptions;
 public class InvoiceListFragment extends Fragment {
 
     public static final int ITEMS_PER_PAGE = 25;
-    private static final int ACT_ADD = 1;
 
     private CheckboxStyleSegmentedRadioGroup srgInvoice;
     private TextView llFooter;
@@ -65,19 +63,6 @@ public class InvoiceListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //подтверждение добавления счета
-        if (requestCode == ACT_ADD) {
-            if (resultCode == Activity.RESULT_OK) {
-                Intent confirmIntent = new Intent(getActivity().getApplicationContext(),
-                        ConfirmInvoiceActivity.class);
-                startActivity(confirmIntent);
-            }
-        }
     }
 
     @Override
@@ -189,8 +174,7 @@ public class InvoiceListFragment extends Fragment {
             case R.id.ic_menu_add0:
                 //добавления счета
                 Intent intent = new Intent(getActivity(), AddInvoiceActivity.class);
-                intent.putExtra("token", Session.getInstance().getAuthtoken());
-                startActivityForResult(intent, ACT_ADD);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,11 +1,12 @@
 package com.w1.merchant.android.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -25,10 +26,10 @@ import com.w1.merchant.android.rest.ResponseErrorException;
 import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.Invoice;
 import com.w1.merchant.android.rest.model.InvoiceRequest;
-import com.w1.merchant.android.utils.text.CurrencyFormattingTextWatcher;
-import com.w1.merchant.android.utils.text.CurrencyKeyListener;
 import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
+import com.w1.merchant.android.utils.text.CurrencyFormattingTextWatcher;
+import com.w1.merchant.android.utils.text.CurrencyKeyListener;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class AddInvoiceActivity extends ActivityBase {
+public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFragment.InteractionListener {
 
     private static final String PHONE_PATTERN = "[0-9]{11}";
     private static final String APP_PREF = "W1_Pref";
@@ -223,12 +224,21 @@ public class AddInvoiceActivity extends ActivityBase {
 
                     @Override
                     public void onNext(Invoice invoice) {
-                        Intent intent = new Intent(AddInvoiceActivity.this, ConfirmInvoiceActivity.class);
-                        intent.putExtra("sum", etSum.getText().toString());
-                        startActivity(intent);
-                        finish();
+                        String amount = CurrencyHelper.formatAmount(invoice.amount, invoice.currencyId);
+                        String description = getString(R.string.invoice_issued_successfully, amount);
+                        ConfirmDialogFragment dialog = ConfirmDialogFragment.newInstance(description);
+                        FragmentManager fm = getSupportFragmentManager();
+                        Fragment old = fm.findFragmentByTag("CONFIRM_DIALOG_FRAGMENT");
+                        if (old != null) return;
+                        dialog.show(fm, "CONFIRM_DIALOG_FRAGMENT");
                     }
                 });
+    }
+
+    @Override
+    public void onConfirmDialogDismissed() {
+        finish();
+        overridePendingTransition(0, 0);
     }
 }
 
