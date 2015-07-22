@@ -6,29 +6,7 @@
     android:orientation="vertical"
     tools:ignore="MissingPrefix">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:contentDescription="@string/go_back"
-            android:src="@drawable/ic_menu_back" />
-
-        <com.w1.merchant.android.ui.widget.ProgressBarIndeterminateLoader
-            android:id="@+id/pbTemplate"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="10dp"
-            android:gravity="right"
-            android:visibility="invisible"
-            tools:visibility="visible"
-            android:layout_gravity="center_vertical" />
-    </LinearLayout>
+    <include layout="@layout/include_ab2" />
 
     <TextView
         android:id="@+id/tvQuestion"

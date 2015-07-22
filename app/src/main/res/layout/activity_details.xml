@@ -1,60 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_padding_scrollbar"
-    android:paddingRight="@dimen/activity_horizontal_padding_scrollbar"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin_scrollbar"
-    android:layout_marginRight="@dimen/activity_horizontal_margin_scrollbar"
-    android:clipToPadding="false"
-    android:scrollbarStyle="outsideOverlay">
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:layout_marginRight="@dimen/activity_horizontal_margin_scrollbar"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:scrollbarStyle="outsideOverlay">
 
     <LinearLayout
-        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:src="@drawable/ic_menu_back"
-            android:cropToPadding="false"
-            android:contentDescription="@string/go_back" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/ToolbarSecondActivityStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            tools:ignore="UnusedAttribute"
+            />
 
-        <ImageView
-            android:id="@+id/status_icon"
-            android:layout_width="104dp"
-            android:layout_height="104dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_invoices_output"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            android:id="@+id/amount"
-            android:layout_marginTop="12dp"
+        <LinearLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="60sp"
-            android:textColor="@color/details_invoice_processing"
-            android:includeFontPadding="false"
-            android:textIsSelectable="true"
-            tools:text="-100 594 396 $"
-            android:singleLine="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="12dp"
-            android:scrollHorizontally="true"
-            android:ellipsize="marquee"
-            fontPath="fonts/Roboto-Thin.ttf"
-            android:gravity="center_horizontal"
-            tools:ignore="MissingPrefix"/>
+            android:layout_marginLeft="@dimen/activity_horizontal_margin_scrollbar"
+            android:paddingLeft="@dimen/activity_horizontal_padding_scrollbar"
+            android:paddingRight="@dimen/activity_horizontal_padding_scrollbar"
+            android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/status_icon"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_invoices_output"
+                tools:ignore="ContentDescription"/>
+
+            <TextView
+                android:id="@+id/amount"
+                fontPath="fonts/Roboto-Thin.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="12dp"
+                android:ellipsize="marquee"
+                android:gravity="center_horizontal"
+                android:includeFontPadding="false"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@color/details_invoice_processing"
+                android:textIsSelectable="true"
+                android:textSize="60sp"
+                tools:ignore="MissingPrefix"
+                tools:text="-100 594 396 $"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

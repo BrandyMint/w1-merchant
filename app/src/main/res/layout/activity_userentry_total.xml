@@ -5,19 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolbarSecondActivityStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="20dp"
-            android:contentDescription="@string/go_back"
-            android:src="@drawable/ic_menu_back" />
-    </LinearLayout>
+        android:layout_height="?actionBarSize"
+        tools:ignore="UnusedAttribute"
+        />
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -56,7 +56,6 @@
     <string name="error_input_field_must_no_be_empty">The input field must not be empty!</string>
     <string name="error_enter_email_or_phone">Enter an email or phone</string>
     <string name="entrance">Inpayment</string>
-    <string name="back">Back</string>
     <string name="invoice_issued_successfully">Invoice in amount of %1s issued successfully</string>
     <string name="sum_commis">Amount including commission</string>
     <string name="sum_output">Amount to withdraw</string>

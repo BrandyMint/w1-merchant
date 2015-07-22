@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -50,7 +52,7 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
     private static final String APP_PREF = "W1_Pref";
 
     private EditText etSum;
-    private ProgressBar pbInvoice;
+    private ProgressBar mProgressView;
 
     private Vibrator mVibrator;
 
@@ -67,9 +69,23 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_invoice);
+        mDescriptionView = (AutoCompleteTextView) findViewById(R.id.actvDescr);
+        mPhoneView = (AutoCompleteTextView) findViewById(R.id.actvTelEmail);
+        etSum = (EditText) findViewById(R.id.etSum);
+        mProgressView = (ProgressBar) findViewById(R.id.ab2_progress);
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        TextView tvBillButton = (TextView) findViewById(R.id.tvBillButton);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
 
         mPref = getSharedPreferences(APP_PREF, MODE_PRIVATE);
-        mDescriptionView = (AutoCompleteTextView) findViewById(R.id.actvDescr);
+
+        setSupportActionBar(toolbar);
+        int abOptions =  ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP;
+        getSupportActionBar().setDisplayOptions(abOptions, abOptions);
+
+        ((TextView)toolbar.findViewById(R.id.ab2_title)).setText(R.string.bill);
+
         Set<String> descrs = mPref.getStringSet("descrs", new HashSet<String>());
         for(String r : descrs) {
             descrsArray.add(r);
@@ -83,7 +99,6 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
             }
         });
 
-        mPhoneView = (AutoCompleteTextView) findViewById(R.id.actvTelEmail);
         Set<String> telEmail = mPref.getStringSet("telEmail", new HashSet<String>());
         for(String r : telEmail) {
             telEmailArray.add(r);
@@ -97,7 +112,6 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
             }
         });
 
-        etSum = (EditText) findViewById(R.id.etSum);
         etSum.setKeyListener(new CurrencyKeyListener(CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
         etSum.addTextChangedListener(new CurrencyFormattingTextWatcher(CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
         etSum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -110,11 +124,13 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
                 return false;
             }
         });
-        TextView tvBillButton = (TextView) findViewById(R.id.tvBillButton);
-        tvBillButton.setOnClickListener(myOnClickListener);
-        findViewById(R.id.ivBack).setOnClickListener(myOnClickListener);
-        pbInvoice = (ProgressBar) findViewById(R.id.pbInvoice);
-        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        tvBillButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bill();
+            }
+        });
     }
 
     @Override
@@ -141,20 +157,6 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
         }
         return (err == 0);
     }
-
-    private final OnClickListener myOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-            case (R.id.tvBillButton):
-                bill();
-                break;
-            case (R.id.ivBack):
-                finish();
-                break;
-            }
-        }
-    };
 
     private void bill() {
         if (checkFields()) {
@@ -192,7 +194,7 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
     }
 
     private void createInvoice(final String recipient, final BigDecimal amount, final String description) {
-        pbInvoice.setVisibility(View.INVISIBLE);
+        mProgressView.setVisibility(View.INVISIBLE);
 
         mCreateInvoiceSubscription.unsubscribe();
         Observable<Invoice> observer = AppObservable.bindActivity(this,
@@ -205,7 +207,7 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
                 .finallyDo(new Action0() {
                     @Override
                     public void call() {
-                        pbInvoice.setVisibility(View.VISIBLE);
+                        mProgressView.setVisibility(View.VISIBLE);
                     }
                 })
                 .subscribe(new Observer<Invoice>() {

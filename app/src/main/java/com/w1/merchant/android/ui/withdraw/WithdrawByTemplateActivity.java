@@ -3,6 +3,8 @@ package com.w1.merchant.android.ui.withdraw;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -58,9 +60,9 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 
     private EditText mAmountEditText;
     private EditText mCommissionEditText;
-    private TextView tvOutputName;
-    private ImageView ivOutputIcon;
-    private ProgressBar pbTemplates;
+    private TextView titleView;
+    private ImageView iconView;
+    private ProgressBar progressView;
     private String templateId;
     private boolean mIsBusinessAccount;
     private LinearLayout llMain;
@@ -81,18 +83,17 @@ public class WithdrawByTemplateActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_withdraw_by_template);
 
-        llMain = (LinearLayout) findViewById(R.id.llMain);
-        findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        llMain = (LinearLayout) findViewById(R.id.main);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        iconView = (ImageView) findViewById(R.id.icon);
+        titleView = (TextView) toolbar.findViewById(R.id.ab2_title);
+        progressView = (ProgressBar) toolbar.findViewById(R.id.ab2_progress);
 
-        ivOutputIcon = (ImageView) findViewById(R.id.ivOutputIcon);
-        tvOutputName = (TextView) findViewById(R.id.tvOutputName);
+        setSupportActionBar(toolbar);
+        int abOptions =  ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP;
+        getSupportActionBar().setDisplayOptions(abOptions, abOptions);
 
-        pbTemplates = (ProgressBar) findViewById(R.id.pbTemplates);
+
         templateId = getIntent().getStringExtra("templateId");
         mIsBusinessAccount =  getIntent().getBooleanExtra("mIsBusinessAccount", false);
 
@@ -330,10 +331,10 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 
         Picasso.with(this)
                 .load(template.getLogoUrl())
-                .into(ivOutputIcon);
+                .into(iconView);
 
 
-        tvOutputName.setText(template.title);
+        titleView.setText(template.title);
 
         //Расписание
         lParams4 = new LinearLayout.LayoutParams(
@@ -392,14 +393,14 @@ public class WithdrawByTemplateActivity extends ActivityBase {
     void startPBAnim() {
         totalReq += 1;
         if (totalReq == 1) {
-            pbTemplates.setVisibility(View.VISIBLE);
+            progressView.setVisibility(View.VISIBLE);
         }
     }
     
     public void stopPBAnim() {
         totalReq -= 1;
         if (totalReq == 0) {
-            pbTemplates.setVisibility(View.INVISIBLE);
+            progressView.setVisibility(View.INVISIBLE);
         }
     }
 

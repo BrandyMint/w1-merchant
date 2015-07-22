@@ -3,11 +3,12 @@ package com.w1.merchant.android.ui.withdraw;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +52,7 @@ public class ConfirmWithdrawalActivity extends ActivityBase implements ConfirmDi
     private String sumComis;
     private String sum;
     private int totalReq = 0;
-    private ProgressBar pbTemplate;
+    private ProgressBar mProgressView;
 
     private SubmitPaymentFormRequest mLastRequest;
 
@@ -65,17 +66,34 @@ public class ConfirmWithdrawalActivity extends ActivityBase implements ConfirmDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_withdrawal);
 
-        pbTemplate = (ProgressBar) findViewById(R.id.pbTemplate);
+        mProgressView = (ProgressBar) findViewById(R.id.ab2_progress);
+        TextView tvSum = (TextView) findViewById(R.id.tvSum);
+        TextView tvGo = (TextView) findViewById(R.id.tvGo);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+
         templateId = getIntent().getStringExtra("templateId");
         sumComis = getIntent().getStringExtra("SumCommis");
         sum = getIntent().getStringExtra("SumOutput");
 
-        TextView tvSum = (TextView) findViewById(R.id.tvSum);
+        setSupportActionBar(toolbar);
+        int abOptions =  ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP;
+        getSupportActionBar().setDisplayOptions(abOptions, abOptions | ActionBar.DISPLAY_SHOW_TITLE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        
         tvSum.setText(CurrencyHelper.formatAmount(new BigInteger(sumComis), CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
-        TextView tvGo = (TextView) findViewById(R.id.tvGo);
-        tvGo.setOnClickListener(myOnClickListener);
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBack);
-        ivBack.setOnClickListener(myOnClickListener);
+        tvGo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Инициализация платежа с помощью шаблона
+                initPayment();
+            }
+        });
     }
 
     @Override
@@ -86,21 +104,6 @@ public class ConfirmWithdrawalActivity extends ActivityBase implements ConfirmDi
         mGetPaymentStateSubscription.unsubscribe();
         mSubmitForm2Subscription.unsubscribe();
     }
-
-    private final OnClickListener myOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case (R.id.tvGo):
-                    //Инициализация платежа с помощью шаблона
-                    initPayment();
-                    break;
-                case (R.id.ivBack):
-                    finish();
-                    break;
-            }
-        }
-    };
 
     private <T> Observable<T> initObservable(Observable<T> observable) {
         return AppObservable.bindActivity(this, observable)
@@ -280,14 +283,14 @@ public class ConfirmWithdrawalActivity extends ActivityBase implements ConfirmDi
     void startPBAnim() {
         totalReq += 1;
         if (totalReq == 1) {
-            pbTemplate.setVisibility(View.VISIBLE);
+            mProgressView.setVisibility(View.VISIBLE);
         }
     }
 
     void stopPBAnim() {
         totalReq -= 1;
         if (totalReq == 0) {
-            pbTemplate.setVisibility(View.INVISIBLE);
+            mProgressView.setVisibility(View.INVISIBLE);
         }
     }
 

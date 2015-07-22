@@ -55,7 +55,6 @@
 	<string name="enter_amount">Введите сумму</string>
 	<string name="error_input_field_must_no_be_empty">Поле ввода не должно быть пустым!</string>
 	<string name="entrance">Поступление</string>
-	<string name="back">Вернуться</string>
 	<string name="invoice_issued_successfully">Счет на сумму %1s успешно выставлен</string>
 	<string name="sum_commis">Сумма с комиссией</string>
 	<string name="sum_output">Сумма к выводу</string>

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +72,14 @@ public class DetailsActivity extends ActivityBase {
         mStatusIcon = (ImageView)findViewById(R.id.status_icon);
         mAmountView = (TextView)findViewById(R.id.amount);
         mContainer = (ViewGroup)findViewById(R.id.container);
-        findViewById(R.id.ivBack).setOnClickListener(new View.OnClickListener() {
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        int abOptions =  ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP;
+        getSupportActionBar().setDisplayOptions(abOptions, abOptions | ActionBar.DISPLAY_SHOW_TITLE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

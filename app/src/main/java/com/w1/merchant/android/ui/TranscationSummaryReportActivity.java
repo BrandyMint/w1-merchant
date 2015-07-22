@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,16 +71,23 @@ public class TranscationSummaryReportActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userentry_total);
 
-        mCurrency = getIntent().getStringExtra(ARG_CURRENCY);
-        mDateFrom = new Date(getIntent().getLongExtra(ARG_DATE_FROM, System.currentTimeMillis()));
-        mDateTo = new Date(getIntent().getLongExtra(ARG_DATE_TO, System.currentTimeMillis()));
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
 
-        findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
+        setSupportActionBar(toolbar);
+        int abOptions =  ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP;
+        getSupportActionBar().setDisplayOptions(abOptions, abOptions | ActionBar.DISPLAY_SHOW_TITLE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
+        mCurrency = getIntent().getStringExtra(ARG_CURRENCY);
+        mDateFrom = new Date(getIntent().getLongExtra(ARG_DATE_FROM, System.currentTimeMillis()));
+        mDateTo = new Date(getIntent().getLongExtra(ARG_DATE_TO, System.currentTimeMillis()));
+
     }
 
     @Override
