@@ -12,6 +12,8 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -24,7 +26,18 @@ public final class CurrencyHelper {
 
     public static final String ROUBLE_SYMBOL = "\u20BD";
 
-    private CurrencyHelper() {}
+    private static final DecimalFormat sAmountFormatter;
+
+    static {
+        DecimalFormatSymbols formatSymbols = DecimalFormatSymbols.getInstance(Locale.US);
+        formatSymbols.setGroupingSeparator('\u202f');
+        formatSymbols.setDecimalSeparator('.');
+        sAmountFormatter = new DecimalFormat("##,###,###.##", formatSymbols);
+        sAmountFormatter.setMaximumFractionDigits(2);
+    }
+
+    private CurrencyHelper() {
+    }
 
     @Nullable
     public static String getIso4217CodeByNumber(String number) {
@@ -184,14 +197,17 @@ public final class CurrencyHelper {
     }
 
     /**
-     *
-     * @return "100 $"
+     * @return "$ 100"
      */
-    // XXX переделать всё на хуй. Должно быть не "100 $", а "$ 100". Использовать формат из системы,
-    // а не свои велосипеды. Но при этом рубль должен быть новым символом, а не поддерживаемые
-    // системой валюты - в нормальном виде. И всё в nowrap.
     public static String formatAmount(Number amount, String currencyId) {
-        return TextUtilsW1.formatNumber(amount) + '\u00a0' + getCurrencySymbol(currencyId);
+        synchronized (sAmountFormatter) {
+            String amountText = sAmountFormatter.format(amount);
+            if (isSignToLeft(currencyId)) {
+                return getCurrencySymbol(currencyId) + '\u00a0' + amountText;
+            } else {
+                return amountText + '\u00a0' + getCurrencySymbol(currencyId);
+            }
+        }
     }
 
     @Nullable
