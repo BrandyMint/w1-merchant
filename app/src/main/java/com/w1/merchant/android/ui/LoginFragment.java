@@ -160,7 +160,25 @@ public class LoginFragment extends Fragment {
 
         mLoginTextView.setAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, mLogins));
-        mLoginTextView.addTextChangedListener(new PhoneEmailFormattingTextWatcher());
+        mLoginTextView.addTextChangedListener(new PhoneEmailFormattingTextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (mLoginTextView != null && mLoginTextView.isPerformingCompletion()) return;
+                super.beforeTextChanged(s, start, count, after);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (mLoginTextView != null && mLoginTextView.isPerformingCompletion()) return;
+                super.onTextChanged(s, start, before, count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mLoginTextView != null && mLoginTextView.isPerformingCompletion()) return;
+                super.afterTextChanged(s);
+            }
+        });
         mLoginTextView.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -339,6 +357,7 @@ public class LoginFragment extends Fragment {
             login = mLoginTextView.getText().toString();
         }
 
+        mLogin = mLoginTextView.getText().toString();
         attemptLogin(login, mPasswordView.getText().toString());
     }
 
@@ -374,7 +393,6 @@ public class LoginFragment extends Fragment {
     }
 
     private void attemptLogin(final String login, final String password) {
-        mLogin = login;
         mLoginSubscription.unsubscribe();
 
         Observable<AuthModel> observer = AppObservable.bindFragment(this,
