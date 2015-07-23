@@ -194,7 +194,7 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
     }
 
     private void createInvoice(final String recipient, final BigDecimal amount, final String description) {
-        mProgressView.setVisibility(View.INVISIBLE);
+        mProgressView.setVisibility(View.VISIBLE);
 
         mCreateInvoiceSubscription.unsubscribe();
         Observable<Invoice> observer = AppObservable.bindActivity(this,
@@ -207,7 +207,7 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
                 .finallyDo(new Action0() {
                     @Override
                     public void call() {
-                        mProgressView.setVisibility(View.VISIBLE);
+                        mProgressView.setVisibility(View.INVISIBLE);
                     }
                 })
                 .subscribe(new Observer<Invoice>() {
