@@ -2,6 +2,8 @@ package com.w1.merchant.android.ui;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -44,8 +46,29 @@ public class SelectPrincipalFragment extends DialogFragment {
     @Nullable
     private PrincipalUser mSelectedPrincipalUser = null;
 
+    private InteractionListener mListener;
+
+    public interface InteractionListener {
+        void onSelectPrincipalDialogDismissed(@Nullable PrincipalUser selectedUser);
+    }
+
     public SelectPrincipalFragment() {
     }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (getParentFragment() != null && getParentFragment() instanceof InteractionListener) {
+            mListener = (InteractionListener)getParentFragment();
+        } else if (activity instanceof InteractionListener) {
+            mListener = (InteractionListener)activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,9 +100,16 @@ public class SelectPrincipalFragment extends DialogFragment {
         }
     }
 
-    @Nullable
-    public PrincipalUser getSelectedPrincipalUser() {
-        return mSelectedPrincipalUser;
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (mListener != null) mListener.onSelectPrincipalDialogDismissed(mSelectedPrincipalUser);
     }
 
     public void setInProgress(boolean inProgress) {

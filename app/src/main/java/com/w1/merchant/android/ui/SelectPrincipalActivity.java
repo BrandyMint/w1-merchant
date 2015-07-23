@@ -1,6 +1,5 @@
 package com.w1.merchant.android.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,7 +31,7 @@ import rx.subscriptions.Subscriptions;
 /**
  * Created by alexey on 04.06.15.
  */
-public class SelectPrincipalActivity extends ActivityBase {
+public class SelectPrincipalActivity extends ActivityBase implements SelectPrincipalFragment.InteractionListener {
 
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
@@ -52,14 +51,7 @@ public class SelectPrincipalActivity extends ActivityBase {
         setContentView(R.layout.activity_select_principal);
 
         if (savedInstanceState == null) {
-            SelectPrincipalFragment fragment = new SelectPrincipalFragment() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    super.onDismiss(dialog);
-                    PrincipalUser user = getSelectedPrincipalUser();
-                    onPrincipalSelected(user);
-                }
-            };
+            SelectPrincipalFragment fragment = new SelectPrincipalFragment();
             fragment.show(getSupportFragmentManager(), TAG_SELECT_PRINCIPAL_DIALOG);
         }
     }
@@ -186,4 +178,8 @@ public class SelectPrincipalActivity extends ActivityBase {
         refreshProgress();
     }
 
+    @Override
+    public void onSelectPrincipalDialogDismissed(@Nullable PrincipalUser selectedUser) {
+        onPrincipalSelected(selectedUser);
+    }
 }

@@ -474,7 +474,7 @@ public class PaymentFormInflater {
 
             FragmentManager fm = listener.getFragmentManager();
             Fragment old = fm.findFragmentByTag(FRAGMENT_TAG_DIALOG_SELECT_LIST_FIELD_ITEM);
-            if (old != null) fm.beginTransaction().remove(old).commit();
+            if (old != null) fm.beginTransaction().remove(old).commitAllowingStateLoss();
             dialogFragment.show(fm, FRAGMENT_TAG_DIALOG_SELECT_LIST_FIELD_ITEM);
         }
     }

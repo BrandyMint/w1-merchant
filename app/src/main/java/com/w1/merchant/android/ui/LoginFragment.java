@@ -2,7 +2,6 @@ package com.w1.merchant.android.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -47,9 +46,9 @@ import com.w1.merchant.android.rest.model.AuthPrincipalRequest;
 import com.w1.merchant.android.rest.model.OneTimePassword;
 import com.w1.merchant.android.rest.model.PrincipalUser;
 import com.w1.merchant.android.rest.model.ResponseError;
-import com.w1.merchant.android.utils.text.PhoneEmailFormattingTextWatcher;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 import com.w1.merchant.android.utils.TextUtilsW1;
+import com.w1.merchant.android.utils.text.PhoneEmailFormattingTextWatcher;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,7 +64,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements SelectPrincipalFragment.InteractionListener {
     private static final String TAG = Constants.LOG_TAG;
     private static final boolean DBG = BuildConfig.DEBUG;
 
@@ -337,6 +336,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void setProgress(boolean inProgress) {
+        if (mProgress == null) return;
         mProgress.setVisibility(inProgress ? View.VISIBLE : View.INVISIBLE);
         mLoginTextView.setEnabled(!inProgress);
         mPasswordView.setEnabled(!inProgress);
@@ -477,30 +477,17 @@ public class LoginFragment extends Fragment {
     }
 
     void showSelectPrincipalDialog(List<PrincipalUser> principalUsers) {
-        SelectPrincipalFragment fragment = new SelectPrincipalFragment() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                super.onDismiss(dialog);
-                PrincipalUser user = getSelectedPrincipalUser();
-                if (user != null) {
-                    selectPrincipal(user);
-                } else {
-                    setProgress(false);
-                    Session.getInstance().clear();
-                }
-            }
-        };
+        SelectPrincipalFragment fragment = new SelectPrincipalFragment();
         Bundle args = new Bundle(1);
         args.putParcelableArrayList(SelectPrincipalFragment.ARG_PRINCIPAL_USERS, new ArrayList<Parcelable>(principalUsers));
         fragment.setArguments(args);
 
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         Fragment prev = getChildFragmentManager().findFragmentByTag("SelectPrincipalFragment");
-        if (prev != null) {
-            ft.remove(prev);
+        if (prev == null) {
+            ft.addToBackStack(null);
+            fragment.show(ft, "SelectPrincipalFragment");
         }
-        ft.addToBackStack(null);
-        fragment.show(ft, "SelectPrincipalFragment");
     }
 
     void selectPrincipal(final PrincipalUser user) {
@@ -667,6 +654,16 @@ public class LoginFragment extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences(APP_PREF, 0);
         Set<String> logins = preferences.getStringSet(PREFS_KEY_LOGINS, Collections.<String>emptySet());
         mLogins.addAll(logins);
+    }
+
+    @Override
+    public void onSelectPrincipalDialogDismissed(@Nullable PrincipalUser selectedUser) {
+        if (selectedUser != null) {
+            selectPrincipal(selectedUser);
+        } else {
+            setProgress(false);
+            Session.getInstance().clear();
+        }
     }
 
     public interface OnFragmentInteractionListener {
