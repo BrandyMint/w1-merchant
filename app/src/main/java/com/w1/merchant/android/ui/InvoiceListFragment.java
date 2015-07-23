@@ -1,7 +1,6 @@
 package com.w1.merchant.android.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -172,9 +171,8 @@ public class InvoiceListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.ic_menu_add0:
-                //добавления счета
-                Intent intent = new Intent(getActivity(), AddInvoiceActivity.class);
-                startActivity(intent);
+                AddInvoiceActivity.startActivity(getActivity(), null, null,
+                        getActivity().findViewById(R.id.ic_menu_add0));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

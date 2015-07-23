@@ -1,7 +1,6 @@
 package com.w1.merchant.android.ui.withdraw;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,7 +12,6 @@ import android.support.v7.util.SortedList;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.Constants;
@@ -31,8 +28,8 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.rest.model.Provider;
 import com.w1.merchant.android.rest.model.ProviderList;
+import com.w1.merchant.android.ui.adapter.CurrencyAdapter;
 import com.w1.merchant.android.ui.adapter.WithdrawalGridAdapter;
-import com.w1.merchant.android.utils.CurrencyHelper;
 import com.w1.merchant.android.utils.RetryWhenCaptchaReady;
 
 import java.util.ArrayList;
@@ -70,7 +67,7 @@ public class ProviderListFragment extends Fragment {
 
     private BaseAdapter mCurrencyAdapter;
 
-    private ArrayList<Balance> mCurrencyList;
+    private ArrayList<String> mCurrencyList;
 
     private ProviderListFragmentData mData;
 
@@ -93,7 +90,7 @@ public class ProviderListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            mCurrencyList = (ArrayList<Balance>)savedInstanceState.getSerializable(KEY_CURRENCY_LIST);
+            mCurrencyList = savedInstanceState.getStringArrayList(KEY_CURRENCY_LIST);
             if (mCurrencyList == null) mCurrencyList = new ArrayList<>();
         } else {
             mCurrencyList = new ArrayList<>();
@@ -203,7 +200,7 @@ public class ProviderListFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (!mCurrencyList.isEmpty()) outState.putSerializable(KEY_CURRENCY_LIST, mCurrencyList);
+        if (!mCurrencyList.isEmpty()) outState.putStringArrayList(KEY_CURRENCY_LIST, mCurrencyList);
         mData.onSaveInstanceState(outState);
     }
 
@@ -234,7 +231,7 @@ public class ProviderListFragment extends Fragment {
         mCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (DBG) Log.v(TAG, "on currency selected " + ((Balance)parent.getItemAtPosition(position)).currencyId);
+                if (DBG) Log.v(TAG, "on currency selected " + parent.getItemAtPosition(position));
                 refreshProviderAdapterList();
             }
 
@@ -290,9 +287,7 @@ public class ProviderListFragment extends Fragment {
 
     @Nullable
     private String getSelectedCurrencyId() {
-        Balance selectedCurrency = null;
-        if (mCurrencySpinner != null) selectedCurrency = (Balance)mCurrencySpinner.getSelectedItem();
-        return selectedCurrency == null ? null : selectedCurrency.currencyId;
+        return mCurrencySpinner == null ? null : (String)mCurrencySpinner.getSelectedItem();
     }
 
     private void refreshProviderAdapterList() {
@@ -357,33 +352,23 @@ public class ProviderListFragment extends Fragment {
         @Override
         public void onNext(List<Balance> balances) {
             if (mCurrencySpinner == null) return;
-            String oldSelectedCurrencyId = null;
-            if (mCurrencySpinner.getSelectedItem() != null) {
-                oldSelectedCurrencyId  = ((Balance)mCurrencySpinner.getSelectedItem()).currencyId;
-            }
+            String oldSelectedCurrencyId = getSelectedCurrencyId();
 
             mCurrencyList.clear();
-            mCurrencyList.addAll(balances);
+            for (Balance balance: balances) mCurrencyList.add(balance.currencyId);
             mCurrencyAdapter.notifyDataSetChanged();
 
-            Object newSelected = findBalanceByCurrencyId(mCurrencyList, oldSelectedCurrencyId);
-            if (newSelected == null) newSelected = findNativeBalance(mCurrencyList);
-            if (newSelected != null) {
-                mCurrencySpinner.setSelection(mCurrencyList.indexOf(newSelected));
+            int newCurrencyPos = -1;
+            if (oldSelectedCurrencyId != null) newCurrencyPos = mCurrencyList.indexOf(oldSelectedCurrencyId);
+            if (newCurrencyPos < 0) {
+                Balance balance = findNativeBalance(balances);
+                if (balance != null) newCurrencyPos = mCurrencyList.indexOf(balance.currencyId);
+            }
+            if (newCurrencyPos >= 0) {
+                mCurrencySpinner.setSelection(newCurrencyPos);
             }
         }
     };
-
-    @Nullable
-    private Balance findBalanceByCurrencyId(List<Balance> list, @Nullable String currencyId) {
-        if (TextUtils.isEmpty(currencyId)) return null;
-        for (Balance balance: list) {
-            if (currencyId.equals(balance.currencyId)) {
-                return balance;
-            }
-        }
-        return null;
-    }
 
     @Nullable
     private Balance findNativeBalance(List<Balance> list) {
@@ -436,66 +421,6 @@ public class ProviderListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onProviderClicked(WithdrawalGridAdapter.ViewHolderItem holder, Provider provider);
-    }
-
-    private static class CurrencyAdapter extends BaseAdapter {
-
-        private final LayoutInflater mInflater;
-
-        private final List<Balance> mCurrencyList;
-
-        public CurrencyAdapter(Context context, List<Balance> currencyList) {
-            mCurrencyList = currencyList;
-            mInflater = LayoutInflater.from(context);
-        }
-
-        @Override
-        public int getCount() {
-            return mCurrencyList.size();
-        }
-
-        @Override
-        public Balance getItem(int position) {
-            return mCurrencyList.get(position);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return false;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View root;
-            if (convertView == null) {
-                root = mInflater.inflate(android.R.layout.simple_spinner_item, parent, false);
-            } else {
-                root = convertView;
-            }
-            TextView textView = (TextView) root.findViewById(android.R.id.text1);
-            textView.setText(CurrencyHelper.getCurrencyName(getItem(position).currencyId, root.getResources()));
-
-            return root;
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            View root;
-            if (convertView == null) {
-                root = mInflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
-            } else {
-                root = convertView;
-            }
-            TextView textView = (TextView) root.findViewById(android.R.id.text1);
-            textView.setText(CurrencyHelper.getCurrencyName(getItem(position).currencyId, root.getResources()));
-
-            return root;
-        }
     }
 
 }

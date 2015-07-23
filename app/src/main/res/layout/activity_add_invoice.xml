@@ -1,132 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginRight="@dimen/activity_horizontal_margin_scrollbar"
     android:fillViewport="true"
-    >
+    android:scrollbarStyle="outsideOverlay">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <include
-            layout="@layout/include_ab2"
-            android:id="@+id/toolbar"/>
+            android:id="@+id/toolbar"
+            layout="@layout/include_ab2"/>
 
         <ImageView
-            android:id="@+id/ivAccountIcon"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:layout_below="@id/toolbar"
-            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
+            android:layout_marginTop="8dp"
             android:scaleType="fitCenter"
             android:src="@drawable/icon_ok_big"
-            tools:ignore="ContentDescription"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
+            tools:ignore="ContentDescription"/>
 
         <TextView
             android:id="@+id/currency_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/ivAccountIcon"
             android:text="@string/currency"
-            android:textColor="#757575" />
+            android:textColor="#757575"/>
 
-        <TextView
-            android:id="@+id/tvCurrencyName"
+        <Spinner
+            android:id="@+id/currency_spinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_below="@id/currency_title"
-            android:text="@string/rus_rubl"
-            android:textSize="10pt" />
+            android:layout_height="40dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
+            tools:listitem="@layout/item_spinner_currency"
+            android:textSize="10pt"
+            />
 
         <TextView
             android:id="@+id/description_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:layout_marginTop="12dp"
-            android:layout_below="@id/tvCurrencyName"
             android:text="@string/descr"
-            android:textColor="#757575" />
+            android:textColor="#757575"/>
 
         <AutoCompleteTextView
             android:id="@+id/actvDescr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@id/description_title"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:hint="@string/exampl_pizza"
             android:imeOptions="actionNext"
-            android:textSize="19sp"
+            android:minHeight="40dp"
             android:singleLine="true"
-            android:minHeight="40dp" />
+            android:textSize="19sp">
+
+            <requestFocus/>
+        </AutoCompleteTextView>
 
         <TextView
             android:id="@+id/recipient_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:layout_marginTop="16dp"
-            android:layout_below="@id/actvDescr"
             android:text="@string/tel_recipient"
-            android:textColor="#757575" />
+            android:textColor="#757575"/>
 
         <AutoCompleteTextView
             android:id="@+id/actvTelEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@id/recipient_title"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:hint="@string/mail_or_tel"
             android:imeOptions="actionNext"
-            android:textSize="19sp"
+            android:minHeight="40dp"
             android:singleLine="true"
             android:textIsSelectable="false"
-            android:minHeight="40dp" />
+            android:textSize="19sp"/>
 
         <TextView
             android:id="@+id/amount_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:layout_marginTop="16dp"
-            android:layout_below="@id/actvTelEmail"
             android:text="@string/sum"
-            android:textColor="#757575" />
+            android:textColor="#757575"/>
 
         <EditText
             android:id="@+id/etSum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@id/amount_title"
-            android:inputType="number"
-            android:imeOptions="actionDone"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:hint="@string/enter_amount"
+            android:imeOptions="actionDone"
             android:includeFontPadding="false"
-            android:textSize="19sp"
-            android:singleLine="true" />
+            android:inputType="number"
+            android:singleLine="true"
+            android:textSize="19sp"/>
 
         <TextView
             android:id="@+id/tvBillButton"
+            style="@style/PositiveRedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_padding_scrollbar"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/etSum"
-            android:layout_centerHorizontal="true"
-            style="@style/PositiveRedButton"
-            android:text="@string/bill"
-            android:layout_marginBottom="20dp" />
-    </RelativeLayout>
+            android:text="@string/bill"/>
+    </LinearLayout>
 </ScrollView>
