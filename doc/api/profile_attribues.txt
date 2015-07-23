@@ -1,0 +1,104 @@
+# Полный список всяких параметров пользователя
+
+[16/06/15 11:41:03] Павел Лаптев: AbsMainBankAccountId Основной счет в АБС клиента
+AccountantEmail Email бухгалтера
+AccountantPhoneNumber Номер телефона бухгалтера
+AllowWithdrawForBusiness Разрешен ли вывод для юридического лица
+Avatar URL аватара
+BirthDate Дата рождения
+BirthPlace Место рождения
+BonusExpireDate Бонус
+CardPAN Банковская карта
+CashoutDealerUserId Ид дилера по SA Cashout Scheme
+ContactEmail Email контактного лица
+ContactName ФИО контактного лица
+ContactPhoneNumber Номер телефона контактного лица
+Culture Культура/Локаль
+Description О себе
+Email Адрес эл. почты
+FCFacebook Профиль в Facebook
+FCFacebookProfile Профиль Facebook
+FirstName Имя
+Gender Пол
+GoslotoTransferRegistry Настройки реестров переводов для Гослото
+Icq ICQ
+Keyword Ключевое слово
+LastName Фамилия
+LegalAddress Юридический адрес
+LegalContractDate Дата подписания договора
+LegalContractNumber Номер договора
+LegalCountry Страна резидента
+LegalOrganizationType ООО/ОАО/ИП
+LegalRegNumber Государственный регистрационный номер
+LegalRuKpp КПП
+LegalShortTitle Краткое наименование юр. лица
+LegalSignatoryDocument Документ, подтверждающий полномочия подписанта
+LegalSignatoryName ФИО подписанта
+LegalSignatoryPosition Должность подписанта
+LegalTaxNumber ИНН
+LegalTitle Наименование юр. лица
+LegalVatRate Процент налога НДС
+Location Местоположение
+MerchantAttractedManager Менеджер, привлекший мерчанта
+MerchantCategory Категория мерчанта
+MerchantChangeAutoRefund Автовозврат сдачи на кошелек клиента
+MerchantCheckUrl Url для проверки формы
+MerchantContactPerson Лицо, выдавшее контакты клиента
+MerchantDeliveryRegistry Настройки реестров доставки RedExpress
+MerchantDeliveryServiceAgent Поставщик сервиса доставки
+MerchantDeliveryServiceState Необходимость доставки
+MerchantDescription Краткое описание магазина
+MerchantDisallowTransfers Вкл./Выкл переводы внутри системы
+MerchantEmail Адрес эл. почты
+MerchantFailUrl Url для перенаправления при не неуспешной оплате
+MerchantIsSafe Возможность оплаты окрашенными деньгами
+MerchantLeadManager Менеджер давший контакты теплого клиента
+MerchantLogo Логотип магазина
+MerchantManager Менеджер курирующий работу с мерчантом
+MerchantManagerRegistry Настройки реестров статистики менеджерам
+MerchantNote Примечание о мерчанте
+MerchantNotificationEncoding Кодировка при отправке уведомлений по счету
+MerchantPaymentTypesBaseOnly Использовать только способы оплаты разрешенные в конфигурации БД
+MerchantPhoneNumber Телефон
+MerchantRegistrationType Тип работы с пользовательской регистрацией магазина
+MerchantRegistry Настройки реестров
+MerchantResultHttpMethod Метод передачи данных магазину (GET/POST)
+MerchantResultMail E-mail для оповещений
+MerchantResultUrl Url для оповещений
+MerchantSuccessUrl Url для перенаправления при успешной оплате
+MerchantTariff Тариф мерчанта
+MerchantTariffMaxSum Указывает верхний порог тарифа для мерчантов
+MerchantTariffMinSum Указывает нижний порог тарифа для мерчантов
+MerchantTitle Название магазина
+MerchantTransitUserId Транзитный кошелек магазина
+MerchantUrl Сайт магазина
+MiddleName Отчество
+MultiPhoneNumber Телефон
+NotifyEmail Email для уведомлений (не связанный с атрибутом пользователя)
+NotifyPhoneNumber Номер телефона для уведомлений
+NtfEmail Ссылка на E-Mail для оповещений
+NtfPhoneNumber Ссылка на Номер телефона для оповещений
+PassAddress Адрес регистрации
+PassCountry Гражданство
+PassIssueDate Дата выдачи
+PassIssuer Выдан
+PassNumber Паспорт
+PassType Тип документа
+PaymentRegistry Настройки реестров платежей
+PersonalId Персональный номер
+PhoneNumber Телефон
+PromoCodeUsed Промокод, с которым зарегистрировался пользователь
+RedirectToWL Переадресация пользователя из старой кассы на WhiteLabel
+RegistratorPaymentRegistry Настройки реестра выплат регистратора
+RegistratorRefillRegistry Настройки реестра пополнений регистратора
+RegistryCulture Культура реестра
+ShowAllPaymentTypes Показывать сразу все способы пополнения
+Skype Учетная запись Skype
+SupportEmail Email службы технической поддержки
+SupportPhoneNumber Номер телефона технической поддержки
+TimeZone Временная зона
+Title Псевдоним
+TransferRegistry Настройки реестров переводов
+Url Страница
+UseOtpConfirmation Подтверждать операции кодам..
+
