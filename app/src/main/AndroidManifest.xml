@@ -134,15 +134,6 @@
                 android:value="com.w1.merchant.android.support.TicketListActivity" />
         </activity>
         <activity
-            android:name=".support.SupportProfileActivity"
-            tools:ignore="UnusedAttribute"
-            android:parentActivityName=".support.ConversationActivity"
-            android:theme="@style/ConversationActivityTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.w1.merchant.android.support.ConversationActivity" />
-        </activity>
-        <activity
             android:name=".ui.SessionExpiredDialogActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"

@@ -172,26 +172,7 @@ public class ConversationFragment extends Fragment {
         mListView.getItemAnimator().setAddDuration(getResources().getInteger(android.R.integer.config_longAnimTime));
         mListView.getItemAnimator().setSupportsChangeAnimations(true);
 
-        mAdapter = new ConversationAdapter(getActivity()) {
-            @Override
-            public ViewHolderMessage onCreateViewHolder(ViewGroup parent, int viewType) {
-                final ViewHolderMessage holder = super.onCreateViewHolder(parent, viewType);
-                if (holder instanceof ViewHolderTheirMessage) {
-                    // Клик по аватару
-                    ((ViewHolderTheirMessage) holder).avatar.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mListView == null) return;
-                            SupportTicketPost post = mAdapter.getMessage(holder);
-                            if (post != null) {
-                                SupportProfileActivity.startActivity(v.getContext(), post, v);
-                            }
-                        }
-                    });
-                }
-                return holder;
-            }
-        };
+        mAdapter = new ConversationAdapter(getActivity());
 
         if (savedInstanceState != null) {
             List<SupportTicketPost> tickets = savedInstanceState.getParcelableArrayList(BUNDLE_KEY_POSTS);
