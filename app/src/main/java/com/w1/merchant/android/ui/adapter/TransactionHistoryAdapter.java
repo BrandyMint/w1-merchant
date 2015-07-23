@@ -1,6 +1,7 @@
 package com.w1.merchant.android.ui.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,16 +137,27 @@ public class TransactionHistoryAdapter extends BaseAdapter {
     }
 
     private void bindName(TransactionHistoryEntry entry, ViewHolder holder) {
-        String descrOnlyDigits = entry.description.replaceAll("[^0-9]", "");
+        holder.name.setText(getTransactionShortName(entry, holder.name.getResources()));
+    }
+
+    private static CharSequence getTransactionShortName(TransactionHistoryEntry entry, Resources resources) {
         if (entry.isTypeProviderPayment()) {
-            holder.name.setText(R.string.output_cash);
-        } else if (descrOnlyDigits.isEmpty()) {
-            holder.name.setText(R.string.output_cash);
+            return resources.getText(R.string.transaction_type_withdrawal);
+        } else if (entry.isTypeTransfer()) {
+            return resources.getString(R.string.transaction_type_transfer_nn, entry.entryId);
+        } else if (entry.isTypeExchange()) {
+            return resources.getString(R.string.transaction_type_exchange_nn, entry.entryId);
         } else {
-            if (descrOnlyDigits.length() > 12) {
-                holder.name.setText(descrOnlyDigits.substring(descrOnlyDigits.length() - 12));
+            String descrOnlyDigits = entry.description.replaceAll("[^0-9]", "");
+            if (descrOnlyDigits.isEmpty()) {
+                // XXX а нахера так?
+                return resources.getText(R.string.transaction_type_withdrawal);
             } else {
-                holder.name.setText(descrOnlyDigits);
+                if (descrOnlyDigits.length() > 12) {
+                    return descrOnlyDigits.substring(descrOnlyDigits.length() - 12);
+                } else {
+                    return descrOnlyDigits;
+                }
             }
         }
     }
@@ -160,7 +172,7 @@ public class TransactionHistoryAdapter extends BaseAdapter {
         String res;
         BigDecimal amount0;
 
-        boolean isFromMe = Session.getInstance().getUserId().equals(entry.fromUserId.toString());
+        boolean isFromMe = entry.isFromMe(Session.getInstance().getUserId());
         if (isFromMe) {
             amount0 = entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.UP);
         } else {

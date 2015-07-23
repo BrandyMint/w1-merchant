@@ -36,7 +36,9 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="output">Withdrawal</string>
-    <string name="output_cash">Withdrawal</string>
+    <string name="transaction_type_withdrawal">Withdrawal</string>
+    <string name="transaction_type_transfer_nn">Transfer #%1s</string>
+    <string name="transaction_type_exchange_nn">Exchange #%1s</string>
     <string name="login">Telephone or e-mail</string>
     <string name="password">Password</string>
     <string name="logo_text">For business</string>

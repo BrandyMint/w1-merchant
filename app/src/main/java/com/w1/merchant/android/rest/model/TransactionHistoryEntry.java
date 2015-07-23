@@ -2,6 +2,7 @@ package com.w1.merchant.android.rest.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.w1.merchant.android.utils.Utils;
 
@@ -20,7 +21,27 @@ public class TransactionHistoryEntry implements Parcelable {
     public static final String OPERATION_STATE_CANCELED = "Canceled";
     public static final String OPERATION_STATE_PROCESSING = "Processing";
 
-    public static final String OPERATION_TYPE_PROVIDER_PAYNENT = "ProviderPayment";
+    /**
+     * Прием денег от агента
+     */
+    public static final String OPERATION_TYPE_AGENT_PAYMENT = "AgentPayment";
+
+    /**
+     * Обмен валют
+     */
+    public static final String OPERATION_TYPE_EXCHANGE = "Exchange";
+
+    /**
+     * Обычно вывод денег - перевод на расчетный счет или ещё кому-нибудь
+     */
+    public static final String OPERATION_TYPE_PROVIDER_PAYMENT = "ProviderPayment";
+
+    /**
+     * Перевод денег. Выставленный или принятый счет.
+     */
+    public static final String OPERATION_TYPE_TRANSFER = "Transfer";
+
+
     public static final String DIRECTION_INCOMING = "Inc";
     public static final String DIRECTION_OUTGOING = "Out";
 
@@ -106,7 +127,7 @@ public class TransactionHistoryEntry implements Parcelable {
     /**
      * тип операции
      */
-    public String operationTypeId = OPERATION_TYPE_PROVIDER_PAYNENT;
+    public String operationTypeId = OPERATION_TYPE_PROVIDER_PAYMENT;
 
     /**
      * идентификатор операции
@@ -114,7 +135,15 @@ public class TransactionHistoryEntry implements Parcelable {
     public BigInteger operationId = BigInteger.ZERO;
 
     public boolean isTypeProviderPayment() {
-        return OPERATION_TYPE_PROVIDER_PAYNENT.equals(operationTypeId);
+        return OPERATION_TYPE_PROVIDER_PAYMENT.equals(operationTypeId);
+    }
+
+    public boolean isTypeTransfer() {
+        return OPERATION_TYPE_TRANSFER.equals(operationTypeId);
+    }
+
+    public boolean isTypeExchange() {
+        return OPERATION_TYPE_EXCHANGE.equals(operationTypeId);
     }
 
     public boolean isAccepted() {
@@ -136,6 +165,9 @@ public class TransactionHistoryEntry implements Parcelable {
         return updateDate == null ? createDate : updateDate;
     }
 
+    public boolean isFromMe(String myUserId) {
+        return TextUtils.equals(myUserId, fromUserId.toString());
+    }
 
     @Override
     public int describeContents() {
