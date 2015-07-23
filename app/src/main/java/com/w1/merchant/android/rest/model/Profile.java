@@ -1,6 +1,8 @@
 package com.w1.merchant.android.rest.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Profile {
+public class Profile implements Parcelable {
 
     public static final String ACCOUNT_TYPE_ID_PERSONAL = "Personal";
 
@@ -47,7 +49,7 @@ public class Profile {
 
     public List<Attribute> userAttributes = Collections.emptyList();
 
-    public static class Attribute {
+    public static class Attribute implements Parcelable {
 
         public static final String ATTRIBUTE_TYPE_AVATAR = "Avatar";
 
@@ -110,6 +112,49 @@ public class Profile {
         public String displayValue;
 
         public String rawValue;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.userId);
+            dest.writeString(this.userAttributeId);
+            dest.writeString(this.userAttributeTypeId);
+            dest.writeString(this.visibilityTypeId);
+            dest.writeByte(isReadOnly ? (byte) 1 : (byte) 0);
+            dest.writeString(this.verificationState);
+            dest.writeString(this.comment);
+            dest.writeString(this.displayValue);
+            dest.writeString(this.rawValue);
+        }
+
+        public Attribute() {
+        }
+
+        protected Attribute(Parcel in) {
+            this.userId = in.readString();
+            this.userAttributeId = in.readString();
+            this.userAttributeTypeId = in.readString();
+            this.visibilityTypeId = in.readString();
+            this.isReadOnly = in.readByte() != 0;
+            this.verificationState = in.readString();
+            this.comment = in.readString();
+            this.displayValue = in.readString();
+            this.rawValue = in.readString();
+        }
+
+        public static final Parcelable.Creator<Attribute> CREATOR = new Parcelable.Creator<Attribute>() {
+            public Attribute createFromParcel(Parcel source) {
+                return new Attribute(source);
+            }
+
+            public Attribute[] newArray(int size) {
+                return new Attribute[size];
+            }
+        };
     }
 
     @Nullable
@@ -160,4 +205,42 @@ public class Profile {
         return TextUtils.join(" ", data);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.userId);
+        dest.writeByte(isOnline ? (byte) 1 : (byte) 0);
+        dest.writeString(this.accountTypeId);
+        dest.writeString(this.merchantStateId);
+        dest.writeByte(hasContract ? (byte) 1 : (byte) 0);
+        dest.writeString(this.identificationTypeId);
+        dest.writeTypedList(userAttributes);
+    }
+
+    public Profile() {
+    }
+
+    protected Profile(Parcel in) {
+        this.userId = in.readString();
+        this.isOnline = in.readByte() != 0;
+        this.accountTypeId = in.readString();
+        this.merchantStateId = in.readString();
+        this.hasContract = in.readByte() != 0;
+        this.identificationTypeId = in.readString();
+        this.userAttributes = in.createTypedArrayList(Attribute.CREATOR);
+    }
+
+    public static final Parcelable.Creator<Profile> CREATOR = new Parcelable.Creator<Profile>() {
+        public Profile createFromParcel(Parcel source) {
+            return new Profile(source);
+        }
+
+        public Profile[] newArray(int size) {
+            return new Profile[size];
+        }
+    };
 }

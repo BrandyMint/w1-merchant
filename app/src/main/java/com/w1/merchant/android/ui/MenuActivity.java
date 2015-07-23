@@ -94,6 +94,10 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
 
+    private static final String KEY_SELECTED_CURRENCY = "SELECTED_CURRENCY";
+    private static final String KEY_PROFILE = "PROFILE";
+    private static final String KEY_BALANCES = "BALANCES";
+
     private static final int SELECT_PRINCIPAL_REQUEST_CODE = Activity.RESULT_FIRST_USER;
     private static final int EDIT_TEMPLATE_REQUEST_CODE = Activity.RESULT_FIRST_USER + 1;
 
@@ -107,19 +111,20 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     public static final int FRAGMENT_DASHBOARD = 3;
 
     private ImageView ivAccountIcon;
-
-    private List<Balance> mBalances = new ArrayList<>();
-    public String mCurrency = "643";
-
-    private DashboardFragment fragmentDash;
-
-    private WeakHashMap<Object, Void> mProgressConsumers = new WeakHashMap<>();
     private View mProgressBar;
 
     private NavDrawerMenu mNavDrawerMenu;
 
+    private ArrayList<Balance> mBalances = new ArrayList<>();
+
+    private String mCurrency = "643";
+
     @Nullable
     private Profile mProfile;
+
+    private DashboardFragment fragmentDash;
+
+    private WeakHashMap<Object, Void> mProgressConsumers = new WeakHashMap<>();
 
     private Subscription mProfileSubscription = Subscriptions.unsubscribed();
 
@@ -138,6 +143,17 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
 
         setSupportActionBar(toolbar);
         initNavigationDrawer(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mBalances = (ArrayList)savedInstanceState.getSerializable(KEY_BALANCES);
+            if (mBalances == null) mBalances = new ArrayList<>();
+            mProfile = savedInstanceState.getParcelable(KEY_PROFILE);
+            mCurrency = savedInstanceState.getString(KEY_SELECTED_CURRENCY, CurrencyHelper.ROUBLE_CURRENCY_NUMBER);
+        } else {
+            mBalances = new ArrayList<>();
+            mProfile = null;
+            mCurrency = CurrencyHelper.ROUBLE_CURRENCY_NUMBER;
+        }
 
         setupCurrencyViewpagerCustomView();
         //noinspection ConstantConditions
@@ -173,11 +189,13 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         mCurrencyViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int arg0) {
-                //меняем валюту
-                mCurrency = mBalances.get(arg0).currencyId;
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if (fragment != null && fragment instanceof DashboardFragment) {
-                    ((DashboardFragment) fragment).refreshDashboard();
+                if (mCurrencyPagerAdapter != null && mCurrencyPagerAdapter.isBalancesShown()) {
+                    //меняем валюту
+                    mCurrency = mBalances.get(arg0).currencyId;
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                    if (fragment != null && fragment instanceof DashboardFragment) {
+                        ((DashboardFragment) fragment).refreshDashboard();
+                    }
                 }
             }
 
@@ -190,6 +208,8 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             }
         });
         mCurrencyPagerAdapter = new CurrencyViewPagerAdapter();
+        if (!mBalances.isEmpty()) mCurrencyPagerAdapter.setBalances(mBalances);
+
         mCurrencyViewPager.setAdapter(mCurrencyPagerAdapter);
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
@@ -260,6 +280,9 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mNavDrawerMenu.onSaveInstanceState(outState);
+        outState.putString(KEY_SELECTED_CURRENCY, mCurrency);
+        if (mProfile != null) outState.putParcelable(KEY_PROFILE, mProfile);
+        if (!mBalances.isEmpty()) outState.putSerializable(KEY_BALANCES, mBalances);
     }
 
     @Override
@@ -327,7 +350,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         for (Balance b: balances) if (b.isVisible()) mBalances.add(b);
 
         if (!mBalances.isEmpty()) {
-            String nativeCurrency = balances.isEmpty() ? "643" : balances.get(0).currencyId;
+            String nativeCurrency = balances.isEmpty() ? CurrencyHelper.ROUBLE_CURRENCY_NUMBER : balances.get(0).currencyId;
             for (Balance balance : balances) {
                 if (balance.isNative) {
                     nativeCurrency = balance.currencyId;
@@ -627,6 +650,10 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             Balance balance = mBalances.get(position);
             BigDecimal amount = balance.amount.setScale(0, RoundingMode.DOWN);
             return getString(R.string.balance, CurrencyHelper.formatAmount(amount, balance.currencyId));
+        }
+
+        public boolean isBalancesShown() {
+            return !mShowTitle;
         }
     }
 
