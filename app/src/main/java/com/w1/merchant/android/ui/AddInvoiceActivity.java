@@ -156,9 +156,9 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
 
         initCurrencySpinner(selectedCurrency);
         if (selectedCurrency != null) {
-            mCurencyTextWatcher = new CurrencyFormattingTextWatcher(selectedCurrency);
-            etSum.setKeyListener(new CurrencyKeyListener(selectedCurrency));
-            etSum.addTextChangedListener(new CurrencyFormattingTextWatcher(selectedCurrency));
+            mCurencyTextWatcher = new CurrencyFormattingTextWatcher(selectedCurrency, true);
+            etSum.setKeyListener(new CurrencyKeyListener(selectedCurrency, true));
+            etSum.addTextChangedListener(mCurencyTextWatcher);
         } else {
             etSum.setEnabled(false);
         }
@@ -231,11 +231,11 @@ public class AddInvoiceActivity extends ActivityBase implements ConfirmDialogFra
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedCurrency = (String)parent.getItemAtPosition(position);
                 BigDecimal amount = CurrencyHelper.parseAmount(etSum.getText());
-                etSum.setKeyListener(new CurrencyKeyListener(selectedCurrency));
+                etSum.setKeyListener(new CurrencyKeyListener(selectedCurrency, true));
                 if (mCurencyTextWatcher != null) {
                     etSum.removeTextChangedListener(mCurencyTextWatcher);
                 }
-                mCurencyTextWatcher = new CurrencyFormattingTextWatcher(selectedCurrency);
+                mCurencyTextWatcher = new CurrencyFormattingTextWatcher(selectedCurrency, true);
                 etSum.addTextChangedListener(mCurencyTextWatcher);
                 if (amount != null) etSum.setText(amount.toPlainString());
                 etSum.setEnabled(true);
