@@ -57,7 +57,7 @@ public final class ExchangeRate implements Serializable {
 
     public BigDecimal calculateExchangeFromSource(@NonNull BigDecimal srcAmount) {
         if (BigDecimal.ZERO.compareTo(rate) == 0) return srcAmount;
-        return srcAmount.multiply(BigDecimal.ONE.subtract(getCommissionFraction())).divide(rate, BigDecimal.ROUND_DOWN);
+        return srcAmount.multiply(BigDecimal.ONE.subtract(getCommissionFraction())).divide(rate, RoundingMode.DOWN);
     }
 
     public BigDecimal calculateExchangeFromTarget(BigDecimal dstAmount) {

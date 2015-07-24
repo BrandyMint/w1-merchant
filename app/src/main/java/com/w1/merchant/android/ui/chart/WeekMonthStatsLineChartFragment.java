@@ -221,7 +221,7 @@ public class WeekMonthStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentPeriod = getSumCurrentPeriod(currentDate);
         BigDecimal sumPriorPeriod = getSumPriorPeriod(currentDate);
 
-        String amount = CurrencyHelper.formatAmount(sumCurrentPeriod.setScale(0, RoundingMode.UP),
+        String amount = CurrencyHelper.formatAmount(sumCurrentPeriod.setScale(0, RoundingMode.DOWN),
                 mListener.getCurrency());
         mAmountView.setText(amount);
 
@@ -232,7 +232,7 @@ public class WeekMonthStatsLineChartFragment extends Fragment {
                     .subtract(sumPriorPeriod)
                     .divide(sumPriorPeriod, BigDecimal.ROUND_HALF_EVEN)
                     .multiply(BigDecimal.valueOf(100))
-                    .setScale(0, RoundingMode.UP)
+                    .setScale(0, RoundingMode.DOWN)
                     .toString() + "\u00a0%";
         } else {
             percent = "";
@@ -386,7 +386,7 @@ public class WeekMonthStatsLineChartFragment extends Fragment {
         // add data
         ArrayList<Entry> yVals = new ArrayList<>(dataPlotY.length);
         for (int i = 0; i < dataPlotY.length; i++) {
-            float value = dataPlotY[i].setScale(0, RoundingMode.UP).floatValue();
+            float value = dataPlotY[i].setScale(0, RoundingMode.DOWN).floatValue();
             yVals.add(new Entry(value, i, dataPlotX[i]));
         }
 

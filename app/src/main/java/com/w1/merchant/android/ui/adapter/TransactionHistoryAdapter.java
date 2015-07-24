@@ -174,9 +174,9 @@ public class TransactionHistoryAdapter extends BaseAdapter {
 
         boolean isFromMe = entry.isFromMe(Session.getInstance().getUserId());
         if (isFromMe) {
-            amount0 = entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.UP);
+            amount0 = entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.DOWN);
         } else {
-            amount0 = entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.UP);
+            amount0 = entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.DOWN);
         }
 
         int textColor;

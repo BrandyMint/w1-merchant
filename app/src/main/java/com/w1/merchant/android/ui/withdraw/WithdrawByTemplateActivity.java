@@ -56,8 +56,6 @@ public class WithdrawByTemplateActivity extends ActivityBase {
     private static final String TAG = "WithdrawByTemplateAct";
     private static final boolean DBG = BuildConfig.DEBUG;
 
-    private static final String pattern = "[^0-9]";
-
     private EditText mAmountEditText;
     private EditText mCommissionEditText;
     private TextView titleView;
@@ -210,22 +208,14 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 });
     }
 
-    private String readAmountWithComissionEditText() {
-        return mCommissionEditText.getText().toString().replaceAll(pattern, "");
-    }
-
-    private String readAmountEditText() {
-        return mAmountEditText.getText().toString().replaceAll(pattern, "");
-    }
-
     boolean checkFields() {
         boolean result;
 
-        if (TextUtils.isEmpty(readAmountWithComissionEditText())) {
+        if (CurrencyHelper.parseAmount(mCommissionEditText.getText()) == null) {
             mCommissionEditText.setError(getString(R.string.error_input_field_must_no_be_empty));
             result = false;
         } else result = true;
-        if (TextUtils.isEmpty(readAmountEditText())) {
+        if (CurrencyHelper.parseAmount(mAmountEditText.getText()) == null) {
             if (result)	mAmountEditText.setError(getString(R.string.error_input_field_must_no_be_empty));
             result = false;
         } else result = true;
@@ -281,8 +271,8 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             mCommissionEditText.setTextSize(22);
             mCommissionEditText.setMinEms(6);
             CalligraphyUtils.applyFontToTextView(this, mCommissionEditText, Constants.FONT_REGULAR);
-            mCommissionEditText.setKeyListener(new CurrencyKeyListener(CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
-            mCommissionEditText.addTextChangedListener(new CurrencyFormattingTextWatcher(CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
+            mCommissionEditText.setKeyListener(new CurrencyKeyListener(CurrencyHelper.ROUBLE_CURRENCY_NUMBER, true));
+            mCommissionEditText.addTextChangedListener(new CurrencyFormattingTextWatcher(CurrencyHelper.ROUBLE_CURRENCY_NUMBER, true));
             mCommissionEditText.addTextChangedListener(mCommissionTextWatcherWrapper);
             llMain.addView(mCommissionEditText, lParams2);
 
@@ -297,8 +287,8 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             mAmountEditText.setTextSize(22);
             mAmountEditText.setMinEms(6);
             CalligraphyUtils.applyFontToTextView(this, mAmountEditText, Constants.FONT_REGULAR);
-            mAmountEditText.setKeyListener(new CurrencyKeyListener(CurrencyHelper.ROUBLE_CURRENCY_NUMBER, false));
-            mAmountEditText.addTextChangedListener(new CurrencyFormattingTextWatcher(CurrencyHelper.ROUBLE_CURRENCY_NUMBER));
+            mAmountEditText.setKeyListener(new CurrencyKeyListener(CurrencyHelper.ROUBLE_CURRENCY_NUMBER, true));
+            mAmountEditText.addTextChangedListener(new CurrencyFormattingTextWatcher(CurrencyHelper.ROUBLE_CURRENCY_NUMBER, true));
             mAmountEditText.addTextChangedListener(mAmountTextWatcherWrapper);
             llMain.addView(mAmountEditText, lParams2);
 
@@ -317,8 +307,8 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                 public void onClick(View v) {
                     if (checkFields()) {
                         Intent intent = new Intent(WithdrawByTemplateActivity.this, ConfirmWithdrawalActivity.class);
-                        intent.putExtra("SumOutput", readAmountEditText());
-                        intent.putExtra("SumCommis", readAmountWithComissionEditText());
+                        intent.putExtra("SumOutput", CurrencyHelper.parseAmount(mAmountEditText.getText()).toPlainString());
+                        intent.putExtra("SumCommis", CurrencyHelper.parseAmount(mCommissionEditText.getText()).toPlainString());
                         intent.putExtra("templateId", templateId);
                         intent.putExtra("token", Session.getInstance().getAuthtoken());
                         startActivity(intent);
@@ -425,12 +415,11 @@ public class WithdrawByTemplateActivity extends ActivityBase {
 
     void afterSumChange() {
         if (DBG) Log.d(TAG, "afterSumChange()");
-        String inSumStringOrig = mAmountEditText.getText().toString();
-        String inSum = inSumStringOrig.replaceAll(pattern, "");
-        if (!inSum.isEmpty()) {
-            BigDecimal origInputSum =  new BigDecimal(inSum);
+        BigDecimal origInputSum =  CurrencyHelper.parseAmount(mAmountEditText.getText());
+        if (origInputSum != null) {
+
             BigDecimal inputSum = Utils.clamp(origInputSum, mProvider.minAmount, mProvider.maxAmount)
-                    .setScale(0, RoundingMode.UP);
+                    .setScale(2, RoundingMode.UP);
 
             if (origInputSum.compareTo(inputSum) != 0) {
                 // Сумма за пределами разрешенных значений
@@ -439,7 +428,7 @@ public class WithdrawByTemplateActivity extends ActivityBase {
                     mCommissionEditText.setHint(origInputSum.compareTo(inputSum) < 0 ? R.string.amount_too_small : R.string.amount_too_large);
                 }
             } else {
-                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(0, RoundingMode.UP).toPlainString());
+                setCommissionText(mProvider.getSumWithCommission(inputSum).setScale(2, RoundingMode.UP).toPlainString());
                 if (!TextUtils.isEmpty(mCommissionEditText.getHint())) mCommissionEditText.setHint("");
             }
         } else {
@@ -449,14 +438,12 @@ public class WithdrawByTemplateActivity extends ActivityBase {
     }
     
     void afterComisChange() {
-        String commissionTextOrig = mCommissionEditText.getText().toString();
-        String commissionTextNum = commissionTextOrig.replaceAll(pattern, "");
-        if (!commissionTextNum.isEmpty()) {
-            BigDecimal commissionVal = new BigDecimal(commissionTextNum);
+        BigDecimal commissionVal = CurrencyHelper.parseAmount(mCommissionEditText.getText());
+        if (commissionVal != null) {
             // TODO Здесь нужны тесты. Возможны ошибки на пограничных значениях
             BigDecimal inputSum = Utils.clamp(commissionVal,
                     mProvider.getMinAmountWithComission(), mProvider.getMaxAmountWithComission())
-                    .setScale(0, RoundingMode.UP);
+                    .setScale(2, RoundingMode.UP);
 
             if (commissionVal.compareTo(inputSum) != 0) {
                 // Комиссия за пределами разрешенных значений
@@ -467,7 +454,7 @@ public class WithdrawByTemplateActivity extends ActivityBase {
             } else {
                 inputSum = inputSum.subtract(mProvider.commission.cost);
                 BigDecimal rate = mProvider.commission.rate.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_EVEN);
-                BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 0, RoundingMode.DOWN);
+                BigDecimal sumWOComis = inputSum.divide(BigDecimal.ONE.add(rate), 2, RoundingMode.HALF_EVEN);
                 setAmountText(sumWOComis.toPlainString());
                 if (!TextUtils.isEmpty(mAmountEditText.getHint())) mAmountEditText.setHint("");
             }

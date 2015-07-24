@@ -232,7 +232,7 @@ public class DayStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentDay = getSumCurrentDay(currentDate);
         BigDecimal sumLastDay = getSumLastDay(currentDate);
 
-        String amount = CurrencyHelper.formatAmount(sumCurrentDay.setScale(0, RoundingMode.UP),
+        String amount = CurrencyHelper.formatAmount(sumCurrentDay.setScale(0, RoundingMode.DOWN),
                 mListener.getCurrency());
         mAmountView.setText(amount);
 
@@ -303,7 +303,7 @@ public class DayStatsLineChartFragment extends Fragment {
         // add data
         ArrayList<Entry> yVals = new ArrayList<>(dataPlotY.length);
         for (int i = 0; i < dataPlotY.length; i++) {
-            float value = dataPlotY[i].setScale(0, RoundingMode.UP).floatValue();
+            float value = dataPlotY[i].setScale(0, RoundingMode.DOWN).floatValue();
             yVals.add(new Entry(value, i, dataPlotX[i]));
         }
 
