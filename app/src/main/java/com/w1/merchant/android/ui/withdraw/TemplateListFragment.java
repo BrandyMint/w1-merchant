@@ -110,7 +110,9 @@ public class TemplateListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupFab();
-        if (isTemplateModificationAllowed()) registerForContextMenu(gridview);
+        if (isTemplateModificationAllowed()) {
+            registerForContextMenu(gridview);
+        }
     }
 
     @Override
@@ -160,6 +162,7 @@ public class TemplateListFragment extends Fragment {
     }
 
     private boolean isTemplateModificationAllowed() {
+        if (BuildConfig.DISABLE_TEMPLATE_CREATION) return false;
         if (FORCE_MODIFICATION_AVAILABLE) return true;
         if (mListener == null) {
             if (DBG) throw new IllegalStateException();
@@ -178,7 +181,6 @@ public class TemplateListFragment extends Fragment {
     private void setupFab() {
         if (mListener == null || getView() == null) return;
         View fab = getView().findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
         fab.setVisibility(isTemplateModificationAllowed() ? View.VISIBLE : View.GONE);
     }
 
@@ -296,7 +298,7 @@ public class TemplateListFragment extends Fragment {
                                 long id) {
             Template template = (Template)parent.getItemAtPosition(position);
             if (template == null) {
-                Uri address = Uri.parse(Constants.URL_WALLETONE);
+                Uri address = Uri.parse(Constants.URL_W1_MERCHANT);
                 startActivity(new Intent(Intent.ACTION_VIEW, address));
             } else {
                 Intent intent = new Intent(getActivity(), WithdrawByTemplateActivity.class);

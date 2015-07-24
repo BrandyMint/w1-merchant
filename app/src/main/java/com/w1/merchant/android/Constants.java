@@ -20,7 +20,7 @@ public final class Constants {
 
     public static final String SUPPORT_EMAIL_MAIN = "support@w1.ru";
 
-    public static final String URL_WALLETONE = "https://www.walletone.com/wallet/client/";
+    public static final String URL_W1_MERCHANT = "https://www.walletone.com/merchant/client/";
 
     public static final String URL_PROVIDER_LOGO = "https://www.walletone.com/logo/provider/%s.png";
 

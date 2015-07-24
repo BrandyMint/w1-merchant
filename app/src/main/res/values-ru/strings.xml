@@ -341,4 +341,7 @@
     <string name="exchange_xx_to_yy">Меняем\n$amountFrom на $amountTo</string>
     <string name="exchanged_xx_to_yy">$amountFrom обменяны на $amountTo</string>
 
+    <string name="web_vers">Шаблоны\nвывода\nсоздаются на\nвеб-версии</string>
+    <string name="move_on">Перейти</string>
+
 </resources>

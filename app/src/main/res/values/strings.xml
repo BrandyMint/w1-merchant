@@ -342,5 +342,8 @@
     <string name="exchange_xx_to_yy">Exchange\n$amountFrom to $amountTo</string>
     <string name="exchanged_xx_to_yy">\n$amountFrom exchanged to $amountTo</string>
 
+    <string name="web_vers">You may create\nwithdrawal templates\nusing web-version\nof Checkout</string>
+    <string name="move_on">Proceed</string>
+
 </resources>
 

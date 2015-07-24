@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.w1.merchant.android.BuildConfig;
 import com.w1.merchant.android.R;
 import com.w1.merchant.android.rest.model.Template;
 
@@ -53,20 +55,40 @@ public class WithdrawalTemplateListAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return mTemplates.size();
+        return mTemplates.size() + (BuildConfig.DISABLE_TEMPLATE_CREATION ? 1 : 0);
+    }
+
+    public int getItemViewType(int position) {
+        if (BuildConfig.DISABLE_TEMPLATE_CREATION && position == getDummyTemplatePosition()) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return BuildConfig.DISABLE_TEMPLATE_CREATION ? 2 : 1;
     }
 
     @Nullable
     public Template getItem(int position) {
+        if (position == getDummyTemplatePosition() && BuildConfig.DISABLE_TEMPLATE_CREATION) return null;
         return mTemplates.get(position);
     }
 
     public long getItemId(int position) {
-        return mTemplates.get(position).templateId.longValue();
+        if (BuildConfig.DISABLE_TEMPLATE_CREATION && (position == getDummyTemplatePosition())) return ListView.NO_ID;
+        return getItem(position).templateId.longValue();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        if (BuildConfig.DISABLE_TEMPLATE_CREATION && (position == getDummyTemplatePosition())) {
+            if (convertView != null) return convertView;
+            return mInflater.inflate(R.layout.template_cell_open_web, parent, false);
+        }
+
         Template template = mTemplates.get(position);
 
         ViewHolder holder;
@@ -94,6 +116,10 @@ public class WithdrawalTemplateListAdapter extends BaseAdapter {
         holder.textPart.setText(template.title);
 
         return grid;
+    }
+
+    private int getDummyTemplatePosition() {
+        return mTemplates.size();
     }
 
     //форматирование дат для списка шаблонов

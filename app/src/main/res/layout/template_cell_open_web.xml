@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp">
+
+    <LinearLayout
+        android:id="@+id/open_web_message"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/withdrawal_list_logo_border"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingRight="4dp"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingLeft="2dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/web_vers"
+            android:textColor="#757575"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/move_on"
+            android:textColor="#9ACD32" />
+    </LinearLayout>
+
+
+</FrameLayout>

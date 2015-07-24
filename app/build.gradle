@@ -50,6 +50,9 @@ android {
         buildConfigField "String", "API_TEST_PASS",
                 project.ext.private.getProperty("ApiTestPass",
                         "\"\"")
+        buildConfigField "Boolean", "DISABLE_TEMPLATE_CREATION",
+                project.ext.private.getProperty("DisableTemplateCreation",
+                        "true")
     }
 
     signingConfigs {
@@ -81,6 +84,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            buildConfigField "Boolean", "DISABLE_TEMPLATE_CREATION", "true"
         }
         beta {
             applicationIdSuffix ".beta";
