@@ -70,11 +70,12 @@ public class PhoneEmailFormattingTextWatcher implements TextWatcher {
         }
 
         if (mDoStopFormattingAfterTextChanged) {
-            mDoStopFormattingAfterTextChanged = false;
             stopFormatting();
             mSelfChange = true;
             clearFormatting(s);
             mSelfChange = false;
+            mDoStopFormattingAfterTextChanged = false;
+            mStopFormatting = !(s.length() == 0);
             return;
         }
 
