@@ -60,9 +60,11 @@ import com.w1.merchant.android.rest.RestClient;
 import com.w1.merchant.android.rest.model.AuthModel;
 import com.w1.merchant.android.rest.model.Balance;
 import com.w1.merchant.android.rest.model.Profile;
+import com.w1.merchant.android.rest.model.SupportTicket;
 import com.w1.merchant.android.rest.model.Template;
 import com.w1.merchant.android.rest.service.ApiProfile;
-import com.w1.merchant.android.support.TicketListActivity;
+import com.w1.merchant.android.support.ConversationActivity;
+import com.w1.merchant.android.support.TicketListFragment;
 import com.w1.merchant.android.ui.exchange.ExchangeFragment;
 import com.w1.merchant.android.ui.widget.ViewPagerAdapter;
 import com.w1.merchant.android.ui.withdraw.ProviderListActivity;
@@ -90,6 +92,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         InvoiceListFragment.OnFragmentInteractionListener,
         DashboardFragment.OnFragmentInteractionListener,
         TemplateListFragment.OnFragmentInteractionListener,
+        TicketListFragment.OnFragmentInteractionListener,
     IProgressbarProvider {
     private static final boolean DBG = BuildConfig.DEBUG;
     private static final String TAG = Constants.LOG_TAG;
@@ -100,15 +103,12 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
 
     private static final int SELECT_PRINCIPAL_REQUEST_CODE = Activity.RESULT_FIRST_USER;
     private static final int EDIT_TEMPLATE_REQUEST_CODE = Activity.RESULT_FIRST_USER + 1;
+    private static final int CREATE_TICKET_REQUEST_CODE = Activity.RESULT_FIRST_USER + 2;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ViewPager mCurrencyViewPager;
     private CurrencyViewPagerAdapter mCurrencyPagerAdapter;
-
-    private static final int FRAGMENT_STATEMENT = 1;
-    private static final int FRAGMENT_INVOICE = 2;
-    public static final int FRAGMENT_DASHBOARD = 3;
 
     private ImageView ivAccountIcon;
     private View mProgressBar;
@@ -177,6 +177,12 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                     recreate(); // Закрывать все остальные активности?
                 }
             }, 5 * 16);
+        } else if (requestCode == CREATE_TICKET_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                SupportTicket ticket = data.getParcelableExtra(ConversationActivity.SUPPORT_TICKET_RESULT_KEY);
+                TicketListFragment fragment = (TicketListFragment)getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if (fragment != null) fragment.onTicketCreated(ticket);
+            }
         } else if (data != null && data.hasExtra(WithdrawActivity.RESULT_RESULT_TEXT)) {
             String text = data.getStringExtra(WithdrawActivity.RESULT_RESULT_TEXT);
             Snackbar.make(mDrawerLayout, text, Snackbar.LENGTH_LONG).show();
@@ -241,9 +247,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                         } else {
                             errText = getText(R.string.network_error);
                         }
-                        Toast toast = Toast.makeText(MenuActivity.this, errText, Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.TOP, 0, 50);
-                        toast.show();
+                        notifyError(errText.toString(), e);
                     }
 
                     @Override
@@ -405,10 +409,11 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                 sendScreenName(position);
                 break;
             case R.id.drawer_menu_support:
-                Intent intent = new Intent(this, TicketListActivity.class);
-                startActivity(intent);
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-                return;
+                Fragment ticketListFragment = TicketListFragment.newInstance();
+                changeFragment(ticketListFragment);
+                mNavDrawerMenu.setActivatedItem(position);
+                sendScreenName(position);
+                break;
             case R.id.drawer_menu_logout:
                 new ExitDialog().show(getSupportFragmentManager(), "dlgExit");
                 break;
@@ -447,7 +452,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     }
 
     private void refreshCurrencyViewPager() {
-        if (mBalances.size() == 0 || getCurrentFragment() != FRAGMENT_DASHBOARD) {
+        if (mBalances.size() == 0 || !isDashboardShown()) {
             mCurrencyPagerAdapter.setShowTitle(getCurrentItemTitle());
         } else {
             mCurrencyPagerAdapter.setBalances(mBalances);
@@ -492,7 +497,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
     @Override
     public void onBackPressed() {
         mDrawerLayout.closeDrawer(Gravity.LEFT);
-        if (getCurrentFragment() != FRAGMENT_DASHBOARD) {
+        if (!isDashboardShown()) {
             selectItem(R.id.drawer_menu_dashboard);
             invalidateOptionsMenu();
         }
@@ -535,18 +540,9 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         return TextUtils.join(", ", amounts);
     }
 
-    public int getCurrentFragment() {
+    public boolean isDashboardShown() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if (f == null) {
-            return 0;
-        } else  if (f instanceof DashboardFragment) {
-            return FRAGMENT_DASHBOARD;
-        } else if (f instanceof InvoiceListFragment) {
-            return FRAGMENT_INVOICE;
-        } else if (f instanceof StatementFragment) {
-            return FRAGMENT_STATEMENT;
-        }
-        return 0;
+        return f instanceof  DashboardFragment;
     }
 
     private void initNavigationDrawer(Bundle savedInstanceState) {
@@ -576,6 +572,31 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
                 selectItem(v.getId());
             }
         });
+    }
+
+    @Override
+    public void onStartConversationClicked(@Nullable View animateFrom) {
+        ConversationActivity.startActivityForResult(this, CREATE_TICKET_REQUEST_CODE, animateFrom);
+    }
+
+    @Override
+    public void onOpenConversationClicked(View view, SupportTicket ticket) {
+        ConversationActivity.startConversationActivity(this, ticket, view);
+    }
+
+    @Override
+    public void notifyError(String error, Throwable exception) {
+        if (exception != null) Log.e(TAG, error, exception);
+        CharSequence errMsg;
+        if (DBG) {
+            errMsg = error + " " + (exception == null ? "" : exception.getLocalizedMessage());
+        } else {
+            errMsg = error;
+        }
+
+        Toast toast = Toast.makeText(this, errMsg, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP, 0, 50);
+        toast.show();
     }
 
     private final class CurrencyViewPagerAdapter extends ViewPagerAdapter {
@@ -634,7 +655,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if ((getCurrentFragment() == FRAGMENT_DASHBOARD) && !getWaitSum().isEmpty()) {
+                    if ((isDashboardShown()) && !getWaitSum().isEmpty()) {
                         Toast toast = Toast.makeText(MenuActivity.this,
                                 getString(R.string.awaiting) + " " + getWaitSum(),
                                 Toast.LENGTH_LONG);

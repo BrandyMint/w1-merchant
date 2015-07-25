@@ -115,23 +115,16 @@
                 android:value="com.w1.merchant.android.ui.MenuActivity" />
         </activity>
         <activity
-            android:name=".support.TicketListActivity"
-            android:label="@string/title_activity_ticket_list"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeWithActionBar" >
-        </activity>
-        <activity
             android:name=".support.ConversationActivity"
             android:label="@string/title_activity_conversation"
-            android:parentActivityName=".support.TicketListActivity"
+            android:parentActivityName=".ui.MenuActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ConversationActivityTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"
             tools:ignore="UnusedAttribute" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.w1.merchant.android.support.TicketListActivity" />
+                android:value="com.w1.merchant.android.ui.MenuActivity" />
         </activity>
         <activity
             android:name=".ui.SessionExpiredDialogActivity"

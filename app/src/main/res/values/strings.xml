@@ -29,7 +29,7 @@
     <string name="title_invoices">Invoices</string>
     <string name="title_withdrawal">Funds withdrawal</string>
     <string name="title_exchange">Currency exchange</string>
-    <string name="title_support">Support</string>
+    <string name="title_support">Customer care</string>
     <string name="title_logout">Log out</string>
 
     <string name="drawer_title">Navigation</string>
@@ -48,7 +48,6 @@
     <string name="partially">Partially paid</string>
     <string name="bill">Invoice</string>
     <string name="currency">Currency</string>
-    <string name="rus_rubl">Russian rouble</string>
     <string name="descr">Description</string>
     <string name="exampl_pizza">Pizza delivery, for example</string>
     <string name="tel_recipient">Recipient telephone number or email</string>
@@ -184,7 +183,6 @@
     <string name="session_timeout">Session is expired</string>
     <string name="payment_error">This transaction cannot be processed at this time. Please try again later</string>
     <string name="transact_proces">Transaction in amount of %1$s is processed</string>
-    <string name="title_activity_ticket_list">Customer care</string>
     <string name="you_havent_started_any_conversations">You haven\'t started any conversations yet</string>
     <string name="start_conversation">Start conversation</string>
     <string name="load_ticket_list_error">Failed to load conversations. Please try again later</string>
@@ -271,9 +269,6 @@
     <string name="text_banner_3">Payments history</string>
     <string name="text_banner_4">Invoicing</string>
     <string name="text_banner_btn">OK</string>
-
-    <string name="support_username_title">Name</string>
-    <string name="support_user_profile_content_description">User profile</string>
 
     <string name="activity_show_photo_title">Picture</string>
     <string name="choose_a_project">Choose a project</string>

@@ -48,7 +48,6 @@
 	<string name="partially">Частично</string>
 	<string name="bill">Выставить счет</string>
 	<string name="currency">Валюта</string>
-	<string name="rus_rubl">Российский рубль</string>
 	<string name="descr">Описание</string>
 	<string name="exampl_pizza">Например, доставка пиццы</string>
 	<string name="tel_recipient">Телефон или e-mail получателя</string>
@@ -181,7 +180,6 @@
     <string name="transact_proces">Перевод на сумму %1$s принят к исполнению</string>
     <string name="you_havent_started_any_conversations">Нет сообщений</string>
     <string name="start_conversation">Новый запрос в клиентскую поддержку</string>
-    <string name="title_activity_ticket_list">Поддержка</string>
     <string name="load_ticket_list_error">Ошибка загрузки, повторите попытку позже</string>
     <string name="load_ticket_error">Ошибка загрузки, повторите попытку позже</string>
     <string name="send_message_error">Ошибка отправки сообщения, повторите попытку позже</string>
@@ -267,9 +265,6 @@
     <string name="text_banner_3">История операций</string>
     <string name="text_banner_4">Выставление счетов</string>
     <string name="text_banner_btn">OK</string>
-
-    <string name="support_username_title">Имя</string>
-    <string name="support_user_profile_content_description">Профиль сотрудника</string>
 
     <string name="activity_show_photo_title">Изображение</string>
     <string name="choose_a_project">Выберите проект</string>
