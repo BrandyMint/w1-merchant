@@ -66,8 +66,8 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     private void showIntroDialog() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag(TAG_INTRO_DIALOG);
-        if (prev == null) {
-            ft.remove(prev);
+        if (prev != null) {
+            return;
         }
         DialogFragment introFragment = new IntroFragment() {
 
