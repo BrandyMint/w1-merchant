@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.Vibrator;
@@ -12,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -159,6 +161,20 @@ public class LoginFragment extends Fragment implements SelectPrincipalFragment.I
 
         mLoginTextView.setAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, mLogins));
+        int inputTypeFlags = InputType.TYPE_CLASS_TEXT;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // Auto suggestions с PhoneEmailFormattingTextWatcher, по крайней мере на
+            // самсунгах android 4.1, стараемся его отключить.
+            // InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS не работает на большинстве устройств.
+            inputTypeFlags |= InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+        } else {
+            // На android > 5 обычно всё хорошо
+            inputTypeFlags |= InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+        }
+
+        mLoginTextView.setInputType(inputTypeFlags);
+        if (DBG) Log.v(TAG, String.format("login input type: %x", mLoginTextView.getInputType()));
+
         mLoginTextView.addTextChangedListener(new PhoneEmailFormattingTextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
