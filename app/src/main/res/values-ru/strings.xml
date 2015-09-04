@@ -213,6 +213,7 @@
     <string name="refresh">Обновить</string>
     <string name="error_captcha_wrong_code">Неверный код, попробуйте ещё раз</string>
     <string name="error_auth_principal">Ошибка переключения аккаунта</string>
+    <string name="error_amount_range_error">Сумма не попадает в допустимый диапазон</string>
 
     <string name="recipient_title">Название получателя</string>
     <string name="from_wallet">От кошелька</string>

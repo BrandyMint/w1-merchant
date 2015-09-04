@@ -18,6 +18,8 @@ public class ResponseError {
 
     public static final String ERROR_INVALID_CAPTCHA = "invalid_captcha";
 
+    public static final String ERROR_AMOUNT_RANGE = "AMOUNT_RANGE_ERROR";
+
     String error;
 
     String errorDescription;
