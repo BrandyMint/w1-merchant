@@ -130,7 +130,7 @@
                 <TextView
                     android:id="@+id/drawer_menu_logout"
                     style="@style/DrawerMenuItemStyle"
-                    android:drawableLeft="@drawable/menu_settings"
+                    android:drawableLeft="@drawable/menu_logout"
                     android:text="@string/drawer_menu_logout" />
 
             </LinearLayout>
