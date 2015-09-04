@@ -251,7 +251,7 @@ public abstract class TicketListAdapter extends RecyclerView.Adapter<TicketListA
 
         @Override
         public void onItemRangeRemoved(int locationStart, int itemCount) {
-            notifyItemMoved(locationStart, itemCount);
+            notifyItemRangeRemoved(locationStart, itemCount);
         }
     }
 

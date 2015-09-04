@@ -47,8 +47,6 @@ public class TicketListFragment extends Fragment {
 
     private static final String BUNDLE_KEY_SUPPORT_TICKETS = "com.w1.merchant.android.support.BUNDLE_KEY_SUPPORT_TICKETS";
 
-    private static final int REFRESH_DATES_PERIOD = 10;
-
     private OnFragmentInteractionListener mListener;
 
     private ApiSupport mApiSupport;

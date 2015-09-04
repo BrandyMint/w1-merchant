@@ -284,7 +284,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
         @Override
         public void onItemRangeRemoved(int locationStart, int itemCount) {
-            notifyItemMoved(locationStart, itemCount);
+            notifyItemRangeRemoved(locationStart, itemCount);
         }
     }
 
