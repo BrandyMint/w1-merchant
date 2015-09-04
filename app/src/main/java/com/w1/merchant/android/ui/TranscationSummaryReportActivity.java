@@ -168,9 +168,9 @@ public class TranscationSummaryReportActivity extends ActivityBase {
 
     void onIncomingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
         String amountText = getString(R.string.sum_period,
-                CurrencyHelper.formatAmount(amount.setScale(0, RoundingMode.DOWN), mCurrency));
+                CurrencyHelper.formatAmountFitSmallTextField(amount, mCurrency));
         String commissionText = getString(R.string.comis_period,
-                CurrencyHelper.formatAmount(commission.setScale(0, RoundingMode.DOWN), mCurrency));
+                CurrencyHelper.formatAmountFitSmallTextField(commission, mCurrency));
 
         ((TextView)findViewById(R.id.summ_inc)).setText(amountText);
         ((TextView)findViewById(R.id.comis_inc)).setText(commissionText);
@@ -180,9 +180,9 @@ public class TranscationSummaryReportActivity extends ActivityBase {
 
     void onOutgoingSummaryCompleted(BigDecimal amount, BigDecimal commission) {
         String amountText = getString(R.string.sum_period,
-                CurrencyHelper.formatAmount(amount.setScale(0, RoundingMode.DOWN), mCurrency));
+                CurrencyHelper.formatAmountFitSmallTextField(amount, mCurrency));
         String commissionText = getString(R.string.comis_period,
-                CurrencyHelper.formatAmount(commission.setScale(0, RoundingMode.DOWN), mCurrency));
+                CurrencyHelper.formatAmountFitSmallTextField(commission, mCurrency));
 
         ((TextView)findViewById(R.id.summ_out)).setText(amountText);
         ((TextView)findViewById(R.id.comis_out)).setText(commissionText);

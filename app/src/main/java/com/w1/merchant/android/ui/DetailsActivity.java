@@ -108,10 +108,10 @@ public class DetailsActivity extends ActivityBase {
 
         boolean isFromMe = Session.getInstance().getUserId().equals(entry.fromUserId.toString());
         if (isFromMe) {
-            setupAmount(entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.DOWN),
+            setupAmount(entry.amount.add(entry.commissionAmount),
                     entry.currencyId, orangeColor);
         } else {
-            setupAmount(entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.DOWN),
+            setupAmount(entry.amount.subtract(entry.commissionAmount),
                     entry.currencyId, orangeColor);
         }
 
@@ -120,7 +120,7 @@ public class DetailsActivity extends ActivityBase {
         addNumber(R.string.transaction_id, entry.entryId);
         addText(R.string.sender_title, entry.fromUserTitle);
         addNumber(R.string.to_wallet, entry.toUserId);
-        addAmount(R.string.commission, entry.commissionAmount.setScale(0, RoundingMode.DOWN), entry.currencyId);
+        addAmount(R.string.commission, entry.commissionAmount, entry.currencyId);
         addText(R.string.currency, getCurrencyDescription(entry.currencyId));
         addText(R.string.description, entry.description);
         addDate(R.string.last_edit_date, entry.updateDate == null ? entry.createDate : entry.updateDate);
@@ -158,7 +158,7 @@ public class DetailsActivity extends ActivityBase {
         addNumber(R.string.invoice_title_user_id, entry.userId);
         addText(R.string.invoice_title_user_title, entry.userTitle);
         addText(R.string.invoice_title_direction, entry.getLocalizedDirection(getResources()));
-        addAmount(R.string.invoice_title_amount, entry.amount.setScale(0, RoundingMode.DOWN), entry.currencyId);
+        addAmount(R.string.invoice_title_amount, entry.amount, entry.currencyId);
         addText(R.string.invoice_title_currency, getCurrencyDescription(entry.currencyId));
         if (!TextUtils.isEmpty(entry.orderId)) addText(R.string.invoice_title_order_id, entry.orderId);
         addText(R.string.invoice_title_description, entry.description);
@@ -166,7 +166,7 @@ public class DetailsActivity extends ActivityBase {
         addDate(R.string.invoice_title_update_date, entry.updateDate);
         addDate(R.string.invoice_title_expire_date, entry.expireDate);
         addText(R.string.invoice_title_invoice_state_id, entry.getLocalizedInvoiceState(getResources()));
-        addAmount(R.string.invoice_title_paid_amount, entry.paidAmount.setScale(0, RoundingMode.DOWN), entry.currencyId);
+        addAmount(R.string.invoice_title_paid_amount, entry.paidAmount, entry.currencyId);
         addText(R.string.invoice_title_comment, entry.comment);
         //addText(R.string.invoice_title_success_url, entry.successUrl);
         addText(R.string.invoice_title_tags, entry.tags);
@@ -182,7 +182,7 @@ public class DetailsActivity extends ActivityBase {
     }
 
     private void setupAmount(BigDecimal amount, String currency, boolean orangeColor) {
-        mAmountView.setText(CurrencyHelper.formatAmount(amount, currency));
+        mAmountView.setText(CurrencyHelper.formatAmountFitSmallTextField(amount, currency));
         mAmountView.setTextColor(getResources(). getColorStateList(
                 orangeColor ? R.color.details_invoice_processing : R.color.details_invoice_accepted));
     }

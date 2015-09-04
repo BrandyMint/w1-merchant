@@ -536,9 +536,9 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         if (mBalances.isEmpty()) return "";
         List<String> amounts = new ArrayList<>(mBalances.size());
         for (Balance balance: mBalances) {
-            Number amount = balance.holdAmount.setScale(0, RoundingMode.DOWN);
-            if (amount.longValue() > 0) amounts.add(TextUtilsW1.formatNumber(amount) + " " +
-                    CurrencyHelper.getCurrencySymbol(balance.currencyId));
+            if (balance.holdAmount.compareTo(BigDecimal.ZERO) > 0) {
+                amounts.add(CurrencyHelper.formatAmountFitSmallTextField(balance.holdAmount, balance.currencyId));
+            }
         }
         if (amounts.isEmpty()) return "";
         return TextUtils.join(", ", amounts);
@@ -673,8 +673,7 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
 
         private String getCurrencyTitle(int position) {
             Balance balance = mBalances.get(position);
-            BigDecimal amount = balance.amount.setScale(0, RoundingMode.DOWN);
-            return getString(R.string.balance, CurrencyHelper.formatAmount(amount, balance.currencyId));
+            return getString(R.string.balance, CurrencyHelper.formatAmountFitSmallTextField(balance.amount, balance.currencyId));
         }
 
         public boolean isBalancesShown() {

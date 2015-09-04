@@ -174,9 +174,9 @@ public class TransactionHistoryAdapter extends BaseAdapter {
 
         boolean isFromMe = entry.isFromMe(Session.getInstance().getUserId());
         if (isFromMe) {
-            amount0 = entry.amount.add(entry.commissionAmount).setScale(0, RoundingMode.DOWN);
+            amount0 = entry.amount.add(entry.commissionAmount);
         } else {
-            amount0 = entry.amount.subtract(entry.commissionAmount).setScale(0, RoundingMode.DOWN);
+            amount0 = entry.amount.subtract(entry.commissionAmount);
         }
 
         int textColor;
@@ -189,7 +189,7 @@ public class TransactionHistoryAdapter extends BaseAdapter {
         }
 
         holder.amount.setTextColor(textColor);
-        holder.amount.setText(CurrencyHelper.formatAmount(amount0, entry.currencyId));
+        holder.amount.setText(CurrencyHelper.formatAmountFitSmallTextField(amount0, entry.currencyId));
     }
 
     private void bindIcon(TransactionHistoryEntry entry, ViewHolder holder) {

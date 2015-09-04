@@ -153,7 +153,7 @@ public class InvoiceListAdapter extends BaseAdapter {
         }
 
         holder.amount.setTextColor(textColor);
-        holder.amount.setText(CurrencyHelper.formatAmount(entry.amount.setScale(0, RoundingMode.DOWN),
+        holder.amount.setText(CurrencyHelper.formatAmountFitSmallTextField(entry.amount,
                 entry.currencyId));
     }
 

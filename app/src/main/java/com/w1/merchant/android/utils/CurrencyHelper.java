@@ -12,8 +12,11 @@ import com.w1.merchant.android.Constants;
 import com.w1.merchant.android.R;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -34,6 +37,7 @@ public final class CurrencyHelper {
         formatSymbols.setDecimalSeparator('.');
         sAmountFormatter = new DecimalFormat("##,###,###.##", formatSymbols);
         sAmountFormatter.setMaximumFractionDigits(2);
+        sAmountFormatter.setRoundingMode(RoundingMode.HALF_EVEN);
     }
 
     private CurrencyHelper() {
@@ -202,12 +206,24 @@ public final class CurrencyHelper {
     public static String formatAmount(Number amount, String currencyId) {
         synchronized (sAmountFormatter) {
             String amountText = sAmountFormatter.format(amount);
+            // Не пропускаем значения с 1 знаком после точки. Если знак есть, то только 2
+            if (amountText.length() > 2
+                    && amountText.charAt(amountText.length() - 2) == '.') {
+                amountText += '0';
+            }
             if (isSignToLeft(currencyId)) {
                 return getCurrencySymbol(currencyId) + '\u00a0' + amountText;
             } else {
                 return amountText + '\u00a0' + getCurrencySymbol(currencyId);
             }
         }
+    }
+
+    public static String formatAmountFitSmallTextField(BigDecimal amount, String currencyId) {
+        if (amount.compareTo(BigDecimal.valueOf(100)) >= 0) {
+            amount = amount.setScale(0, RoundingMode.DOWN);
+        }
+        return formatAmount(amount, currencyId);
     }
 
     @Nullable

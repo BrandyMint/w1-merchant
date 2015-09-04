@@ -221,7 +221,7 @@ public class WeekMonthStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentPeriod = getSumCurrentPeriod(currentDate);
         BigDecimal sumPriorPeriod = getSumPriorPeriod(currentDate);
 
-        String amount = CurrencyHelper.formatAmount(sumCurrentPeriod.setScale(0, RoundingMode.DOWN),
+        String amount = CurrencyHelper.formatAmountFitSmallTextField(sumCurrentPeriod,
                 mListener.getCurrency());
         mAmountView.setText(amount);
 

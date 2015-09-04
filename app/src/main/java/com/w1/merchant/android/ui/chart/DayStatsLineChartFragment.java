@@ -232,7 +232,7 @@ public class DayStatsLineChartFragment extends Fragment {
         BigDecimal sumCurrentDay = getSumCurrentDay(currentDate);
         BigDecimal sumLastDay = getSumLastDay(currentDate);
 
-        String amount = CurrencyHelper.formatAmount(sumCurrentDay.setScale(0, RoundingMode.DOWN),
+        String amount = CurrencyHelper.formatAmountFitSmallTextField(sumCurrentDay,
                 mListener.getCurrency());
         mAmountView.setText(amount);
 
