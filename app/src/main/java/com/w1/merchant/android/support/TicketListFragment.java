@@ -180,6 +180,10 @@ public class TicketListFragment extends Fragment {
         return true;
     }
 
+    public void onPrincipalChanged() {
+        if (mAdapter != null) mAdapter.setTickets(null);
+    }
+
     public void onTicketCreated(SupportTicket ticket) {
         if (mAdapter != null) mAdapter.addTicket(ticket);
     }

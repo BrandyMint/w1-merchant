@@ -171,6 +171,10 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
         if (requestCode == SELECT_PRINCIPAL_REQUEST_CODE && resultCode == RESULT_OK) {
             AuthModel user = data.getParcelableExtra(SelectPrincipalActivity.RESULT_AUTH_USER);
             Session.getInstance().setAuth(user);
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if (fragment instanceof  TicketListFragment) {
+                ((TicketListFragment)fragment).onPrincipalChanged();
+            }
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
