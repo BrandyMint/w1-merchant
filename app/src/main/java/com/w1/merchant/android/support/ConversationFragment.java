@@ -529,7 +529,7 @@ public class ConversationFragment extends Fragment {
     private void setupStatusReady() {
         if (mSendMessageText == null) return;
         mAttachButton.setEnabled(true);
-        mSendMessageButton.setEnabled(true);
+        mSendMessageButton.setEnabled(mSendMessageText.length() != 0);
         mSendMessageText.setEnabled(true);
         mSendMessageProgress.setVisibility(View.INVISIBLE);
         mSendMessageButton.setVisibility(View.VISIBLE);
