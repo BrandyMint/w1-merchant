@@ -155,6 +155,11 @@ public class MenuActivity extends ActivityBase implements StatementFragment.OnFr
             mCurrency = CurrencyHelper.ROUBLE_CURRENCY_NUMBER;
         }
 
+
+        if (BuildConfig.DISABLE_CURRENCY_EXCHANGE) {
+            findViewById(R.id.drawer_menu_exchange).setVisibility(View.GONE);
+        }
+
         setupCurrencyViewpagerCustomView();
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayOptions(

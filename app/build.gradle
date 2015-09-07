@@ -53,6 +53,9 @@ android {
         buildConfigField "Boolean", "DISABLE_TEMPLATE_CREATION",
                 project.ext.private.getProperty("DisableTemplateCreation",
                         "true")
+        buildConfigField "Boolean", "DISABLE_CURRENCY_EXCHANGE",
+                project.ext.private.getProperty("DisableCurrencyExchange",
+                        "true")
     }
 
     signingConfigs {
@@ -85,6 +88,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             buildConfigField "Boolean", "DISABLE_TEMPLATE_CREATION", "true"
+            buildConfigField "Boolean", "DISABLE_CURRENCY_EXCHANGE", "true"
         }
         beta {
             applicationIdSuffix ".beta";
