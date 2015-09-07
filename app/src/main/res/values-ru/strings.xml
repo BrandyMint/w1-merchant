@@ -68,6 +68,7 @@
 	<string name="error_invalid_email_or_phone">Не корректный e-mail или телефон</string>
 	<string name="entered_password_incorrect">Введён неверный пароль</string>
     <string name="error_enter_email_or_phone">Введите e-mail или телефон</string>
+    <string name="error_user_not_found">Пользователь не найден</string>
     <string name="failed_to_send_one_time_password">Ошибка отправки одноразового пароля</string>
 	<string name="forgot">Забыл</string>
 	<string name="data_load">Данные будут загружены</string>

@@ -68,6 +68,7 @@
     <string name="error_invalid_email_or_phone">Invalid e-mail or telephone</string>
     <string name="entered_password_incorrect">Entered password is incorrect</string>
     <string name="error_amount_range_error">The amount is not within valid range</string>
+    <string name="error_user_not_found">User not found</string>
     <string name="forgot">Send</string>
     <string name="data_load">Data will be load</string>
     <string name="loading">Loading…</string>

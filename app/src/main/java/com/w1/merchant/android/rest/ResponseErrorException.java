@@ -39,6 +39,8 @@ public class ResponseErrorException extends RuntimeException {
                 return resources.getString(R.string.error_captcha_wrong_code);
             } else if (ResponseError.ERROR_AMOUNT_RANGE.equals(error.getTextCode())) {
                 return resources.getString(R.string.error_amount_range_error);
+            } else if (ResponseError.ERROR_USER_ID_NOT_FOUND.equals(error.getTextCode())) {
+                return resources.getString(R.string.error_user_not_found);
             }
         }
         return error.getDesription() == null ? "" : error.getDesription();
