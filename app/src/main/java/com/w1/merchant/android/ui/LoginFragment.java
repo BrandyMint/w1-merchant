@@ -365,16 +365,18 @@ public class LoginFragment extends Fragment implements SelectPrincipalFragment.I
         if (!validateForm()) return;
         mVibrator.vibrate(VIBRATE_TIME_MS);
 
-        String login;
-        Phonenumber.PhoneNumber number = TextUtilsW1.parsePhoneNumber(mLoginTextView.getText());
-        if (number != null && PhoneNumberUtil.getInstance().isValidNumber(number)) {
-            login = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
-        } else {
-            login = mLoginTextView.getText().toString();
-        }
-
+        String login = readLoginTextView();
         mLogin = mLoginTextView.getText().toString();
         attemptLogin(login, mPasswordView.getText().toString());
+    }
+
+    private String readLoginTextView() {
+        Phonenumber.PhoneNumber number = TextUtilsW1.parsePhoneNumber(mLoginTextView.getText());
+        if (number != null && PhoneNumberUtil.getInstance().isValidNumber(number)) {
+            return PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+        } else {
+            return mLoginTextView.getText().toString();
+        }
     }
 
     void actionOnError(Throwable e) {
@@ -562,9 +564,9 @@ public class LoginFragment extends Fragment implements SelectPrincipalFragment.I
 
     private void sendOneTimePassword() {
         if (TextUtils.isEmpty(mLoginTextView.getText())) return;
-        final String login = mLoginTextView.getText().toString();
-        if (!TextUtilsW1.isPossibleEmail(login)
-                && !TextUtilsW1.isPossiblePhoneNumber(login)) {
+        final String loginRaw = mLoginTextView.getText().toString();
+        if (!TextUtilsW1.isPossibleEmail(loginRaw)
+                && !TextUtilsW1.isPossiblePhoneNumber(loginRaw)) {
             mLoginTextView.setError(getText(R.string.error_invalid_email_or_phone));
             mLoginTextView.requestFocus();
             return;
@@ -573,6 +575,8 @@ public class LoginFragment extends Fragment implements SelectPrincipalFragment.I
         mVibrator.vibrate(VIBRATE_TIME_MS);
 
         mSendOneTimePasswordSubscription.unsubscribe();
+
+        final String login = readLoginTextView();
 
         Session.getInstance().clear();
         Observable<Void> observer = AppObservable.bindFragment(this,
