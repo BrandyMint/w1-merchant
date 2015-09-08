@@ -43,7 +43,7 @@ public class ResponseErrorException extends RuntimeException {
                 return resources.getString(R.string.error_user_not_found);
             }
         }
-        return error.getDesription() == null ? "" : error.getDesription();
+        return error.getDescription() == null ? "" : error.getDescription();
     }
 
     public CharSequence getErrorDescription(CharSequence fallbackText, @Nullable Resources resources) {

@@ -37,7 +37,7 @@ public class ResponseError {
     /**
      * @return Описание
      */
-    public String getDesription() {
+    public String getDescription() {
         return errorDescription;
     }
 
