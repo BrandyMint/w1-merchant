@@ -162,15 +162,11 @@ public class LoginFragment extends Fragment implements SelectPrincipalFragment.I
         mLoginTextView.setAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, mLogins));
         int inputTypeFlags = InputType.TYPE_CLASS_TEXT;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            // Auto suggestions с PhoneEmailFormattingTextWatcher, по крайней мере на
-            // самсунгах android 4.1, стараемся его отключить.
-            // InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS не работает на большинстве устройств.
-            inputTypeFlags |= InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
-        } else {
-            // На android > 5 обычно всё хорошо
-            inputTypeFlags |= InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-        }
+        // Auto suggestions с PhoneEmailFormattingTextWatcher, по крайней мере на
+        // самсунгах android 4.1, стараемся его отключить.
+        // + к проблемным galaxy tab 4 (5.0.2)
+        // InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS не работает на большинстве устройств.
+        inputTypeFlags |= (InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         mLoginTextView.setInputType(inputTypeFlags);
         if (DBG) Log.v(TAG, String.format("login input type: %x", mLoginTextView.getInputType()));
